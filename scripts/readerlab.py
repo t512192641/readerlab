@@ -54,9 +54,55 @@ TRIAL_UNIT_ID = "01_核心入口与总览"
 TERMS_PAGE_BASENAME = "02_Skill阅读术语表"
 TERMS_PAGE_FILENAME = f"{TERMS_PAGE_BASENAME}.md"
 DEFAULT_AGENT_READINGS_DIR = Path("data/skill-readings")
+LIFEATLAS_ROOT = Path("/Users/tianqiang/LifeAtlas")
 CONTRACT_SCHEMA_DIR = Path(__file__).resolve().parents[1] / "docs" / "contracts"
 REQUIRED_CONTRACT_SCHEMAS = ("readerlab.global-map.v1", "readerlab.distillation.v1")
 HUMAN_CLEARED_STATUSES = {"accepted", "not_required"}
+CONTRACT_PACKAGE_REQUIRED_SCHEMAS = {
+    "readerlab.source-registry.v1",
+    "readerlab.location-map.v1",
+    "readerlab.output-eval.v1",
+}
+CONTRACT_ROUTE_SCHEMAS = {
+    "readerlab.catalog-map.v1",
+    "readerlab.capability-map.v1",
+    "readerlab.grounded-global-map.v1",
+}
+CONTRACT_FULL_COVERAGE_STATUSES = {
+    "full",
+    "full_body",
+    "full_source",
+    "full_skill_inventory",
+    "complete",
+}
+CONTRACT_REF_KEYS = {
+    "source_refs",
+    "location_refs",
+    "primary_refs",
+    "primary_location_refs",
+    "decision_evidence_refs",
+    "evidence_refs",
+}
+CAPABILITY_CORE_FIELDS = (
+    "trigger_signals",
+    "near_neighbor_exclusions",
+    "method_atoms",
+    "required_inputs",
+    "output_contract",
+    "verification",
+    "route_decisions",
+)
+OUTPUT_EVAL_REQUIRED_CATEGORIES = {
+    "reader_audit_separation",
+    "audit_evidence_preserved",
+    "first_hand_body_not_replaced",
+    "ai_reduces_understanding_cost",
+    "high_value_details_preserved",
+    "source_refs_specific",
+    "technical_insights_non_generic",
+    "overpromoted_claims_downgraded",
+    "machine_not_human",
+}
 TRIAL_SKILL_NAMES = {
     "spec",
     "office-hours",
@@ -3908,6 +3954,902 @@ def validate_pack(args: argparse.Namespace) -> None:
         raise SystemExit(1)
 
 
+def contract_schema(payload: dict[str, Any]) -> str:
+    return str(payload.get("schema") or payload.get("contract_schema") or "")
+
+
+def contract_coverage_status(payload: dict[str, Any]) -> str:
+    source_scope = payload.get("source_scope")
+    if isinstance(source_scope, dict):
+        return str(source_scope.get("coverage_status") or source_scope.get("status") or "")
+    coverage = payload.get("coverage")
+    if isinstance(coverage, dict):
+        return str(coverage.get("coverage_status") or coverage.get("status") or "")
+    return ""
+
+
+def contract_label(path: Path, payload: dict[str, Any]) -> str:
+    return f"{contract_schema(payload) or 'unknown-contract'} ({path.name})"
+
+
+def iter_contract_json_paths(target: Path) -> list[Path]:
+    if target.is_file():
+        return [target]
+    return sorted(path for path in target.rglob("*.json") if path.is_file())
+
+
+def iter_dict_nodes(value: Any, path: str = "$") -> list[tuple[str, dict[str, Any]]]:
+    nodes: list[tuple[str, dict[str, Any]]] = []
+    if isinstance(value, dict):
+        nodes.append((path, value))
+        for key, child in value.items():
+            nodes.extend(iter_dict_nodes(child, f"{path}.{key}"))
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            nodes.extend(iter_dict_nodes(child, f"{path}[{index}]"))
+    return nodes
+
+
+def as_non_empty_list(value: Any) -> bool:
+    return isinstance(value, list) and bool(value)
+
+
+def has_contract_refs(item: dict[str, Any]) -> bool:
+    for key in CONTRACT_REF_KEYS:
+        if as_non_empty_list(item.get(key)):
+            return True
+    claim_refs = item.get("claim_refs")
+    if isinstance(claim_refs, list):
+        for ref in claim_refs:
+            if isinstance(ref, dict) and any(as_non_empty_list(ref.get(key)) for key in CONTRACT_REF_KEYS):
+                return True
+    return False
+
+
+def collect_contract_refs(payload: dict[str, Any]) -> set[str]:
+    refs: set[str] = set()
+    for _path, node in iter_dict_nodes(payload):
+        for key in CONTRACT_REF_KEYS:
+            value = node.get(key)
+            if isinstance(value, list):
+                refs.update(str(item) for item in value if isinstance(item, str) and item)
+    return refs
+
+
+def collect_known_ref_ids(payloads: list[dict[str, Any]]) -> set[str]:
+    known: set[str] = set()
+    for payload in payloads:
+        schema = contract_schema(payload)
+        if schema == "readerlab.source-registry.v1":
+            for source in payload.get("sources") or []:
+                if isinstance(source, dict):
+                    for key in ("source_id", "id"):
+                        if source.get(key):
+                            known.add(str(source[key]))
+        if schema == "readerlab.location-map.v1":
+            for location in payload.get("locations") or payload.get("location_refs") or []:
+                if isinstance(location, dict):
+                    for key in ("location_id", "id", "ref_id"):
+                        if location.get(key):
+                            known.add(str(location[key]))
+    return known
+
+
+def collect_primary_module_location_ids(payloads: list[dict[str, Any]]) -> set[str]:
+    primary_source_ids: set[str] = set()
+    for payload in payloads:
+        if contract_schema(payload) != "readerlab.source-registry.v1":
+            continue
+        for source in payload.get("sources") or []:
+            if not isinstance(source, dict):
+                continue
+            source_id = source.get("source_id") or source.get("id")
+            if source_id and source.get("source_role") == "primary_module":
+                primary_source_ids.add(str(source_id))
+    if not primary_source_ids:
+        return set()
+    required_location_ids: set[str] = set()
+    for payload in payloads:
+        if contract_schema(payload) != "readerlab.location-map.v1":
+            continue
+        for location in payload.get("locations") or []:
+            if not isinstance(location, dict):
+                continue
+            location_id = location.get("location_id") or location.get("id") or location.get("ref_id")
+            source_id = location.get("source_id")
+            if location_id and source_id and str(source_id) in primary_source_ids:
+                required_location_ids.add(str(location_id))
+    return required_location_ids
+
+
+def collect_capability_domain_refs(payloads: list[dict[str, Any]]) -> set[str]:
+    refs: set[str] = set()
+    for payload in payloads:
+        if contract_schema(payload) != "readerlab.capability-map.v1":
+            continue
+        domains = payload.get("capability_domains")
+        if not isinstance(domains, list):
+            continue
+        for domain in domains:
+            if isinstance(domain, dict):
+                refs.update(collect_contract_refs(domain))
+    return refs
+
+
+def normalize_eval_key(value: Any) -> str:
+    normalized = re.sub(r"[^a-z0-9]+", "_", str(value or "").lower()).strip("_")
+    return normalized
+
+
+def validate_source_registry(path: Path, payload: dict[str, Any], failures: list[str]) -> None:
+    if contract_schema(payload) != "readerlab.source-registry.v1":
+        return
+    label = contract_label(path, payload)
+    sources = payload.get("sources")
+    if not isinstance(sources, list) or not sources:
+        failures.append(f"{label} source-registry.sources 必须是非空列表")
+        return
+    seen: set[str] = set()
+    for index, source in enumerate(sources):
+        if not isinstance(source, dict):
+            failures.append(f"{label} sources[{index}] 必须是对象")
+            continue
+        source_id = source.get("source_id") or source.get("id")
+        if not source_id:
+            failures.append(f"{label} sources[{index}] 缺少 source_id")
+            continue
+        if is_missing_value(source.get("source_path")) and is_missing_value(source.get("title")):
+            failures.append(f"{label} sources[{index}] 缺少 source_path 或 title，不能作为空壳来源")
+        if str(source_id) in seen:
+            failures.append(f"{label} source_id 重复：{source_id}")
+        seen.add(str(source_id))
+
+
+def validate_location_map(path: Path, payload: dict[str, Any], failures: list[str]) -> None:
+    if contract_schema(payload) != "readerlab.location-map.v1":
+        return
+    label = contract_label(path, payload)
+    locations = payload.get("locations")
+    if not isinstance(locations, list) or not locations:
+        failures.append(f"{label} location-map.locations 必须是非空列表")
+        return
+    seen: set[str] = set()
+    for index, location in enumerate(locations):
+        if not isinstance(location, dict):
+            failures.append(f"{label} locations[{index}] 必须是对象")
+            continue
+        location_id = location.get("location_id") or location.get("id") or location.get("ref_id")
+        if not location_id:
+            failures.append(f"{label} locations[{index}] 缺少 location_id")
+            continue
+        if is_missing_value(location.get("source_id")):
+            failures.append(f"{label} locations[{index}] 缺少 source_id，位置必须挂回来源")
+        if is_missing_value(location.get("path")) and is_missing_value(location.get("range")):
+            failures.append(f"{label} locations[{index}] 缺少 path 或 range，不能作为空壳位置")
+        if str(location_id) in seen:
+            failures.append(f"{label} location_id 重复：{location_id}")
+        seen.add(str(location_id))
+
+
+def validate_contract_status_and_display(path: Path, payload: dict[str, Any], failures: list[str]) -> None:
+    label = contract_label(path, payload)
+    if not payload.get("machine_status"):
+        failures.append(f"{label} 缺少 machine_status，机器状态不能和人工状态混用")
+    if not payload.get("human_status"):
+        failures.append(f"{label} 缺少 human_status，人工验收状态必须单独表达")
+    display = payload.get("display")
+    if not isinstance(display, dict):
+        failures.append(f"{label} 缺少 display，无法证明 reader-facing 和 internal audit 分离")
+        return
+    relationship = display.get("relationship")
+    if not relationship:
+        failures.append(f"{label} 缺少 display.relationship")
+    if relationship in {"mixed", "same_file", "reader_facing_is_audit"}:
+        failures.append(f"{label} display.relationship 不能把 reader-facing 和 internal audit 混在一起")
+    reader_paths = display.get("reader_facing") or display.get("reader_facing_paths") or []
+    audit_paths = display.get("internal_audit") or display.get("internal_audit_paths") or []
+    if reader_paths and not isinstance(reader_paths, list):
+        failures.append(f"{label} display.reader_facing 必须是列表")
+        reader_paths = []
+    if audit_paths and not isinstance(audit_paths, list):
+        failures.append(f"{label} display.internal_audit 必须是列表")
+        audit_paths = []
+    overlap = set(reader_paths) & set(audit_paths)
+    if overlap:
+        failures.append(f"{label} reader-facing 与 internal audit 路径重叠：{', '.join(sorted(overlap))}")
+
+
+def validate_contract_claim_refs(path: Path, payload: dict[str, Any], failures: list[str]) -> None:
+    label = contract_label(path, payload)
+    for node_path, node in iter_dict_nodes(payload):
+        for list_key in ("high_level_claims", "claims", "distillation_candidates", "technical_insights"):
+            items = node.get(list_key)
+            if not isinstance(items, list):
+                continue
+            for index, item in enumerate(items):
+                if not isinstance(item, dict):
+                    failures.append(f"{label} {node_path}.{list_key}[{index}] 必须是对象")
+                    continue
+                if item.get("claim") and not has_contract_refs(item):
+                    failures.append(f"{label} {node_path}.{list_key}[{index}] high-level claim 缺少 source refs")
+        if node.get("claim") and "claim_refs" not in node_path and not has_contract_refs(node):
+            failures.append(f"{label} {node_path} high-level claim 缺少 source refs")
+
+
+def validate_grounded_global_map(path: Path, payload: dict[str, Any], failures: list[str]) -> None:
+    schema = contract_schema(payload)
+    if schema != "readerlab.grounded-global-map.v1":
+        return
+    coverage_status = contract_coverage_status(payload)
+    if coverage_status not in CONTRACT_FULL_COVERAGE_STATUSES:
+        failures.append(
+            f"{contract_label(path, payload)} coverage={coverage_status!r} 不足，不能生成 grounded global map"
+        )
+
+
+def validate_local_deepread(path: Path, payload: dict[str, Any], failures: list[str]) -> None:
+    if contract_schema(payload) != "readerlab.local-deepread.v1":
+        return
+    label = contract_label(path, payload)
+    deepread = payload.get("local_deepread")
+    if isinstance(deepread, dict) and isinstance(deepread.get("cards"), list):
+        cards = deepread["cards"]
+    elif isinstance(deepread, dict):
+        cards = [deepread]
+    elif isinstance(deepread, list):
+        cards = deepread
+    else:
+        failures.append(f"{label} local_deepread 必须是对象或列表")
+        return
+    for index, card in enumerate(cards):
+        if not isinstance(card, dict):
+            failures.append(f"{label} local_deepread[{index}] 必须是对象")
+            continue
+        for field in ("reader_gain", "primary_refs", "boundary", "confidence"):
+            if is_missing_value(card.get(field)):
+                failures.append(f"{label} local_deepread[{index}] 缺少 {field}")
+
+
+def validate_capability_map(path: Path, payload: dict[str, Any], failures: list[str]) -> None:
+    if contract_schema(payload) != "readerlab.capability-map.v1":
+        return
+    label = contract_label(path, payload)
+    domains = payload.get("capability_domains")
+    if not isinstance(domains, list) or not domains:
+        failures.append(f"{label} capability-map 必须包含 capability_domains，不能只是目录列表")
+        return
+    for index, domain in enumerate(domains):
+        if not isinstance(domain, dict):
+            failures.append(f"{label} capability_domains[{index}] 必须是对象")
+            continue
+        missing = [field for field in CAPABILITY_CORE_FIELDS if is_missing_value(domain.get(field))]
+        if missing:
+            failures.append(f"{label} capability_domains[{index}] 缺少核心字段：{', '.join(missing)}")
+        if not has_contract_refs(domain):
+            failures.append(f"{label} capability_domains[{index}] 缺少 source refs")
+
+
+def validate_output_eval(path: Path, payload: dict[str, Any], failures: list[str]) -> None:
+    if contract_schema(payload) != "readerlab.output-eval.v1":
+        return
+    label = contract_label(path, payload)
+    output_eval = payload.get("output_eval")
+    checks = output_eval.get("checks") if isinstance(output_eval, dict) else None
+    if not isinstance(checks, list) or not checks:
+        failures.append(f"{label} output-eval 必须包含检查项列表")
+        return
+    covered_categories: set[str] = set()
+    for index, check in enumerate(checks):
+        if not isinstance(check, dict):
+            failures.append(f"{label} output_eval.checks[{index}] 必须是对象")
+            continue
+        if is_missing_value(check.get("status")):
+            failures.append(f"{label} output_eval.checks[{index}] 缺少 status")
+        if is_missing_value(check.get("id")) and is_missing_value(check.get("name")):
+            failures.append(f"{label} output_eval.checks[{index}] 缺少 id 或 name")
+        candidates = {
+            normalize_eval_key(check.get("category")),
+            normalize_eval_key(check.get("id")),
+            normalize_eval_key(check.get("name")),
+        }
+        for required in OUTPUT_EVAL_REQUIRED_CATEGORIES:
+            if required in candidates:
+                covered_categories.add(required)
+    missing_categories = sorted(OUTPUT_EVAL_REQUIRED_CATEGORIES - covered_categories)
+    if missing_categories:
+        failures.append(f"{label} output-eval 缺少必检项：{', '.join(missing_categories)}")
+
+
+def validate_contract_payload_v1(path: Path, payload: dict[str, Any], failures: list[str]) -> None:
+    schema = contract_schema(payload)
+    if not schema.startswith("readerlab."):
+        return
+    validate_source_registry(path, payload, failures)
+    validate_location_map(path, payload, failures)
+    validate_contract_status_and_display(path, payload, failures)
+    validate_contract_claim_refs(path, payload, failures)
+    validate_grounded_global_map(path, payload, failures)
+    validate_local_deepread(path, payload, failures)
+    validate_capability_map(path, payload, failures)
+    validate_output_eval(path, payload, failures)
+
+
+def validate_contract_package_shape(target: Path, payloads: list[dict[str, Any]], failures: list[str]) -> None:
+    schemas = {contract_schema(payload) for payload in payloads}
+    missing = sorted(CONTRACT_PACKAGE_REQUIRED_SCHEMAS - schemas)
+    if missing:
+        failures.append(f"样本目录缺少必需 contract：{', '.join(missing)}")
+    if not (schemas & CONTRACT_ROUTE_SCHEMAS):
+        failures.append("样本目录缺少 catalog-map / capability-map / grounded-global-map 之一")
+    if "readerlab.grounded-global-map.v1" in schemas:
+        source_payload = next((p for p in payloads if contract_schema(p) == "readerlab.source-registry.v1"), {})
+        source_coverage = contract_coverage_status(source_payload)
+        if source_coverage not in CONTRACT_FULL_COVERAGE_STATUSES:
+            failures.append(
+                f"source-registry coverage={source_coverage!r} 不足，目录中不能包含 grounded-global-map"
+            )
+    reader_pages = sorted(path for path in target.rglob("*.md") if path.is_file() and "audit" not in path.parts)
+    audit_json = sorted(path for path in target.rglob("*.json") if path.is_file() and "audit" in path.parts)
+    if not reader_pages:
+        failures.append("样本目录缺少 reader-facing markdown")
+    if not audit_json:
+        failures.append("样本目录缺少 internal audit JSON")
+    if not any(path.name == "rejected-downgraded.md" for path in target.rglob("*.md") if path.is_file()):
+        failures.append("样本目录缺少 rejected-downgraded.md")
+
+
+def validate_capability_module_coverage(payloads: list[dict[str, Any]], failures: list[str]) -> None:
+    schemas = {contract_schema(payload) for payload in payloads}
+    if "readerlab.capability-map.v1" not in schemas:
+        return
+    required_location_ids = collect_primary_module_location_ids(payloads)
+    if not required_location_ids:
+        return
+    covered_refs = collect_capability_domain_refs(payloads)
+    missing = sorted(required_location_ids - covered_refs)
+    if missing:
+        failures.append(f"capability-map 未覆盖 primary_module location refs：{', '.join(missing)}")
+
+
+def validate_contract_references(
+    contract_paths: list[Path],
+    payloads: list[dict[str, Any]],
+    failures: list[str],
+) -> None:
+    known = collect_known_ref_ids(payloads)
+    all_refs = [
+        (path, payload, sorted(collect_contract_refs(payload)))
+        for path, payload in zip(contract_paths, payloads)
+    ]
+    refs_present = any(refs for _path, _payload, refs in all_refs)
+    if refs_present and not known:
+        failures.append("contract refs 存在，但 source-registry/location-map 没有可用 known ids")
+        return
+    for path, payload, refs in all_refs:
+        for ref in refs:
+            if ref not in known:
+                failures.append(f"{contract_label(path, payload)} 引用了未知 source/location ref：{ref}")
+
+
+def validate_contract_target(target: Path) -> dict[str, Any]:
+    if not target.exists():
+        raise SystemExit(f"contract path not found: {target}")
+    contract_paths = iter_contract_json_paths(target)
+    failures: list[str] = []
+    payloads: list[dict[str, Any]] = []
+    used_paths: list[Path] = []
+    for path in contract_paths:
+        try:
+            payload = json.loads(read_text(path))
+        except json.JSONDecodeError as exc:
+            failures.append(f"{path} 不是合法 JSON：{exc.msg}")
+            continue
+        if not isinstance(payload, dict):
+            failures.append(f"{path} contract 必须是 JSON 对象")
+            continue
+        schema = contract_schema(payload)
+        if not schema.startswith("readerlab."):
+            if target.is_file():
+                failures.append(f"{path} 缺少 readerlab.* schema")
+            continue
+        payloads.append(payload)
+        used_paths.append(path)
+        validate_contract_payload_v1(path, payload, failures)
+    if target.is_dir():
+        validate_contract_package_shape(target, payloads, failures)
+        validate_capability_module_coverage(payloads, failures)
+    validate_contract_references(used_paths, payloads, failures)
+    return {
+        "target": str(target),
+        "passed": not failures,
+        "contract_count": len(payloads),
+        "schemas": sorted({contract_schema(payload) for payload in payloads}),
+        "contracts": [
+            {
+                "path": str(path),
+                "schema": contract_schema(payload),
+                "coverage_status": contract_coverage_status(payload),
+                "machine_status": payload.get("machine_status"),
+                "human_status": payload.get("human_status"),
+            }
+            for path, payload in zip(used_paths, payloads)
+        ],
+        "failures": failures,
+    }
+
+
+def validate_contract_cmd(args: argparse.Namespace) -> None:
+    target = Path(args.path).expanduser()
+    result = validate_contract_target(target)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    if result["failures"]:
+        raise SystemExit(1)
+
+
+def first_contract_payload(payloads: list[dict[str, Any]], schema: str) -> dict[str, Any]:
+    for payload in payloads:
+        if contract_schema(payload) == schema:
+            return payload
+    return {}
+
+
+def load_contract_payloads(target: Path) -> tuple[list[Path], list[dict[str, Any]]]:
+    paths: list[Path] = []
+    payloads: list[dict[str, Any]] = []
+    for path in iter_contract_json_paths(target):
+        try:
+            payload = json.loads(read_text(path))
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict) and contract_schema(payload).startswith("readerlab."):
+            paths.append(path)
+            payloads.append(payload)
+    return paths, payloads
+
+
+def strip_markdown_title(text: str) -> str:
+    lines = text.strip().splitlines()
+    if lines and lines[0].startswith("# "):
+        lines = lines[1:]
+    return "\n".join(lines).strip()
+
+
+def source_excerpt_records(sample_dir: Path, source_registry: dict[str, Any]) -> list[dict[str, str]]:
+    records: list[dict[str, str]] = []
+    failures: list[str] = []
+    for source in source_registry.get("sources") or []:
+        if not isinstance(source, dict):
+            continue
+        source_id = str(source.get("source_id") or source.get("id") or "")
+        source_path = str(source.get("source_path") or "")
+        if not source_path:
+            failures.append(f"source {source_id or '<unknown>'} 缺少 source_path，renderer 无法生成一手正文")
+            continue
+        path = sample_dir / source_path
+        if not path.exists():
+            failures.append(f"source excerpt not found: {source_path}")
+            continue
+        text = strip_markdown_title(read_text(path))
+        if not text:
+            failures.append(f"source excerpt is empty: {source_path}")
+            continue
+        records.append(
+            {
+                "source_id": source_id,
+                "source_path": source_path,
+                "source_role": str(source.get("source_role") or ""),
+                "text": text,
+            }
+        )
+    if failures:
+        raise SystemExit("source excerpts invalid:\n- " + "\n- ".join(failures))
+    if not records:
+        raise SystemExit("source excerpts invalid: no renderable source excerpts")
+    return records
+
+
+def lines_to_markdown_list(items: Any, *, indent: str = "") -> list[str]:
+    if not isinstance(items, list) or not items:
+        return [f"{indent}- 未声明。"]
+    return [f"{indent}- {item}" for item in items]
+
+
+def markdown_quote(text: str) -> str:
+    lines: list[str] = []
+    for line in text.splitlines():
+        lines.append(f"> {line}" if line else ">")
+    return "\n".join(lines)
+
+
+def render_status_block(payloads: list[dict[str, Any]]) -> list[str]:
+    machine_statuses = sorted({str(payload.get("machine_status")) for payload in payloads if payload.get("machine_status")})
+    human_statuses = sorted({str(payload.get("human_status")) for payload in payloads if payload.get("human_status")})
+    return [
+        "## 状态边界",
+        "",
+        f"- machine_status：{', '.join(machine_statuses) if machine_statuses else 'unknown'}",
+        f"- human_status：{', '.join(human_statuses) if human_statuses else 'unknown'}",
+        "- 说明：机器状态只表示脚本和 contract 层可检查；人工阅读验收仍需单独完成。",
+        "",
+    ]
+
+
+def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dict[str, str]:
+    source_registry = first_contract_payload(payloads, "readerlab.source-registry.v1")
+    catalog = first_contract_payload(payloads, "readerlab.catalog-map.v1")
+    deepread = first_contract_payload(payloads, "readerlab.local-deepread.v1")
+    excerpts = source_excerpt_records(sample_dir, source_registry)
+    reading_units = ((catalog.get("catalog") or {}).get("reading_units") or []) if isinstance(catalog, dict) else []
+    unit = reading_units[0] if reading_units and isinstance(reading_units[0], dict) else {}
+    deepread_card = deepread.get("local_deepread") if isinstance(deepread.get("local_deepread"), dict) else {}
+    title = str(unit.get("title") or deepread_card.get("title") or "局部长文阅读页")
+    route_hypothesis = (catalog.get("catalog") or {}).get("route_hypothesis") if isinstance(catalog, dict) else []
+    not_yet = (catalog.get("catalog") or {}).get("not_yet_covered_units") if isinstance(catalog, dict) else []
+    lines = [
+        f"# 局部长文样本：{title}",
+        "",
+        "## 这一节先看什么",
+        "",
+        *lines_to_markdown_list(route_hypothesis),
+        "",
+        "## 处理过的一手正文",
+        "",
+    ]
+    for excerpt in excerpts:
+        lines.extend(
+            [
+                f"### 来源：`{excerpt['source_path']}`",
+                "",
+                markdown_quote(excerpt["text"]),
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "## AI 旁批",
+            "",
+            str(deepread_card.get("reader_gain") or "这一页只提供局部阅读辅助，不能替代一手材料。"),
+            "",
+            "## 深读判断",
+            "",
+            f"- 主张：{deepread_card.get('claim') or '未声明'}",
+            f"- 边界：{deepread_card.get('boundary') or '未声明'}",
+            f"- 置信度：{deepread_card.get('confidence') or 'unknown'}",
+            "",
+            "## 尚未覆盖",
+            "",
+            *lines_to_markdown_list(not_yet),
+            "",
+            *render_status_block(payloads),
+            "## 可批注问题",
+            "",
+            "- 这个局部原则在你的材料或工作流里应该怎样被验证，而不是直接照搬？",
+            "",
+        ]
+    )
+    return {"reader/01_局部长文阅读页.md": "\n".join(lines)}
+
+
+def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dict[str, str]:
+    source_registry = first_contract_payload(payloads, "readerlab.source-registry.v1")
+    capability = first_contract_payload(payloads, "readerlab.capability-map.v1")
+    excerpts = source_excerpt_records(sample_dir, source_registry)
+    domains = capability.get("capability_domains") if isinstance(capability.get("capability_domains"), list) else []
+    title = str((capability.get("material") or {}).get("title") or "工程材料阅读页")
+    reader_lines = [
+        f"# Skill/工程材料样本：{title}",
+        "",
+        "## 这一节先看什么",
+        "",
+        "这个渲染页按模块能力阅读材料：先看一手模块正文，再看触发、输入、输出和验收边界。",
+        "",
+        "## 处理过的一手正文",
+        "",
+    ]
+    for index, excerpt in enumerate(excerpts, start=1):
+        reader_lines.extend(
+            [
+                f"### 模块{index}：`{excerpt['source_path']}`",
+                "",
+                excerpt["text"],
+                "",
+            ]
+        )
+    reader_lines.extend(
+        [
+            "## AI 旁批",
+            "",
+            "这组材料的重点不是目录顺序，而是每个模块在 Agent 工作流中的职责边界。",
+            "",
+            "## 容易误读的地方",
+            "",
+            "- capability-map 不是目录列表；它必须说明触发、输入、输出、验证和不适用边界。",
+            "- output-eval 只能表达机器检查结论，不能冒充人工阅读验收。",
+            "",
+            *render_status_block(payloads),
+        ]
+    )
+    side_lines = [
+        "# 技术合伙人旁批",
+        "",
+        "下面只记录可迁移的工程设计原子；它不是人工验收结论。",
+        "",
+    ]
+    for domain in domains:
+        if not isinstance(domain, dict):
+            continue
+        side_lines.extend(
+            [
+                f"## {domain.get('name') or domain.get('domain_id')}",
+                "",
+                f"- owned_job：{domain.get('owned_job') or '未声明'}",
+                "- trigger_signals：",
+                *lines_to_markdown_list(domain.get("trigger_signals"), indent="  "),
+                "- required_inputs：",
+                *lines_to_markdown_list(domain.get("required_inputs"), indent="  "),
+                "- output_contract：",
+                *lines_to_markdown_list(domain.get("output_contract"), indent="  "),
+                "- verification：",
+                *lines_to_markdown_list(domain.get("verification"), indent="  "),
+                f"- human_status：{domain.get('human_status') or 'pending'}",
+                "",
+            ]
+        )
+    return {
+        "reader/01_工程材料阅读页.md": "\n".join(reader_lines),
+        "reader/02_技术合伙人旁批.md": "\n".join(side_lines),
+    }
+
+
+def render_contract_package_cmd(args: argparse.Namespace) -> None:
+    sample_dir = Path(args.sample_dir).expanduser()
+    output_dir = Path(args.output_dir).expanduser()
+    if not sample_dir.exists() or not sample_dir.is_dir():
+        raise SystemExit(f"sample_dir not found: {sample_dir}")
+    if output_dir.exists() and any(output_dir.iterdir()):
+        raise SystemExit(f"output_dir is not empty; refusing to overwrite: {output_dir}")
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    validation = validate_contract_target(sample_dir)
+    if validation["failures"]:
+        print(json.dumps(validation, ensure_ascii=False, indent=2))
+        raise SystemExit(1)
+    _paths, payloads = load_contract_payloads(sample_dir)
+    audit_src = sample_dir / "audit"
+    if not audit_src.exists():
+        raise SystemExit(f"sample_dir 缺少 audit 目录: {sample_dir}")
+    shutil.copytree(audit_src, output_dir / "audit", dirs_exist_ok=True)
+
+    schemas = {contract_schema(payload) for payload in payloads}
+    if "readerlab.capability-map.v1" in schemas:
+        rendered_pages = render_skill_reader(sample_dir, payloads)
+    elif "readerlab.catalog-map.v1" in schemas:
+        rendered_pages = render_longform_reader(sample_dir, payloads)
+    else:
+        raise SystemExit("sample_dir 缺少可渲染的 catalog-map 或 capability-map")
+    for rel_path, text in rendered_pages.items():
+        write_text(output_dir / rel_path, text.rstrip() + "\n")
+    result = {
+        "sample_dir": str(sample_dir),
+        "output_dir": str(output_dir),
+        "rendered_pages": sorted(rendered_pages),
+        "audit_copied": True,
+        "machine_status": sorted({str(payload.get("machine_status")) for payload in payloads if payload.get("machine_status")}),
+        "human_status": sorted({str(payload.get("human_status")) for payload in payloads if payload.get("human_status")}),
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+def output_eval_categories(payloads: list[dict[str, Any]]) -> set[str]:
+    output_eval = first_contract_payload(payloads, "readerlab.output-eval.v1")
+    checks = ((output_eval.get("output_eval") or {}).get("checks") or []) if isinstance(output_eval, dict) else []
+    categories: set[str] = set()
+    for check in checks:
+        if not isinstance(check, dict):
+            continue
+        candidates = {
+            normalize_eval_key(check.get("category")),
+            normalize_eval_key(check.get("id")),
+            normalize_eval_key(check.get("name")),
+        }
+        categories.update(required for required in OUTPUT_EVAL_REQUIRED_CATEGORIES if required in candidates)
+    return categories
+
+
+def collect_reader_paths(payloads: list[dict[str, Any]]) -> set[str]:
+    paths: set[str] = set()
+    for payload in payloads:
+        display = payload.get("display")
+        if not isinstance(display, dict):
+            continue
+        reader_paths = display.get("reader_facing") or display.get("reader_facing_paths") or []
+        if isinstance(reader_paths, list):
+            paths.update(str(path) for path in reader_paths if path)
+    return paths
+
+
+def collect_declared_source_paths(payloads: list[dict[str, Any]]) -> list[str]:
+    source_registry = first_contract_payload(payloads, "readerlab.source-registry.v1")
+    source_paths: list[str] = []
+    for source in source_registry.get("sources") or []:
+        if isinstance(source, dict) and source.get("source_path"):
+            source_paths.append(str(source["source_path"]))
+    return source_paths
+
+
+def normalize_inline_text(value: str) -> str:
+    return re.sub(r"\s+", " ", value).strip()
+
+
+def first_hand_body_failures(target: Path, reader_paths: set[str], source_paths: list[str]) -> list[str]:
+    failures: list[str] = []
+    if not source_paths:
+        return ["source-registry has no source_path for first-hand body check"]
+    source_snippets: list[tuple[str, str]] = []
+    for source_path in source_paths:
+        path = target / source_path
+        if not path.is_file():
+            failures.append(f"source excerpt not found for first-hand body check: {source_path}")
+            continue
+        source_text = normalize_inline_text(strip_markdown_title(read_text(path)))
+        if not source_text:
+            failures.append(f"source excerpt is empty for first-hand body check: {source_path}")
+            continue
+        source_snippets.append((source_path, source_text[:80]))
+    if failures:
+        return failures
+    body_found = False
+    for reader_path in sorted(reader_paths):
+        path = target / reader_path
+        if not path.is_file():
+            continue
+        text = read_text(path)
+        body_match = re.search(r"^## 处理过的一手正文\s*(.*?)(?=^## |\Z)", text, re.M | re.S)
+        if not body_match:
+            continue
+        body = body_match.group(1)
+        normalized_body = normalize_inline_text(body)
+        if any(source_path in body and snippet in normalized_body for source_path, snippet in source_snippets):
+            body_found = True
+            break
+    if not body_found:
+        failures.append("reader markdown missing actual first-hand body from source excerpts")
+    return failures
+
+
+def render_eval_markdown_report(result: dict[str, Any]) -> str:
+    lines = [
+        "# ReaderLab Rendered Package Eval Report",
+        "",
+        f"- target: `{result['target']}`",
+        f"- passed: {str(result['passed']).lower()}",
+        f"- validate_contract_passed: {str(result['validate_contract_passed']).lower()}",
+        f"- contract_count: {result['contract_count']}",
+        f"- schemas: {', '.join(result['schemas']) if result['schemas'] else 'none'}",
+        "",
+        "## Gates",
+        "",
+    ]
+    for gate in result["gates"]:
+        lines.append(f"- {gate['id']}: {gate['status']}")
+        failures = gate.get("failures") or []
+        if failures:
+            for failure in failures:
+                lines.append(f"  - {failure}")
+    if not result["gates"]:
+        lines.append("- none")
+    lines.extend(["", "## Failures", ""])
+    if result["failures"]:
+        lines.extend(f"- {failure}" for failure in result["failures"])
+    else:
+        lines.append("- none")
+    lines.extend(
+        [
+            "",
+            "## Machine / Human Boundary",
+            "",
+            "- This report is a machine eval report, not human acceptance.",
+            "- Required boundary: human_status pending until the product owner manually accepts the reader benefit and taste.",
+            "- Passing gates mean ready_for_human_review at most; they do not mean product_ready.",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def prepare_report_path(raw_path: str, *, overwrite: bool = False) -> Path:
+    report_path = Path(raw_path).expanduser()
+    resolved = report_path.resolve()
+    try:
+        resolved.relative_to(LIFEATLAS_ROOT)
+    except ValueError:
+        pass
+    else:
+        raise SystemExit("refusing to write eval report under LifeAtlas; use /private/tmp or repo-local path")
+    if resolved.exists() and not overwrite:
+        raise SystemExit(f"report path already exists; use --overwrite-report to replace: {resolved}")
+    resolved.parent.mkdir(parents=True, exist_ok=True)
+    return resolved
+
+
+def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
+    target = Path(args.path).expanduser()
+    validation = validate_contract_target(target)
+    _paths, payloads = load_contract_payloads(target)
+    failures: list[str] = list(validation["failures"])
+    gates: list[dict[str, Any]] = []
+
+    reader_paths = collect_reader_paths(payloads)
+    missing_reader = sorted(path for path in reader_paths if not (target / path).is_file())
+    audit_reader_paths = sorted(path for path in reader_paths if "audit" in Path(path).parts)
+    gates.append(
+        {
+            "id": "reader_markdown_exists",
+            "status": "fail" if missing_reader else "pass",
+            "failures": [f"reader markdown missing: {path}" for path in missing_reader],
+        }
+    )
+    gates.append(
+        {
+            "id": "reader_audit_path_separation",
+            "status": "fail" if audit_reader_paths else "pass",
+            "failures": [f"reader path must not be under audit: {path}" for path in audit_reader_paths],
+        }
+    )
+    failures.extend(f"reader markdown missing: {path}" for path in missing_reader)
+    failures.extend(f"reader path must not be under audit: {path}" for path in audit_reader_paths)
+
+    first_hand_failures = first_hand_body_failures(target, reader_paths, collect_declared_source_paths(payloads))
+    gates.append(
+        {
+            "id": "first_hand_body_source_present",
+            "status": "fail" if first_hand_failures else "pass",
+            "failures": first_hand_failures,
+        }
+    )
+    failures.extend(first_hand_failures)
+
+    missing_eval = sorted(OUTPUT_EVAL_REQUIRED_CATEGORIES - output_eval_categories(payloads))
+    gates.append(
+        {
+            "id": "output_eval_9_gates_present",
+            "status": "fail" if missing_eval else "pass",
+            "failures": [f"output-eval missing gate: {gate}" for gate in missing_eval],
+        }
+    )
+    failures.extend(f"output-eval missing gate: {gate}" for gate in missing_eval)
+
+    accepted_paths = [
+        contract_label(path, payload)
+        for path, payload in zip(_paths, payloads)
+        if str(payload.get("human_status") or "").lower() in HUMAN_CLEARED_STATUSES
+    ]
+    gates.append(
+        {
+            "id": "human_status_not_machine_accepted",
+            "status": "fail" if accepted_paths else "pass",
+            "failures": [f"human_status must remain pending for rendered machine package: {path}" for path in accepted_paths],
+        }
+    )
+    failures.extend(f"human_status must remain pending for rendered machine package: {path}" for path in accepted_paths)
+
+    result = {
+        "target": str(target),
+        "passed": not failures,
+        "validate_contract_passed": validation["passed"],
+        "contract_count": validation["contract_count"],
+        "schemas": validation["schemas"],
+        "gates": gates,
+        "failures": failures,
+    }
+    if args.report_md:
+        report_path = prepare_report_path(args.report_md, overwrite=args.overwrite_report)
+        write_text(report_path, render_eval_markdown_report(result))
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    if failures:
+        raise SystemExit(1)
+
+
 def block_manifest_cmd(args: argparse.Namespace) -> None:
     skill_md = Path(args.skill_md).expanduser().resolve()
     if not skill_md.exists() or not skill_md.is_file():
@@ -4299,6 +5241,21 @@ def build_parser() -> argparse.ArgumentParser:
     p_validate.add_argument("--skill")
     p_validate.add_argument("--block")
     p_validate.set_defaults(func=validate_pack)
+
+    p_validate_contract = sub.add_parser("validate-contract")
+    p_validate_contract.add_argument("path")
+    p_validate_contract.set_defaults(func=validate_contract_cmd)
+
+    p_render_contract = sub.add_parser("render-contract-package")
+    p_render_contract.add_argument("sample_dir")
+    p_render_contract.add_argument("output_dir")
+    p_render_contract.set_defaults(func=render_contract_package_cmd)
+
+    p_eval_rendered = sub.add_parser("eval-rendered-package")
+    p_eval_rendered.add_argument("path")
+    p_eval_rendered.add_argument("--report-md")
+    p_eval_rendered.add_argument("--overwrite-report", action="store_true")
+    p_eval_rendered.set_defaults(func=eval_rendered_package_cmd)
 
     p_blocks = sub.add_parser("block-manifest")
     p_blocks.add_argument("skill_md")

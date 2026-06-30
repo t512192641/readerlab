@@ -1,0 +1,95 @@
+{
+  "schema": "readerlab.output-eval.v1",
+  "material": {
+    "id": "proof-longform-fragment",
+    "title": "Longform local fragment proof",
+    "type": "longform_fragment"
+  },
+  "output_eval": {
+    "checks": [
+      {
+        "id": "reader_audit_separation",
+        "name": "reader-facing does not expose audit noise",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-main-claim"
+        ]
+      },
+      {
+        "id": "audit_evidence_preserved",
+        "name": "audit evidence is preserved in source and location contracts",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-main-claim",
+          "loc-longform-boundary"
+        ]
+      },
+      {
+        "id": "first_hand_body_not_replaced",
+        "name": "first-hand body remains visible instead of being replaced by AI summary",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-main-claim"
+        ]
+      },
+      {
+        "id": "ai_reduces_understanding_cost",
+        "name": "AI note clarifies reading boundary without replacing the source",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-boundary"
+        ]
+      },
+      {
+        "id": "high_value_details_preserved",
+        "name": "requirement owner, deletion, optimization, scripting, and automation order are preserved",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-main-claim"
+        ]
+      },
+      {
+        "id": "source_refs_specific",
+        "name": "claims point to concrete location refs",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-main-claim",
+          "loc-longform-boundary"
+        ]
+      },
+      {
+        "id": "technical_insights_non_generic",
+        "name": "not applicable to non-technical longform sample; marked as not_required",
+        "status": "not_required",
+        "evidence_refs": [
+          "loc-longform-boundary"
+        ]
+      },
+      {
+        "id": "overpromoted_claims_downgraded",
+        "name": "partial coverage does not produce grounded global map",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-main-claim"
+        ]
+      },
+      {
+        "id": "machine_not_human",
+        "name": "machine validation is not human acceptance",
+        "status": "needs_human_review",
+        "evidence_refs": [
+          "loc-longform-boundary"
+        ]
+      }
+    ]
+  },
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/contracts/output-eval.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

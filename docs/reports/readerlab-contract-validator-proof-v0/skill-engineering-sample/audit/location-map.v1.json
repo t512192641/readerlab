@@ -1,0 +1,43 @@
+{
+  "schema": "readerlab.location-map.v1",
+  "material": {
+    "id": "proof-skill-engineering",
+    "title": "Skill engineering module proof",
+    "type": "skill_engineering_sample"
+  },
+  "locations": [
+    {
+      "location_id": "loc-router-contract",
+      "source_id": "src-router",
+      "path": "audit/source-excerpts/module-router.md",
+      "range": "paragraph 1",
+      "role": "trigger_and_output_contract",
+      "summary": "Router chooses bounded capability and does not perform downstream task."
+    },
+    {
+      "location_id": "loc-evidence-boundary",
+      "source_id": "src-evidence",
+      "path": "audit/source-excerpts/module-evidence.md",
+      "range": "paragraph 1",
+      "role": "coverage_boundary",
+      "summary": "Partial coverage supports local map but not grounded global map."
+    },
+    {
+      "location_id": "loc-output-eval-status",
+      "source_id": "src-output-eval",
+      "path": "audit/source-excerpts/module-eval.md",
+      "range": "paragraph 1",
+      "role": "eval_and_status_boundary",
+      "summary": "Output eval separates reader/audit and machine/human status."
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/location-map.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

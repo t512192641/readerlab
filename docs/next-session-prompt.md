@@ -1,84 +1,76 @@
 # ReaderLab Next Session Prompt
 
 ```text
-/goal 继续 ReaderLab。当前目标不是继续扩写样张，也不是把仿型 Skill 拼在一起，而是按“短板驱动能力学习”补 ReaderLab 的第一短板：结构化提炼。
+/goal 继续 ReaderLab：基于已确认的正文优先输出契约，重做 AI 高阶讲解口径和小样章；不要继续返工旧《埃隆之书》reader 页，也不要开发完整生成器。
 
 启动：
 从 `/Users/tianqiang/Documents/读书伴侣` 开始。先读最小真相层：
 1. `AGENTS.md`
-2. `docs/current-task.md`
-3. `docs/dev-state.md`
-4. `docs/progress.md`
-5. 需要决策背景时读 `docs/decisions.md`，重点 D-034 到 D-037
-6. 需要运行历史时读 `docs/agent-run-ledger.md` 顶部最新记录
+2. `README.md`
+3. `docs/product-spec.md`
+4. `docs/readerlab-package-spec.md`
+5. `docs/ai-reading-method.md`
+6. `docs/technical-cofounder-method.md`
+7. `docs/eval-gates.md`
+8. `docs/current-task.md`
+9. `docs/dev-state.md`
+10. `docs/progress.md`
+11. 需要决策背景时读 `docs/decisions.md`，重点 D-040 到 D-048
+12. 需要运行历史时读 `docs/agent-run-ledger.md` 顶部最新记录
 
-调度方式：
-- 主 Agent 负责主持工作、拆分任务、调度子 Agent、回收结果、审查证据、更新进度板和最终交付给用户。
-- 具体研究、诊断、样张产出、对比评估和对抗审查都由子 Agent 执行。
-- 子 Agent 的产物必须先交给主 Agent；主 Agent 对照目标、边界、文件和验证结果审查后，才能交给用户。
-- 子 Agent PASS 不等于任务完成；主 Agent 必须给出最终判断。
+当前事实：
+- ReaderLab 是复杂材料吸收系统，不是摘要器、翻译器或完整图书生成器。
+- 当前产品形态是正文优先陪读包：一手正文轨 + AI 高阶讲解轨 + 技术负责人/设计资产提炼轨 + audit 事实层。
+- 输出契约已确认并落地到活跃规格。
+- 书籍/长文默认原样保留正文和章节顺序；除非用户明确要求整理原文，否则只允许做空格、空行、断行等轻量排版清理。
+- Skill/工程材料默认生成净化正文：剥离安装命令、重复模板、执行外壳和机器噪音，但保留用途、触发条件、用户意图、流程、约束、失败条件、输出要求和设计亮点。
+- 高阶讲解应先讲清重点和要点，再像一个读过完整材料、见识足够丰富、能站在更大世界图景里思考的人在陪读：可以旁征博引，引入跨学科思维模型、历史观、产品 / 组织 / 工程经验和用户既往经历中的同构问题，帮助读者重新看待材料。上述例子不是封闭清单；如果有更完善的知识结构，应优先服务“讲清材料 + 建立更大价值观和体系”。它不能停在普通总结，也不能脱离正文堆模型。
+- 技术负责人层面向产品负责人，不是工程术语解释；必须识别隐藏工程设计，并沉淀成可复用设计资产卡。
+- 《埃隆之书》第二部分 source alignment 可以保留为审计证据，但 reader experience 判定 FAIL，因为缺少真正一手正文轨。
+- 旧 Combo-B / 结构化提炼任务只是局部能力证据，不是产品主线；但其 source-grounded 前置、仓颉筛选、李继刚式受控表达的经验说明，高阶讲解必须同时有来源边界、候选升降级和高维表达，不能只保留字段。
+- real-source demo v1 降低了“AI 替代正文”的风险，但用户判定《埃隆之书》讲解不够通透，仍像普通书籍总结；不能标为 ReaderLab 体验通过。
 
-当前判断：
-- ReaderLab 的根目标仍是复杂材料陪读阅读包。
-- v0/v1/fullbook/fragment/dbs 都只是 repo 内或 LifeAtlas 试产样张，不是 product ready，不是生成器能力证明。
-- 旧路线“参考项目真实吸收 -> 样张反测”容易让人误以为列了仿型、写了 matrix、产了样张就算进步。这个口径已收窄。
-- 新路线是：先找 ReaderLab 短板，再找该能力环节最强的仿型，学习解题逻辑，小范围重考，验证后再进入生产链。
-- 当前第一短板是结构化提炼：全书地图、章节地图、重点/亮点提炼背后是同一套能力。
+本轮目标：
+先选择一个足够小、能验证高阶讲解口径的样本，重做 AI 陪读层。正文主体保持不动或只做轻量清理；本轮重点是证明 ReaderLab 讲解能比普通总结更有认知增量。样张只证明读者体验和契约适配，不证明完整生成器能力。
 
-本轮唯一目标：
-完成“结构化提炼最小闭环”的可执行样张和评估，不做全产品重写。
-
-必须做：
-1. 诊断旧输出：
-   - `docs/reports/readerlab-fullbook-demo-v0`
-   - `docs/reports/readerlab-elon-full-product-v1`
-   - `docs/reports/readerlab-elon-fragment-capability-eval-v0`
-   对照全书地图、章节/部件地图、亮点提炼三个粒度，找出共同失败原因。
-2. 建立结构化提炼仿型能力矩阵：
-   - 列：定性、筛选、排序、组织、边界、表达。
-   - 行：仓颉、李继刚式深读、source-grounded / NotebookLM 类、ReaderLab 现有能力；乔木和 book-to-skill 只在确实相关时作为补充，不默认拼入。
-   - 每格标明：立即学习、替代方案、未来储备、不吸收。
-3. 引入 Meta Skill 做横向评估裁判：
-   - 至少派一个 Meta Skill 评估 worker，读取并应用：
-     - `/Users/tianqiang/技能项目/skills-canonical/packages/yao-meta-skill/references/skill-engineering-method.md`
-     - `/Users/tianqiang/技能项目/skills-canonical/packages/yao-meta-skill/references/output-eval-method.md`
-     - 必要时读取 `skill-ir-method.md`
-   - 它的任务不是生成阅读内容，而是评估 ReaderLab 与各仿型在结构化提炼环节的能力差异。
-   - 报告必须覆盖：能力边界、参考扫描是否过宽、是否只奖励字段存在、output risk、应采用的 gate、下一步最高价值改进。
-   - Meta Skill 评估报告只是一个裁判视角；主 Agent 仍要结合 ReaderLab 自己的产品目标和用户判断做最终取舍。
-4. 抽出一条结构化提炼生产链：
-   - 输入：材料范围和来源。
-   - 过程：材料定性 -> 主问题 -> 候选池 -> 通过/降级/拒绝 -> 机制传导 -> 结构表达 -> 来源/边界。
-   - 输出：同一套逻辑生成全书主线、一个章节/部件地图、3-5 个亮点提炼。
-5. 用《埃隆之书》做小范围重考：
-   - 不写 LifeAtlas 正式区。
-   - 不声称全书产品完成。
-   - 必须能说明为什么这些亮点被选中，为什么其他内容降级或拒绝。
-6. 对比旧输出：
-   - 是否减少目录复述。
-   - 是否更清楚地说明书补了什么缺口。
-   - 是否能解释结构如何传导。
-   - 是否能说明选点理由和不升格理由。
-   - 是否保留来源范围和人工待复核边界。
-7. 更新 `docs/progress.md`：
-   - 本轮新增多少点。
-   - 是否有旧判断被扣分。
-   - 哪些模块 close / working / blocked。
+样张必须覆盖：
+1. 一手正文主体：
+   - 如果选择书籍/长文，必须保留原样正文和章节顺序。
+   - 如果选择 Skill/工程材料，必须提供净化正文。
+2. AI 高阶讲解：
+   - 放在正文之后或旁边。
+   - 用一段或几段完整讲解服务材料理解。
+   - 不把内容切成导读/旁批/误读提醒等固定栏目墙。
+   - 必须提供非摘要型认知增量：更大的问题结构、跨学科同构关系、历史 / 商业 / 组织 / 工程视角、可迁移能力和不可迁移边界。
+   - 旁征博引必须反向照亮正文；只堆名人、模型、历史例子或漂亮类比，判 FAIL。
+   - 必须区分原文依据、AI 解释性重组、外部类比和待验证判断。
+3. 技术负责人 / 设计资产提炼：
+   - 若样本是 Skill/工程材料，必须输出设计资产卡。
+   - 设计资产卡至少包含适用场景、解决问题、原材料依据、可复用做法、使用前提、失败风险、什么时候不要用。
+4. audit 分离：
+   - source refs、location map、claim trace、machine/human 状态、降级/拒绝记录进入 audit。
+   - reader-facing 页不把内部审计结构当主内容。
+5. 验收 gate：
+   - 书籍/长文没有原样正文：FAIL。
+   - 书籍/长文正文被 AI 压缩、改写或导读替代，且用户没有明确要求：FAIL。
+   - Skill/工程材料没有净化正文：FAIL。
+   - 技术负责人层只有摘要或术语解释，没有设计资产提炼：FAIL。
+   - reader 页暴露 source refs、claim trace、machine status 作为主内容：FAIL。
+   - 高阶讲解只总结章节重点，没有高维视角、跨学科连接或认知增量：FAIL。
+   - 高阶讲解脱离正文堆模型、堆名人、堆历史例子：FAIL。
 
 明确不做：
-- 不把所有仿型的所有加分项拼进页面。
-- 不继续扩写《埃隆之书》总纲。
-- 不把片段卡、v1 主稿、DBS capability v1 说成生成器能力。
-- 不新增依赖。
-- 不整体重构 `scripts/readerlab.py`。
-- 不写 LifeAtlas `300/600/800`。
+- 不继续扩写《埃隆之书》到新章节。
+- 不把当前《埃隆之书》样张说成 product ready。
+- 不开发完整自动图书生成器。
+- 不自建 UI、数据库、知识图谱或批注系统。
+- 不自动写入 LifeAtlas `300/600/800`。
 - 不安装或启用新 Skill。
+- 不新增依赖，除非用户明确批准。
 
-验收标准：
-- 能回答 ReaderLab 当前哪门课弱，以及为什么先补结构化提炼。
-- 能指出每个被学习仿型在结构化提炼中到底强在哪里。
-- 能产出一条可复用生产链，而不是字段拼装。
-- 有 Meta Skill 横向评估报告，并明确哪些建议采用、哪些只做储备、哪些不吸收。
-- 小范围重考比旧输出更能说明主问题、机制传导、选点和边界。
-- `docs/progress.md` 已更新，且没有把样张 PASS 当产品 ready。
+验证：
+- 样张完成后运行 `rg` 检查 reader-facing 输出是否残留内部来源字段、claim 追踪字段、机器状态、人类状态或旧人工待审状态词作为主内容。
+- 运行 `python3 tests/test_readerlab.py`。
+- 运行 `git diff --check`。
+- 汇报验证结果和未验证风险。
 ```

@@ -1,0 +1,35 @@
+{
+  "schema": "readerlab.source-registry.v1",
+  "material": {
+    "id": "proof-longform-fragment",
+    "title": "Longform local fragment proof",
+    "type": "longform_fragment"
+  },
+  "sources": [
+    {
+      "source_id": "src-longform-fragment",
+      "source_path": "audit/source-excerpts/longform-fragment.md",
+      "source_type": "markdown_excerpt",
+      "source_role": "primary_text",
+      "coverage_role": "local fragment only",
+      "extraction_status": "repo_local_excerpt"
+    }
+  ],
+  "source_scope": {
+    "coverage_status": "partial",
+    "coverage_note": "Only one local longform fragment is covered. This sample must not produce a grounded global map."
+  },
+  "location_refs": [
+    "loc-longform-main-claim",
+    "loc-longform-boundary"
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/source-registry.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

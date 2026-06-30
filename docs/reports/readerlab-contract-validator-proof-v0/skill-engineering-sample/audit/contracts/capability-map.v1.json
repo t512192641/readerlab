@@ -1,0 +1,205 @@
+{
+  "schema": "readerlab.capability-map.v1",
+  "material": {
+    "id": "proof-skill-engineering",
+    "title": "Skill engineering module proof",
+    "type": "skill_engineering_sample"
+  },
+  "source_scope": {
+    "coverage_status": "sample",
+    "coverage_note": "Three module excerpts are covered for capability-map proof only."
+  },
+  "capability_domains": [
+    {
+      "domain_id": "route-before-work",
+      "name": "入口路由",
+      "owned_job": "把模糊请求分到有边界的下游能力。",
+      "trigger_signals": [
+        "用户只描述目标，没有指定阅读或评估能力",
+        "用户要求下一步但缺少材料类型判断"
+      ],
+      "near_neighbor_exclusions": [
+        "不直接写深读结论",
+        "不替代 evidence 阶段"
+      ],
+      "method_atoms": [
+        "识别触发信号",
+        "给出候选下游能力",
+        "解释选择理由"
+      ],
+      "required_inputs": [
+        "用户原始请求",
+        "材料类型或当前未知状态"
+      ],
+      "output_contract": [
+        "一个推荐能力或 2-3 个候选能力",
+        "每个候选必须有选择理由和不适用边界"
+      ],
+      "verification": [
+        "输出没有执行下游任务",
+        "推荐理由引用触发信号"
+      ],
+      "source_refs": [
+        "loc-router-contract"
+      ],
+      "route_decisions": [
+        {
+          "when_to_use": [
+            "请求模糊但需要进入某个 ReaderLab 能力"
+          ],
+          "when_not_to_use": [
+            "用户已经明确要求校验某个 contract 文件"
+          ],
+          "handoff_to": [
+            "evidence",
+            "local-deepread",
+            "output-eval"
+          ],
+          "decision_evidence_refs": [
+            "loc-router-contract"
+          ]
+        }
+      ],
+      "confidence": "medium",
+      "human_status": "pending"
+    },
+    {
+      "domain_id": "evidence-before-map",
+      "name": "证据边界",
+      "owned_job": "在生成地图或深读前记录来源、覆盖和位置。",
+      "trigger_signals": [
+        "材料覆盖范围不清",
+        "准备生成全局或局部地图"
+      ],
+      "near_neighbor_exclusions": [
+        "不在 coverage 不足时生成 grounded global map",
+        "不把 source refs 当装饰"
+      ],
+      "method_atoms": [
+        "登记 source-registry",
+        "登记 location-map",
+        "声明 coverage status"
+      ],
+      "required_inputs": [
+        "来源文件",
+        "已覆盖范围",
+        "可引用位置"
+      ],
+      "output_contract": [
+        "source-registry",
+        "location-map",
+        "coverage status"
+      ],
+      "verification": [
+        "每个高层判断可回链",
+        "coverage 不足时只能给局部地图"
+      ],
+      "source_refs": [
+        "loc-evidence-boundary"
+      ],
+      "route_decisions": [
+        {
+          "when_to_use": [
+            "任何 AI 陪读输出之前"
+          ],
+          "when_not_to_use": [
+            "没有来源可读时，应先阻塞而不是虚构"
+          ],
+          "handoff_to": [
+            "catalog-map",
+            "local-deepread"
+          ],
+          "decision_evidence_refs": [
+            "loc-evidence-boundary"
+          ]
+        }
+      ],
+      "confidence": "medium",
+      "human_status": "pending"
+    },
+    {
+      "domain_id": "output-eval-gate",
+      "name": "输出评估",
+      "owned_job": "检查读者页、审计证据、来源引用、技术洞察和机器/人工状态边界。",
+      "trigger_signals": [
+        "样本已经形成 reader-facing markdown 和 audit contracts",
+        "需要判断是否存在摘要替代正文、审计噪音混入读者页或机器状态冒充人工状态"
+      ],
+      "near_neighbor_exclusions": [
+        "不替代人工阅读验收",
+        "不根据字段齐全直接宣布 product ready"
+      ],
+      "method_atoms": [
+        "检查 reader-facing 与 audit 是否分离",
+        "检查一手正文是否被摘要替代",
+        "检查 high-level claims 是否有具体 refs",
+        "检查技术洞察是否包含代价和边界",
+        "检查过度升格是否被降级",
+        "检查 machine_status 和 human_status 是否分开"
+      ],
+      "required_inputs": [
+        "reader-facing markdown",
+        "source-registry",
+        "location-map",
+        "capability-map 或 local-deepread",
+        "rejected/downgraded 清单"
+      ],
+      "output_contract": [
+        "output-eval.v1",
+        "每个必检项包含 id/name、status 和 evidence_refs",
+        "人工未验收时必须保留 human_status=pending"
+      ],
+      "verification": [
+        "9 个最小 eval gate 均被覆盖",
+        "needs_human_review 不被改写成 pass",
+        "eval 结论有 evidence_refs"
+      ],
+      "source_refs": [
+        "loc-output-eval-status"
+      ],
+      "route_decisions": [
+        {
+          "when_to_use": [
+            "样本准备交付前",
+            "对抗审查指出 false pass 风险时"
+          ],
+          "when_not_to_use": [
+            "还没有 reader-facing markdown 或 audit contracts 时"
+          ],
+          "handoff_to": [
+            "human-review",
+            "contract-tightening"
+          ],
+          "decision_evidence_refs": [
+            "loc-output-eval-status"
+          ]
+        }
+      ],
+      "confidence": "medium",
+      "human_status": "pending"
+    }
+  ],
+  "claims": [
+    {
+      "claim": "The sample should be read by capability domain instead of directory order.",
+      "source_refs": [
+        "loc-router-contract",
+        "loc-evidence-boundary",
+        "loc-output-eval-status"
+      ],
+      "confidence": "medium"
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [
+      "reader/01_工程材料阅读页.md",
+      "reader/02_技术合伙人旁批.md"
+    ],
+    "internal_audit": [
+      "audit/contracts/capability-map.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

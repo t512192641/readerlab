@@ -1,0 +1,35 @@
+{
+  "schema": "readerlab.location-map.v1",
+  "material": {
+    "id": "proof-longform-fragment",
+    "title": "Longform local fragment proof",
+    "type": "longform_fragment"
+  },
+  "locations": [
+    {
+      "location_id": "loc-longform-main-claim",
+      "source_id": "src-longform-fragment",
+      "path": "audit/source-excerpts/longform-fragment.md",
+      "range": "paragraph 1",
+      "role": "primary_claim_support",
+      "summary": "Question the requirement before optimizing or automating."
+    },
+    {
+      "location_id": "loc-longform-boundary",
+      "source_id": "src-longform-fragment",
+      "path": "audit/source-excerpts/longform-fragment.md",
+      "range": "paragraph 1",
+      "role": "boundary_support",
+      "summary": "Automation can amplify a wrong process."
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/location-map.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

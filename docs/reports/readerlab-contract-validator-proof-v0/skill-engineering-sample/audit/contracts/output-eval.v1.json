@@ -1,0 +1,100 @@
+{
+  "schema": "readerlab.output-eval.v1",
+  "material": {
+    "id": "proof-skill-engineering",
+    "title": "Skill engineering module proof",
+    "type": "skill_engineering_sample"
+  },
+  "output_eval": {
+    "checks": [
+      {
+        "id": "reader_audit_separation",
+        "name": "reader-facing pages stay separate from audit contracts",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-output-eval-status"
+        ]
+      },
+      {
+        "id": "audit_evidence_preserved",
+        "name": "source-registry and location-map preserve evidence for all three modules",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-router-contract",
+          "loc-evidence-boundary",
+          "loc-output-eval-status"
+        ]
+      },
+      {
+        "id": "first_hand_body_not_replaced",
+        "name": "module body remains visible in reader-facing markdown",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-router-contract",
+          "loc-evidence-boundary",
+          "loc-output-eval-status"
+        ]
+      },
+      {
+        "id": "ai_reduces_understanding_cost",
+        "name": "AI notes organize modules by trigger, input, output, and verification",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-router-contract"
+        ]
+      },
+      {
+        "id": "high_value_details_preserved",
+        "name": "router boundary, coverage boundary, and status boundary are preserved",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-router-contract",
+          "loc-evidence-boundary",
+          "loc-output-eval-status"
+        ]
+      },
+      {
+        "id": "source_refs_specific",
+        "name": "capability and eval claims point to concrete location refs",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-router-contract"
+        ]
+      },
+      {
+        "id": "technical_insights_non_generic",
+        "name": "technical notes include behavior constraints, cost, and non-use boundary",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-evidence-boundary"
+        ]
+      },
+      {
+        "id": "overpromoted_claims_downgraded",
+        "name": "sample coverage is not promoted to full package capability",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-evidence-boundary",
+          "loc-output-eval-status"
+        ]
+      },
+      {
+        "id": "machine_not_human",
+        "name": "machine validation remains separate from human acceptance",
+        "status": "needs_human_review",
+        "evidence_refs": [
+          "loc-output-eval-status"
+        ]
+      }
+    ]
+  },
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/contracts/output-eval.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

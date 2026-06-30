@@ -1,3 +1,448 @@
+# 2026-06-30 ReaderLab 高阶讲解口径校准
+
+## 摘要
+
+- 用户明确：当前 real-source demo v1 的《埃隆之书》讲解不够通透，仍像普通书籍总结，不能体现 ReaderLab 的高阶陪读价值。
+- 用户补充产品要求：AI 高阶讲解应高屋建瓴、有全局视角、能旁征博引，引入跨学科思维模型、历史观、产品/组织/工程经验和既往经历中的相似结构，把看似不同领域的底层逻辑串起来。
+- 本轮结论：正文优先契约方向基本成立，但 AI 高阶讲解体验未通过；下一步先重做讲解口径和小样章，不继续加样本或开发生成器。
+
+## 文档改动
+
+- `docs/product-spec.md`
+  - 将高阶讲解从“讲清楚材料”升级为“提供非摘要型认知增量”。
+  - 增加跨学科模型、历史观、旁征博引、同构逻辑和来源边界要求。
+- `docs/readerlab-package-spec.md`
+  - 同步高阶讲解的 reader-facing 输出契约。
+- `docs/ai-reading-method.md`
+  - 在 Deepen / Reader Gain Gate 中加入 `cross_domain_lens`、`historical_pattern`、`reader_prior_connection` 等候选类型和判定要求。
+- `docs/eval-gates.md`
+  - 增加高阶讲解验收：必须有非摘要型认知增量，不能堆模型/堆名人/堆历史例子。
+- `docs/current-task.md`、`docs/dev-state.md`、`docs/progress.md`
+  - 同步当前事实：real-source demo v1 不能标为 ReaderLab 体验通过，高阶讲解需要重做。
+- `docs/decisions.md`
+  - 新增 D-048：高阶讲解必须提供非摘要型认知增量。
+- `docs/next-session-prompt.md`
+  - 更新下一会话目标为重做 AI 高阶讲解口径和小样章。
+- `README.md`
+  - 在产品形态说明中加入高阶讲解的跨学科 / 全局视角要求。
+
+## 当前结论
+
+- 产品口径：UPDATED。
+- 输出契约：仍成立，但只解决正文硬边界。
+- 高阶讲解体验：当前 demo FAIL，不能视为 ReaderLab 体验通过。
+- 下一步：在保留正文主体的前提下，重做小样章 AI 陪读层，验证它是否明显优于普通总结。
+
+## 追加校准
+
+- 用户补充：前述“查理芒格式跨学科模型、历史观、旁征博引、既往经历连接”等只是其当下能表达出的需求和意向，不是全部要求。
+- 已同步到 `docs/product-spec.md`、`docs/decisions.md`、`docs/dev-state.md`、`docs/next-session-prompt.md`：高阶讲解仍必须讲清重点和要点，同时提供更大价值观和体系；具体知识结构不应被上述例子限制。
+
+# 2026-06-30 ReaderLab 输出契约确认与落地
+
+## 摘要
+
+- 用户确认正文优先陪读包输出契约方向。
+- 本轮不继续返工旧《埃隆之书》reader 页，不开发完整生成器，不写 LifeAtlas，不新增依赖。
+- 输出契约落地范围：书籍/长文原样正文、Skill/工程净化正文、高阶讲解成段服务正文、技术负责人层输出设计资产卡、audit 与 reader-facing 分离。
+
+## 文档改动
+
+- `README.md`
+  - 清理“下一轮返工《埃隆之书》第二部分读者页”的旧方向，改为先按输出契约选择小样本重做。
+- `docs/product-spec.md`
+  - 新增输出契约，覆盖书籍/长文、Skill/工程材料、高阶讲解、设计资产提炼和 audit 分离。
+- `docs/readerlab-package-spec.md`
+  - 新增包级输出契约，明确 `10_一手正文/`、`20_AI陪读/` 和 `audit/` 的分工。
+- `docs/technical-cofounder-method.md`
+  - 增加设计资产卡输出契约，强调面向产品负责人而非术语解释。
+- `docs/eval-gates.md`
+  - 增加输出契约验收，重命名旧技术合伙人口径为技术负责人 / 设计资产验收。
+- `docs/current-task.md`、`docs/dev-state.md`、`docs/progress.md`
+  - 同步当前事实：输出契约已确认，下一步按契约选择小样本重做 reader-facing 样张。
+- `docs/decisions.md`
+  - 新增 D-047：正文优先陪读包采用输出契约作为样张前置门。
+- `docs/next-session-prompt.md`
+  - 更新下一会话目标为按已确认输出契约做最小样张。
+
+## 当前结论
+
+- 产品口径：CONFIRMED。
+- 输出契约：DOCUMENTED。
+- 旧《埃隆之书》reader experience：FAIL，仍不作为 product ready。
+- 下一步：按输出契约选择一个小样本重做 reader-facing 样张，并通过人工 reader experience 审查。
+
+# 2026-06-30 ReaderLab 产品规格收口：正文硬边界与设计资产提炼
+
+## 摘要
+
+- 用户明确：书籍/长文默认原样保留正文，不压缩、不改写、不用导读替代正文；除非明确要求整理原文，只做空格、空行、断行等轻量清理。
+- 用户明确：Skill/工程材料需要净化正文，剥离安装命令、重复模板、执行外壳和机器噪音，但保留用途、触发条件、用户意图、流程、约束、失败条件、输出要求和设计亮点。
+- 用户明确：技术负责人层应面向产品负责人，替用户识别其不容易感知的工程和系统设计，并沉淀成可复用设计资产卡。
+- 《埃隆之书》第二部分样张的 reader experience 撤回为 FAIL；source alignment 仍可作为 audit 证据。
+
+## 文档改动
+
+- `AGENTS.md`
+  - 更新项目目的和边界：正文优先、书籍/长文原样正文、Skill/工程净化正文、设计资产提炼。
+- `README.md`
+  - 将产品形态从双轨陪读包细化为正文优先陪读包：一手正文轨、AI 陪读轨、设计资产轨。
+  - 将 `technical-cofounder-notes.md` 口径改为 `design-asset-notes.md`。
+- `docs/product-spec.md`
+  - 写入书籍/长文默认原样保留正文的硬规则。
+  - 写入 Skill/工程材料净化正文规则。
+  - 将技术合伙人层重定义为技术负责人 / 设计资产提炼层。
+- `docs/readerlab-package-spec.md`
+  - 将 `01_材料方位图.md` 改为 `01_全局讲解.md`。
+  - 将正文页主体改成 `正文 / 净化正文`，并明确 AI 讲解不能替代正文。
+  - 将 `technical-cofounder-notes.md` 改为 `design-asset-notes.md`。
+- `docs/technical-cofounder-method.md`
+  - 重写为面向产品负责人的技术负责人 / 设计资产提炼方法。
+- `docs/eval-gates.md`
+  - 增加失败条件：书籍/长文正文被 AI 压缩、改写或导读替代；Skill/工程材料没有净化正文；技术负责人层没有设计资产提炼。
+- `docs/decisions.md`
+  - 新增 D-046：书籍正文原样保留，Skill 正文净化，技术负责人层沉淀设计资产。
+- `docs/current-task.md`、`docs/dev-state.md`、`docs/progress.md`、`docs/next-session-prompt.md`
+  - 同步当前唯一切片：输出契约收口，而不是继续返工旧《埃隆之书》reader 页。
+- `docs/reports/readerlab-elon-source-aligned-demo-v0/README.md`
+- `docs/reports/readerlab-elon-source-aligned-demo-v0/audit/eval.md`
+  - 将 reader experience 状态改为 FAIL；保留 source alignment PASS。
+
+## 当前结论
+
+- source alignment：PASS，只说明 audit 层可追溯。
+- reader experience：FAIL，旧样张没有原样正文的一手轨。
+- product capability：NOT ESTABLISHED。
+- 下一步：设计新输出契约，再基于契约重做最小样张。
+
+# 2026-06-30 ReaderLab reader-facing 原型返工：埃隆之书第二部分
+
+## 摘要
+
+- 本轮按用户 `/goal` 只返工《埃隆之书》第二部分 reader-facing 原型样张。
+- 未进入第二类真实材料迁移测试，未开发完整生成器，未写 LifeAtlas，未新增依赖，未安装或启用新 Skill。
+- source alignment 仍保留在 `audit/source-alignment.md`；reader 页已从审计报告式页面改成材料方位图和章节/单元陪读。
+
+## 改动
+
+- `docs/reports/readerlab-elon-source-aligned-demo-v0/reader/00_全书地图.md`
+  - 改成自然读者语言的材料方位图。
+  - 回答这本书讲什么、全书怎样组织、第二部分在全书中的位置和当前样张覆盖边界。
+  - 移除主阅读页里的内部 source refs、状态字段和审计表达。
+- `docs/reports/readerlab-elon-source-aligned-demo-v0/reader/01_大单元深读.md`
+  - 改成第二部分章节/单元陪读页。
+  - 每节使用“正文选读导读 / AI 旁批 / 误读提醒”，并明确导读不替代原书原文。
+  - 移除“原文对应 / 降级拒绝理由”作为主内容的审计式结构。
+- `docs/reports/readerlab-elon-source-aligned-demo-v0/audit/eval.md`
+  - 改成三层评估：source alignment PASS，reader experience READY FOR HUMAN REVIEW，product capability NOT ESTABLISHED。
+- `docs/reports/readerlab-elon-source-aligned-demo-v0/README.md`
+  - 同步目录口径，说明当前是 reader-facing 原型样张，不是 product ready。
+- `docs/current-task.md`、`docs/dev-state.md`、`docs/progress.md`
+  - 同步当前状态和下一步：先做人工读者体验复核，再决定是否进入第二类真实材料迁移测试。
+
+## 验证
+
+- `rg -n "source ref|source refs|claim trace|machine_status|human_status|heading path|降级|拒绝|Route|阅读路线|主题线索|处理过的一手正文" docs/reports/readerlab-elon-source-aligned-demo-v0/reader`：PASS，无命中。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS，无输出。
+
+## 当前结论
+
+- source alignment：PASS，审计层可追溯。
+- reader experience：READY FOR HUMAN REVIEW，已完成第一轮返工，但仍需用户人工判断。
+- product capability：NOT ESTABLISHED，本轮只证明手工 reader-facing 原型方向，不证明生成器能力。
+
+## 下一步
+
+- 用户人工审查返工后的 reader 页，重点判断 3 分钟方位感、正文/旁批边界、误读提醒是否自然，以及页面是否像正常 ReaderLab 输出。
+- 人工审查通过后，再进入第二类真实材料迁移测试；不直接进入完整生成器或 LifeAtlas 正式沉淀。
+
+# 2026-06-30 ReaderLab 读者原型校准：source alignment 通过但 reader experience 未通过
+
+## 摘要
+
+- 用户人工反馈指出：当前《埃隆之书》source-aligned 长样张虽然通过来源追溯对抗审查，但读者页不像未来正常使用 ReaderLab Skill 时会看到的东西。
+- 主要偏差：读者页暴露 `source refs`、机器状态、审计字段和降级/拒绝理由；“阅读路线 / 主题线索 / 处理过的一手正文”等概念既不像给机器看的 contract，也不像给人看的读书介绍。
+- 校准结论：`Route` / 阅读路由保留为内部结构定位方法；reader-facing 页面改用“材料方位图 / 章节位置说明 / 正文选读 / AI 旁批 / 误读提醒”的自然读者语言。
+- 进度已从 68/100 下调到 64/100；产品形态与方向治理从 close 退回 working。
+
+## 文档改动
+
+- `docs/decisions.md`：新增 D-045，明确读者页必须提供方位感，不暴露内部路线和审计结构。
+- `docs/product-spec.md`、`docs/readerlab-package-spec.md`、`docs/ai-reading-method.md`、`docs/eval-gates.md`、`README.md`：把产品原型口径从“阅读路线/主题线索”校准为材料方位图、章节位置说明和审计后置。
+- `docs/current-task.md`、`docs/dev-state.md`、`docs/progress.md`、`docs/next-session-prompt.md`：下一阶段任务改为返工《埃隆之书》第二部分 reader-facing 原型样张；暂不进入第二类材料迁移测试或完整生成器。
+
+## 当前结论
+
+- source alignment：PASS。
+- reader experience：FAIL / needs_redesign。
+- product ready：NO。
+- 生成器能力：NO。
+
+# 2026-06-30 ReaderLab 样本质量闭环：埃隆之书 source-aligned 长样张 v0
+
+## 对抗审查修复
+
+- 修正 `readerlab-elon-source-aligned-demo-v0` 的 source alignment：组织壁垒、短路径沟通、速度/紧迫性、并行推进和制造 heading path 按旧 `location-map.v1.json` 拆回对应 refs。
+- 样张仍保持 repo 内、第 2 闭环、`human_status=pending`；未写 LifeAtlas，未声称 product ready。
+- 对抗审查复审：PASS；剩余风险是旧 `location-map.v1.json` 质量、短摘录不能替代人工读 EPUB、读者收益仍需用户判断。
+
+## 摘要
+
+- 本轮按固定 7 个闭环推进 `2. 样本质量闭环：书籍局部样本 + Skill/工程局部样本`。
+- 用户指出上一轮 toy sample 信息量不足、原文对应弱，不能展示 ReaderLab 水平。
+- 本轮交付 repo 内《埃隆之书》source-aligned 长样张 v0；已通过对抗审查复审。后续人工反馈判定 reader experience 未通过，见本文件顶部最新记录。
+- 未写 LifeAtlas，未新增依赖，未声称 product ready，未声称半自动生成器能力。
+
+## 产物
+
+- `docs/reports/readerlab-elon-source-aligned-demo-v0/README.md`
+- `docs/reports/readerlab-elon-source-aligned-demo-v0/reader/00_全书地图.md`
+- `docs/reports/readerlab-elon-source-aligned-demo-v0/reader/01_大单元深读.md`
+- `docs/reports/readerlab-elon-source-aligned-demo-v0/audit/source-alignment.md`
+- `docs/reports/readerlab-elon-source-aligned-demo-v0/audit/eval.md`
+
+## 来源边界
+
+- 原 EPUB：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub`
+- 复用位置索引：`docs/reports/readerlab-elon-full-product-v0/contracts/location-map.v1.json`
+- 复用全书/局部 contract 候选作为 refs 背景；本轮新产物是 reader-facing 长样张，不把旧样张说成合格产品。
+
+## 内容范围
+
+- 全书地图：主问题、结构地图、主题线索、pending 结论。
+- 大单元深读：第二部分“极限硬核工作”，覆盖责任归属、深度理解、团队密度、短路径沟通、算法之道、速度与并行、制造系统。
+- 每个关键段落包含 source ref、EPUB spine、短摘录、处理后的一手正文、AI 深读、降级/拒绝理由。
+
+## 验证
+
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS，无输出。
+
+## 剩余风险
+
+- 尚未人工审查。
+- 只覆盖一个大单元，不是整本书最终产品包。
+- 本轮没有重新生成 JSON contract，只复用旧 location-map 和 EPUB 抽取边界。
+
+# 2026-06-30 ReaderLab Agent workflow / report-md 前置切片
+
+## 摘要
+
+- 本轮完成 Agent workflow / 半自动生成器前置切片的机器侧第一版。
+- 仍然不开发完整生成器，不写 LifeAtlas，不新增依赖，不证明人工阅读质量通过。
+- human gate 仍为 pending。
+
+## 文档改动
+
+- `docs/agent-workflow.md`
+  - 明确 script / Agent / human 三者边界。
+  - 定义输入准备、语义建模、确定性渲染、机器评估与报告、人工审查五阶段。
+  - 明确失败路径：缺来源、空来源、缺 refs、reader/audit 混淆、一手正文缺失、output-eval gate 缺失、机器冒充 accepted 等都不能继续。
+
+## 代码改动
+
+- `scripts/readerlab.py`
+  - `eval-rendered-package <path>` 新增 `--report-md <path>`。
+  - 成功和失败都可写 Markdown 报告。
+  - 报告包含 target、`validate_contract_passed`、contract count、schemas、5 个 runner gate、failures、machine / human 边界。
+  - 报告默认拒绝覆盖已有文件；只有显式 `--overwrite-report` 才替换。
+  - 报告拒绝写入 `/Users/tianqiang/LifeAtlas`。
+- `tests/test_readerlab.py`
+  - 增加成功报告测试：确认报告包含 5 个 runner gate 和 `human_status pending` 边界。
+  - 增加失败报告测试：确认非零退出时仍写报告，并包含失败 gate 和失败原因。
+  - 增加报告路径安全测试：已有报告默认不覆盖，`--overwrite-report` 才覆盖，LifeAtlas 路径拒写。
+
+## 验证
+
+- `python3 -m py_compile scripts/readerlab.py tests/test_readerlab.py`：PASS。
+- `python3 tests/test_readerlab.py`：30 tests OK。
+- `python3 scripts/readerlab.py render-contract-package docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample /private/tmp/readerlab-workflow-book-20260630-codex`：PASS，生成 1 个 reader 页。
+- `python3 scripts/readerlab.py render-contract-package docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample /private/tmp/readerlab-workflow-skill-20260630-codex`：PASS，生成 2 个 reader 页。
+- `python3 scripts/readerlab.py eval-rendered-package /private/tmp/readerlab-workflow-book-20260630-codex --report-md /private/tmp/readerlab-workflow-book-report-20260630-codex.md`：PASS，5 个 runner gate 全部通过。
+- `python3 scripts/readerlab.py eval-rendered-package /private/tmp/readerlab-workflow-skill-20260630-codex --report-md /private/tmp/readerlab-workflow-skill-report-20260630-codex.md`：PASS，5 个 runner gate 全部通过。
+- 已存在 report 路径退化测试：默认返回非零退出码，并保留原文件内容；显式 `--overwrite-report` 才覆盖。
+- LifeAtlas report 路径退化测试：返回非零退出码，并报告 `refusing to write eval report under LifeAtlas`。
+- 对抗子 Agent 复查过程：
+  - 首轮：NO PASS，指出 `--report-md` 默认覆盖已有文件且可误写 LifeAtlas。
+  - 二轮：PASS；确认默认不覆盖、`--overwrite-report` 才覆盖、LifeAtlas 路径拒写，且没有发现新的高优先级 false pass。
+
+## 剩余风险
+
+- `docs/agent-workflow.md` 是半自动生成器前置 workflow，不是完整生成器实现。
+- report-md 是机器评估报告，不是人工验收结论。
+- 当前两个报告证明 proof 样本链路可运行，不证明真实材料迁移稳定。
+- 人工读者收益、页面品味、字段负担和是否进入 LifeAtlas 正式沉淀仍需用户判断。
+
+## 下一步
+
+- 选项 A：用户先人工审查两个 `/private/tmp` renderer 输出和 Markdown eval 报告，判断读者收益与字段负担。
+- 选项 B：选择一个非 proof、非 gstack 的小型真实材料做第二类迁移测试，仍只写 `/private/tmp`，不写 LifeAtlas。
+
+# 2026-06-30 ReaderLab renderer / eval runner 最小工程闭环
+
+## 摘要
+
+- 本轮完成 Markdown renderer / output-eval runner 最小工程切片。
+- 仍然不开发完整生成器，不写 LifeAtlas，不新增依赖，不证明人工阅读质量通过。
+
+## 代码改动
+
+- `scripts/readerlab.py`
+  - 新增 `render-contract-package <sample_dir> <output_dir>`。
+  - renderer 从 proof 样本的 contract JSON 和 `audit/source-excerpts` 生成 reader-facing markdown，不复制既有 reader 页。
+  - renderer 对缺失或空的 source excerpt 硬失败，避免生成没有一手正文的空壳 reader 页。
+  - renderer 复制 audit 层到输出包，保留 source-registry、location-map、contracts、source-excerpts 和 rejected/downgraded。
+  - 长文样本生成 `reader/01_局部长文阅读页.md`。
+  - Skill/工程样本生成 `reader/01_工程材料阅读页.md` 和 `reader/02_技术合伙人旁批.md`。
+  - 新增 `eval-rendered-package <path>`，复用 `validate-contract`，并额外检查 reader markdown、reader/audit 分离、一手正文段回链 source excerpts、output-eval 9 gate 和 `human_status` 不冒充 accepted。
+- `tests/test_readerlab.py`
+  - 增加 renderer 两样本正向测试。
+  - 增加 renderer 输出通过 `validate-contract` 的回归测试。
+  - 增加 eval runner 两样本正向测试。
+  - 增加删除 source excerpt、删除 reader 页、删除一手正文段、删除 eval gate、把 `human_status` 改成 `accepted` 的失败测试。
+
+## 验证
+
+- `python3 -m py_compile scripts/readerlab.py tests/test_readerlab.py`：PASS。
+- `python3 tests/test_readerlab.py`：26 tests OK。
+- `python3 scripts/readerlab.py render-contract-package docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample /private/tmp/readerlab-render-book-20260630-codex`：PASS，生成 1 个 reader 页。
+- `python3 scripts/readerlab.py render-contract-package docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample /private/tmp/readerlab-render-skill-20260630-codex`：PASS，生成 2 个 reader 页。
+- `python3 scripts/readerlab.py validate-contract /private/tmp/readerlab-render-book-20260630-codex`：PASS，5 contracts。
+- `python3 scripts/readerlab.py validate-contract /private/tmp/readerlab-render-skill-20260630-codex`：PASS，4 contracts。
+- `python3 scripts/readerlab.py eval-rendered-package /private/tmp/readerlab-render-book-019f17fa-fix`：PASS，5 个 runner gate 全部通过。
+- `python3 scripts/readerlab.py eval-rendered-package /private/tmp/readerlab-render-skill-019f17fa-fix`：PASS，5 个 runner gate 全部通过。
+- 缺失 `audit/source-excerpts/longform-fragment.md` 的退化样本：`render-contract-package` 返回非零退出码，并报告 `source excerpt not found`。
+- 只保留 source path、删除实际一手正文的退化样本：`eval-rendered-package` 返回非零退出码，并报告 `reader markdown missing actual first-hand body from source excerpts`。
+- 对抗子 Agent 复查过程：
+  - 首轮：NO PASS，指出缺 source excerpt false-pass。
+  - 二轮：NO PASS，指出只保留 source path、没有实际一手正文仍 false-pass。
+  - 三轮：PASS；确认缺 source excerpt、空 source excerpt、source-path-only reader 页都会失败。
+
+## 剩余风险
+
+- renderer 只支持当前两个 proof 样本形态：catalog-map 长文局部样本和 capability-map 工程样本。
+- renderer 不是 provider-backed 生成器，也不做真实材料解析。
+- eval runner 是最小机器 gate，不是 blind A/B、provider-backed eval 或人工验收。
+
+## 下一步
+
+- 进入 Agent workflow / 半自动生成器前置切片。
+- 明确脚本、Agent 判断、人工验收三者边界。
+- 用当前 renderer 输出做人工读者收益审查，再决定是否进入第二类真实材料迁移测试。
+
+# 2026-06-30 ReaderLab contract validator 对抗修复收口
+
+## 摘要
+
+- 对抗子 Agent 初审发现一个阻塞 false-pass：删除 Skill/工程样本的第三个 capability domain 后，`validate-contract` 仍会通过。
+- 主 Agent 修复后，对抗子 Agent 二次复查 PASS。
+- 本轮仍然只证明 contract / validator / two-sample proof 的最小工程闭环，不证明完整生成器能力，也不证明人工阅读质量通过。
+
+## 修复内容
+
+- `scripts/readerlab.py`
+  - `source-registry` 要求来源不能是空壳对象：必须有 `source_path` 或 `title`。
+  - `location-map` 要求位置必须挂回 `source_id`，并有 `path` 或 `range`。
+  - `output-eval.v1` 必须覆盖 9 个最小必检项。
+  - refs 必须回链到 package 内 source/location known ids。
+  - `capability-map.v1` 新增包级 primary module 覆盖检查：`source_role=primary_module` 的来源必须通过 location-map 映射到 location refs，并被 capability domains 覆盖。
+- `tests/test_readerlab.py`
+  - 增加缺失 eval gate、未知 refs、空壳 source/location、reader/audit 混淆、reader-facing 正文退化、capability-map 模块漏覆盖等负向测试。
+- proof 样本
+  - 长文样本和 Skill/工程样本的 reader-facing 正文不再只是摘要。
+  - Skill/工程样本 capability-map 覆盖入口路由、证据读取、输出评估三个模块。
+
+## 验证
+
+- `python3 -m py_compile scripts/readerlab.py tests/test_readerlab.py`：PASS。
+- `python3 tests/test_readerlab.py`：22 tests OK。
+- `python3 scripts/readerlab.py validate-contract docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample`：PASS，5 contracts。
+- `python3 scripts/readerlab.py validate-contract docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample`：PASS，4 contracts。
+- 对抗子 Agent 复查：PASS；删除 `output-eval-gate` 后包级校验会失败，并报告 `capability-map 未覆盖 primary_module location refs：loc-output-eval-status`。
+
+## 下一步
+
+- 下一轮进入 Markdown renderer / output-eval runner 最小工程切片。
+- 不直接开发完整生成器，不把当前 proof 样本说成 product ready。
+
+# 2026-06-30 ReaderLab contract validator 最小闭环
+
+## 摘要
+
+- 本轮按唯一执行切片完成 contract / validator / two-sample proof 最小开发闭环。
+- 未开发完整生成器，未写 LifeAtlas，未新增依赖，未安装或启用新 Skill。
+
+## 代码改动
+
+- `scripts/readerlab.py`：新增 `validate-contract <path>` CLI，支持样本目录和单个 contract JSON 文件。
+- validator 最小检查覆盖：
+  - high-level claim 必须有 source refs。
+  - coverage 不足时不能生成 `grounded-global-map`。
+  - `machine_status` 和 `human_status` 必须分开。
+  - reader-facing 与 internal audit 必须分开。
+  - `local-deepread` 必须有 `reader_gain`、`primary_refs`、`boundary`、`confidence`。
+  - `capability-map` 必须包含 trigger signals、near-neighbor exclusions、method atoms、required inputs、output contract、verification、route decisions。
+  - `output-eval` 必须表达检查项和状态。
+
+## 样本产物
+
+- `docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample/`
+  - 书籍/长文局部样本。
+  - 包含 `source-registry.v1`、`location-map.v1`、`catalog-map.v1`、`local-deepread.v1`、`output-eval.v1`、`rejected-downgraded.md` 和 reader-facing markdown。
+- `docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample/`
+  - Skill/工程材料 2-3 模块样本。
+  - 包含 `source-registry.v1`、`location-map.v1`、`capability-map.v1`、`output-eval.v1`、`rejected-downgraded.md`、reader-facing markdown 和技术合伙人旁批。
+
+## 测试与验证
+
+- `python3 tests/test_readerlab.py`：20 tests OK。
+- `python3 scripts/readerlab.py validate-contract docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample`：PASS，5 contracts。
+- `python3 scripts/readerlab.py validate-contract docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample`：PASS，4 contracts。
+- `python3 scripts/readerlab.py validate-contract docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample/audit/contracts/capability-map.v1.json`：PASS，单文件 contract 校验可用。
+
+## 剩余风险
+
+- validator 是最小规则检查，不是完整 JSON schema 系统。
+- 两个样本是 repo 内 proof，不是生成器自动产物。
+- 人工阅读质量仍为 `pending`，validator 通过不能说成 human accepted。
+- 没有验证真实复杂材料全量生产，也没有进入 Markdown renderer。
+
+# 2026-06-30 ReaderLab 产品方案重设与正式开发前准备
+
+## 摘要
+
+- 用户引入外部强模型建议后，要求不要继续被旧 `current-task.md` 和 Combo-B 局部任务牵引。
+- 本轮按用户确认，完成正式开发前文档和任务入口重置。
+- 本轮不改代码，不写 LifeAtlas，不新增依赖，不开发完整生成器。
+
+## 产物
+
+- `README.md`：改为复杂材料吸收系统 / 双轨陪读包产品入口。
+- `docs/product-spec.md`：新增产品规格。
+- `docs/readerlab-package-spec.md`：新增目标阅读包结构。
+- `docs/ai-reading-method.md`：新增 E-R-D-D AI 阅读方法。
+- `docs/technical-cofounder-method.md`：新增技术合伙人 / Design Atom Analysis 方法。
+- `docs/eval-gates.md`：新增正式开发前验收 gate。
+- `docs/current-task.md`：下一轮改为 contract / validator / two-sample proof。
+- `docs/dev-state.md`：同步新产品目标、方法骨架和实现事实。
+- `docs/progress.md`：按新产品范围重设进度口径，当前估算 45/100。
+- `docs/next-session-prompt.md`：重写下一会话启动提示。
+- `AGENTS.md`：更新启动顺序、关键入口和项目边界。
+- `docs/decisions.md`：新增 D-040 到 D-044，约束方向重估、双轨陪读包、E-R-D-D、技术合伙人层和 contract-first 路线。
+
+## 结论
+
+- 旧结构化提炼和 Combo-B 相关产物保留为局部能力证据，不再作为项目主线。
+- ReaderLab 正式产品方案是：一手正文轨 + AI 陪读轨 + audit/contracts/eval 事实层。
+- 下一轮正式开发从 contract / validator / two-sample proof 的最小闭环开始。
+
+## 验证
+
+- 本轮为文档和任务入口调整，没有代码改动。
+- 已执行文档一致性搜索和关键文件读取。
+- 已运行 `python3 tests/test_readerlab.py`，18 tests OK。
+
 # 2026-06-30 ReaderLab 结构化提炼同题多路线对照 v0
 
 ## 摘要
@@ -2781,3 +3226,34 @@ python3 tests/test_readerlab.py
 - `scripts/readerlab_fullbook_demo_validate.py`：PASS。
 - `tests/test_fullbook_demo_validate.py`：6 tests OK。
 - `tests/test_readerlab.py`：18 tests OK。
+
+## 2026-06-30 《埃隆之书》source-aligned 长样张 v0
+
+### 背景
+
+用户要求补固定 7 个闭环中的 `2. 样本质量闭环`：书籍侧长样张。上一轮 proof/toy sample 信息量不足，因此本轮只写 repo 内产物，不写 LifeAtlas，不新增依赖，不声称半自动化或 product ready。
+
+### 改动
+
+- 新增 `docs/reports/readerlab-elon-source-aligned-demo-v0/README.md`：说明样张目标、来源边界、文件清单、状态和不声称事项。
+- 新增 `docs/reports/readerlab-elon-source-aligned-demo-v0/reader/00_全书地图.md`：给出全书主问题、结构地图、主题线索和 pending 结论。
+- 新增 `docs/reports/readerlab-elon-source-aligned-demo-v0/reader/01_大单元深读.md`：围绕第二部分“极限硬核工作”写 source cards，包含 source_id / EPUB spine / 短摘录定位 / 处理过的一手正文 / AI 深读 / 误读降级。
+- 新增 `docs/reports/readerlab-elon-source-aligned-demo-v0/audit/source-alignment.md`：列出 source registry、covered unit、location refs 和高层 claim trace。
+- 新增 `docs/reports/readerlab-elon-source-aligned-demo-v0/audit/eval.md`：按信息密度、原文对应、非显然洞察、读者收益、过度升格风险自评，`human_status=pending`。
+- 更新 `docs/current-task.md`、`docs/dev-state.md`、`docs/progress.md`：记录本轮是样本质量闭环，不是自动化闭环。
+
+### 覆盖口径
+
+第二部分标题边界为 `spine-015 / v101-13.xhtml`；实质 source cards 覆盖 `spine-016` 至 `spine-020`，即 `v101-14.xhtml` 至 `v101-18.xhtml`。本轮复用 `docs/reports/readerlab-elon-full-product-v0/contracts/location-map.v1.json` 的 location refs，没有重新生成 JSON contract。
+
+### 验证
+
+```bash
+python3 tests/test_readerlab.py
+git diff --check
+```
+
+结果：
+
+- `tests/test_readerlab.py`：30 tests OK。
+- `git diff --check`：PASS，无 whitespace/error 输出。

@@ -1,5 +1,7 @@
 import json
 import importlib.util
+import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -349,6 +351,420 @@ echo ok
             bad_validation = run_readerlab_unchecked("validate", str(book_dir), "--require-contracts")
             self.assertNotEqual(bad_validation.returncode, 0)
             self.assertIn("review_items", bad_validation.stdout)
+
+    def test_validate_contract_cli_accepts_two_minimal_samples(self) -> None:
+        samples = [
+            ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample",
+            ROOT / "docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample",
+        ]
+        for sample in samples:
+            with self.subTest(sample=sample.name):
+                validation = run_readerlab("validate-contract", str(sample))
+                payload = json.loads(validation.stdout)
+                self.assertTrue(payload["passed"])
+                self.assertIn("readerlab.source-registry.v1", payload["schemas"])
+                self.assertIn("readerlab.location-map.v1", payload["schemas"])
+                self.assertIn("readerlab.output-eval.v1", payload["schemas"])
+
+    def test_validate_contract_cli_rejects_core_failures(self) -> None:
+        book_sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+        skill_sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            bad_claim = Path(tmp) / "bad-claim"
+            shutil.copytree(book_sample, bad_claim)
+            catalog_path = bad_claim / "audit/contracts/catalog-map.v1.json"
+            catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+            catalog["claims"][0].pop("source_refs")
+            catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = run_readerlab_unchecked("validate-contract", str(bad_claim))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("high-level claim 缺少 source refs", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            bad_global = Path(tmp) / "bad-global"
+            shutil.copytree(book_sample, bad_global)
+            grounded_path = bad_global / "audit/contracts/grounded-global-map.v1.json"
+            grounded_path.write_text(
+                json.dumps(
+                    {
+                        "schema": "readerlab.grounded-global-map.v1",
+                        "material": {"id": "bad-global", "title": "bad", "type": "book"},
+                        "source_scope": {"coverage_status": "partial"},
+                        "claims": [
+                            {
+                                "claim": "This is a full global map despite partial coverage.",
+                                "source_refs": ["loc-longform-main-claim"],
+                            }
+                        ],
+                        "machine_status": "ready",
+                        "human_status": "pending",
+                        "display": {
+                            "reader_facing": ["reader/01_局部长文阅读页.md"],
+                            "internal_audit": ["audit/contracts/grounded-global-map.v1.json"],
+                            "relationship": "separate_reader_and_audit",
+                        },
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            result = run_readerlab_unchecked("validate-contract", str(bad_global))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("不能生成 grounded global map", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            bad_status = Path(tmp) / "bad-status"
+            shutil.copytree(book_sample, bad_status)
+            deepread_path = bad_status / "audit/contracts/local-deepread.v1.json"
+            deepread = json.loads(deepread_path.read_text(encoding="utf-8"))
+            deepread.pop("human_status")
+            deepread_path.write_text(json.dumps(deepread, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = run_readerlab_unchecked("validate-contract", str(bad_status))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("缺少 human_status", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            bad_capability = Path(tmp) / "bad-capability"
+            shutil.copytree(skill_sample, bad_capability)
+            capability_path = bad_capability / "audit/contracts/capability-map.v1.json"
+            capability = json.loads(capability_path.read_text(encoding="utf-8"))
+            capability["capability_domains"][0].pop("trigger_signals")
+            capability_path.write_text(json.dumps(capability, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = run_readerlab_unchecked("validate-contract", str(bad_capability))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("trigger_signals", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            missing_capability_module = Path(tmp) / "missing-capability-module"
+            shutil.copytree(skill_sample, missing_capability_module)
+            capability_path = missing_capability_module / "audit/contracts/capability-map.v1.json"
+            capability = json.loads(capability_path.read_text(encoding="utf-8"))
+            capability["capability_domains"] = [
+                domain
+                for domain in capability["capability_domains"]
+                if domain["domain_id"] != "output-eval-gate"
+            ]
+            capability_path.write_text(json.dumps(capability, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = run_readerlab_unchecked("validate-contract", str(missing_capability_module))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("capability-map 未覆盖 primary_module location refs", result.stdout)
+            self.assertIn("loc-output-eval-status", result.stdout)
+
+    def test_validate_contract_cli_rejects_hardened_false_passes(self) -> None:
+        book_sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            bad_eval = Path(tmp) / "bad-eval"
+            shutil.copytree(book_sample, bad_eval)
+            eval_path = bad_eval / "audit/contracts/output-eval.v1.json"
+            output_eval = json.loads(eval_path.read_text(encoding="utf-8"))
+            output_eval["output_eval"]["checks"] = [
+                check
+                for check in output_eval["output_eval"]["checks"]
+                if check["id"] != "machine_not_human"
+            ]
+            eval_path.write_text(json.dumps(output_eval, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = run_readerlab_unchecked("validate-contract", str(bad_eval))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("machine_not_human", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            bad_refs = Path(tmp) / "bad-refs"
+            shutil.copytree(book_sample, bad_refs)
+            catalog_path = bad_refs / "audit/contracts/catalog-map.v1.json"
+            catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+            catalog["claims"][0]["source_refs"] = ["loc-does-not-exist"]
+            catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = run_readerlab_unchecked("validate-contract", str(bad_refs))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("未知 source/location ref", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            empty_source = Path(tmp) / "empty-source"
+            shutil.copytree(book_sample, empty_source)
+            source_path = empty_source / "audit/source-registry.v1.json"
+            source_registry = json.loads(source_path.read_text(encoding="utf-8"))
+            source_registry["sources"] = []
+            source_path.write_text(json.dumps(source_registry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = run_readerlab_unchecked("validate-contract", str(empty_source))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("source-registry.sources 必须是非空列表", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            hollow_source = Path(tmp) / "hollow-source"
+            shutil.copytree(book_sample, hollow_source)
+            source_path = hollow_source / "audit/source-registry.v1.json"
+            source_registry = json.loads(source_path.read_text(encoding="utf-8"))
+            source_registry["sources"][0].pop("source_path")
+            source_path.write_text(json.dumps(source_registry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = run_readerlab_unchecked("validate-contract", str(hollow_source))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("不能作为空壳来源", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            empty_location = Path(tmp) / "empty-location"
+            shutil.copytree(book_sample, empty_location)
+            location_path = empty_location / "audit/location-map.v1.json"
+            location_map = json.loads(location_path.read_text(encoding="utf-8"))
+            location_map["locations"] = []
+            location_path.write_text(json.dumps(location_map, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = run_readerlab_unchecked("validate-contract", str(empty_location))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("location-map.locations 必须是非空列表", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            hollow_location = Path(tmp) / "hollow-location"
+            shutil.copytree(book_sample, hollow_location)
+            location_path = hollow_location / "audit/location-map.v1.json"
+            location_map = json.loads(location_path.read_text(encoding="utf-8"))
+            location_map["locations"][0].pop("source_id")
+            location_map["locations"][0].pop("path")
+            location_map["locations"][0].pop("range")
+            location_path.write_text(json.dumps(location_map, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = run_readerlab_unchecked("validate-contract", str(hollow_location))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("位置必须挂回来源", result.stdout)
+            self.assertIn("不能作为空壳位置", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            mixed_display = Path(tmp) / "mixed-display"
+            shutil.copytree(book_sample, mixed_display)
+            catalog_path = mixed_display / "audit/contracts/catalog-map.v1.json"
+            catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+            catalog["display"]["relationship"] = "mixed"
+            catalog["display"]["internal_audit"] = list(catalog["display"]["reader_facing"])
+            catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = run_readerlab_unchecked("validate-contract", str(mixed_display))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("reader-facing 和 internal audit 混在一起", result.stdout)
+            self.assertIn("路径重叠", result.stdout)
+
+    def test_reader_facing_first_hand_body_is_not_only_summary(self) -> None:
+        pages = [
+            ROOT
+            / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample/reader/01_局部长文阅读页.md",
+            ROOT
+            / "docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample/reader/01_工程材料阅读页.md",
+        ]
+        for page in pages:
+            with self.subTest(page=page.name):
+                text = page.read_text(encoding="utf-8")
+                body_match = re.search(r"^## 处理过的一手正文\s*(.*?)(?=^## |\Z)", text, re.M | re.S)
+                self.assertIsNotNone(body_match)
+                body = body_match.group(1) if body_match else ""
+                self.assertNotIn("核心意思是", body)
+                self.assertGreaterEqual(len(body), 220)
+                self.assertTrue("###" in body or ">" in body)
+
+    def test_render_contract_package_generates_two_samples_and_validates(self) -> None:
+        samples = [
+            (
+                ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample",
+                "reader/01_局部长文阅读页.md",
+            ),
+            (
+                ROOT / "docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample",
+                "reader/01_工程材料阅读页.md",
+            ),
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            for sample, primary_page in samples:
+                with self.subTest(sample=sample.name):
+                    out = Path(tmp) / sample.name
+                    render = run_readerlab("render-contract-package", str(sample), str(out))
+                    render_payload = json.loads(render.stdout)
+                    self.assertIn(primary_page, render_payload["rendered_pages"])
+                    self.assertTrue((out / primary_page).is_file())
+                    self.assertTrue((out / "audit/contracts/output-eval.v1.json").is_file())
+                    self.assertNotEqual(
+                        (sample / primary_page).read_text(encoding="utf-8"),
+                        (out / primary_page).read_text(encoding="utf-8"),
+                    )
+
+                    validation = run_readerlab("validate-contract", str(out))
+                    validation_payload = json.loads(validation.stdout)
+                    self.assertTrue(validation_payload["passed"])
+
+    def test_eval_rendered_package_accepts_two_rendered_outputs(self) -> None:
+        samples = [
+            ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample",
+            ROOT / "docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample",
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            for sample in samples:
+                with self.subTest(sample=sample.name):
+                    out = Path(tmp) / sample.name
+                    run_readerlab("render-contract-package", str(sample), str(out))
+                    evaluation = run_readerlab("eval-rendered-package", str(out))
+                    payload = json.loads(evaluation.stdout)
+                    self.assertTrue(payload["passed"])
+                    self.assertTrue(payload["validate_contract_passed"])
+                    self.assertEqual(
+                        {gate["id"] for gate in payload["gates"]},
+                        {
+                            "reader_markdown_exists",
+                            "reader_audit_path_separation",
+                            "first_hand_body_source_present",
+                            "output_eval_9_gates_present",
+                            "human_status_not_machine_accepted",
+                        },
+                    )
+
+    def test_eval_rendered_package_writes_success_report_md(self) -> None:
+        sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            report = Path(tmp) / "eval-report.md"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            evaluation = run_readerlab("eval-rendered-package", str(out), "--report-md", str(report))
+            payload = json.loads(evaluation.stdout)
+            self.assertTrue(payload["passed"])
+            text = report.read_text(encoding="utf-8")
+            self.assertIn(f"- target: `{out}`", text)
+            self.assertIn("- validate_contract_passed: true", text)
+            for gate_id in {
+                "reader_markdown_exists",
+                "reader_audit_path_separation",
+                "first_hand_body_source_present",
+                "output_eval_9_gates_present",
+                "human_status_not_machine_accepted",
+            }:
+                self.assertIn(f"- {gate_id}: pass", text)
+            self.assertIn("human_status pending", text)
+            self.assertIn("not human acceptance", text)
+
+    def test_eval_rendered_package_writes_failure_report_md(self) -> None:
+        sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            report = Path(tmp) / "eval-report.md"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            (out / "reader/01_局部长文阅读页.md").unlink()
+            result = run_readerlab_unchecked("eval-rendered-package", str(out), "--report-md", str(report))
+            self.assertNotEqual(result.returncode, 0)
+            text = report.read_text(encoding="utf-8")
+            self.assertIn("- validate_contract_passed: false", text)
+            self.assertIn("- reader_markdown_exists: fail", text)
+            self.assertIn("reader markdown missing", text)
+            self.assertIn("## Failures", text)
+
+    def test_eval_rendered_package_report_path_requires_explicit_overwrite(self) -> None:
+        sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            report = Path(tmp) / "eval-report.md"
+            report.write_text("SENTINEL DO NOT KEEP\n", encoding="utf-8")
+            run_readerlab("render-contract-package", str(sample), str(out))
+            result = run_readerlab_unchecked("eval-rendered-package", str(out), "--report-md", str(report))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("report path already exists", result.stderr + result.stdout)
+            self.assertEqual(report.read_text(encoding="utf-8"), "SENTINEL DO NOT KEEP\n")
+
+            overwrite = run_readerlab(
+                "eval-rendered-package",
+                str(out),
+                "--report-md",
+                str(report),
+                "--overwrite-report",
+            )
+            self.assertTrue(json.loads(overwrite.stdout)["passed"])
+            self.assertIn("# ReaderLab Rendered Package Eval Report", report.read_text(encoding="utf-8"))
+
+    def test_eval_rendered_package_report_path_rejects_lifeatlas(self) -> None:
+        sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            result = run_readerlab_unchecked(
+                "eval-rendered-package",
+                str(out),
+                "--report-md",
+                "/Users/tianqiang/LifeAtlas/readerlab-report-should-not-write.md",
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("refusing to write eval report under LifeAtlas", result.stderr + result.stdout)
+
+    def test_render_contract_package_rejects_missing_source_excerpts(self) -> None:
+        sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            bad_sample = Path(tmp) / "missing-source-excerpt"
+            shutil.copytree(sample, bad_sample)
+            (bad_sample / "audit/source-excerpts/longform-fragment.md").unlink()
+            result = run_readerlab_unchecked("render-contract-package", str(bad_sample), str(Path(tmp) / "out"))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("source excerpt not found", result.stderr + result.stdout)
+
+    def test_eval_rendered_package_rejects_missing_reader_gate_and_human_acceptance(self) -> None:
+        sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "missing-reader"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            (out / "reader/01_局部长文阅读页.md").unlink()
+            result = run_readerlab_unchecked("eval-rendered-package", str(out))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("reader markdown missing", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "missing-first-hand-body"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            reader_path = out / "reader/01_局部长文阅读页.md"
+            reader_path.write_text(
+                "# 空壳阅读页\n\n## AI 旁批\n\n这里只有机器旁批，没有处理过的一手正文。\n",
+                encoding="utf-8",
+            )
+            result = run_readerlab_unchecked("eval-rendered-package", str(out))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("missing actual first-hand body", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "source-path-only"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            reader_path = out / "reader/01_局部长文阅读页.md"
+            reader_path.write_text(
+                "# 空壳阅读页\n\n"
+                "## 处理过的一手正文\n\n"
+                "### 来源：`audit/source-excerpts/longform-fragment.md`\n\n"
+                "## AI 旁批\n\n这里只有来源路径，没有实际一手正文。\n",
+                encoding="utf-8",
+            )
+            result = run_readerlab_unchecked("eval-rendered-package", str(out))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("missing actual first-hand body", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "missing-gate"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            eval_path = out / "audit/contracts/output-eval.v1.json"
+            output_eval = json.loads(eval_path.read_text(encoding="utf-8"))
+            output_eval["output_eval"]["checks"] = [
+                check
+                for check in output_eval["output_eval"]["checks"]
+                if check["id"] != "machine_not_human"
+            ]
+            eval_path.write_text(json.dumps(output_eval, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = run_readerlab_unchecked("eval-rendered-package", str(out))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("machine_not_human", result.stdout)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "human-accepted"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            eval_path = out / "audit/contracts/output-eval.v1.json"
+            output_eval = json.loads(eval_path.read_text(encoding="utf-8"))
+            output_eval["human_status"] = "accepted"
+            eval_path.write_text(json.dumps(output_eval, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            result = run_readerlab_unchecked("eval-rendered-package", str(out))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("human_status must remain pending", result.stdout)
 
     def test_import_skills_generates_v01_reading_pack(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

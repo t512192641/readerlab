@@ -1,0 +1,52 @@
+{
+  "schema": "readerlab.catalog-map.v1",
+  "material": {
+    "id": "proof-longform-fragment",
+    "title": "Longform local fragment proof",
+    "type": "longform_fragment"
+  },
+  "source_scope": {
+    "coverage_status": "partial",
+    "coverage_note": "Only a local fragment is available; catalog-map is allowed, grounded-global-map is not."
+  },
+  "catalog": {
+    "reading_units": [
+      {
+        "unit_id": "unit-delete-before-automation",
+        "title": "先删减，再自动化",
+        "status": "locally_readable",
+        "source_refs": [
+          "loc-longform-main-claim"
+        ]
+      }
+    ],
+    "route_hypothesis": [
+      "先读一手片段，再看 AI 旁批，最后检查误读边界。"
+    ],
+    "not_yet_covered_units": [
+      "文章其余章节",
+      "作者上下文",
+      "跨案例验证"
+    ]
+  },
+  "claims": [
+    {
+      "claim": "This local fragment supports a reading route about challenging requirements before automation.",
+      "source_refs": [
+        "loc-longform-main-claim"
+      ],
+      "confidence": "medium"
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [
+      "reader/01_局部长文阅读页.md"
+    ],
+    "internal_audit": [
+      "audit/contracts/catalog-map.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

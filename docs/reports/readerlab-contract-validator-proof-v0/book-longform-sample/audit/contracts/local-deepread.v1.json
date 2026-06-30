@@ -1,0 +1,42 @@
+{
+  "schema": "readerlab.local-deepread.v1",
+  "material": {
+    "id": "proof-longform-fragment:unit-delete-before-automation",
+    "title": "先删减，再自动化",
+    "type": "local_deepread"
+  },
+  "source_scope": {
+    "coverage_status": "partial",
+    "coverage_note": "Deepread covers one local fragment only."
+  },
+  "local_deepread": {
+    "id": "deepread-delete-before-automation",
+    "type": "principle",
+    "title": "先质疑需求，再谈优化",
+    "claim": "A process step should be challenged before it is optimized or automated.",
+    "reader_gain": "读者能把自动化冲动前移成需求审查，避免更快地执行错误流程。",
+    "primary_refs": [
+      "loc-longform-main-claim",
+      "loc-longform-boundary"
+    ],
+    "boundary": "只适合流程和产品设计审查；安全、合规、伦理或人工照护类步骤不能凭这一条直接删除。",
+    "confidence": "medium",
+    "human_status": "pending",
+    "v_checks": {
+      "v1_transfer": "pass",
+      "v2_predictive": "partial",
+      "v3_non_obvious": "pass"
+    }
+  },
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [
+      "reader/01_局部长文阅读页.md"
+    ],
+    "internal_audit": [
+      "audit/contracts/local-deepread.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

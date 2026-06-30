@@ -1,0 +1,46 @@
+{
+  "schema": "readerlab.source-registry.v1",
+  "material": {
+    "id": "proof-skill-engineering",
+    "title": "Skill engineering module proof",
+    "type": "skill_engineering_sample"
+  },
+  "sources": [
+    {
+      "source_id": "src-router",
+      "source_path": "audit/source-excerpts/module-router.md",
+      "source_type": "markdown_excerpt",
+      "source_role": "primary_module"
+    },
+    {
+      "source_id": "src-evidence",
+      "source_path": "audit/source-excerpts/module-evidence.md",
+      "source_type": "markdown_excerpt",
+      "source_role": "primary_module"
+    },
+    {
+      "source_id": "src-output-eval",
+      "source_path": "audit/source-excerpts/module-eval.md",
+      "source_type": "markdown_excerpt",
+      "source_role": "primary_module"
+    }
+  ],
+  "source_scope": {
+    "coverage_status": "sample",
+    "coverage_note": "Only three small modules are covered; this proves capability-map shape, not full package understanding."
+  },
+  "location_refs": [
+    "loc-router-contract",
+    "loc-evidence-boundary",
+    "loc-output-eval-status"
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/source-registry.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}
