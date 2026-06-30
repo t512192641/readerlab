@@ -1,0 +1,25 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "skill": "canary",
+  "part": 13,
+  "package": "gstack",
+  "source_file": "SKILL.md",
+  "range": [
+    "canary-0241-heading",
+    "canary-0242-paragraph"
+  ],
+  "blocks": [
+    {
+      "block_id": "canary-0241-heading",
+      "source_hash": "cd1d6fde9db54f2de8aa1a70080d36833b8d9260e00fa7510250243c29d22fd8",
+      "status": "translated",
+      "translation": "## 重要规则"
+    },
+    {
+      "block_id": "canary-0242-paragraph",
+      "source_hash": "e853b09aa083994fc2fddd1842b8c8522518b2a3684eee20271bd91735908989",
+      "status": "translated",
+      "translation": "- **速度很重要。** 调用后 30 秒内开始监控。监控前不要过度分析。\n- **根据变化告警，而不是根据绝对值。** 与基线比较，而不是与行业标准比较。\n- **截图是证据。** 每个告警都包含截图路径。没有例外。\n- **容忍短暂波动。** 只对连续 2 次以上检查都存在的模式告警。\n- **基线最重要。** 没有基线时，canary 只是健康检查。鼓励部署前使用 `--baseline`。\n- **性能阈值是相对的。** 2 倍基线就是回退。1.5 倍可能只是正常波动。\n- **只读。** 观察并报告。除非用户明确要求调查和修复，否则不要修改代码。"
+    }
+  ]
+}

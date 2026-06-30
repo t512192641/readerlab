@@ -1,0 +1,508 @@
+{
+  "schema": "readerlab.grounded-global-map.v1",
+  "material": {
+    "id": "elon-book__readerlab-elon-full-product-v0",
+    "title": "埃隆之书",
+    "type": "book_epub_readerlab_experiment",
+    "target_package_id": "readerlab-elon-full-product-v0"
+  },
+  "source_scope": {
+    "coverage_status": "full",
+    "coverage_ratio": 1.0,
+    "coverage_note": "Full OPF spine text is extracted and high-value claims use heading/block/cleaned-char refs. This remains an experimental reading product, not product-ready acceptance.",
+    "location_precision_required": "heading_or_block_or_char",
+    "precision_exception_note": "TOC route and appendix orientation may use spine/title refs because they describe structure; method/case/boundary claims use block/char refs."
+  },
+  "global_map": {
+    "reader_gain": "读完这套地图，读者新增的理解应是：马斯克材料不是单一奋斗叙事，而是一条从目标选择、第一性原理、工程执行、组织压缩、制造系统，到公司案例和文明风险的机制链；可迁移的是问题分解和交付系统设计，需防守的是极端强度、宏大叙事和忽视边界。",
+    "core_questions": [
+      {
+        "id": "q01",
+        "question": "目标如何进入工程和组织，而不是停留在愿景？",
+        "location_refs": [
+          "loc-purpose-value",
+          "loc-first-principles",
+          "loc-engineering-value",
+          "loc-responsibility"
+        ]
+      },
+      {
+        "id": "q02",
+        "question": "硬核工作到底是工作时长，还是组织和制造系统？",
+        "location_refs": [
+          "loc-factory-floor",
+          "loc-org-communication",
+          "loc-algorithm-way",
+          "loc-factory-as-product"
+        ]
+      },
+      {
+        "id": "q03",
+        "question": "公司案例证明了什么，又不能证明什么？",
+        "location_refs": [
+          "loc-zip2",
+          "loc-paypal-reinvest",
+          "loc-tesla-survival",
+          "loc-spacex-nasa"
+        ]
+      },
+      {
+        "id": "q04",
+        "question": "文明尺度如何帮助判断行动，同时可能怎样诱发误读？",
+        "location_refs": [
+          "loc-company-progress",
+          "loc-ai-risk",
+          "loc-multiplanet-thesis",
+          "loc-new-world-boundary"
+        ]
+      }
+    ],
+    "structure_mainline": [
+      {
+        "id": "mainline-01-source-boundary",
+        "title": "先确认材料性质：这是言论选编，不是连续传记",
+        "summary": "前置材料提供来源边界：文本经过编校和重组，读者应把它当作思想材料包，引用和升格前要核实语境。",
+        "location_refs": [
+          "loc-source-editorial-boundary"
+        ]
+      },
+      {
+        "id": "mainline-02-purpose-method",
+        "title": "目标和第一性原理形成上游判断",
+        "summary": "第一部分先回答为什么做、什么有价值、如何从物理学式推理和工程价值判断出发。",
+        "location_refs": [
+          "loc-purpose-value",
+          "loc-purpose-future",
+          "loc-first-principles",
+          "loc-engineering-value"
+        ]
+      },
+      {
+        "id": "mainline-03-operating-system",
+        "title": "执行系统把目标压入组织、速度和制造",
+        "summary": "第二部分把目标变成责任、团队、短路径沟通、算法之道、速度和工厂能力。",
+        "location_refs": [
+          "loc-responsibility",
+          "loc-team-goal",
+          "loc-org-communication",
+          "loc-algorithm-way",
+          "loc-urgency-speed",
+          "loc-factory-as-product"
+        ]
+      },
+      {
+        "id": "mainline-04-company-cases",
+        "title": "公司案例检验机制链",
+        "summary": "第三部分用 Zip2、PayPal、Tesla、SpaceX 说明资金再投入、使命、原型、量产、火箭和合同如何承压。",
+        "location_refs": [
+          "loc-zip2",
+          "loc-paypal-reinvest",
+          "loc-tesla-mission",
+          "loc-tesla-survival",
+          "loc-spacex-first-principles",
+          "loc-spacex-nasa"
+        ]
+      },
+      {
+        "id": "mainline-05-civilization-scale",
+        "title": "文明尺度扩大问题，也提高边界要求",
+        "summary": "第四部分把企业建设放到富足、AI、文明风险和多行星物种中理解，但必须同步保留伦理、监管、安全和成本边界。",
+        "location_refs": [
+          "loc-company-progress",
+          "loc-abundance-ai",
+          "loc-ai-risk",
+          "loc-multiplanet-thesis",
+          "loc-new-world-boundary"
+        ]
+      }
+    ],
+    "mechanism_chain": [
+      {
+        "step": "目标选择",
+        "reader_question": "什么值得投入？",
+        "source_refs": [
+          "loc-purpose-value",
+          "loc-purpose-future"
+        ]
+      },
+      {
+        "step": "第一性原理",
+        "reader_question": "约束和成本能否被重新计算？",
+        "source_refs": [
+          "loc-first-principles",
+          "loc-spacex-first-principles"
+        ]
+      },
+      {
+        "step": "工程价值",
+        "reader_question": "创意如何变成可交付和可量产？",
+        "source_refs": [
+          "loc-engineering-value"
+        ]
+      },
+      {
+        "step": "组织压缩",
+        "reader_question": "问题能否直接抵达解决者？",
+        "source_refs": [
+          "loc-team-goal",
+          "loc-org-communication"
+        ]
+      },
+      {
+        "step": "算法之道",
+        "reader_question": "能否先删除，再简化、加速、自动化？",
+        "source_refs": [
+          "loc-algorithm-way",
+          "loc-core-laws-algorithm"
+        ]
+      },
+      {
+        "step": "制造系统",
+        "reader_question": "交付系统是否也是产品？",
+        "source_refs": [
+          "loc-factory-as-product",
+          "loc-manufacturing-bottleneck"
+        ]
+      },
+      {
+        "step": "案例压力测试",
+        "reader_question": "这些机制在公司生死压力下如何表现？",
+        "source_refs": [
+          "loc-tesla-survival",
+          "loc-spacex-nasa"
+        ]
+      },
+      {
+        "step": "文明边界",
+        "reader_question": "宏大使命是否仍受风险和伦理约束？",
+        "source_refs": [
+          "loc-ai-risk",
+          "loc-new-world-boundary"
+        ]
+      }
+    ],
+    "unit_relationships": [
+      {
+        "id": "rel-purpose-to-execution",
+        "relationship": "第一部分提供目标和推理入口，第二部分把它转成组织和制造执行。",
+        "location_refs": [
+          "loc-first-principles",
+          "loc-responsibility",
+          "loc-algorithm-way"
+        ]
+      },
+      {
+        "id": "rel-execution-to-cases",
+        "relationship": "第二部分的算法、速度和制造原则，在第三部分 Tesla/SpaceX 的产品与生存压力中被检验。",
+        "location_refs": [
+          "loc-algorithm-way",
+          "loc-factory-as-product",
+          "loc-tesla-survival",
+          "loc-spacex-nasa"
+        ]
+      },
+      {
+        "id": "rel-cases-to-civilization",
+        "relationship": "第三部分的公司建设不是终点，第四部分把这些公司放到能源、AI、生存风险和多行星目标中。",
+        "location_refs": [
+          "loc-tesla-mission",
+          "loc-company-progress",
+          "loc-ai-risk",
+          "loc-multiplanet-thesis"
+        ]
+      }
+    ],
+    "concept_method_case_relationships": [
+      {
+        "id": "cmc-first-principles-spacex",
+        "concept": "第一性原理",
+        "method": "从物理和成本约束重新计算路径",
+        "case": "SpaceX 火箭成本和 NASA 合同链",
+        "result_reading": "它把“疯狂目标”降解为工程成本、质量和合同可信度问题。",
+        "location_refs": [
+          "loc-first-principles",
+          "loc-spacex-first-principles",
+          "loc-spacex-nasa"
+        ]
+      },
+      {
+        "id": "cmc-algorithm-manufacturing",
+        "concept": "算法之道",
+        "method": "质疑需求、删除、简化、加速、自动化",
+        "case": "工厂即产品和制造瓶颈",
+        "result_reading": "它要求先移除不必要部分，再谈优化，避免自动化错误流程。",
+        "location_refs": [
+          "loc-algorithm-way",
+          "loc-factory-as-product",
+          "loc-manufacturing-bottleneck"
+        ]
+      },
+      {
+        "id": "cmc-purpose-tesla",
+        "concept": "目标导向",
+        "method": "把可持续能源使命变成原型、融资、生存和量产任务",
+        "case": "Tesla",
+        "result_reading": "使命只有进入产品和制造系统，才不是口号。",
+        "location_refs": [
+          "loc-tesla-mission",
+          "loc-tesla-prototype",
+          "loc-tesla-survival"
+        ]
+      },
+      {
+        "id": "cmc-risk-multiplanet",
+        "concept": "文明风险",
+        "method": "用多行星冗余降低单星球风险",
+        "case": "火星与星舰基地",
+        "result_reading": "它把太空叙事转为运输成本、制造规模和自给城市门槛。",
+        "location_refs": [
+          "loc-asteroid-risk",
+          "loc-multiplanet-thesis",
+          "loc-mars-gate",
+          "loc-mars-cost"
+        ]
+      }
+    ],
+    "case_method_result": [
+      {
+        "case": "Zip2 -> PayPal",
+        "method": "从早期产品和退出收益继续投入下一个高影响领域。",
+        "result_reading": "本书用它建立连续创业和资金再投入的起点。",
+        "location_refs": [
+          "loc-zip2",
+          "loc-paypal-reinvest",
+          "loc-founder-listen"
+        ]
+      },
+      {
+        "case": "Tesla",
+        "method": "把可持续能源目标转成原型、融资、生存、量产和公众认知战。",
+        "result_reading": "读者应看到使命、产品、工厂和现金流互相牵制。",
+        "location_refs": [
+          "loc-tesla-mission",
+          "loc-tesla-prototype",
+          "loc-tesla-survival",
+          "loc-factory-as-product"
+        ]
+      },
+      {
+        "case": "SpaceX",
+        "method": "用第一性原理拆火箭成本，以合同和工程里程碑建立可信度。",
+        "result_reading": "太空目标不是愿景本身，而是被工程、成本和合同逐步压实。",
+        "location_refs": [
+          "loc-spacex-start",
+          "loc-spacex-first-principles",
+          "loc-spacex-nasa"
+        ]
+      },
+      {
+        "case": "多行星",
+        "method": "把单星球风险转成星舰制造规模、运输成本和火星自给门槛。",
+        "result_reading": "文明叙事只有落到成本和系统能力，才可被读者复核。",
+        "location_refs": [
+          "loc-multiplanet-thesis",
+          "loc-mars-gate",
+          "loc-mars-cost",
+          "loc-new-world-boundary"
+        ]
+      }
+    ],
+    "counterexamples_or_limits": [
+      {
+        "id": "limit-editorial-compilation",
+        "limit": "本书是编校选编，不能把每段话当作原始语境完整论证。",
+        "location_refs": [
+          "loc-source-editorial-boundary"
+        ]
+      },
+      {
+        "id": "limit-not-hustle-culture",
+        "limit": "百小时工作和睡工厂地板被限定在危机场景，不应被读成普遍管理建议。",
+        "location_refs": [
+          "loc-factory-floor"
+        ]
+      },
+      {
+        "id": "limit-delete-safety",
+        "limit": "删除优先不应绕过安全、合规、伦理和人的承受边界。",
+        "location_refs": [
+          "loc-algorithm-way",
+          "loc-regulatory-buildup"
+        ]
+      },
+      {
+        "id": "limit-mars-not-escape",
+        "limit": "火星不是富人逃生或度假方案，而是高死亡风险和高劳动的新文明建设。",
+        "location_refs": [
+          "loc-new-world-boundary"
+        ]
+      },
+      {
+        "id": "limit-civilization-scale",
+        "limit": "宏大文明尺度能帮助校准优先级，但不能替代具体风险治理。",
+        "location_refs": [
+          "loc-ai-risk",
+          "loc-war-risk"
+        ]
+      }
+    ],
+    "reading_routes": [
+      {
+        "id": "route-first-pass",
+        "title": "第一次阅读路线",
+        "steps": [
+          "先读材料边界。",
+          "读第一部分，找目标和第一性原理。",
+          "深读第二部分，拆执行系统。",
+          "读第三部分，用案例检验。",
+          "读第四部分，做文明尺度和边界判断。"
+        ],
+        "location_refs": [
+          "loc-source-editorial-boundary",
+          "loc-first-principles",
+          "loc-algorithm-way",
+          "loc-tesla-survival",
+          "loc-multiplanet-thesis"
+        ]
+      },
+      {
+        "id": "route-annotation",
+        "title": "批注路线",
+        "steps": [
+          "在每张深读卡下写“我能迁移/不能迁移的场景”。",
+          "在案例段落旁标注“方法是否真的导致结果”。",
+          "在误读防线旁写自己的反例。"
+        ],
+        "location_refs": [
+          "loc-algorithm-way",
+          "loc-factory-as-product",
+          "loc-new-world-boundary"
+        ]
+      }
+    ]
+  },
+  "location_refs": [
+    "loc-purpose-value",
+    "loc-first-principles",
+    "loc-engineering-value",
+    "loc-algorithm-way",
+    "loc-factory-as-product",
+    "loc-zip2",
+    "loc-paypal-reinvest",
+    "loc-tesla-mission",
+    "loc-spacex-first-principles",
+    "loc-multiplanet-thesis"
+  ],
+  "claim_refs": [
+    {
+      "claim_id": "claim-purpose-to-execution",
+      "claim": "本书主链条是目标和价值判断逐步压入工程、组织、速度、制造和公司案例。",
+      "primary_location_refs": [
+        "loc-purpose-value",
+        "loc-first-principles",
+        "loc-engineering-value",
+        "loc-algorithm-way",
+        "loc-factory-as-product"
+      ],
+      "derived_location_refs": [],
+      "applicability_boundary": "适用于理解本书结构；不等于每条马斯克言论都能形成稳定方法。",
+      "confidence": "medium",
+      "review_status": "open"
+    },
+    {
+      "claim_id": "claim-hardcore-not-hustle",
+      "claim": "第二部分的重点不是泛化努力文化，而是让问题穿过组织抵达解决者，并按算法、速度和制造系统转成结果。",
+      "primary_location_refs": [
+        "loc-responsibility",
+        "loc-org-communication",
+        "loc-algorithm-way",
+        "loc-urgency-speed",
+        "loc-factory-as-product"
+      ],
+      "derived_location_refs": [],
+      "applicability_boundary": "危机工作和极端强度不能常态化迁移；安全、合规和人的承受边界需另行判断。",
+      "confidence": "medium",
+      "review_status": "open"
+    },
+    {
+      "claim_id": "claim-company-cases-pressure-test",
+      "claim": "Zip2、PayPal、Tesla、SpaceX 是对目标、第一性原理、资金再投入、工程执行和制造能力的压力测试。",
+      "primary_location_refs": [
+        "loc-zip2",
+        "loc-paypal-reinvest",
+        "loc-tesla-mission",
+        "loc-tesla-survival",
+        "loc-spacex-first-principles",
+        "loc-spacex-nasa"
+      ],
+      "derived_location_refs": [],
+      "applicability_boundary": "案例只能证明这些机制在特定公司阶段出现，不能自动证明对所有组织有效。",
+      "confidence": "medium",
+      "review_status": "open"
+    },
+    {
+      "claim_id": "claim-civilization-scale-boundary",
+      "claim": "第四部分把公司建设放到富足、AI、生存风险和多行星尺度下，但同时增加了误读风险。",
+      "primary_location_refs": [
+        "loc-company-progress",
+        "loc-abundance-ai",
+        "loc-war-risk",
+        "loc-ai-risk",
+        "loc-asteroid-risk",
+        "loc-multiplanet-thesis",
+        "loc-new-world-boundary"
+      ],
+      "derived_location_refs": [],
+      "applicability_boundary": "宏大目标不能替代具体伦理、监管、安全和执行成本判断。",
+      "confidence": "medium",
+      "review_status": "open"
+    },
+    {
+      "claim_id": "claim-factory-as-product-transfer",
+      "claim": "工厂即产品可迁移为“交付系统也是产品”的洞察。",
+      "primary_location_refs": [
+        "loc-factory-as-product",
+        "loc-manufacturing-bottleneck",
+        "loc-manufacturing-moat"
+      ],
+      "derived_location_refs": [],
+      "applicability_boundary": "最适合实体制造、运营、基础设施和可规模交付系统；探索型创作和研究任务不一定适用。",
+      "confidence": "medium",
+      "review_status": "open"
+    }
+  ],
+  "confidence": {
+    "level": "medium",
+    "basis": [
+      "All spine text was extracted and claims cite selected block refs.",
+      "Interpretive chain is generated by ReaderLab worker and awaits adversarial review."
+    ],
+    "known_uncertainties": [
+      "No blind human review has accepted this map.",
+      "No external source verification or printed page alignment was performed."
+    ]
+  },
+  "review_items": [
+    {
+      "id": "global-r01",
+      "status": "open",
+      "question": "地图是否过度系统化了选编材料？"
+    },
+    {
+      "id": "global-r02",
+      "status": "open",
+      "question": "Zip2/PayPal/Tesla/SpaceX 案例链是否需要更多逐段正文支撑？"
+    },
+    {
+      "id": "global-r03",
+      "status": "open",
+      "question": "读者页是否足够可读，而不是审计报告换皮？"
+    }
+  ],
+  "machine_status": "needs_review",
+  "human_status": "pending",
+  "display": {
+    "markdown_path": "docs/reports/readerlab-elon-full-product-v0/reader/02_全书地图.md",
+    "relationship": "renders_from_contract"
+  }
+}

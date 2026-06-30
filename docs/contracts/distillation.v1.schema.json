@@ -1,0 +1,50 @@
+{
+  "schema": "readerlab.contract-validator-schema.v1",
+  "contract_schema": "readerlab.distillation.v1",
+  "description": "ReaderLab v0.5 distillation fact-layer contract. Candidate assets are not formal LifeAtlas deposits or installed Skills.",
+  "required_top_level": [
+    "schema",
+    "material",
+    "source_scope",
+    "distillation",
+    "confidence",
+    "review_items",
+    "machine_status",
+    "human_status",
+    "display"
+  ],
+  "required_fields": {
+    "material": ["id", "title", "type"],
+    "source_scope": ["coverage_status", "items", "coverage_note"],
+    "confidence": ["level", "basis"],
+    "display": ["markdown_path", "relationship"],
+    "distillation": [
+      "frameworks",
+      "principles",
+      "cases",
+      "counterexamples",
+      "terms",
+      "transferable_insights",
+      "skill_candidates",
+      "applicability_boundaries"
+    ]
+  },
+  "required_item_fields": {
+    "source_scope.items": ["id", "source_ref", "range", "role"],
+    "review_items": ["id", "question", "status"]
+  },
+  "non_empty": [
+    "source_scope.items",
+    "confidence.basis",
+    "review_items",
+    "distillation.transferable_insights",
+    "distillation.applicability_boundaries"
+  ],
+  "allowed_values": {
+    "source_scope.coverage_status": ["full", "partial", "sample", "unknown"],
+    "confidence.level": ["high", "medium", "low"],
+    "machine_status": ["draft", "ready", "needs_review", "blocked"],
+    "human_status": ["pending", "accepted", "rejected", "not_required"],
+    "display.relationship": ["renders_from_contract", "manual_companion", "not_rendered"]
+  }
+}

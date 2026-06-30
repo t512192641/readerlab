@@ -1,0 +1,133 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "skill": "canary",
+  "part": 5,
+  "package": "gstack",
+  "source_file": "SKILL.md",
+  "range": [
+    "canary-0081-paragraph",
+    "canary-0100-paragraph"
+  ],
+  "blocks": [
+    {
+      "block_id": "canary-0081-paragraph",
+      "source_hash": "beda82f6c3d34afaebbb62d837077b0a77527b1aef064a86705fd89258302019",
+      "status": "translated",
+      "translation": "1. **用清楚的 ELI10 解释问题本身**：用普通语言说明正在决定什么、为什么重要（解释问题，而不是逐个选项），并点明风险。先写这一项。\n2. **每个选项的完整性分数**：每个选项都明确写 `Completeness: X/10`（10 表示完整，7 表示 happy path，3 表示捷径）；当选项是类型不同而不是覆盖率不同时使用 kind-note，但绝不能静默省略分数。\n3. **推荐项和理由**：写一行 `Recommendation: <choice> because <reason>`，并在该选项上带 `(recommended)` 标记。"
+    },
+    {
+      "block_id": "canary-0082-paragraph",
+      "source_hash": "d68e7c52e6e1bba6e2286d8bc0a1e929314bae6502e1c706591c67d996165aee",
+      "status": "translated",
+      "translation": "布局：一个 `D<N>` 标题，加一行提示用户用字母回复（在 Conductor 中这是正常路径；其他地方表示 AskUserQuestion 不可用或报错）；问题的 ELI10；Recommendation 行；然后每个选项一个段落，包含 `(recommended)` 标记、`Completeness: X/10`，以及 2-4 句理由，绝不要只有裸 bullet 列表；最后用一行 `Net:` 收束。拆分链或 5 个以上选项：按顺序为每个按选项调用生成一个文字块。然后 STOP 并等待，用户输入的答案就是决策。在计划模式中，这像工具调用一样满足回合结束要求。"
+    },
+    {
+      "block_id": "canary-0083-paragraph",
+      "source_hash": "506fc9d31ef88cb2c1fc21c7da7b9dcb1a359076f9de1c3421f63907e85b7308",
+      "status": "translated",
+      "translation": "**继续：把用户输入的回复映射回简报。** 每个简报都有稳定标签（`D<N>`，或拆分链中的 `D<N>.k`）。用户引用它（例如 “3.2: B”）。单独一个字母映射到最近的唯一一个尚未回答的简报；如果有多个打开的简报（拆分链），不要猜，询问它回答的是哪个 `D<N>.k`。绝不要把单独字母含糊地套到整条链上。"
+    },
+    {
+      "block_id": "canary-0084-paragraph",
+      "source_hash": "1a2d51335dd06c932e71cfd4231f9331f6b22e6d860bfc02e7eccc43fa45e57e",
+      "status": "translated",
+      "translation": "**文字形式中的单向或破坏性确认。** 当决策是单向门（不可逆或破坏性，例如删除、强推、丢弃、覆盖）时，文字形式比工具弱，所以要让门更强：要求用户明确输入确认（精确选项字母或词），明说不可逆的内容，并且绝不要根据含糊、部分或不明确的回复继续，必须重新询问。沉默或没有明确选择的 “ok”/“sure” 都视为尚未确认。"
+    },
+    {
+      "block_id": "canary-0085-heading",
+      "source_hash": "8ff5f9fe91feb2ff9501f0a06a727416021817d1c27eac73c234018831b04628",
+      "status": "translated",
+      "translation": "### 格式"
+    },
+    {
+      "block_id": "canary-0086-paragraph",
+      "source_hash": "4e85b0324b4cb649a5e41f1d17a7ffa4f97c92b9231e696e17cf49c66ba7b348",
+      "status": "translated",
+      "translation": "每个 AskUserQuestion 都是决策简报，必须作为 tool_use 发送，而不是文字；除非上面记录的失败回退适用（交互式会话且调用不可用或报错），这种情况下文字回退才是正确输出。"
+    },
+    {
+      "block_id": "canary-0087-code-block",
+      "source_hash": "509db4af9002da306286aacdb2ca863df762f58bdcbc982fe633a51ac773cddd",
+      "status": "translated",
+      "translation": "```\nD<N> — <one-line question title>\nProject/branch/task: <1 short grounding sentence using _BRANCH>\nELI10: <plain English a 16-year-old could follow, 2-4 sentences, name the stakes>\nStakes if we pick wrong: <one sentence on what breaks, what user sees, what's lost>\nRecommendation: <choice> because <one-line reason>\nCompleteness: A=X/10, B=Y/10   (or: Note: options differ in kind, not coverage — no completeness score)\nPros / cons:\nA) <option label> (recommended)\n  ✅ <pro — concrete, observable, ≥40 chars>\n  ❌ <con — honest, ≥40 chars>\nB) <option label>\n  ✅ <pro>\n  ❌ <con>\nNet: <one-line synthesis of what you're actually trading off>\n```"
+    },
+    {
+      "block_id": "canary-0088-paragraph",
+      "source_hash": "3b736ecf1e4fd4953325906b4c9b03e6b2a2993267aa60150fd94b51b2a1e5f4",
+      "status": "translated",
+      "translation": "D-numbering: first question in a skill invocation is `D1`; increment yourself. This is a model-level instruction, not a runtime counter."
+    },
+    {
+      "block_id": "canary-0089-paragraph",
+      "source_hash": "4229387feb1b83b21550e766816a12cd00e4199fa9f0fa3450a97bbb78a91b0d",
+      "status": "translated",
+      "translation": "ELI10 is always present, in plain English, not function names. Recommendation is ALWAYS present. 保持 the `(推荐)` label; AUTO_DECIDE depends on it."
+    },
+    {
+      "block_id": "canary-0090-paragraph",
+      "source_hash": "e5421a9e6c8c11b3fe9db7144452678760e97080b0fde0ef47cf9640edcbd0f4",
+      "status": "translated",
+      "translation": "Completeness：只有当选项的覆盖程度不同时才使用 `Completeness: N/10`。10 表示完整，7 表示 happy path，3 表示捷径。如果选项是类型不同而不是覆盖度不同，写：`Note: options differ in kind, not coverage — no completeness score.`"
+    },
+    {
+      "block_id": "canary-0091-paragraph",
+      "source_hash": "e0ddc815c9c9a678ba59e804c6737ece8c8c72c2adfe26a134d2db9ae3d05232",
+      "status": "translated",
+      "translation": "Pros / cons：使用 ✅ 和 ❌。真实选择中每个选项至少 2 条 pros 和 1 条 con；每条至少 40 个字符。单向或破坏性确认的 hard-stop 例外写法：`✅ No cons — this is a hard-stop choice`。"
+    },
+    {
+      "block_id": "canary-0092-paragraph",
+      "source_hash": "620798c44ea21b7d55e78a35f6475c8ebc9aa627c377cdfc180073b291ee5c79",
+      "status": "translated",
+      "translation": "中立姿态：`推荐： <default> — this is a taste call, no strong preference either way`；为了 AUTO_DECIDE，`(推荐)` 保留在默认选项上。"
+    },
+    {
+      "block_id": "canary-0093-paragraph",
+      "source_hash": "66bc3575b2a512c9d564f15cb3cdcd7bd7a91b31ea726b306ea6febca32025da",
+      "status": "translated",
+      "translation": "Effort both-scales: when an option involves effort, label both human-team and CC+gstack time, e.g. `(human: ~2 days / CC: ~15 min)`. Makes AI compression visible at decision time."
+    },
+    {
+      "block_id": "canary-0094-paragraph",
+      "source_hash": "99b9ac15a6c27686e72dedd80df3014ec94fe6b8f5e77019253663f3baf29ac6",
+      "status": "translated",
+      "translation": "Net line closes the tradeoff. Per-skill instructions may add stricter rules."
+    },
+    {
+      "block_id": "canary-0095-heading",
+      "source_hash": "b38940811b2747200dadd1c59c355fb329d9fb5308ee6a727c60e01aad057cc8",
+      "status": "translated",
+      "translation": "### 处理 5 个以上选项：拆分，绝不丢弃"
+    },
+    {
+      "block_id": "canary-0096-paragraph",
+      "source_hash": "a2b5e2132bd2626b3629383585d4847dc52d07ae84676f7748fde93adc5e7ee9",
+      "status": "translated",
+      "translation": "AskUserQuestion caps every call at **4 options**. With 5+ real options, NEVER\ndrop, merge, or silently defer one to fit. Pick a compliant shape:"
+    },
+    {
+      "block_id": "canary-0097-paragraph",
+      "source_hash": "710380c4ff2c4c1583590c60f0eb4e9bf758c090b8ec95545031b479c73f31ed",
+      "status": "translated",
+      "translation": "- **按不超过 4 个一组分批**：用于相互连贯的替代项（例如版本升级、布局变体）。先调用一次；只有当前 4 个都不合适时，才显露第 5 个。\n- **按选项拆分**：用于彼此独立的范围项（例如“发布 E1..E6 吗？”）。依次发起 N 次调用，每次一个选项。不确定时默认用这种方式。"
+    },
+    {
+      "block_id": "canary-0098-paragraph",
+      "source_hash": "d18a4c24281030d6efef8a1753f5298ca9a174576c837741979cb1ece70a32b2",
+      "status": "translated",
+      "translation": "按选项调用的形状：`D<N>.k` 标题（例如 D3.1..D3.5），每个选项的 ELI10、Recommendation、kind-note（不写完整性分数，因为 Include/Defer/Cut/Hold 是决策动作），以及 4 个桶：**A) Include**、**B) Defer**、**C) Cut**、**D) Hold**（停止链并讨论）。"
+    },
+    {
+      "block_id": "canary-0099-paragraph",
+      "source_hash": "6d14310a04141f936e62074acc5f3b466af70b9730304c809dc72c0cb2a8a18b",
+      "status": "translated",
+      "translation": "链条结束后，触发 `D<N>.final` 来校验组装后的选项集（重新提示依赖冲突）并确认是否交付。使用 `D<N>.revise-<k>` 可以修改某一个选项，而不必重新运行整条链。"
+    },
+    {
+      "block_id": "canary-0100-paragraph",
+      "source_hash": "08ee2556980d10f412efe4a0dc901233bedd0a465fa31968392d5a1dddca451c",
+      "status": "translated",
+      "translation": "For N>6, fire a `D<N>.0` meta-AskUserQuestion first (proceed / narrow / batch)."
+    }
+  ]
+}

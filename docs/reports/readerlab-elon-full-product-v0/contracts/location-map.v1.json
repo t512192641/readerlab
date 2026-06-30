@@ -1,0 +1,1461 @@
+{
+  "schema": "readerlab.location-map.v1",
+  "material": {
+    "id": "elon-book__readerlab-elon-full-product-v0",
+    "title": "埃隆之书",
+    "type": "book_epub_readerlab_experiment",
+    "target_package_id": "readerlab-elon-full-product-v0"
+  },
+  "locations": [
+    {
+      "location_id": "loc-source-editorial-boundary",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-4.xhtml",
+      "spine": "spine-006:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-4.xhtml",
+      "page": null,
+      "heading_path": [
+        "本书说明",
+        "本书说明"
+      ],
+      "block_id": "source.editorial_boundary",
+      "char_range": [
+        10,
+        503
+      ],
+      "text_preview": "说明本书由演讲、推文、访谈等材料编校，引用前需保留语境边界。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-purpose-value",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-10.xhtml",
+      "spine": "spine-012:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-10.xhtml",
+      "page": null,
+      "heading_path": [
+        "活出目标人生",
+        "创造价值"
+      ],
+      "block_id": "purpose.value_creation",
+      "char_range": [
+        59,
+        889
+      ],
+      "text_preview": "把人生和组织目标连接到创造实用价值，而非声名。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-purpose-future",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-10.xhtml",
+      "spine": "spine-012:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-10.xhtml",
+      "page": null,
+      "heading_path": [
+        "活出目标人生",
+        "为未来而战"
+      ],
+      "block_id": "purpose.future_fields",
+      "char_range": [
+        896,
+        1879
+      ],
+      "text_preview": "将互联网、可持续能源、太空探索等视作影响人类未来的领域。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-purpose-before-ready",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-10.xhtml",
+      "spine": "spine-012:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-10.xhtml",
+      "page": null,
+      "heading_path": [
+        "活出目标人生",
+        "在世界准备好之前出发"
+      ],
+      "block_id": "purpose.before_market_need",
+      "char_range": [
+        2530,
+        2783
+      ],
+      "text_preview": "特斯拉早期需求反馈并不明显，颠覆性产品常先于市场显性需要。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-first-principles",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-11.xhtml",
+      "spine": "spine-013:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-11.xhtml",
+      "page": null,
+      "heading_path": [
+        "物理学家式思考",
+        "第一性原理思维"
+      ],
+      "block_id": "method.first_principles",
+      "char_range": [
+        902,
+        2925
+      ],
+      "text_preview": "用物理学式第一性原理替代单纯类比推理。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-error-reduction",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-11.xhtml",
+      "spine": "spine-013:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-11.xhtml",
+      "page": null,
+      "heading_path": [
+        "物理学家式思考",
+        "追求减少错误"
+      ],
+      "block_id": "method.error_reduction",
+      "char_range": [
+        4270,
+        8619
+      ],
+      "text_preview": "把信念强度和证据力度绑定，持续减少错误。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-engineering-value",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-12.xhtml",
+      "spine": "spine-014:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-12.xhtml",
+      "page": null,
+      "heading_path": [
+        "工程学的价值",
+        "工程学创造价值"
+      ],
+      "block_id": "engineering.value_execution",
+      "char_range": [
+        2425,
+        4427
+      ],
+      "text_preview": "创意不稀缺，真正困难在工程执行、量产和现金流。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-responsibility",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-14.xhtml",
+      "spine": "spine-016:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-14.xhtml",
+      "page": null,
+      "heading_path": [
+        "成功之道",
+        "承担责任"
+      ],
+      "block_id": "execution.ceo_responsibility",
+      "char_range": [
+        41,
+        486
+      ],
+      "text_preview": "CEO 不是身份奖励，而是处理最棘手问题的责任位置。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-deep-understanding",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-14.xhtml",
+      "spine": "spine-016:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-14.xhtml",
+      "page": null,
+      "heading_path": [
+        "成功之道",
+        "掌握深度理解"
+      ],
+      "block_id": "execution.deep_understanding",
+      "char_range": [
+        494,
+        1041
+      ],
+      "text_preview": "重大技术领域需要物理、经济和产品的深度理解。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-factory-floor",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-14.xhtml",
+      "spine": "spine-016:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-14.xhtml",
+      "page": null,
+      "heading_path": [
+        "成功之道",
+        "睡在工厂车间"
+      ],
+      "block_id": "execution.emergency_work_boundary",
+      "char_range": [
+        1049,
+        1515
+      ],
+      "text_preview": "工厂地板和百小时工作被限定为危机状态，不应常态化。",
+      "extraction_confidence": "high",
+      "review_required": true
+    },
+    {
+      "location_id": "loc-team-goal",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-15.xhtml",
+      "spine": "spine-017:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-15.xhtml",
+      "page": null,
+      "heading_path": [
+        "打造卓越团队",
+        "目标导向的团队"
+      ],
+      "block_id": "team.goal_aligned",
+      "char_range": [
+        69,
+        716
+      ],
+      "text_preview": "公司是一群人围绕共同目标创造产品或服务。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-builder-culture",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-15.xhtml",
+      "spine": "spine-017:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-15.xhtml",
+      "page": null,
+      "heading_path": [
+        "打造卓越团队",
+        "创建建设者文化"
+      ],
+      "block_id": "team.builder_culture",
+      "char_range": [
+        725,
+        1609
+      ],
+      "text_preview": "建设者文化重视动手、现实反馈和产品结果。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-org-barrier",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "spine": "spine-018:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "page": null,
+      "heading_path": [
+        "组织设计",
+        "破除组织壁垒"
+      ],
+      "block_id": "org.remove_barriers",
+      "char_range": [
+        45,
+        1248
+      ],
+      "text_preview": "产品缺陷会暴露组织缺陷，沟通路径不应被层级阻断。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-org-communication",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "spine": "spine-018:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "page": null,
+      "heading_path": [
+        "组织设计",
+        "简化沟通"
+      ],
+      "block_id": "org.shortest_path_communication",
+      "char_range": [
+        1254,
+        1779
+      ],
+      "text_preview": "问题应直接流向能解决它的人，而非沿层级转述。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-algorithm-way",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "spine": "spine-018:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "page": null,
+      "heading_path": [
+        "组织设计",
+        "算法之道"
+      ],
+      "block_id": "org.algorithm_way",
+      "char_range": [
+        4202,
+        8039
+      ],
+      "text_preview": "算法之道按质疑需求、删除、简化、加速、自动化排序。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-urgency-speed",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-17.xhtml",
+      "spine": "spine-019:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-17.xhtml",
+      "page": null,
+      "heading_path": [
+        "极致紧迫感",
+        "速度即是最强攻防"
+      ],
+      "block_id": "speed.offense_defense",
+      "char_range": [
+        202,
+        961
+      ],
+      "text_preview": "速度被写成组织攻防能力，不是情绪化催促。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-parallel-processing",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-17.xhtml",
+      "spine": "spine-019:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-17.xhtml",
+      "page": null,
+      "heading_path": [
+        "极致紧迫感",
+        "并行处理"
+      ],
+      "block_id": "speed.parallel_work",
+      "char_range": [
+        967,
+        1280
+      ],
+      "text_preview": "并行推进用于压缩复杂任务周期。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-factory-as-product",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-18.xhtml",
+      "spine": "spine-020:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-18.xhtml",
+      "page": null,
+      "heading_path": [
+        "我们必须实干制造",
+        "工厂即产品"
+      ],
+      "block_id": "manufacturing.factory_as_product",
+      "char_range": [
+        518,
+        962
+      ],
+      "text_preview": "工厂被视作制造产品的机器，交付系统也是产品能力。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-manufacturing-bottleneck",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-18.xhtml",
+      "spine": "spine-020:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-18.xhtml",
+      "page": null,
+      "heading_path": [
+        "我们必须实干制造",
+        "攻克瓶颈"
+      ],
+      "block_id": "manufacturing.bottleneck",
+      "char_range": [
+        968,
+        1536
+      ],
+      "text_preview": "量产瓶颈会决定系统产出，原型和规模化是不同难题。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-manufacturing-moat",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-18.xhtml",
+      "spine": "spine-020:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-18.xhtml",
+      "page": null,
+      "heading_path": [
+        "我们必须实干制造",
+        "制造即护城河"
+      ],
+      "block_id": "manufacturing.moat",
+      "char_range": [
+        1544,
+        2632
+      ],
+      "text_preview": "制造能力构成难以复制的长期能力。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-zip2",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-20.xhtml",
+      "spine": "spine-022:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-20.xhtml",
+      "page": null,
+      "heading_path": [
+        "成为创始人",
+        "创办Zip2公司"
+      ],
+      "block_id": "case.zip2_start",
+      "char_range": [
+        1664,
+        3472
+      ],
+      "text_preview": "Zip2 是早期创业和地图/目录/在线发布软件案例。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-paypal-reinvest",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-20.xhtml",
+      "spine": "spine-022:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-20.xhtml",
+      "page": null,
+      "heading_path": [
+        "成为创始人",
+        "再次全情投入（将Zip2公司收益投入PayPal）"
+      ],
+      "block_id": "case.paypal_reinvest",
+      "char_range": [
+        3499,
+        4690
+      ],
+      "text_preview": "Zip2 收益被继续投入 PayPal/X.com，形成连续创业链。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-founder-listen",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-20.xhtml",
+      "spine": "spine-022:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-20.xhtml",
+      "page": null,
+      "heading_path": [
+        "成为创始人",
+        "善于倾听，快速修正"
+      ],
+      "block_id": "case.listen_fast_correct",
+      "char_range": [
+        4701,
+        5496
+      ],
+      "text_preview": "创业案例中强调听取反馈并快速修正。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-tesla-mission",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-21.xhtml",
+      "spine": "spine-023:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-21.xhtml",
+      "page": null,
+      "heading_path": [
+        "打造特斯拉",
+        "守护地球的使命"
+      ],
+      "block_id": "case.tesla_mission",
+      "char_range": [
+        95,
+        1563
+      ],
+      "text_preview": "Tesla 案例把汽车公司放在可持续能源使命下理解。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-tesla-prototype",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-21.xhtml",
+      "spine": "spine-023:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-21.xhtml",
+      "page": null,
+      "heading_path": [
+        "打造特斯拉",
+        "打造首台原型"
+      ],
+      "block_id": "case.tesla_prototype",
+      "char_range": [
+        2084,
+        3362
+      ],
+      "text_preview": "Tesla 原型和产品化是使命落地的早期桥段。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-tesla-survival",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-21.xhtml",
+      "spine": "spine-023:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-21.xhtml",
+      "page": null,
+      "heading_path": [
+        "打造特斯拉",
+        "让特斯拉存活"
+      ],
+      "block_id": "case.tesla_survival",
+      "char_range": [
+        4969,
+        5997
+      ],
+      "text_preview": "Tesla 生存压力检验资金、产品和执行能力。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spacex-start",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-22.xhtml",
+      "spine": "spine-024:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-22.xhtml",
+      "page": null,
+      "heading_path": [
+        "创建太空探索技术公司",
+        "创建太空探索技术公司"
+      ],
+      "block_id": "case.spacex_start",
+      "char_range": [
+        22,
+        72
+      ],
+      "text_preview": "SpaceX 是把太空文明目标转为公司的起点。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spacex-first-principles",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-22.xhtml",
+      "spine": "spine-024:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-22.xhtml",
+      "page": null,
+      "heading_path": [
+        "创建太空探索技术公司",
+        "基于第一性原理的火箭"
+      ],
+      "block_id": "case.spacex_first_principles",
+      "char_range": [
+        3354,
+        4532
+      ],
+      "text_preview": "火箭成本问题被放回第一性原理和工程约束中重算。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spacex-nasa",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-22.xhtml",
+      "spine": "spine-024:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-22.xhtml",
+      "page": null,
+      "heading_path": [
+        "创建太空探索技术公司",
+        "赢得NASA合同"
+      ],
+      "block_id": "case.spacex_nasa_contract",
+      "char_range": [
+        5404,
+        5930
+      ],
+      "text_preview": "NASA 合同是 SpaceX 生存和可信度的关键结果节点。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-company-progress",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-24.xhtml",
+      "spine": "spine-026:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-24.xhtml",
+      "page": null,
+      "heading_path": [
+        "建设我们的未来",
+        "企业驱动进步"
+      ],
+      "block_id": "future.company_progress",
+      "char_range": [
+        3387,
+        5069
+      ],
+      "text_preview": "技术不会自动进步，企业和工程人才推动实际改进。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-abundance-ai",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-25.xhtml",
+      "spine": "spine-027:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-25.xhtml",
+      "page": null,
+      "heading_path": [
+        "丰饶时代",
+        "富足时代"
+      ],
+      "block_id": "future.abundance_ai_robotics",
+      "char_range": [
+        10,
+        69
+      ],
+      "text_preview": "AI 与机器人被放入富足时代的未来叙事。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-autonomy-risk",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-25.xhtml",
+      "spine": "spine-027:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-25.xhtml",
+      "page": null,
+      "heading_path": [
+        "丰饶时代",
+        "最后的人类驾驶员"
+      ],
+      "block_id": "future.autonomy_risk_value",
+      "char_range": [
+        3173,
+        4755
+      ],
+      "text_preview": "自动驾驶被连接到安全、价值和监管问题。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-war-risk",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-26.xhtml",
+      "spine": "spine-028:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-26.xhtml",
+      "page": null,
+      "heading_path": [
+        "我们的生存风险",
+        "第三次世界大战"
+      ],
+      "block_id": "risk.civilization_war",
+      "char_range": [
+        1092,
+        2025
+      ],
+      "text_preview": "战争被列为文明存续级风险。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-regulatory-buildup",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-26.xhtml",
+      "spine": "spine-028:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-26.xhtml",
+      "page": null,
+      "heading_path": [
+        "我们的生存风险",
+        "监管积弊"
+      ],
+      "block_id": "risk.regulatory_buildup",
+      "char_range": [
+        2031,
+        3287
+      ],
+      "text_preview": "监管积累可能保护安全，也可能阻碍创新，需边界判断。",
+      "extraction_confidence": "high",
+      "review_required": true
+    },
+    {
+      "location_id": "loc-ai-risk",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-26.xhtml",
+      "spine": "spine-028:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-26.xhtml",
+      "page": null,
+      "heading_path": [
+        "我们的生存风险",
+        "未对齐的人工超级智能"
+      ],
+      "block_id": "risk.unaligned_ai",
+      "char_range": [
+        4104,
+        6494
+      ],
+      "text_preview": "AI 风险需要发展速度、监管观察和脑机融合等边界思考。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-asteroid-risk",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-26.xhtml",
+      "spine": "spine-028:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-26.xhtml",
+      "page": null,
+      "heading_path": [
+        "我们的生存风险",
+        "小行星与彗星"
+      ],
+      "block_id": "risk.asteroid_comet",
+      "char_range": [
+        8269,
+        11836
+      ],
+      "text_preview": "自然灾害被用来说明单星球文明的脆弱性。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-multiplanet-thesis",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-27.xhtml",
+      "spine": "spine-029:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-27.xhtml",
+      "page": null,
+      "heading_path": [
+        "成为多行星物种",
+        "实现多行星化是演化级事件"
+      ],
+      "block_id": "future.multiplanet_evolutionary",
+      "char_range": [
+        83,
+        1538
+      ],
+      "text_preview": "多行星化被提升到生命演化里程碑。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-mars-gate",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-27.xhtml",
+      "spine": "spine-029:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-27.xhtml",
+      "page": null,
+      "heading_path": [
+        "成为多行星物种",
+        "火星之门"
+      ],
+      "block_id": "future.mars_gate",
+      "char_range": [
+        2299,
+        4328
+      ],
+      "text_preview": "星舰基地被放入把生命送往异星的工程通道。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-mars-cost",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-27.xhtml",
+      "spine": "spine-029:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-27.xhtml",
+      "page": null,
+      "heading_path": [
+        "成为多行星物种",
+        "火星之门"
+      ],
+      "block_id": "future.mars_payload_cost",
+      "char_range": [
+        2299,
+        4328
+      ],
+      "text_preview": "火星城市能否成立取决于运输成本和规模化能力。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-new-world-boundary",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-27.xhtml",
+      "spine": "spine-029:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-27.xhtml",
+      "page": null,
+      "heading_path": [
+        "成为多行星物种",
+        "建设新世界"
+      ],
+      "block_id": "future.mars_not_escape_luxury",
+      "char_range": [
+        4335,
+        6154
+      ],
+      "text_preview": "火星不是富人度假舱口，而是高风险、高劳动的新文明建设。",
+      "extraction_confidence": "high",
+      "review_required": true
+    },
+    {
+      "location_id": "loc-core-laws-algorithm",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-29.xhtml",
+      "spine": "spine-031:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-29.xhtml",
+      "page": null,
+      "heading_path": [
+        "69项核心马斯克法则",
+        "69项 核心马斯克法则"
+      ],
+      "block_id": "appendix.core_laws_algorithm",
+      "char_range": [
+        23,
+        1307
+      ],
+      "text_preview": "附录把算法之道、制造、速度等压缩成复盘清单。",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-001-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/cover.xhtml",
+      "spine": "spine-001:OEBPS/cover.xhtml",
+      "page": null,
+      "heading_path": [
+        "封面"
+      ],
+      "block_id": "spine.001.title",
+      "char_range": [
+        0,
+        2
+      ],
+      "text_preview": "结构标题：封面",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-002-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101.xhtml",
+      "spine": "spine-002:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101.xhtml",
+      "page": null,
+      "heading_path": [
+        "目录"
+      ],
+      "block_id": "spine.002.title",
+      "char_range": [
+        0,
+        47
+      ],
+      "text_preview": "结构标题：目录",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-003-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-1.xhtml",
+      "spine": "spine-003:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-1.xhtml",
+      "page": null,
+      "heading_path": [
+        "目录"
+      ],
+      "block_id": "spine.003.title",
+      "char_range": [
+        0,
+        56
+      ],
+      "text_preview": "结构标题：目录",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-004-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-2.xhtml",
+      "spine": "spine-004:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-2.xhtml",
+      "page": null,
+      "heading_path": [
+        "目录"
+      ],
+      "block_id": "spine.004.title",
+      "char_range": [
+        0,
+        25
+      ],
+      "text_preview": "结构标题：目录",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-005-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-3.xhtml",
+      "spine": "spine-005:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-3.xhtml",
+      "page": null,
+      "heading_path": [
+        "目录"
+      ],
+      "block_id": "spine.005.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：目录",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-006-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-4.xhtml",
+      "spine": "spine-006:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-4.xhtml",
+      "page": null,
+      "heading_path": [
+        "本书说明"
+      ],
+      "block_id": "spine.006.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：本书说明",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-007-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-5.xhtml",
+      "spine": "spine-007:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-5.xhtml",
+      "page": null,
+      "heading_path": [
+        "前言"
+      ],
+      "block_id": "spine.007.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：前言",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-008-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-6.xhtml",
+      "spine": "spine-008:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-6.xhtml",
+      "page": null,
+      "heading_path": [
+        "埃里克欢迎辞"
+      ],
+      "block_id": "spine.008.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：埃里克欢迎辞",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-009-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-7.xhtml",
+      "spine": "spine-009:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-7.xhtml",
+      "page": null,
+      "heading_path": [
+        "第一部分"
+      ],
+      "block_id": "spine.009.title",
+      "char_range": [
+        0,
+        116
+      ],
+      "text_preview": "结构标题：第一部分",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-010-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-8.xhtml",
+      "spine": "spine-010:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-8.xhtml",
+      "page": null,
+      "heading_path": [
+        "第一部分"
+      ],
+      "block_id": "spine.010.title",
+      "char_range": [
+        0,
+        20
+      ],
+      "text_preview": "结构标题：第一部分",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-011-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-9.xhtml",
+      "spine": "spine-011:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-9.xhtml",
+      "page": null,
+      "heading_path": [
+        "第一部分"
+      ],
+      "block_id": "spine.011.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：第一部分",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-012-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-10.xhtml",
+      "spine": "spine-012:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-10.xhtml",
+      "page": null,
+      "heading_path": [
+        "活出目标人生"
+      ],
+      "block_id": "spine.012.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：活出目标人生",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-013-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-11.xhtml",
+      "spine": "spine-013:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-11.xhtml",
+      "page": null,
+      "heading_path": [
+        "物理学家式思考"
+      ],
+      "block_id": "spine.013.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：物理学家式思考",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-014-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-12.xhtml",
+      "spine": "spine-014:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-12.xhtml",
+      "page": null,
+      "heading_path": [
+        "工程学的价值"
+      ],
+      "block_id": "spine.014.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：工程学的价值",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-015-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-13.xhtml",
+      "spine": "spine-015:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-13.xhtml",
+      "page": null,
+      "heading_path": [
+        "第二部分"
+      ],
+      "block_id": "spine.015.title",
+      "char_range": [
+        0,
+        99
+      ],
+      "text_preview": "结构标题：第二部分",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-016-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-14.xhtml",
+      "spine": "spine-016:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-14.xhtml",
+      "page": null,
+      "heading_path": [
+        "成功之道"
+      ],
+      "block_id": "spine.016.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：成功之道",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-017-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-15.xhtml",
+      "spine": "spine-017:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-15.xhtml",
+      "page": null,
+      "heading_path": [
+        "打造卓越团队"
+      ],
+      "block_id": "spine.017.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：打造卓越团队",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-018-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "spine": "spine-018:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "page": null,
+      "heading_path": [
+        "组织设计"
+      ],
+      "block_id": "spine.018.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：组织设计",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-019-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-17.xhtml",
+      "spine": "spine-019:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-17.xhtml",
+      "page": null,
+      "heading_path": [
+        "极致紧迫感"
+      ],
+      "block_id": "spine.019.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：极致紧迫感",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-020-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-18.xhtml",
+      "spine": "spine-020:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-18.xhtml",
+      "page": null,
+      "heading_path": [
+        "我们必须实干制造"
+      ],
+      "block_id": "spine.020.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：我们必须实干制造",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-021-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-19.xhtml",
+      "spine": "spine-021:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-19.xhtml",
+      "page": null,
+      "heading_path": [
+        "第三部分"
+      ],
+      "block_id": "spine.021.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：第三部分",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-022-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-20.xhtml",
+      "spine": "spine-022:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-20.xhtml",
+      "page": null,
+      "heading_path": [
+        "成为创始人"
+      ],
+      "block_id": "spine.022.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：成为创始人",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-023-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-21.xhtml",
+      "spine": "spine-023:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-21.xhtml",
+      "page": null,
+      "heading_path": [
+        "打造特斯拉"
+      ],
+      "block_id": "spine.023.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：打造特斯拉",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-024-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-22.xhtml",
+      "spine": "spine-024:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-22.xhtml",
+      "page": null,
+      "heading_path": [
+        "创建太空探索技术公司"
+      ],
+      "block_id": "spine.024.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：创建太空探索技术公司",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-025-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-23.xhtml",
+      "spine": "spine-025:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-23.xhtml",
+      "page": null,
+      "heading_path": [
+        "第四部分"
+      ],
+      "block_id": "spine.025.title",
+      "char_range": [
+        0,
+        93
+      ],
+      "text_preview": "结构标题：第四部分",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-026-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-24.xhtml",
+      "spine": "spine-026:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-24.xhtml",
+      "page": null,
+      "heading_path": [
+        "建设我们的未来"
+      ],
+      "block_id": "spine.026.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：建设我们的未来",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-027-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-25.xhtml",
+      "spine": "spine-027:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-25.xhtml",
+      "page": null,
+      "heading_path": [
+        "丰饶时代"
+      ],
+      "block_id": "spine.027.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：丰饶时代",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-028-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-26.xhtml",
+      "spine": "spine-028:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-26.xhtml",
+      "page": null,
+      "heading_path": [
+        "我们的生存风险"
+      ],
+      "block_id": "spine.028.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：我们的生存风险",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-029-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-27.xhtml",
+      "spine": "spine-029:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-27.xhtml",
+      "page": null,
+      "heading_path": [
+        "成为多行星物种"
+      ],
+      "block_id": "spine.029.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：成为多行星物种",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-030-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-28.xhtml",
+      "spine": "spine-030:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-28.xhtml",
+      "page": null,
+      "heading_path": [
+        "附加原则"
+      ],
+      "block_id": "spine.030.title",
+      "char_range": [
+        0,
+        9
+      ],
+      "text_preview": "结构标题：附加原则",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-031-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-29.xhtml",
+      "spine": "spine-031:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-29.xhtml",
+      "page": null,
+      "heading_path": [
+        "69项核心马斯克法则"
+      ],
+      "block_id": "spine.031.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：69项核心马斯克法则",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-032-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-30.xhtml",
+      "spine": "spine-032:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-30.xhtml",
+      "page": null,
+      "heading_path": [
+        "埃隆·马斯克年表"
+      ],
+      "block_id": "spine.032.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：埃隆·马斯克年表",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-033-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-31.xhtml",
+      "spine": "spine-033:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-31.xhtml",
+      "page": null,
+      "heading_path": [
+        "埃隆推荐书单"
+      ],
+      "block_id": "spine.033.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：埃隆推荐书单",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-034-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-32.xhtml",
+      "spine": "spine-034:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-32.xhtml",
+      "page": null,
+      "heading_path": [
+        "延伸阅读"
+      ],
+      "block_id": "spine.034.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：延伸阅读",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-035-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-33.xhtml",
+      "spine": "spine-035:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-33.xhtml",
+      "page": null,
+      "heading_path": [
+        "致谢"
+      ],
+      "block_id": "spine.035.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：致谢",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-spine-036-title",
+      "source_id": "elon-epub-original",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-34.xhtml",
+      "spine": "spine-036:OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-34.xhtml",
+      "page": null,
+      "heading_path": [
+        "关于作者"
+      ],
+      "block_id": "spine.036.title",
+      "char_range": [
+        0,
+        120
+      ],
+      "text_preview": "结构标题：关于作者",
+      "extraction_confidence": "high",
+      "review_required": false
+    }
+  ],
+  "source_scope": {
+    "coverage_status": "full",
+    "coverage_note": "All 36 spine titles are registered; high-value claims use selected heading/block/char refs. Structure-only claims may use title-level refs."
+  },
+  "confidence": {
+    "level": "medium",
+    "basis": [
+      "Heading paths and char ranges are computed from cleaned XHTML text.",
+      "Preview fields are paraphrased to avoid copying long source passages."
+    ],
+    "known_uncertainties": [
+      "Char ranges are offsets in cleaned extracted text, not original binary byte offsets or printed page numbers."
+    ]
+  },
+  "review_items": [
+    {
+      "id": "loc-r01",
+      "status": "open",
+      "question": "人工审查应抽查若干 char_range 是否能在清洗文本中复现。"
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending"
+}

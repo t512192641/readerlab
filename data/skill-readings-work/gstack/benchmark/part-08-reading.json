@@ -1,0 +1,99 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "package": "gstack",
+  "skill": "benchmark",
+  "source_file": "SKILL.md",
+  "part": 8,
+  "blocks": [
+    {
+      "block_id": "benchmark-0141-paragraph",
+      "source_hash": "3033e040bf0e2a510c2805f6e9a5f1917a3829e18082e7e315405a1969914531",
+      "status": "translated",
+      "translation": "如果 baseline 存在，就把当前指标与它进行比较："
+    },
+    {
+      "block_id": "benchmark-0142-code-block",
+      "source_hash": "b92de5b79e906f07eae3c1cbe71d1936f254a36ae0c70972020a05e710598e73",
+      "status": "translated",
+      "translation": "```\n性能报告 — [url]\n══════════════════════════\n分支：[current-branch] 对比 baseline（[baseline-branch]）\n\n页面：/\n─────────────────────────────────────────────────────\n指标                Baseline    当前        变化     状态\n────────            ────────    ───────     ─────    ──────\nTTFB                120ms       135ms       +15ms    OK\nFCP                 450ms       480ms       +30ms    OK\nLCP                 800ms       1600ms      +800ms   REGRESSION\nDOM Interactive     600ms       650ms       +50ms    OK\nDOM Complete        1200ms      1350ms      +150ms   WARNING\nFull Load           1400ms      2100ms      +700ms   REGRESSION\nTotal Requests      42          58          +16      WARNING\nTransfer Size       1.2MB       1.8MB       +0.6MB   REGRESSION\nJS Bundle           450KB       720KB       +270KB   REGRESSION\nCSS Bundle          85KB        88KB        +3KB     OK\n\n检测到回退：3\n  [1] LCP 翻倍（800ms → 1600ms）— 可能是新增了大图片或阻塞资源\n  [2] 总传输量 +50%（1.2MB → 1.8MB）— 检查新的 JS bundle\n  [3] JS bundle +60%（450KB → 720KB）— 可能是新增依赖，或缺少 tree-shaking\n```"
+    },
+    {
+      "block_id": "benchmark-0143-paragraph",
+      "source_hash": "43e9c0436db0dbce38151285a6cd4fdcd197891a868adb6bba702555af35b771",
+      "status": "translated",
+      "translation": "**回退阈值：**\n- 时间指标：增长超过 50%，或绝对增长超过 500ms = REGRESSION\n- 时间指标：增长超过 20% = WARNING\n- Bundle 大小：增长超过 25% = REGRESSION\n- Bundle 大小：增长超过 10% = WARNING\n- 请求数量：增长超过 30% = WARNING"
+    },
+    {
+      "block_id": "benchmark-0144-heading",
+      "source_hash": "a2be41047ce47de62562ea41a2283b931a75b35e7344f26397813cc062dd3080",
+      "status": "translated",
+      "translation": "### 阶段 6：最慢资源"
+    },
+    {
+      "block_id": "benchmark-0145-code-block",
+      "source_hash": "5cbd893b2a2797ddc6b46e12dbf320fa4c0a99366d752951a118e1a69c57be6f",
+      "status": "translated",
+      "translation": "```\n最慢的前 10 个资源\n═════════════════════════\n#   资源                      类型      大小      耗时\n1   vendor.chunk.js          script    320KB     480ms\n2   main.js                  script    250KB     320ms\n3   hero-image.webp          img       180KB     280ms\n4   analytics.js             script    45KB      250ms    ← 第三方\n5   fonts/inter-var.woff2    font      95KB      180ms\n...\n\n建议：\n- vendor.chunk.js：考虑 code-splitting — 320KB 对首屏加载来说偏大\n- analytics.js：使用 async/defer 加载 — 它阻塞渲染 250ms\n- hero-image.webp：添加 width/height 以避免 CLS，并考虑 lazy loading\n```"
+    },
+    {
+      "block_id": "benchmark-0146-heading",
+      "source_hash": "482b9671054bf723f518d06b7fb95e43ba811fdb638bb298f2be8970dc9db460",
+      "status": "translated",
+      "translation": "### 阶段 7：性能预算"
+    },
+    {
+      "block_id": "benchmark-0147-paragraph",
+      "source_hash": "3fb1932c9ad390fbd4cb59d8bab8ed03f60be99f00a1b3a5dbaa76c8683d6911",
+      "status": "translated",
+      "translation": "按行业预算进行检查："
+    },
+    {
+      "block_id": "benchmark-0148-code-block",
+      "source_hash": "eba47e1e6c7752903a56faf8b4ec21536f6bcc2a7da513191fea30d00b73fc32",
+      "status": "translated",
+      "translation": "```\n性能预算检查\n════════════════════════\n指标                预算        实际        状态\n────────            ──────      ──────      ──────\nFCP                 < 1.8s      0.48s       PASS\nLCP                 < 2.5s      1.6s        PASS\nTotal JS            < 500KB     720KB       FAIL\nTotal CSS           < 100KB     88KB        PASS\nTotal Transfer      < 2MB       1.8MB       WARNING (90%)\nHTTP Requests       < 50        58          FAIL\n\n等级：B（4/6 通过）\n```"
+    },
+    {
+      "block_id": "benchmark-0149-heading",
+      "source_hash": "089c297e09e8347bbeeb1d74af5afc7221d57fab0e0bddcce511614c67990982",
+      "status": "translated",
+      "translation": "### 阶段 8：趋势分析（--trend 模式）"
+    },
+    {
+      "block_id": "benchmark-0150-paragraph",
+      "source_hash": "186decee3bb036afa44175d07b0784ef565b8ba66c175295d81c78219121d155",
+      "status": "translated",
+      "translation": "加载历史 baseline 文件并展示趋势："
+    },
+    {
+      "block_id": "benchmark-0151-code-block",
+      "source_hash": "3bcedd592410bea7f6be0df18e9bd136564b4bf3173f9ff984d2eaa5dabc3a9b",
+      "status": "translated",
+      "translation": "```\n性能趋势（最近 5 次 benchmark）\n══════════════════════════════════════\n日期        FCP     LCP     Bundle    Requests    等级\n2026-03-10  420ms   750ms   380KB     38          A\n2026-03-12  440ms   780ms   410KB     40          A\n2026-03-14  450ms   800ms   450KB     42          A\n2026-03-16  460ms   850ms   520KB     48          B\n2026-03-18  480ms   1600ms  720KB     58          B\n\n趋势：性能正在变差。LCP 在 8 天内翻倍。\n      JS bundle 每周增长 50KB。需要调查。\n```"
+    },
+    {
+      "block_id": "benchmark-0152-heading",
+      "source_hash": "d6cd6d848c970eb351c4af54aecc9f6d98ce33bffb99e729d6af3356d2244eee",
+      "status": "translated",
+      "translation": "### 阶段 9：保存报告"
+    },
+    {
+      "block_id": "benchmark-0153-paragraph",
+      "source_hash": "2bb7c9e787ac8bd88c34f89d7e9bab1f7e8e585b0344d07e0fa6b01187534526",
+      "status": "translated",
+      "translation": "写入 `.gstack/benchmark-reports/{date}-benchmark.md` 和 `.gstack/benchmark-reports/{date}-benchmark.json`。"
+    },
+    {
+      "block_id": "benchmark-0154-heading",
+      "source_hash": "cd1d6fde9db54f2de8aa1a70080d36833b8d9260e00fa7510250243c29d22fd8",
+      "status": "translated",
+      "translation": "## 重要规则"
+    },
+    {
+      "block_id": "benchmark-0155-paragraph",
+      "source_hash": "84f8f7bab00433d4183ca616353208716138fc5ef153c53f35d0c9a6a83c9489",
+      "status": "translated",
+      "translation": "- **测量，不要猜。** 使用真实的 performance.getEntries() 数据，不要使用估算。\n- **Baseline 是必要前提。** 没有 baseline，你可以报告绝对数字，但无法检测回退。始终鼓励捕获 baseline。\n- **使用相对阈值，不用绝对阈值。** 2000ms 的加载时间对复杂 dashboard 来说可以接受，但对 landing page 来说很糟。要与你自己的 baseline 比较。\n- **第三方脚本是背景信息。** 标记它们，但用户无法修复 Google Analytics 变慢的问题。建议要聚焦在 first-party 资源上。\n- **Bundle 大小是领先指标。** 加载时间会随网络变化。Bundle 大小是确定性的。要严格持续跟踪。\n- **只读。** 生成报告。除非用户明确要求，否则不要修改代码。"
+    }
+  ]
+}

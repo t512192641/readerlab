@@ -1,0 +1,129 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "package": "gstack",
+  "skill": "make-pdf",
+  "source_file": "SKILL.md",
+  "part": 2,
+  "blocks": [
+    {
+      "block_id": "make-pdf-0021-paragraph",
+      "source_hash": "b998deba3c7b80dbaeb39ac912509a4f3cb1f2876009f2e6ecb1282b7fbbe817",
+      "status": "translated",
+      "translation": "如果输出显示 `JUST_UPGRADED <from> <to>`：打印原始英文状态句 `Running gstack v{to} (just updated!)`。如果 `SPAWNED_SESSION` 为 true，则跳过功能发现。"
+    },
+    {
+      "block_id": "make-pdf-0022-paragraph",
+      "source_hash": "87d48454684364c0a77bf8457cb9977e885a27f9fa840bd5df05da259231f2d5",
+      "status": "translated",
+      "translation": "功能发现，每个会话最多提示一次：\n- 缺少 `~/.claude/skills/gstack/.feature-prompted-continuous-checkpoint`：通过 AskUserQuestion 询问是否启用连续 checkpoint 自动提交。如果接受，运行 `~/.claude/skills/gstack/bin/gstack-config set checkpoint_mode continuous`。始终 touch 这个 marker。\n- 缺少 `~/.claude/skills/gstack/.feature-prompted-model-overlay`：告知原始英文提示 `Model overlays are active. MODEL_OVERLAY shows the patch.` 始终 touch 这个 marker。"
+    },
+    {
+      "block_id": "make-pdf-0023-paragraph",
+      "source_hash": "2383ebcc86083d85ac5e7531fb3a9066a1402d984c47da6810b6911bc3d192d1",
+      "status": "translated",
+      "translation": "升级提示结束后，继续执行工作流。"
+    },
+    {
+      "block_id": "make-pdf-0024-paragraph",
+      "source_hash": "41b1cd7d34aae24c172c479d1e25661ae94672fdee796ee29beebbc7928fd84f",
+      "status": "translated",
+      "translation": "如果 `WRITING_STYLE_PENDING` 是 `yes`：就写作风格询问一次："
+    },
+    {
+      "block_id": "make-pdf-0025-paragraph",
+      "source_hash": "ec0ef0ebfb8c3cd78cd790dd97dc7687cfd4b375c42742a0c7f4049970048381",
+      "status": "translated",
+      "translation": "> v1 prompts 更简单：第一次使用时解释术语、问题围绕结果来问、文字更短。保留默认风格，还是恢复 terse？"
+    },
+    {
+      "block_id": "make-pdf-0026-paragraph",
+      "source_hash": "932b800bc0f52bb2199e1b54a43f9d718611a8633100ecf6b664a235b8851907",
+      "status": "translated",
+      "translation": "选项：\n- A) 保留新的默认风格（推荐，好的写作对每个人都有帮助）\n- B) 恢复 V0 文风，将 `explain_level` 设置为 `terse`"
+    },
+    {
+      "block_id": "make-pdf-0027-paragraph",
+      "source_hash": "576c58d79465dbdf25629ee69e27aa5b23faa72abb64f1d3727eff50646eb950",
+      "status": "translated",
+      "translation": "如果选择 A：保持 `explain_level` 不设置（默认值为 `default`）。\n如果选择 B：运行 `~/.claude/skills/gstack/bin/gstack-config set explain_level terse`。"
+    },
+    {
+      "block_id": "make-pdf-0028-paragraph",
+      "source_hash": "bdba758df114204973d141202d452863a6c7146b58c5428896aa87eda78d21e0",
+      "status": "translated",
+      "translation": "无论选择什么，都始终运行："
+    },
+    {
+      "block_id": "make-pdf-0029-code-block",
+      "source_hash": "f7546f65bad271f93e2e9a51f95f54cdc5c96ef3bc689ae5343cba2ae43c4f85",
+      "status": "translated",
+      "translation": "```bash\nrm -f ~/.gstack/.writing-style-prompt-pending\ntouch ~/.gstack/.writing-style-prompted\n```"
+    },
+    {
+      "block_id": "make-pdf-0030-paragraph",
+      "source_hash": "4689987bfeb3f4d2244b003dbe5850128404d0b01988ef2b73dd88caa9671428",
+      "status": "translated",
+      "translation": "如果 `WRITING_STYLE_PENDING` 为 `no`，则跳过。"
+    },
+    {
+      "block_id": "make-pdf-0031-paragraph",
+      "source_hash": "3070366727c055efc95d138ca1890ecaaa421375f512b8d2a3e9081cd0f9f8ca",
+      "status": "translated",
+      "translation": "如果 `LAKE_INTRO` 为 `no`：说“gstack 遵循 **Boil the Ocean** 原则，也就是当 AI 让边际成本接近于零时，就把事情完整做完。阅读更多：https://garryslist.org/posts/boil-the-ocean” 然后询问是否打开："
+    },
+    {
+      "block_id": "make-pdf-0032-code-block",
+      "source_hash": "bffcc824e63bc1f8f2a35384c726c128873da729e9702db53ca0006475bf1511",
+      "status": "translated",
+      "translation": "```bash\nopen https://garryslist.org/posts/boil-the-ocean\ntouch ~/.gstack/.completeness-intro-seen\n```"
+    },
+    {
+      "block_id": "make-pdf-0033-paragraph",
+      "source_hash": "b8ff8939e7ba81000d8b812415f9566d4152f47576abdb114aba800b0e1687c3",
+      "status": "translated",
+      "translation": "只有用户同意时才运行 `open`。始终运行 `touch`。"
+    },
+    {
+      "block_id": "make-pdf-0034-paragraph",
+      "source_hash": "f4625eb928edb6ca458e9c5f80a9627e52f2cbce52f459e20e701e981a7bcadd",
+      "status": "translated",
+      "translation": "如果 `TEL_PROMPTED` 为 `no` 且 `LAKE_INTRO` 为 `yes`：通过 AskUserQuestion 询问一次 telemetry："
+    },
+    {
+      "block_id": "make-pdf-0035-paragraph",
+      "source_hash": "aae80c47beff8b8fb246524f1080c82f1f12e9559287c92fbaa7a3461bdc30f1",
+      "status": "translated",
+      "translation": "> 帮助 gstack 变得更好。只分享使用数据：skill、duration、crashes、stable device ID。不包含代码或文件路径。你的 repo 名称只会记录在本地，在任何上传前都会被去除。"
+    },
+    {
+      "block_id": "make-pdf-0036-paragraph",
+      "source_hash": "d3c66c7356854c6fb53c54a532a454ac3abcff0bcae4bcacd034117b8ade1abe",
+      "status": "translated",
+      "translation": "选项：\n- A) 帮助 gstack 变得更好！（推荐）\n- B) 不用了，谢谢"
+    },
+    {
+      "block_id": "make-pdf-0037-paragraph",
+      "source_hash": "cdfdbed931341989c499ecdb9860dd12c73bce5c965e382900c27e809ffbd224",
+      "status": "translated",
+      "translation": "如果选择 A：运行 `~/.claude/skills/gstack/bin/gstack-config set telemetry community`"
+    },
+    {
+      "block_id": "make-pdf-0038-paragraph",
+      "source_hash": "45249ffb165663727f8bca2a70256b8a9f0ae7fb3d36c470a25a8ea1034f795e",
+      "status": "translated",
+      "translation": "如果选择 B：继续追问："
+    },
+    {
+      "block_id": "make-pdf-0039-paragraph",
+      "source_hash": "3ba94e947ce25819929356bc5cea9a6721cbeb1d5f595c326fb775b7db8d78fb",
+      "status": "translated",
+      "translation": "> 匿名模式只发送汇总使用数据，不发送唯一 ID。"
+    },
+    {
+      "block_id": "make-pdf-0040-paragraph",
+      "source_hash": "6bcd64ad49441fb26270dad89f57890e9d97f4d055abc7089253382fdfb8a092",
+      "status": "translated",
+      "translation": "选项：\n- A) 可以，anonymous 就行\n- B) 不用了，谢谢，完全关闭"
+    }
+  ]
+}

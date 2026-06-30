@@ -1,0 +1,129 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "package": "gstack",
+  "skill": "benchmark",
+  "source_file": "SKILL.md",
+  "part": 7,
+  "blocks": [
+    {
+      "block_id": "benchmark-0121-paragraph",
+      "source_hash": "a2997873d2e96ada7426d5370e805dae7b68ecbdc2ed8d770cde5d292b948944",
+      "status": "translated",
+      "translation": "与 /canary 相同：从导航中自动发现页面，或使用 `--pages`。"
+    },
+    {
+      "block_id": "benchmark-0122-paragraph",
+      "source_hash": "b2adda986e39f195eead1456c9b182648eddd42be5c354c0d05d9b1ca7ce3f11",
+      "status": "translated",
+      "translation": "如果处于 `--diff` 模式："
+    },
+    {
+      "block_id": "benchmark-0123-code-block",
+      "source_hash": "a22d8ea18556ef251dda8e74a2b6dc7a5d197b1e5ec9a92cd5bf999930b0c6d6",
+      "status": "translated",
+      "translation": "```bash\ngit diff $(gh pr view --json baseRefName -q .baseRefName 2>/dev/null || gh repo view --json defaultBranchRef -q .defaultBranchRef.name 2>/dev/null || echo main)...HEAD --name-only\n```"
+    },
+    {
+      "block_id": "benchmark-0124-heading",
+      "source_hash": "077bab83c581eb57e22988352e9707a2095298c67124e55ebcc597476e23a247",
+      "status": "translated",
+      "translation": "### 阶段 3：性能数据采集"
+    },
+    {
+      "block_id": "benchmark-0125-paragraph",
+      "source_hash": "3b4a8b74d5a171899b313c76e9589fd062f6d496e52909a5acc9c0f4262ab674",
+      "status": "translated",
+      "translation": "对每个页面，采集完整的性能指标："
+    },
+    {
+      "block_id": "benchmark-0126-code-block",
+      "source_hash": "6bcdbd263de2e62d5599ffa174980c4111170e03517a9e51511dce4334ae6b1e",
+      "status": "translated",
+      "translation": "```bash\n$B goto <page-url>\n$B perf\n```"
+    },
+    {
+      "block_id": "benchmark-0127-paragraph",
+      "source_hash": "160691fc51f6e1ba7b391c881b48f51d7d58de367cadc6488df9ab4f6c852399",
+      "status": "translated",
+      "translation": "然后通过 JavaScript 收集详细指标："
+    },
+    {
+      "block_id": "benchmark-0128-code-block",
+      "source_hash": "5ce3e725347fb21524453fe16ebb127c886bf5116e75d4f8cd080f1345c63393",
+      "status": "translated",
+      "translation": "```bash\n$B eval \"JSON.stringify(performance.getEntriesByType('navigation')[0])\"\n```"
+    },
+    {
+      "block_id": "benchmark-0129-paragraph",
+      "source_hash": "2152007b6d93ccaef30494793a4a3b5dac6c344959eea40cb7893d051bb9475a",
+      "status": "translated",
+      "translation": "提取关键指标：\n- **TTFB**（Time to First Byte，首字节时间）：`responseStart - requestStart`\n- **FCP**（First Contentful Paint，首次内容绘制）：来自 PerformanceObserver 或 `paint` 条目\n- **LCP**（Largest Contentful Paint，最大内容绘制）：来自 PerformanceObserver\n- **DOM Interactive**：`domInteractive - navigationStart`\n- **DOM Complete**：`domComplete - navigationStart`\n- **Full Load**：`loadEventEnd - navigationStart`"
+    },
+    {
+      "block_id": "benchmark-0130-paragraph",
+      "source_hash": "8ccf1fb3ca543796ada50cd685dc8f21e5669dbc5d71857fadea9dfa97aa3f3f",
+      "status": "translated",
+      "translation": "资源分析："
+    },
+    {
+      "block_id": "benchmark-0131-code-block",
+      "source_hash": "f677a037b3413aeb201449180cbb90a0f0fcf3168ce66ff38670ad8277946866",
+      "status": "translated",
+      "translation": "```bash\n$B eval \"JSON.stringify(performance.getEntriesByType('resource').map(r => ({name: r.name.split('/').pop().split('?')[0], type: r.initiatorType, size: r.transferSize, duration: Math.round(r.duration)})).sort((a,b) => b.duration - a.duration).slice(0,15))\"\n```"
+    },
+    {
+      "block_id": "benchmark-0132-paragraph",
+      "source_hash": "e95d19ff45b648166114278a144cd424dc71b5a04685e023be98b318dd9a67f1",
+      "status": "translated",
+      "translation": "Bundle 大小检查："
+    },
+    {
+      "block_id": "benchmark-0133-code-block",
+      "source_hash": "ff302f8083e790794bf1d59ec246fae6d143c57212706e2520e46757911f291f",
+      "status": "translated",
+      "translation": "```bash\n$B eval \"JSON.stringify(performance.getEntriesByType('resource').filter(r => r.initiatorType === 'script').map(r => ({name: r.name.split('/').pop().split('?')[0], size: r.transferSize})))\"\n$B eval \"JSON.stringify(performance.getEntriesByType('resource').filter(r => r.initiatorType === 'css').map(r => ({name: r.name.split('/').pop().split('?')[0], size: r.transferSize})))\"\n```"
+    },
+    {
+      "block_id": "benchmark-0134-paragraph",
+      "source_hash": "aef9d408210f752db470c19c55811e11627a4e0cb19c41bc91ffbcdc47406b53",
+      "status": "translated",
+      "translation": "网络摘要："
+    },
+    {
+      "block_id": "benchmark-0135-code-block",
+      "source_hash": "0db3a495fe87c572a56d2db5bc675948ebbf690c91f88916ff82fa6fbad9ee40",
+      "status": "translated",
+      "translation": "```bash\n$B eval \"(() => { const r = performance.getEntriesByType('resource'); return JSON.stringify({total_requests: r.length, total_transfer: r.reduce((s,e) => s + (e.transferSize||0), 0), by_type: Object.entries(r.reduce((a,e) => { a[e.initiatorType] = (a[e.initiatorType]||0) + 1; return a; }, {})).sort((a,b) => b[1]-a[1])})})()\"\n```"
+    },
+    {
+      "block_id": "benchmark-0136-heading",
+      "source_hash": "14bdd136c557244857cb90aa66a6876a5eed929f4c3d0c4dc526da9ccef55623",
+      "status": "translated",
+      "translation": "### 阶段 4：基线捕获（`--baseline` 模式）"
+    },
+    {
+      "block_id": "benchmark-0137-paragraph",
+      "source_hash": "8341d8c312b687b2ec9abbffcd2f592b2ce0d4ab06d2af88f1a3bd8471ae59c7",
+      "status": "translated",
+      "translation": "将指标保存到基线文件："
+    },
+    {
+      "block_id": "benchmark-0138-code-block",
+      "source_hash": "39cdb25fa20bab203a5c5b782eb40323fbd3f8b1556e5bb9fa2adf3f2dbbb47e",
+      "status": "translated",
+      "translation": "```json\n{\n  \"url\": \"<url>\",\n  \"timestamp\": \"<ISO>\",\n  \"branch\": \"<branch>\",\n  \"pages\": {\n    \"/\": {\n      \"ttfb_ms\": 120,\n      \"fcp_ms\": 450,\n      \"lcp_ms\": 800,\n      \"dom_interactive_ms\": 600,\n      \"dom_complete_ms\": 1200,\n      \"full_load_ms\": 1400,\n      \"total_requests\": 42,\n      \"total_transfer_bytes\": 1250000,\n      \"js_bundle_bytes\": 450000,\n      \"css_bundle_bytes\": 85000,\n      \"largest_resources\": [\n        {\"name\": \"main.js\", \"size\": 320000, \"duration\": 180},\n        {\"name\": \"vendor.js\", \"size\": 130000, \"duration\": 90}\n      ]\n    }\n  }\n}\n```"
+    },
+    {
+      "block_id": "benchmark-0139-paragraph",
+      "source_hash": "0f32842bfb1ca34c40dce4d318fe8b6795fd17d21d17771023304cc4a92ac730",
+      "status": "translated",
+      "translation": "写入 `.gstack/benchmark-reports/baselines/baseline.json`。"
+    },
+    {
+      "block_id": "benchmark-0140-heading",
+      "source_hash": "91b6b5486989a4820c90903ad1ec3e3b22fb540051095b8a8950ef945054eebc",
+      "status": "translated",
+      "translation": "### 阶段 5：对比"
+    }
+  ]
+}

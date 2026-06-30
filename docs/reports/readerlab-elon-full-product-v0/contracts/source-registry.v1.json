@@ -1,0 +1,153 @@
+{
+  "schema": "readerlab.source-registry.v1",
+  "material": {
+    "id": "elon-book__readerlab-elon-full-product-v0",
+    "title": "埃隆之书",
+    "type": "book_epub_readerlab_experiment",
+    "target_package_id": "readerlab-elon-full-product-v0"
+  },
+  "sources": [
+    {
+      "source_id": "elon-epub-original",
+      "source_path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub",
+      "source_type": "epub",
+      "source_role": "original_book_source",
+      "version_or_commit": "local file observed 2026-06-30",
+      "content_hash": "sha256:282554f2c89b817b7ad5535fa62383b099fb5b75ca4ce6e2a2e75c868ce8bb7a",
+      "byte_size": 1862805,
+      "extraction_method": "python3 stdlib zipfile + ElementTree OPF/spine read + lightweight XHTML text/block extraction",
+      "extraction_status": "full_spine_text_extracted",
+      "coverage_role": "primary source for catalog, grounded global map, local deepread, and reader pages",
+      "trust_notes": [
+        "原 EPUB 未修改；本实验只读取 zip/opf/xhtml。",
+        "完整 spine 文本已抽取用于定位和地图，但不等于已生成全书精选译文正文。",
+        "本书说明自身提示：材料经过编校和重新语境化，引述前应回到原始来源核实。"
+      ],
+      "review_items": [
+        {
+          "id": "src-r01",
+          "status": "open",
+          "question": "人工审读需要抽查关键卡片是否准确反映上下文，而不只是命中关键词。"
+        },
+        {
+          "id": "src-r02",
+          "status": "open",
+          "question": "如未来升格为正式 LifeAtlas 沉淀，需要另行决定是否保留更长一手正文。"
+        }
+      ],
+      "epub_spine_summary": {
+        "opf_path": "OEBPS/content.opf",
+        "spine_item_count": 36,
+        "xhtml_item_count": 36,
+        "spine_text_fingerprint": "sha256:0ee9d810c3dbdf446c72944d21fcfc19994d6142cb481d4436d1d234df5e48be"
+      }
+    }
+  ],
+  "source_scope": {
+    "coverage_status": "full",
+    "coverage_ratio": 1.0,
+    "coverage_note": "EPUB OPF spine 36/36 xhtml items were read and text-extracted for this experiment. This is full source coverage for maps and refs, not a claim of product-ready selected translation."
+  },
+  "location_refs": [
+    "loc-source-editorial-boundary",
+    "loc-purpose-value",
+    "loc-purpose-future",
+    "loc-purpose-before-ready",
+    "loc-first-principles",
+    "loc-error-reduction",
+    "loc-engineering-value",
+    "loc-responsibility",
+    "loc-deep-understanding",
+    "loc-factory-floor",
+    "loc-team-goal",
+    "loc-builder-culture",
+    "loc-org-barrier",
+    "loc-org-communication",
+    "loc-algorithm-way",
+    "loc-urgency-speed",
+    "loc-parallel-processing",
+    "loc-factory-as-product",
+    "loc-manufacturing-bottleneck",
+    "loc-manufacturing-moat",
+    "loc-zip2",
+    "loc-paypal-reinvest",
+    "loc-founder-listen",
+    "loc-tesla-mission",
+    "loc-tesla-prototype",
+    "loc-tesla-survival",
+    "loc-spacex-start",
+    "loc-spacex-first-principles",
+    "loc-spacex-nasa",
+    "loc-company-progress",
+    "loc-abundance-ai",
+    "loc-autonomy-risk",
+    "loc-war-risk",
+    "loc-regulatory-buildup",
+    "loc-ai-risk",
+    "loc-asteroid-risk",
+    "loc-multiplanet-thesis",
+    "loc-mars-gate",
+    "loc-mars-cost",
+    "loc-new-world-boundary",
+    "loc-core-laws-algorithm",
+    "loc-spine-001-title",
+    "loc-spine-002-title",
+    "loc-spine-003-title",
+    "loc-spine-004-title",
+    "loc-spine-005-title",
+    "loc-spine-006-title",
+    "loc-spine-007-title",
+    "loc-spine-008-title",
+    "loc-spine-009-title",
+    "loc-spine-010-title",
+    "loc-spine-011-title",
+    "loc-spine-012-title",
+    "loc-spine-013-title",
+    "loc-spine-014-title",
+    "loc-spine-015-title",
+    "loc-spine-016-title",
+    "loc-spine-017-title",
+    "loc-spine-018-title",
+    "loc-spine-019-title",
+    "loc-spine-020-title",
+    "loc-spine-021-title",
+    "loc-spine-022-title",
+    "loc-spine-023-title",
+    "loc-spine-024-title",
+    "loc-spine-025-title",
+    "loc-spine-026-title",
+    "loc-spine-027-title",
+    "loc-spine-028-title",
+    "loc-spine-029-title",
+    "loc-spine-030-title",
+    "loc-spine-031-title",
+    "loc-spine-032-title",
+    "loc-spine-033-title",
+    "loc-spine-034-title",
+    "loc-spine-035-title",
+    "loc-spine-036-title"
+  ],
+  "confidence": {
+    "level": "medium",
+    "basis": [
+      "OPF spine, chapter titles, headings, and selected block char ranges were extracted directly from the EPUB.",
+      "Reader-facing interpretation remains Agent judgment and needs human review."
+    ],
+    "known_uncertainties": [
+      "No external original-source verification was performed; no networking or dependency installation was used."
+    ]
+  },
+  "review_items": [
+    {
+      "id": "registry-r01",
+      "status": "open",
+      "question": "主 Agent 应抽查 source refs 是否足以支撑每条高价值主张。"
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "markdown_path": "docs/reports/readerlab-elon-full-product-v0/audit/90_来源与审计.md",
+    "relationship": "audit_only"
+  }
+}

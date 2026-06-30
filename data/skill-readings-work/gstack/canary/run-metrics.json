@@ -1,0 +1,320 @@
+{
+  "skill_name": "canary",
+  "started_at": "2026-06-28T15:52:00Z",
+  "finished_at": "2026-06-28T16:22:00.427187Z",
+  "duration_minutes": 30.01,
+  "source_chars": 55678,
+  "source_blocks": 242,
+  "part_count": 13,
+  "agent_count": 1,
+  "part_metrics": [
+    {
+      "part": 1,
+      "block_range": [
+        "canary-0001-frontmatter",
+        "canary-0020-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-canary",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 2,
+      "block_range": [
+        "canary-0021-paragraph",
+        "canary-0040-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-canary",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 3,
+      "block_range": [
+        "canary-0041-paragraph",
+        "canary-0060-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-canary",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 4,
+      "block_range": [
+        "canary-0061-paragraph",
+        "canary-0080-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-canary",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 5,
+      "block_range": [
+        "canary-0081-paragraph",
+        "canary-0100-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-canary",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 6,
+      "block_range": [
+        "canary-0101-paragraph",
+        "canary-0120-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-canary",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 7,
+      "block_range": [
+        "canary-0121-heading",
+        "canary-0140-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-canary",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 8,
+      "block_range": [
+        "canary-0141-paragraph",
+        "canary-0160-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-canary",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 9,
+      "block_range": [
+        "canary-0161-heading",
+        "canary-0180-heading"
+      ],
+      "block_count": 20,
+      "agent": "worker-canary",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 10,
+      "block_range": [
+        "canary-0181-paragraph",
+        "canary-0200-code-block"
+      ],
+      "block_count": 20,
+      "agent": "worker-canary",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 11,
+      "block_range": [
+        "canary-0201-paragraph",
+        "canary-0220-heading"
+      ],
+      "block_count": 20,
+      "agent": "worker-canary",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 12,
+      "block_range": [
+        "canary-0221-paragraph",
+        "canary-0240-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-canary",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 13,
+      "block_range": [
+        "canary-0241-heading",
+        "canary-0242-paragraph"
+      ],
+      "block_count": 2,
+      "agent": "worker-canary",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    }
+  ],
+  "merge_metrics": {
+    "started_at": "2026-06-28T16:23:20.199577Z",
+    "finished_at": "2026-06-28T16:23:20.207868Z",
+    "duration_minutes": 0.0,
+    "status": "completed",
+    "output": "data/skill-readings/gstack/canary.json",
+    "rerun_at": "2026-06-28T16:27:50.524430Z"
+  },
+  "token_usage": "token_usage_unavailable",
+  "repair_metrics": {
+    "started_at": "2026-06-28T16:26:22.543880Z",
+    "finished_at": "2026-06-28T16:27:06.490084Z",
+    "duration_minutes": 0.73,
+    "repaired_blocks": [
+      "canary-0024-paragraph",
+      "canary-0028-paragraph",
+      "canary-0046-paragraph",
+      "canary-0070-paragraph",
+      "canary-0074-paragraph",
+      "canary-0075-paragraph",
+      "canary-0079-paragraph",
+      "canary-0080-paragraph",
+      "canary-0081-paragraph",
+      "canary-0082-paragraph",
+      "canary-0083-paragraph",
+      "canary-0084-paragraph",
+      "canary-0086-paragraph",
+      "canary-0097-paragraph",
+      "canary-0098-paragraph",
+      "canary-0103-paragraph",
+      "canary-0105-paragraph",
+      "canary-0117-paragraph",
+      "canary-0118-paragraph",
+      "canary-0119-paragraph",
+      "canary-0120-paragraph",
+      "canary-0123-paragraph",
+      "canary-0124-paragraph",
+      "canary-0129-paragraph",
+      "canary-0132-paragraph",
+      "canary-0133-paragraph",
+      "canary-0135-paragraph",
+      "canary-0138-paragraph",
+      "canary-0152-paragraph",
+      "canary-0153-paragraph",
+      "canary-0157-paragraph",
+      "canary-0162-paragraph",
+      "canary-0175-paragraph",
+      "canary-0183-paragraph"
+    ],
+    "status": "completed",
+    "token_usage": "token_usage_unavailable"
+  },
+  "quality_repair_metrics": {
+    "started_at": "2026-06-28T16:44:34.957081Z",
+    "finished_at": "2026-06-28T16:45:21.129352Z",
+    "duration_minutes": 0.77,
+    "repaired_blocks": [
+      "canary-0006-code-block",
+      "canary-0023-paragraph",
+      "canary-0026-paragraph",
+      "canary-0027-paragraph",
+      "canary-0031-paragraph",
+      "canary-0033-paragraph",
+      "canary-0034-paragraph",
+      "canary-0037-paragraph",
+      "canary-0038-paragraph",
+      "canary-0039-paragraph",
+      "canary-0044-paragraph",
+      "canary-0048-paragraph",
+      "canary-0049-paragraph",
+      "canary-0050-paragraph",
+      "canary-0051-paragraph",
+      "canary-0052-paragraph",
+      "canary-0053-paragraph",
+      "canary-0055-paragraph",
+      "canary-0056-paragraph",
+      "canary-0057-paragraph",
+      "canary-0058-code-block",
+      "canary-0061-paragraph",
+      "canary-0062-paragraph",
+      "canary-0063-paragraph",
+      "canary-0064-paragraph",
+      "canary-0065-paragraph",
+      "canary-0069-paragraph",
+      "canary-0076-paragraph",
+      "canary-0090-paragraph",
+      "canary-0091-paragraph",
+      "canary-0092-paragraph",
+      "canary-0099-paragraph",
+      "canary-0101-paragraph",
+      "canary-0107-code-block",
+      "canary-0108-paragraph",
+      "canary-0109-paragraph",
+      "canary-0110-paragraph",
+      "canary-0113-paragraph",
+      "canary-0122-paragraph",
+      "canary-0128-paragraph",
+      "canary-0136-paragraph",
+      "canary-0140-paragraph",
+      "canary-0141-paragraph",
+      "canary-0144-paragraph",
+      "canary-0146-paragraph",
+      "canary-0148-paragraph",
+      "canary-0149-paragraph",
+      "canary-0151-paragraph",
+      "canary-0156-paragraph",
+      "canary-0158-paragraph",
+      "canary-0165-paragraph",
+      "canary-0172-code-block",
+      "canary-0178-paragraph",
+      "canary-0184-paragraph",
+      "canary-0185-paragraph",
+      "canary-0186-paragraph",
+      "canary-0187-paragraph",
+      "canary-0059-paragraph",
+      "canary-0078-paragraph",
+      "canary-0111-paragraph",
+      "canary-0154-paragraph",
+      "canary-0171-paragraph"
+    ],
+    "status": "completed",
+    "token_usage": "token_usage_unavailable",
+    "main_thread_followup_repaired_blocks": [
+      "canary-0189-paragraph"
+    ]
+  }
+}

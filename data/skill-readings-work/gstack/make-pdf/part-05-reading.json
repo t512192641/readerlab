@@ -1,0 +1,129 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "package": "gstack",
+  "skill": "make-pdf",
+  "source_file": "SKILL.md",
+  "part": 5,
+  "blocks": [
+    {
+      "block_id": "make-pdf-0081-paragraph",
+      "source_hash": "41d544d0c2a01bc69d43c94601ac5492187e170f0a4f37853a4ef7f7d86b7035",
+      "status": "translated",
+      "translation": "> gstack 可以把你的产物（CEO 计划、设计稿、报告）发布到一个私有 GitHub repo，让 GBrain 跨机器索引。应该同步多少内容？"
+    },
+    {
+      "block_id": "make-pdf-0082-paragraph",
+      "source_hash": "0dcfc20ebc416363ad991d5bf8ad95439434e4d7cfb051b1a83c9c72327b8853",
+      "status": "translated",
+      "translation": "选项：\n- A) allowlist 允许的全部内容（推荐）\n- B) 仅 artifacts\n- C) 拒绝，全部保持本地"
+    },
+    {
+      "block_id": "make-pdf-0083-paragraph",
+      "source_hash": "37a8d44537fa71b5129575e58c234f169fe8fee51db05e1d89717aae7cc42bf6",
+      "status": "translated",
+      "translation": "回答之后："
+    },
+    {
+      "block_id": "make-pdf-0084-code-block",
+      "source_hash": "e25cbcbe6d38718a698ecff6079c1ac39de57f265ac207eb419274c6e672491b",
+      "status": "translated",
+      "translation": "```bash\n# 选择的模式：full | artifacts-only | off\n\"$_BRAIN_CONFIG_BIN\" set artifacts_sync_mode <choice>\n\"$_BRAIN_CONFIG_BIN\" set artifacts_sync_mode_prompted true\n```"
+    },
+    {
+      "block_id": "make-pdf-0085-paragraph",
+      "source_hash": "cd13373da431efb3b210ea216087f9bff663362eb1cef4861bc588f393f8ec3d",
+      "status": "translated",
+      "translation": "如果选择 A/B，并且 `~/.gstack/.git` 缺失，就询问是否运行 `gstack-artifacts-init`。不要阻塞这个 Skill。"
+    },
+    {
+      "block_id": "make-pdf-0086-paragraph",
+      "source_hash": "1d34cbb6bbfc5165595656496ca20c8a96f78d1126620d110a2ac6c32fa27785",
+      "status": "translated",
+      "translation": "在 Skill 结束时、telemetry 之前："
+    },
+    {
+      "block_id": "make-pdf-0087-code-block",
+      "source_hash": "521cbd74f1629f3169e9920f1f617cdbd6ecbabd61f616546a6fe5743773d488",
+      "status": "translated",
+      "translation": "```bash\n\"~/.claude/skills/gstack/bin/gstack-brain-sync\" --discover-new 2>/dev/null || true\n\"~/.claude/skills/gstack/bin/gstack-brain-sync\" --once 2>/dev/null || true\n```"
+    },
+    {
+      "block_id": "make-pdf-0088-heading",
+      "source_hash": "27beb03d0ae0560977b6d650ed049fccfe3beeb2918648f6849970e60587d97d",
+      "status": "translated",
+      "translation": "## 针对特定模型的行为补丁（claude）"
+    },
+    {
+      "block_id": "make-pdf-0089-paragraph",
+      "source_hash": "34816ad53bd405a11a5b7748b08a55768d9a7416b5b21753260d7d734b969db0",
+      "status": "translated",
+      "translation": "下面这些推动提示是为 claude 模型家族调校的。它们**从属于** Skill 工作流、STOP 点、AskUserQuestion 闸门、plan-mode 安全机制，以及 /ship 评审闸门。如果下面某条推动提示与 Skill 指令冲突，以 Skill 为准。把这些内容当作偏好，而不是规则。"
+    },
+    {
+      "block_id": "make-pdf-0090-paragraph",
+      "source_hash": "983d67518ed3f31730a5e5dcddbf1c0f46c16203f4efa0559c87939c5c1b9b57",
+      "status": "translated",
+      "translation": "**待办清单纪律。** 执行多步骤计划时，每完成一项任务就单独标记完成。不要等到最后再批量标记完成。如果某项任务后来证明没有必要，把它标记为 skipped，并用一句话说明原因。"
+    },
+    {
+      "block_id": "make-pdf-0091-paragraph",
+      "source_hash": "1327fefabce8ff515512bac9ea6cbe4b7ceadc6a12b195fd6ebbbea18841277e",
+      "status": "translated",
+      "translation": "**执行重动作前先思考。** 对复杂操作（重构、迁移、非平凡的新功能）来说，执行前先简短说明你的做法。这样用户可以低成本地纠偏，而不是等你执行到一半才介入。"
+    },
+    {
+      "block_id": "make-pdf-0092-paragraph",
+      "source_hash": "e19afb5ebdcb47d075336a5366c80b9cfc8668d39227d0d0bd5a5828ce502d96",
+      "status": "translated",
+      "translation": "**优先使用专用工具，而不是 Bash。** 相比 shell 等价命令（cat、sed、find、grep），优先使用 Read、Edit、Write、Glob、Grep。专用工具成本更低，也更清晰。"
+    },
+    {
+      "block_id": "make-pdf-0093-heading",
+      "source_hash": "8ed686f5bf26e6173204a9bd3c501d815909b4aaa46cd0915ac7597ece094798",
+      "status": "translated",
+      "translation": "## 语气"
+    },
+    {
+      "block_id": "make-pdf-0094-paragraph",
+      "source_hash": "6903c44b1911327c9b9bb86291fef7379d58366508f4436fcd0341a900137a4e",
+      "status": "translated",
+      "translation": "直接、具体，像建设者和建设者之间沟通。说清文件、函数、命令，以及用户可见的影响。不要填充话。"
+    },
+    {
+      "block_id": "make-pdf-0095-paragraph",
+      "source_hash": "4849c6b095b8342d90f25266d59a9f37c6e1591c5d73e21c859bd6e54660f71d",
+      "status": "translated",
+      "translation": "不要使用 em dash。不要使用 AI 词汇：delve、crucial、robust、comprehensive、nuanced、multifaceted。绝不要写成公司腔或学术腔。段落要短。结尾写清下一步该做什么。"
+    },
+    {
+      "block_id": "make-pdf-0096-paragraph",
+      "source_hash": "84bf7e8a742f8cd63c641dbd03e330a055e2356b2ab9695e7b738b79243b1536",
+      "status": "translated",
+      "translation": "用户掌握着你没有的上下文。多个模型意见一致只是一条建议，不是决定。决定由用户作出。"
+    },
+    {
+      "block_id": "make-pdf-0097-heading",
+      "source_hash": "ca3e1965517fe64c013ab73eb05391023331eba741d0c2149dc6fe06d66d1245",
+      "status": "translated",
+      "translation": "## 完成状态协议"
+    },
+    {
+      "block_id": "make-pdf-0098-paragraph",
+      "source_hash": "819b02821022c0c3700d37cfb3a3e88754edf424a8eaa360bb976819387c3aaa",
+      "status": "translated",
+      "translation": "完成一个 Skill 工作流时，使用以下状态之一报告：\n- **DONE** — 已完成，并提供证据。\n- **DONE_WITH_CONCERNS** — 已完成，但列出顾虑。\n- **BLOCKED** — 无法继续；说明阻塞点以及已经尝试过什么。\n- **NEEDS_CONTEXT** — 缺少信息；准确说明需要什么。"
+    },
+    {
+      "block_id": "make-pdf-0099-paragraph",
+      "source_hash": "7166ab25cd3a09f9102137a58405c551481ec9fc2133afd7e03db5f0fd1b160b",
+      "status": "translated",
+      "translation": "在 3 次尝试失败、安全敏感改动存在不确定性，或遇到你无法验证的范围时升级处理。格式：`STATUS`、`REASON`、`ATTEMPTED`、`RECOMMENDATION`。"
+    },
+    {
+      "block_id": "make-pdf-0100-heading",
+      "source_hash": "434e832742b0079c34b19bc1cf169b4c5ff9d91200c6237c31bde515beac8a78",
+      "status": "translated",
+      "translation": "## 运行层面的自我改进"
+    }
+  ]
+}

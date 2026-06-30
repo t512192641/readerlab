@@ -1,0 +1,490 @@
+{
+  "schema": "readerlab.local-deepread.v1",
+  "material": {
+    "id": "elon-book__readerlab-elon-full-product-v0:part-ii-hardcore-work",
+    "title": "第二部分：极限硬核工作（可追溯旧名：部件 II：极致艰苦工作）",
+    "type": "book_part_local_deepread",
+    "parent_material_id": "elon-book__readerlab-elon-full-product-v0"
+  },
+  "source_scope": {
+    "coverage_status": "partial",
+    "coverage_ratio": null,
+    "coverage_note": "Local deepread covers second part only: OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-13.xhtml through v101-18.xhtml.",
+    "location_precision_required": "heading_or_block_or_char",
+    "precision_exception_note": "Part title refs use spine/title level; all deepread cards use block/char refs."
+  },
+  "local_deepread": {
+    "covered_unit": "第二部分：极限硬核工作（旧 demo 映射：部件 II：极致艰苦工作）",
+    "covered_source_files": [
+      "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-13.xhtml",
+      "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-14.xhtml",
+      "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-15.xhtml",
+      "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-17.xhtml",
+      "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-18.xhtml"
+    ],
+    "reading_thesis": "这一部分不是“更拼命”的鸡血段落，而是把高目标转成组织执行的工作系统：责任归属、深度理解、团队密度、短路径沟通、算法之道、速度和制造能力。",
+    "reader_gain": "读者读完后应能区分三件事：危机强度不是常态制度；算法之道比加班口号更可迁移；工厂/交付系统本身是产品能力。",
+    "mechanism_chain": [
+      {
+        "step": "责任归属",
+        "explanation": "CEO 处理最棘手问题，而不是享受职位。",
+        "source_refs": [
+          "loc-responsibility"
+        ]
+      },
+      {
+        "step": "深度理解",
+        "explanation": "重大技术问题需要物理、经济、产品和现场理解。",
+        "source_refs": [
+          "loc-deep-understanding"
+        ]
+      },
+      {
+        "step": "团队密度",
+        "explanation": "公司是一群人围绕共同目标创造产品或服务。",
+        "source_refs": [
+          "loc-team-goal"
+        ]
+      },
+      {
+        "step": "短路径沟通",
+        "explanation": "减少组织壁垒，让问题直接到解决者。",
+        "source_refs": [
+          "loc-org-communication"
+        ]
+      },
+      {
+        "step": "算法之道",
+        "explanation": "先质疑和删除，再简化、加速、自动化。",
+        "source_refs": [
+          "loc-algorithm-way"
+        ]
+      },
+      {
+        "step": "制造系统",
+        "explanation": "交付系统和瓶颈决定产品能力。",
+        "source_refs": [
+          "loc-factory-as-product",
+          "loc-manufacturing-bottleneck"
+        ]
+      }
+    ],
+    "reading_route": [
+      {
+        "step": 1,
+        "title": "先读责任和深度理解",
+        "purpose": "把硬核工作从身份和时长转成问题所有权。",
+        "source_refs": [
+          "loc-responsibility",
+          "loc-deep-understanding"
+        ]
+      },
+      {
+        "step": 2,
+        "title": "再读团队和沟通",
+        "purpose": "看组织如何让问题抵达解决者。",
+        "source_refs": [
+          "loc-team-goal",
+          "loc-org-communication"
+        ]
+      },
+      {
+        "step": 3,
+        "title": "重点读算法之道",
+        "purpose": "抓住最可迁移的方法顺序。",
+        "source_refs": [
+          "loc-algorithm-way"
+        ]
+      },
+      {
+        "step": 4,
+        "title": "最后读制造和瓶颈",
+        "purpose": "把方法落到可交付系统。",
+        "source_refs": [
+          "loc-factory-as-product",
+          "loc-manufacturing-bottleneck"
+        ]
+      }
+    ],
+    "deepread_cards": [
+      {
+        "card_id": "dc-framework-hardcore-system",
+        "card_type": "framework",
+        "title": "硬核工作不是时长，而是难题执行系统",
+        "reader_takeaway": "把第二部分读成责任、深度理解、团队、短路径沟通、算法、速度和制造的组合系统。",
+        "source_refs": [
+          "elon-epub-original"
+        ],
+        "primary_location_refs": [
+          "loc-responsibility",
+          "loc-deep-understanding",
+          "loc-team-goal",
+          "loc-org-communication",
+          "loc-algorithm-way",
+          "loc-factory-as-product"
+        ],
+        "case_refs": [],
+        "counterexample_refs": [
+          "loc-factory-floor"
+        ],
+        "term_refs": [
+          "loc-algorithm-way"
+        ],
+        "applicability_boundary": "适合理解复杂项目的执行系统；不适合简化为常态加班或个人意志崇拜。",
+        "verification": {
+          "v1_cross_context": {
+            "status": "pending",
+            "evidence_contexts": [
+              "loc-responsibility",
+              "loc-deep-understanding",
+              "loc-team-goal"
+            ]
+          },
+          "v2_predictive_power": {
+            "status": "pending",
+            "novel_question": "读者能否用该卡判断一个新项目的组织或交付问题？",
+            "derived_answer": "当前只形成可测试问题，尚未用新材料验证。"
+          },
+          "v3_distinctiveness": {
+            "status": "pending",
+            "why_not_common": "卡片需同时满足来源 refs、适用边界和反例防线；目前仍待人工判断是否足够区别于通用管理建议。"
+          }
+        },
+        "review_status": "open"
+      },
+      {
+        "card_id": "dc-principle-delete-before-automate",
+        "card_type": "principle",
+        "title": "先删除，再自动化",
+        "reader_takeaway": "流程改造的顺序是先质疑需求和删除无用部分，再简化、加速、自动化。",
+        "source_refs": [
+          "elon-epub-original"
+        ],
+        "primary_location_refs": [
+          "loc-algorithm-way"
+        ],
+        "case_refs": [
+          "loc-manufacturing-bottleneck"
+        ],
+        "counterexample_refs": [],
+        "term_refs": [
+          "loc-algorithm-way"
+        ],
+        "applicability_boundary": "适合流程、产品和组织设计；安全、合规、伦理或高风险环节不能粗暴删除。",
+        "verification": {
+          "v1_cross_context": {
+            "status": "pending",
+            "evidence_contexts": [
+              "loc-algorithm-way"
+            ]
+          },
+          "v2_predictive_power": {
+            "status": "pending",
+            "novel_question": "读者能否用该卡判断一个新项目的组织或交付问题？",
+            "derived_answer": "当前只形成可测试问题，尚未用新材料验证。"
+          },
+          "v3_distinctiveness": {
+            "status": "pending",
+            "why_not_common": "卡片需同时满足来源 refs、适用边界和反例防线；目前仍待人工判断是否足够区别于通用管理建议。"
+          }
+        },
+        "review_status": "open"
+      },
+      {
+        "card_id": "dc-case-factory-as-product",
+        "card_type": "case",
+        "title": "工厂即产品",
+        "reader_takeaway": "Tesla/制造章节把交付系统升格为产品能力本身，原型成功不等于量产成功。",
+        "source_refs": [
+          "elon-epub-original"
+        ],
+        "primary_location_refs": [
+          "loc-factory-as-product",
+          "loc-manufacturing-bottleneck",
+          "loc-manufacturing-moat"
+        ],
+        "case_refs": [],
+        "counterexample_refs": [],
+        "term_refs": [
+          "loc-factory-as-product"
+        ],
+        "applicability_boundary": "最适合制造、运营、基础设施和规模交付；不适合把所有创造性工作都工业化。",
+        "verification": {
+          "v1_cross_context": {
+            "status": "pending",
+            "evidence_contexts": [
+              "loc-factory-as-product",
+              "loc-manufacturing-bottleneck",
+              "loc-manufacturing-moat"
+            ]
+          },
+          "v2_predictive_power": {
+            "status": "pending",
+            "novel_question": "读者能否用该卡判断一个新项目的组织或交付问题？",
+            "derived_answer": "当前只形成可测试问题，尚未用新材料验证。"
+          },
+          "v3_distinctiveness": {
+            "status": "pending",
+            "why_not_common": "卡片需同时满足来源 refs、适用边界和反例防线；目前仍待人工判断是否足够区别于通用管理建议。"
+          }
+        },
+        "review_status": "open"
+      },
+      {
+        "card_id": "dc-counterexample-crisis-not-normal",
+        "card_type": "counterexample",
+        "title": "危机强度不能常态化",
+        "reader_takeaway": "第二部分确实出现极端工作强度，但材料也给出“危机状态”的边界，不能把它作为普通组织的默认制度。",
+        "source_refs": [
+          "elon-epub-original"
+        ],
+        "primary_location_refs": [
+          "loc-factory-floor"
+        ],
+        "case_refs": [],
+        "counterexample_refs": [
+          "loc-factory-floor"
+        ],
+        "term_refs": [],
+        "applicability_boundary": "只适用于生存危机或高紧迫项目的短期判断；长期组织设计必须考虑健康、安全、合规和可持续性。",
+        "verification": {
+          "v1_cross_context": {
+            "status": "pending",
+            "evidence_contexts": [
+              "loc-factory-floor"
+            ]
+          },
+          "v2_predictive_power": {
+            "status": "pending",
+            "novel_question": "读者能否用该卡判断一个新项目的组织或交付问题？",
+            "derived_answer": "当前只形成可测试问题，尚未用新材料验证。"
+          },
+          "v3_distinctiveness": {
+            "status": "pending",
+            "why_not_common": "卡片需同时满足来源 refs、适用边界和反例防线；目前仍待人工判断是否足够区别于通用管理建议。"
+          }
+        },
+        "review_status": "open"
+      },
+      {
+        "card_id": "dc-term-algorithm-way",
+        "card_type": "term",
+        "title": "算法之道",
+        "reader_takeaway": "在第二部分中，算法之道是把复杂执行问题按质疑需求、删除、简化、加速、自动化排序。",
+        "source_refs": [
+          "elon-epub-original"
+        ],
+        "primary_location_refs": [
+          "loc-algorithm-way"
+        ],
+        "case_refs": [],
+        "counterexample_refs": [],
+        "term_refs": [
+          "loc-algorithm-way"
+        ],
+        "applicability_boundary": "适合流程和产品执行问题；不能替代安全、合规、伦理和人的承受边界判断。",
+        "verification": {
+          "v1_cross_context": {
+            "status": "pending",
+            "evidence_contexts": [
+              "loc-algorithm-way"
+            ]
+          },
+          "v2_predictive_power": {
+            "status": "pending",
+            "novel_question": "读者能否用该卡判断一个新项目的组织或交付问题？",
+            "derived_answer": "当前只形成可测试问题，尚未用新材料验证。"
+          },
+          "v3_distinctiveness": {
+            "status": "pending",
+            "why_not_common": "卡片需同时满足来源 refs、适用边界和反例防线；目前仍待人工判断是否足够区别于通用管理建议。"
+          }
+        },
+        "review_status": "open"
+      },
+      {
+        "card_id": "dc-transfer-delivery-system",
+        "card_type": "transfer_insight",
+        "title": "交付系统也是产品",
+        "reader_takeaway": "从工厂即产品迁移到其他领域时，要检查你的交付、反馈、质量和瓶颈系统是否本身就是用户体验的一部分。",
+        "source_refs": [
+          "elon-epub-original"
+        ],
+        "primary_location_refs": [
+          "loc-factory-as-product",
+          "loc-manufacturing-bottleneck"
+        ],
+        "case_refs": [],
+        "counterexample_refs": [],
+        "term_refs": [
+          "loc-factory-as-product"
+        ],
+        "applicability_boundary": "适合需要稳定交付的业务；早期探索和研究可保留低效率试错。",
+        "verification": {
+          "v1_cross_context": {
+            "status": "pending",
+            "evidence_contexts": [
+              "loc-factory-as-product",
+              "loc-manufacturing-bottleneck"
+            ]
+          },
+          "v2_predictive_power": {
+            "status": "pending",
+            "novel_question": "读者能否用该卡判断一个新项目的组织或交付问题？",
+            "derived_answer": "当前只形成可测试问题，尚未用新材料验证。"
+          },
+          "v3_distinctiveness": {
+            "status": "pending",
+            "why_not_common": "卡片需同时满足来源 refs、适用边界和反例防线；目前仍待人工判断是否足够区别于通用管理建议。"
+          }
+        },
+        "review_status": "open"
+      }
+    ],
+    "distillation_candidates": [
+      {
+        "candidate_id": "delete-before-automate",
+        "claim": "流程改造先删除，再简化、加速和自动化。",
+        "source_refs": [
+          "loc-algorithm-way"
+        ],
+        "claim_refs": [
+          "claim-hardcore-not-hustle"
+        ],
+        "applicability_boundary": "不能绕过安全、合规和伦理要求。",
+        "confidence": "medium",
+        "human_status": "pending"
+      },
+      {
+        "candidate_id": "factory-as-product",
+        "claim": "交付系统也是产品。",
+        "source_refs": [
+          "loc-factory-as-product",
+          "loc-manufacturing-bottleneck"
+        ],
+        "claim_refs": [
+          "claim-factory-as-product-transfer"
+        ],
+        "applicability_boundary": "适合规模交付，不适合所有探索场景。",
+        "confidence": "medium",
+        "human_status": "pending"
+      },
+      {
+        "candidate_id": "shortest-path-communication",
+        "claim": "问题应沿最短路径到达解决者。",
+        "source_refs": [
+          "loc-org-barrier",
+          "loc-org-communication"
+        ],
+        "claim_refs": [
+          "claim-hardcore-not-hustle"
+        ],
+        "applicability_boundary": "需要保留必要的责任、审计和安全门。",
+        "confidence": "medium",
+        "human_status": "pending"
+      }
+    ],
+    "misread_guards": [
+      {
+        "guard_id": "mg-hustle",
+        "misread": "把第二部分读成加班崇拜。",
+        "correction": "重点是组织、算法和制造系统；危机强度有边界。",
+        "source_refs": [
+          "loc-factory-floor",
+          "loc-algorithm-way"
+        ]
+      },
+      {
+        "guard_id": "mg-delete-everything",
+        "misread": "把删除优先用于砍掉所有慢流程。",
+        "correction": "安全、合规、伦理和人类承受边界需要单独判断。",
+        "source_refs": [
+          "loc-algorithm-way",
+          "loc-regulatory-buildup"
+        ]
+      },
+      {
+        "guard_id": "mg-factory-for-all",
+        "misread": "所有任务都应像工厂一样被工业化。",
+        "correction": "工厂即产品主要适合规模交付系统。",
+        "source_refs": [
+          "loc-factory-as-product",
+          "loc-manufacturing-bottleneck"
+        ]
+      }
+    ]
+  },
+  "location_refs": [
+    "loc-responsibility",
+    "loc-deep-understanding",
+    "loc-factory-floor",
+    "loc-team-goal",
+    "loc-org-communication",
+    "loc-algorithm-way",
+    "loc-urgency-speed",
+    "loc-factory-as-product",
+    "loc-manufacturing-bottleneck"
+  ],
+  "claim_refs": [
+    {
+      "claim_id": "claim-hardcore-not-hustle",
+      "claim": "第二部分的重点不是泛化努力文化，而是让问题穿过组织抵达解决者，并按算法、速度和制造系统转成结果。",
+      "primary_location_refs": [
+        "loc-responsibility",
+        "loc-org-communication",
+        "loc-algorithm-way",
+        "loc-urgency-speed",
+        "loc-factory-as-product"
+      ],
+      "derived_location_refs": [],
+      "applicability_boundary": "危机工作和极端强度不能常态化迁移；安全、合规和人的承受边界需另行判断。",
+      "confidence": "medium",
+      "review_status": "open"
+    },
+    {
+      "claim_id": "claim-factory-as-product-transfer",
+      "claim": "工厂即产品可迁移为“交付系统也是产品”的洞察。",
+      "primary_location_refs": [
+        "loc-factory-as-product",
+        "loc-manufacturing-bottleneck",
+        "loc-manufacturing-moat"
+      ],
+      "derived_location_refs": [],
+      "applicability_boundary": "最适合实体制造、运营、基础设施和可规模交付系统；探索型创作和研究任务不一定适用。",
+      "confidence": "medium",
+      "review_status": "open"
+    }
+  ],
+  "confidence": {
+    "level": "medium",
+    "basis": [
+      "The covered EPUB files and block refs match the second part source range.",
+      "Cards include source refs, boundaries, and pending V1/V2/V3 states."
+    ],
+    "known_uncertainties": [
+      "Cards have not been validated against a new external case or human blind review.",
+      "Cross-book support remains in grounded-global-map; local-deepread primary refs are constrained to the second part source range."
+    ]
+  },
+  "review_items": [
+    {
+      "id": "deepread-r01",
+      "status": "open",
+      "question": "深读卡是否保留足够一手材料感，而不是过度管理学化？"
+    },
+    {
+      "id": "deepread-r02",
+      "status": "open",
+      "question": "V1/V2/V3 是否应在下一轮用非马斯克材料做反测？"
+    }
+  ],
+  "machine_status": "needs_review",
+  "human_status": "pending",
+  "display": {
+    "reader_markdown_path": "docs/reports/readerlab-elon-full-product-v0/reader/03_深读卡组.md",
+    "audit_markdown_path": "docs/reports/readerlab-elon-full-product-v0/audit/90_来源与审计.md",
+    "relationship": "renders_from_contract",
+    "reader_audit_policy": "reader page links audit, audit details stay out of main reading body"
+  }
+}

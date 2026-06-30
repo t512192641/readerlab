@@ -1,0 +1,123 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "package": "gstack",
+  "skill": "make-pdf",
+  "source_file": "SKILL.md",
+  "part": 8,
+  "blocks": [
+    {
+      "block_id": "make-pdf-0141-paragraph",
+      "source_hash": "e7a3fa7f9744b611179873c2967588685100a62373b078b54956ceea1671164c",
+      "status": "translated",
+      "translation": "单图指令，紧跟在图片之后书写："
+    },
+    {
+      "block_id": "make-pdf-0142-code-block",
+      "source_hash": "c26bd0e03dbdeb9422e3506578d7782a52c4a07571a2994ae5bb31d94494d036",
+      "status": "translated",
+      "translation": "```\n![chart](data.png){width=full}      ← 拉伸到内容框宽度\n![chart](data.png){width=50%}       ← 百分比或 3in/8cm/200px\n![wide](arch.png){page=landscape}   ← 给它自己的横向页面\n![wide](shot.png){page=portrait}    ← 否决自动横向页面\n```"
+    },
+    {
+      "block_id": "make-pdf-0143-paragraph",
+      "source_hash": "f9ff24861f7a6820adb0d7b3b64f49b8834a00f1005baf4ecf0e02ab010a64e5",
+      "status": "translated",
+      "translation": "宽幅、小字图表图片会自动提升到自己的横向页面（保守规则：宽高比 ≥ 1.8、宽度超过内容框约 2.5 倍，并且 alt 中有偏图表的词：diagram/architecture/flowchart/chart/graph）。提升后的页面会垂直居中。启发式判断错误时，用 `{page=portrait}` 否决；漏判时只需加 `{page=landscape}`。"
+    },
+    {
+      "block_id": "make-pdf-0144-heading",
+      "source_hash": "ddd2eaeb8d44ef84c03351bafd7c393532b0f707c21f6483528f9b62573b0488",
+      "status": "translated",
+      "translation": "### 其他格式：单文件 HTML 和 Word"
+    },
+    {
+      "block_id": "make-pdf-0145-code-block",
+      "source_hash": "af18fce69ac14d4b05ba3e88e7b069d4a367201324bfa577fccdb742464c6115",
+      "status": "translated",
+      "translation": "```bash\n$P generate readme.md out.html --to html    # 一个自包含文件：内联\n                                            # SVG 图表、data-URI 图片、\n                                            # 零网络引用、适合屏幕阅读\n$P generate readme.md out.docx --to docx    # Word：内容保真（标题、\n                                            # 表格、代码、图表作为 PNG）-\n                                            # 版式由 Word 负责，不由我们负责\n```"
+    },
+    {
+      "block_id": "make-pdf-0146-paragraph",
+      "source_hash": "7375a28a21b3181f1c392f2e33ee85adcf4ec66a44398552934ab42c3a524189",
+      "status": "translated",
+      "translation": "`--to` 是输出格式。`--format` 是完全不同的东西（`--page-size` 的别名），不要混淆。"
+    },
+    {
+      "block_id": "make-pdf-0147-heading",
+      "source_hash": "45e12b61b4bdc7e98bec69e2b805218d1c2e4b32009c8dd8834d1834ebdbb915",
+      "status": "translated",
+      "translation": "### CI 模式：缺失资产时明确失败"
+    },
+    {
+      "block_id": "make-pdf-0148-code-block",
+      "source_hash": "4877b1669ef998e468aa933cfef446d92af6f27b8389b5e60e0e7e1c02bb52d3",
+      "status": "translated",
+      "translation": "```bash\n$P generate docs.md --strict     # 缺失、远程、树外、超大、\n                                 # 以及非普通文件图片会以非零退出\n                                 # 而不是警告 + 占位符\n```"
+    },
+    {
+      "block_id": "make-pdf-0149-heading",
+      "source_hash": "44e1fa84d69c69235039f69d6fb49e4b1a9a2e614d6f95296a375f589512b4db",
+      "status": "translated",
+      "translation": "## 常用 flags"
+    },
+    {
+      "block_id": "make-pdf-0150-code-block",
+      "source_hash": "7af1d45c43947fb2e192ed9bd5bcb20d2d5582e89e55d19be0734a3fcc0ebffb",
+      "status": "translated",
+      "translation": "```\n页面布局：\n  --margins <dim>            1in（默认）| 72pt | 2.54cm | 25mm\n  --page-size letter|a4|legal\n\n结构：\n  --cover                    封面页（标题、作者、日期、细线）\n  --toc                      带页码的可点击目录\n  --no-chapter-breaks        不要在每个 H1 处开始新页\n\n品牌信息：\n  --watermark <text>         斜向水印（\"DRAFT\"、\"CONFIDENTIAL\"）\n  --header-template <html>   自定义运行页眉\n  --footer-template <html>   自定义页脚（与 --page-numbers 互斥）\n  --no-confidential          隐藏右侧 CONFIDENTIAL 页脚\n\n输出：\n  --to pdf|html|docx         输出格式（默认：pdf）。html = 单个\n                             自包含文件；docx = 内容保真。\n  --strict                   缺失、远程、树外、超大或\n                             非普通文件图片会使运行失败（CI 模式）。\n  --page-numbers             \"N of M\" 页脚（默认开启）\n  --tagged                   可访问 PDF（默认开启）\n  --outline                  从标题生成 PDF 书签（默认开启）\n  --quiet                    抑制 stderr 上的进度\n  --verbose                  每阶段耗时\n\n网络：\n  --allow-network            抓取外部图片。默认关闭：远程\n                             图片会渲染为可见的 blocked 占位符\n                             （打印时不会抓取追踪像素）。\n\n元数据：\n  --title \"...\"              文档标题（默认为第一个 H1）\n  --author \"...\"             封面和 PDF 元数据的作者\n  --date \"...\"               封面日期（默认为今天）\n```"
+    },
+    {
+      "block_id": "make-pdf-0151-heading",
+      "source_hash": "12b643a40ef9e6757347e8d795b8e18ac0711e44b1a5821dd22675ed06facbe0",
+      "status": "translated",
+      "translation": "## Claude 什么时候应该运行它"
+    },
+    {
+      "block_id": "make-pdf-0152-paragraph",
+      "source_hash": "729c95cd2540316101755453186204d39ad4c17c4e4cd573e859b6b549205857",
+      "status": "translated",
+      "translation": "留意 Markdown 转 PDF 的意图。以下任一模式出现时，运行 `$P generate`："
+    },
+    {
+      "block_id": "make-pdf-0153-paragraph",
+      "source_hash": "75694d2d24a32e072818e2fa4313daa429984c961ef5fdb6a792672bbd81f1dc",
+      "status": "translated",
+      "translation": "原始英文触发示例：\n- \"Can you make this markdown a PDF\"\n- \"Export it as a PDF\"\n- \"Turn this letter into a PDF\"\n- \"I need a PDF of the essay\"\n- \"Print this as a PDF for me\""
+    },
+    {
+      "block_id": "make-pdf-0154-paragraph",
+      "source_hash": "bac9798e5dc8cb7d71275ef63b10250067397c685740273a869bc9a1f9c53074",
+      "status": "translated",
+      "translation": "如果用户打开了一个 `.md` 文件并说 \"make it look nice\"，建议使用 `$P generate --cover --toc`，并在运行前询问。"
+    },
+    {
+      "block_id": "make-pdf-0155-heading",
+      "source_hash": "6e478190b98efab728f76593eb2244924bdee9cf27a2119c2e5d7f6328f9591e",
+      "status": "translated",
+      "translation": "## 调试"
+    },
+    {
+      "block_id": "make-pdf-0156-paragraph",
+      "source_hash": "0dedcd5e04f7aab94411d0fdf27f5d94f623c1d1334b97676330bc8c9b0f6eef",
+      "status": "translated",
+      "translation": "- 输出看起来为空 / 空白：检查 browse daemon 是否正在运行：`$B status`。\n- 复制粘贴时文本碎裂：highlight.js 输出（Phase 4）。该 flag 存在后，用 `--no-syntax` 重试。目前先移除 fenced code block 并重新生成。\n- Paged.js 超时：Markdown 中可能没有标题。去掉 `--toc`。\n- 输出中出现 \"[remote image blocked]\" 占位符：添加 `--allow-network`（理解这等于授权 Markdown 文件从其 image URL 抓取）。\n- 生成的 PDF 过高/过宽：使用 `--page-size a4` 或 `--margins 0.75in`。"
+    },
+    {
+      "block_id": "make-pdf-0157-heading",
+      "source_hash": "4508707bade6b04d7fc39701459b36466736ce086b1ef3f32b9ea922df077124",
+      "status": "translated",
+      "translation": "## 输出契约"
+    },
+    {
+      "block_id": "make-pdf-0158-code-block",
+      "source_hash": "028b585e9d7f05c2f42ad1dc6ee7ad6958be541708edf33aa89987aea1fabc2c",
+      "status": "translated",
+      "translation": "```\nstdout: /tmp/letter.pdf          ← 只有路径，一行\nstderr: Rendering HTML...        ← 进度提示（除非 --quiet）\n        Generating PDF...\n        Done in 1.5s. 43 words · 22KB · /tmp/letter.pdf\n\nexit code: 0 成功 / 1 参数错误 / 2 渲染错误 / 3 Paged.js 超时\n           / 4 browse 不可用\n```"
+    },
+    {
+      "block_id": "make-pdf-0159-paragraph",
+      "source_hash": "57d762ed3890bdcd95ada8222eb7836a9b49cc5f52d6565bf58412bd048bc60c",
+      "status": "translated",
+      "translation": "捕获路径：`PDF=$($P generate letter.md)`，然后使用 `$PDF`。"
+    }
+  ]
+}

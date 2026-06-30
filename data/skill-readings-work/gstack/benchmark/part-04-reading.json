@@ -1,0 +1,129 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "package": "gstack",
+  "skill": "benchmark",
+  "source_file": "SKILL.md",
+  "part": 4,
+  "blocks": [
+    {
+      "block_id": "benchmark-0061-paragraph",
+      "source_hash": "c916db33cde64b08a8cf03e34fda2d509e168b86b9fbf052ad686eab198131ea",
+      "status": "translated",
+      "translation": "如果选择 B：运行 `~/.claude/skills/gstack/bin/gstack-config set routing_declined true`，并告诉用户以后可以用 `gstack-config set routing_declined false` 重新启用。"
+    },
+    {
+      "block_id": "benchmark-0062-paragraph",
+      "source_hash": "df94c54a64e15cf8b5116ac50d7eae233638d1e1079cf0e2e04247985643d7ff",
+      "status": "translated",
+      "translation": "每个项目只会发生一次。如果 `HAS_ROUTING` 是 `yes`，或 `ROUTING_DECLINED` 是 `true`，就跳过。"
+    },
+    {
+      "block_id": "benchmark-0063-paragraph",
+      "source_hash": "e4adc40f9c4a820507c5efc8e98d13be57fe0b2bac4e2026e7f2d311300859d0",
+      "status": "translated",
+      "translation": "如果 `VENDORED_GSTACK` 是 `yes`，并且 `~/.gstack/.vendoring-warned-$SLUG` 不存在，就通过 AskUserQuestion 提醒一次："
+    },
+    {
+      "block_id": "benchmark-0064-paragraph",
+      "source_hash": "1fd7fe156364cee23364f1ed631b02f3dc0bc4369aa0ae20fb8fe341a1aa8cff",
+      "status": "translated",
+      "translation": "> 这个项目把 gstack 内置在 `.claude/skills/gstack/` 中。内置方式已废弃。\n> 要迁移到 team mode 吗？"
+    },
+    {
+      "block_id": "benchmark-0065-paragraph",
+      "source_hash": "00dfcec10c592d41a51c201f2cfc923f9a5042d65bbd578ce7d7feba1c1d43d9",
+      "status": "translated",
+      "translation": "选项：\n- A) 是，现在迁移到 team mode\n- B) 否，我自己处理"
+    },
+    {
+      "block_id": "benchmark-0066-paragraph",
+      "source_hash": "cf837eeaf159cac16f253fcfd743e9a32c4f7059ce6a629ccedcf45eab113288",
+      "status": "translated",
+      "translation": "如果选择 A：\n1. 运行 `git rm -r .claude/skills/gstack/`\n2. 运行 `echo '.claude/skills/gstack/' >> .gitignore`\n3. 运行 `~/.claude/skills/gstack/bin/gstack-team-init required`（或 `optional`）\n4. 运行 `git add .claude/ .gitignore CLAUDE.md && git commit -m \"chore: migrate gstack from vendored to team mode\"`\n5. 告诉用户：“已完成。现在每位开发者都需要运行：`cd ~/.claude/skills/gstack && ./setup --team`”"
+    },
+    {
+      "block_id": "benchmark-0067-paragraph",
+      "source_hash": "64a6b841c2c4f71d08956223517b6d7910689e65620238d7de52f91466396106",
+      "status": "translated",
+      "translation": "如果选择 B：说“好的，之后你需要自己保持内置副本为最新。”"
+    },
+    {
+      "block_id": "benchmark-0068-paragraph",
+      "source_hash": "bdba758df114204973d141202d452863a6c7146b58c5428896aa87eda78d21e0",
+      "status": "translated",
+      "translation": "无论选择什么，都始终运行："
+    },
+    {
+      "block_id": "benchmark-0069-code-block",
+      "source_hash": "dacc22d0895e888c3e1ea8d8df1a96215c1082a06e3873e96c042c8c881ff797",
+      "status": "translated",
+      "translation": "```bash\neval \"$(~/.claude/skills/gstack/bin/gstack-slug 2>/dev/null)\" 2>/dev/null || true\ntouch ~/.gstack/.vendoring-warned-${SLUG:-unknown}\n```"
+    },
+    {
+      "block_id": "benchmark-0070-paragraph",
+      "source_hash": "5941c7b9f9ed5b4e050c866e1d9281fd8baf5aab04692ef743576efaddc570c2",
+      "status": "translated",
+      "translation": "如果标记存在，就跳过。"
+    },
+    {
+      "block_id": "benchmark-0071-paragraph",
+      "source_hash": "59f277edcdd9f6c0108bb011c5d4c88e6b3b0ebc77acd3f7b0ed327782cb0c63",
+      "status": "translated",
+      "translation": "如果 `SPAWNED_SESSION` 是 `\"true\"`，说明你正在一个由 AI 编排器（例如 OpenClaw）派生出来的会话中运行。在派生会话中：\n- 不要使用 AskUserQuestion 做交互式提示。自动选择推荐选项。\n- 不要运行升级检查、telemetry 提示、routing 注入或 lake 介绍。\n- 专注完成任务，并通过文字输出报告结果。\n- 以完成报告结尾：交付了什么、做了哪些决定、还有什么不确定。"
+    },
+    {
+      "block_id": "benchmark-0072-heading",
+      "source_hash": "b645ca4bdfed6631559f854e988ce5c54fe12409aa4b6d57f5dd67639c0dc4da",
+      "status": "translated",
+      "translation": "## Artifacts Sync（Skill 启动时）"
+    },
+    {
+      "block_id": "benchmark-0073-code-block",
+      "source_hash": "bb69f7819501f95d3de2b6fa4572d547651f734e07fe9f9f91ea0a95b16d4299",
+      "status": "translated",
+      "translation": "```bash\n_GSTACK_HOME=\"${GSTACK_HOME:-$HOME/.gstack}\"\n# 优先使用 v1.27.0.0 的 artifacts 文件；对于迁移脚本运行前正在升级的用户，回退到 brain 文件。\nif [ -f \"$HOME/.gstack-artifacts-remote.txt\" ]; then\n  _BRAIN_REMOTE_FILE=\"$HOME/.gstack-artifacts-remote.txt\"\nelse\n  _BRAIN_REMOTE_FILE=\"$HOME/.gstack-brain-remote.txt\"\nfi\n_BRAIN_SYNC_BIN=\"~/.claude/skills/gstack/bin/gstack-brain-sync\"\n_BRAIN_CONFIG_BIN=\"~/.claude/skills/gstack/bin/gstack-config\"\n\n# /sync-gbrain context-load：在 gbrain 可用时，教 agent 使用 gbrain。\n# 每个 worktree 的 pin：post-spike redesign 使用 kubectl 风格的 `.gbrain-source`，放在 git 顶层来限定查询范围。在 worktree 中寻找这个 pin（不是全局状态文件），这样打开没有 pin 的 worktree B 时，不会因为 worktree A 已经同步过就声称“已索引”。gbrain 未配置时为空字符串（对非 gbrain 用户零上下文成本）。\n_GBRAIN_CONFIG=\"$HOME/.gbrain/config.json\"\nif [ -f \"$_GBRAIN_CONFIG\" ] && command -v gbrain >/dev/null 2>&1; then\n  _GBRAIN_VERSION_OK=$(gbrain --version 2>/dev/null | grep -c '^gbrain ' || echo 0)\n  if [ \"$_GBRAIN_VERSION_OK\" -gt 0 ] 2>/dev/null; then\n    _GBRAIN_PIN_PATH=\"\"\n    _REPO_TOP=$(git rev-parse --show-toplevel 2>/dev/null || echo \"\")\n    if [ -n \"$_REPO_TOP\" ] && [ -f \"$_REPO_TOP/.gbrain-source\" ]; then\n      _GBRAIN_PIN_PATH=\"$_REPO_TOP/.gbrain-source\"\n    fi\n    if [ -n \"$_GBRAIN_PIN_PATH\" ]; then\n      echo \"GBrain configured. Prefer \\`gbrain search\\`/\\`gbrain query\\` over Grep for\"\n      echo \"semantic questions; use \\`gbrain code-def\\`/\\`code-refs\\`/\\`code-callers\\` for\"\n      echo \"symbol-aware code lookup. See \\\"## GBrain Search Guidance\\\" in CLAUDE.md.\"\n      echo \"Run /sync-gbrain to refresh.\"\n    else\n      echo \"GBrain configured but this worktree isn't pinned yet. Run \\`/sync-gbrain --full\\`\"\n      echo \"before relying on \\`gbrain search\\` for code questions in this worktree.\"\n      echo \"Falls back to Grep until pinned.\"\n    fi\n  fi\nfi\n\n_BRAIN_SYNC_MODE=$(\"$_BRAIN_CONFIG_BIN\" get artifacts_sync_mode 2>/dev/null || echo off)\n\n# 检测 remote-MCP 模式（/setup-gbrain 的路径 4）。远程模式下，本地 artifacts sync 是 no-op；brain server 会按自己的节奏从 GitHub/GitLab 拉取。直接读取 claude.json，让这个前置段保持快速（避免每次 Skill 启动都调用 claude CLI 子进程）。\n_GBRAIN_MCP_MODE=\"none\"\nif command -v jq >/dev/null 2>&1 && [ -f \"$HOME/.claude.json\" ]; then\n  _GBRAIN_MCP_TYPE=$(jq -r '.mcpServers.gbrain.type // .mcpServers.gbrain.transport // empty' \"$HOME/.claude.json\" 2>/dev/null)\n  case \"$_GBRAIN_MCP_TYPE\" in\n    url|http|sse) _GBRAIN_MCP_MODE=\"remote-http\" ;;\n    stdio) _GBRAIN_MCP_MODE=\"local-stdio\" ;;\n  esac\nfi\n\nif [ -f \"$_BRAIN_REMOTE_FILE\" ] && [ ! -d \"$_GSTACK_HOME/.git\" ] && [ \"$_BRAIN_SYNC_MODE\" = \"off\" ]; then\n  _BRAIN_NEW_URL=$(head -1 \"$_BRAIN_REMOTE_FILE\" 2>/dev/null | tr -d '[:space:]')\n  if [ -n \"$_BRAIN_NEW_URL\" ]; then\n    echo \"ARTIFACTS_SYNC: artifacts repo detected: $_BRAIN_NEW_URL\"\n    echo \"ARTIFACTS_SYNC: run 'gstack-brain-restore' to pull your cross-machine artifacts (or 'gstack-config set artifacts_sync_mode off' to dismiss forever)\"\n  fi\nfi\n\nif [ -d \"$_GSTACK_HOME/.git\" ] && [ \"$_BRAIN_SYNC_MODE\" != \"off\" ]; then\n  _BRAIN_LAST_PULL_FILE=\"$_GSTACK_HOME/.brain-last-pull\"\n  _BRAIN_NOW=$(date +%s)\n  _BRAIN_DO_PULL=1\n  if [ -f \"$_BRAIN_LAST_PULL_FILE\" ]; then\n    _BRAIN_LAST=$(cat \"$_BRAIN_LAST_PULL_FILE\" 2>/dev/null || echo 0)\n    _BRAIN_AGE=$(( _BRAIN_NOW - _BRAIN_LAST ))\n    [ \"$_BRAIN_AGE\" -lt 86400 ] && _BRAIN_DO_PULL=0\n  fi\n  if [ \"$_BRAIN_DO_PULL\" = \"1\" ]; then\n    ( cd \"$_GSTACK_HOME\" && git fetch origin >/dev/null 2>&1 && git merge --ff-only \"origin/$(git rev-parse --abbrev-ref HEAD)\" >/dev/null 2>&1 ) || true\n    echo \"$_BRAIN_NOW\" > \"$_BRAIN_LAST_PULL_FILE\"\n  fi\n  \"$_BRAIN_SYNC_BIN\" --once 2>/dev/null || true\nfi\n\nif [ \"$_GBRAIN_MCP_MODE\" = \"remote-http\" ]; then\n  # Remote-MCP 模式：本地 artifacts sync 是 no-op（brain admin 的服务器会从 GitHub/GitLab 拉取）。向用户显示这是设计如此，不是故障。\n  _GBRAIN_HOST=$(jq -r '.mcpServers.gbrain.url // empty' \"$HOME/.claude.json\" 2>/dev/null | sed -E 's|^https?://([^/:]+).*|\\1|')\n  echo \"ARTIFACTS_SYNC: remote-mode (managed by brain server ${_GBRAIN_HOST:-remote})\"\nelif [ -d \"$_GSTACK_HOME/.git\" ] && [ \"$_BRAIN_SYNC_MODE\" != \"off\" ]; then\n  _BRAIN_QUEUE_DEPTH=0\n  [ -f \"$_GSTACK_HOME/.brain-queue.jsonl\" ] && _BRAIN_QUEUE_DEPTH=$(wc -l < \"$_GSTACK_HOME/.brain-queue.jsonl\" | tr -d ' ')\n  _BRAIN_LAST_PUSH=\"never\"\n  [ -f \"$_GSTACK_HOME/.brain-last-push\" ] && _BRAIN_LAST_PUSH=$(cat \"$_GSTACK_HOME/.brain-last-push\" 2>/dev/null || echo never)\n  echo \"ARTIFACTS_SYNC: mode=$_BRAIN_SYNC_MODE | last_push=$_BRAIN_LAST_PUSH | queue=$_BRAIN_QUEUE_DEPTH\"\nelse\n  echo \"ARTIFACTS_SYNC: off\"\nfi\n```"
+    },
+    {
+      "block_id": "benchmark-0074-paragraph",
+      "source_hash": "e59a3c76f29ebb8985b1ca7bdd7e008a5e9c6ca8235bb23b3b4606d4f5ce762f",
+      "status": "translated",
+      "translation": "隐私停止门：如果输出显示 `ARTIFACTS_SYNC: off`，`artifacts_sync_mode_prompted` 是 `false`，并且 gbrain 在 PATH 中，或 `gbrain doctor --fast --json` 可以运行，就询问一次："
+    },
+    {
+      "block_id": "benchmark-0075-paragraph",
+      "source_hash": "41d544d0c2a01bc69d43c94601ac5492187e170f0a4f37853a4ef7f7d86b7035",
+      "status": "translated",
+      "translation": "> gstack 可以把你的 artifacts（CEO plans、designs、reports）发布到一个私有 GitHub repo，让 GBrain 跨机器索引。应该同步多少内容？"
+    },
+    {
+      "block_id": "benchmark-0076-paragraph",
+      "source_hash": "0dcfc20ebc416363ad991d5bf8ad95439434e4d7cfb051b1a83c9c72327b8853",
+      "status": "translated",
+      "translation": "选项：\n- A) allowlist 允许的全部内容（推荐）\n- B) 仅 artifacts\n- C) 拒绝，全部保持本地"
+    },
+    {
+      "block_id": "benchmark-0077-paragraph",
+      "source_hash": "37a8d44537fa71b5129575e58c234f169fe8fee51db05e1d89717aae7cc42bf6",
+      "status": "translated",
+      "translation": "回答之后："
+    },
+    {
+      "block_id": "benchmark-0078-code-block",
+      "source_hash": "e25cbcbe6d38718a698ecff6079c1ac39de57f265ac207eb419274c6e672491b",
+      "status": "translated",
+      "translation": "```bash\n# 选择的模式：full | artifacts-only | off\n\"$_BRAIN_CONFIG_BIN\" set artifacts_sync_mode <choice>\n\"$_BRAIN_CONFIG_BIN\" set artifacts_sync_mode_prompted true\n```"
+    },
+    {
+      "block_id": "benchmark-0079-paragraph",
+      "source_hash": "cd13373da431efb3b210ea216087f9bff663362eb1cef4861bc588f393f8ec3d",
+      "status": "translated",
+      "translation": "如果选择 A/B，并且 `~/.gstack/.git` 缺失，就询问是否运行 `gstack-artifacts-init`。不要阻塞这个 Skill。"
+    },
+    {
+      "block_id": "benchmark-0080-paragraph",
+      "source_hash": "1d34cbb6bbfc5165595656496ca20c8a96f78d1126620d110a2ac6c32fa27785",
+      "status": "translated",
+      "translation": "在 Skill 结束时、telemetry 之前："
+    }
+  ]
+}

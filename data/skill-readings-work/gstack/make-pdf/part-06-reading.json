@@ -1,0 +1,129 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "package": "gstack",
+  "skill": "make-pdf",
+  "source_file": "SKILL.md",
+  "part": 6,
+  "blocks": [
+    {
+      "block_id": "make-pdf-0101-paragraph",
+      "source_hash": "c611aecd7152cb062c41f91fc9e5213b55276849d3f0ec37c9c9a25feb67afff",
+      "status": "translated",
+      "translation": "完成前，如果你发现了一个耐久的项目特殊点或命令修复，且下次能节省 5 分钟以上，就记录下来："
+    },
+    {
+      "block_id": "make-pdf-0102-code-block",
+      "source_hash": "d841b9db8eea1f8221a37beb14b1d79ff8a2529749dd71f042d89e1defd4a7d3",
+      "status": "translated",
+      "translation": "```bash\n~/.claude/skills/gstack/bin/gstack-learnings-log '{\"skill\":\"SKILL_NAME\",\"type\":\"operational\",\"key\":\"SHORT_KEY\",\"insight\":\"DESCRIPTION\",\"confidence\":N,\"source\":\"observed\"}'\n```"
+    },
+    {
+      "block_id": "make-pdf-0103-paragraph",
+      "source_hash": "7223a4de2d6c4cb94a8ad844f1dbd2afd4181814478ab432edabdd22913beaf8",
+      "status": "translated",
+      "translation": "不要记录显而易见的事实，也不要记录一次性的临时错误。"
+    },
+    {
+      "block_id": "make-pdf-0104-heading",
+      "source_hash": "c82767d57199ff2747bd53a894f98763986d2b19cee7a8153eaa51f796ad92ae",
+      "status": "translated",
+      "translation": "## 遥测（最后运行）"
+    },
+    {
+      "block_id": "make-pdf-0105-paragraph",
+      "source_hash": "bebcbbd3352cbd05066ec2b1b78776b77b7559d496e427832205039d4451dd04",
+      "status": "translated",
+      "translation": "工作流完成后，记录 telemetry。使用 frontmatter 中的 Skill `name:`。`OUTCOME` 取值为 `success`、`error`、`abort` 或 `unknown`。"
+    },
+    {
+      "block_id": "make-pdf-0106-paragraph",
+      "source_hash": "874e228fc697602aa6f26889f82f03ced234c146978f3b5b5f909df54d5a0d5b",
+      "status": "translated",
+      "translation": "**PLAN MODE 例外 — 始终运行：** 这条命令会把 telemetry 写入 `~/.gstack/analytics/`，与 preamble analytics 写入保持一致。"
+    },
+    {
+      "block_id": "make-pdf-0107-paragraph",
+      "source_hash": "76dfba488b923307259ecc6bef7dd6f714c7381861a3b3dd9401fcecde549b19",
+      "status": "translated",
+      "translation": "运行下面的 bash："
+    },
+    {
+      "block_id": "make-pdf-0108-code-block",
+      "source_hash": "d99683acfc2c7cbd1acabee117610e0ccc4983d0b6f2b847c74857cdcb704c07",
+      "status": "translated",
+      "translation": "```bash\n_TEL_END=$(date +%s)\n_TEL_DUR=$(( _TEL_END - _TEL_START ))\nrm -f ~/.gstack/analytics/.pending-\"$_SESSION_ID\" 2>/dev/null || true\n# 会话时间线：记录 skill 完成状态（仅本地保存，不发送到任何地方）\n~/.claude/skills/gstack/bin/gstack-timeline-log '{\"skill\":\"SKILL_NAME\",\"event\":\"completed\",\"branch\":\"'$(git branch --show-current 2>/dev/null || echo unknown)'\",\"outcome\":\"OUTCOME\",\"duration_s\":\"'\"$_TEL_DUR\"'\",\"session\":\"'\"$_SESSION_ID\"'\"}' 2>/dev/null || true\n# 本地 analytics（受 telemetry 设置控制）\nif [ \"$_TEL\" != \"off\" ]; then\necho '{\"skill\":\"SKILL_NAME\",\"duration_s\":\"'\"$_TEL_DUR\"'\",\"outcome\":\"OUTCOME\",\"browse\":\"USED_BROWSE\",\"session\":\"'\"$_SESSION_ID\"'\",\"ts\":\"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'\"}' >> ~/.gstack/analytics/skill-usage.jsonl 2>/dev/null || true\nfi\n# 远程 telemetry（opt-in，需要 binary）\nif [ \"$_TEL\" != \"off\" ] && [ -x ~/.claude/skills/gstack/bin/gstack-telemetry-log ]; then\n  ~/.claude/skills/gstack/bin/gstack-telemetry-log \\\n    --skill \"SKILL_NAME\" --duration \"$_TEL_DUR\" --outcome \"OUTCOME\" \\\n    --used-browse \"USED_BROWSE\" --session-id \"$_SESSION_ID\" 2>/dev/null &\nfi\n```"
+    },
+    {
+      "block_id": "make-pdf-0109-paragraph",
+      "source_hash": "b1b64d78c5944c9bb3a8071522ec132a29828b993ec2dae48426d00b9ce77075",
+      "status": "translated",
+      "translation": "运行前替换 `SKILL_NAME`、`OUTCOME` 和 `USED_BROWSE`。"
+    },
+    {
+      "block_id": "make-pdf-0110-heading",
+      "source_hash": "b16b407bd1995dff444cc730c9b8ba2d253791b4d0800f5f9c13155b76a295b2",
+      "status": "translated",
+      "translation": "## 计划状态页脚"
+    },
+    {
+      "block_id": "make-pdf-0111-paragraph",
+      "source_hash": "2b23d62f8774561c3016e477c7e1e54878358aefff3ed4ab057edfcdea3b5892",
+      "status": "translated",
+      "translation": "会运行计划审查的 Skills（`/plan-*-review`、`/codex review`）会在 skill 末尾包含 EXIT PLAN MODE GATE 阻断检查清单。这个清单会在调用 ExitPlanMode 之前，验证计划文件以 `## GSTACK REVIEW REPORT` 结尾。不运行计划审查的 Skills（例如 `/ship`、`/qa`、`/review` 这类操作型 skills）通常不在 plan mode 中运行，也没有需要验证的 review report；这个页脚对它们来说不执行任何动作。写入计划文件是在 plan mode 中唯一允许的编辑。"
+    },
+    {
+      "block_id": "make-pdf-0112-heading",
+      "source_hash": "e255f7cd4133265c7a90e1f987405d7691a7871f37373295e93544020993c136",
+      "status": "translated",
+      "translation": "# make-pdf：从 Markdown 生成出版级质量的 PDF"
+    },
+    {
+      "block_id": "make-pdf-0113-paragraph",
+      "source_hash": "30c6b54d8acb87c42765bc51961b0de16bf089b98374b834f975065fec70fdc6",
+      "status": "translated",
+      "translation": "把 `.md` 文件转换成看起来像 Faber & Faber 随笔的 PDF：1in 边距、正文左对齐、全篇 Helvetica、弯引号和 em dash、可选封面和可点击目录，以及需要时使用的斜向 DRAFT 水印。从 PDF 复制粘贴会得到干净的单词，绝不会变成 \"S a i l i n g\"。"
+    },
+    {
+      "block_id": "make-pdf-0114-paragraph",
+      "source_hash": "1157abd71c6f410fa84f31958247880e902effc751691677105d3e6e252b4442",
+      "status": "translated",
+      "translation": "在 Linux 上，安装 `fonts-liberation` 以获得正确渲染。Helvetica 和 Arial 默认不存在，而 Liberation Sans 是标准的度量兼容 fallback。CI 和 Docker 构建会通过 Dockerfile.ci 自动安装它。"
+    },
+    {
+      "block_id": "make-pdf-0115-paragraph",
+      "source_hash": "3f43a4c043e06f377c8094179e769e6787c4da38b57c6eab45b5a6338290fd21",
+      "status": "translated",
+      "translation": "Emoji 需要彩色 emoji 字体。macOS 自带 Apple Color Emoji，Windows 自带 Segoe UI Emoji；多数 Linux 发行版和容器没有内置彩色 emoji 字体，所以 emoji 可能会渲染成空方框（▯）。`./setup` 会在 Linux 上尽力通过 apt、dnf、pacman 或 apk 自动安装 `fonts-noto-color-emoji`；打印 CSS 会按 Apple、Segoe 和 Noto emoji 字体族依次回退。设置 `GSTACK_SKIP_FONTS=1` 可以跳过字体安装，适用于无 sudo 的 CI、受管机器或离线机器。"
+    },
+    {
+      "block_id": "make-pdf-0116-heading",
+      "source_hash": "a2e4ac4f718ebd8d31fb8f530c0068601aa1af02472605d36b359b8b33fa10a5",
+      "status": "translated",
+      "translation": "## 核心模式"
+    },
+    {
+      "block_id": "make-pdf-0117-heading",
+      "source_hash": "c3543b3cd14c2aaede58854c68178604dc25cd4e8cd00d85f7b9bd747becf55c",
+      "status": "translated",
+      "translation": "### 80% 场景：memo/letter"
+    },
+    {
+      "block_id": "make-pdf-0118-paragraph",
+      "source_hash": "b017a02631b7105b1f8fa02e06c4b9c9dd18487de9b9d598dda9637d2c9d44ed",
+      "status": "translated",
+      "translation": "一个命令，不加 flag。默认得到带运行页眉、页码和 CONFIDENTIAL 页脚的干净 PDF。"
+    },
+    {
+      "block_id": "make-pdf-0119-code-block",
+      "source_hash": "780d940a1746fc3ac1138e148253977ace91a48d8840090da6f307761cd13231",
+      "status": "translated",
+      "translation": "```bash\n$P generate letter.md                 # 写入 /tmp/letter.pdf\n$P generate letter.md letter.pdf      # 显式输出路径\n```"
+    },
+    {
+      "block_id": "make-pdf-0120-heading",
+      "source_hash": "733c1ee1ee5668fe23ff12f1685a13c2586a37dc087edcfde63fda25b5922e6a",
+      "status": "translated",
+      "translation": "### 出版模式：封面 + 目录 + 章节分页"
+    }
+  ]
+}

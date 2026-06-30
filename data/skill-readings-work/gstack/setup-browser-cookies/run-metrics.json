@@ -1,0 +1,136 @@
+{
+  "skill_name": "setup-browser-cookies",
+  "started_at": "2026-06-28T16:00:00Z",
+  "finished_at": "2026-06-28T16:15:07Z",
+  "duration_minutes": 15.12,
+  "source_chars": 29541,
+  "source_blocks": 132,
+  "part_count": 7,
+  "agent_count": 1,
+  "part_metrics": [
+    {
+      "part": 1,
+      "block_range": [
+        "setup-browser-cookies-0001-frontmatter",
+        "setup-browser-cookies-0020-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-setup-browser-cookies",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 2,
+      "block_range": [
+        "setup-browser-cookies-0021-paragraph",
+        "setup-browser-cookies-0040-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-setup-browser-cookies",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 3,
+      "block_range": [
+        "setup-browser-cookies-0041-paragraph",
+        "setup-browser-cookies-0060-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-setup-browser-cookies",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 4,
+      "block_range": [
+        "setup-browser-cookies-0061-paragraph",
+        "setup-browser-cookies-0080-code-block"
+      ],
+      "block_count": 20,
+      "agent": "worker-setup-browser-cookies",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 5,
+      "block_range": [
+        "setup-browser-cookies-0081-heading",
+        "setup-browser-cookies-0100-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-setup-browser-cookies",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 6,
+      "block_range": [
+        "setup-browser-cookies-0101-code-block",
+        "setup-browser-cookies-0120-code-block"
+      ],
+      "block_count": 20,
+      "agent": "worker-setup-browser-cookies",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 7,
+      "block_range": [
+        "setup-browser-cookies-0121-paragraph",
+        "setup-browser-cookies-0132-paragraph"
+      ],
+      "block_count": 12,
+      "agent": "worker-setup-browser-cookies",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    }
+  ],
+  "merge_metrics": {
+    "started_at": "2026-06-28T16:23:20.199577Z",
+    "finished_at": "2026-06-28T16:23:20.201971Z",
+    "duration_minutes": 0.0,
+    "status": "completed",
+    "output": "data/skill-readings/gstack/setup-browser-cookies.json"
+  },
+  "token_usage": "token_usage_unavailable",
+  "quality_repair_metrics": {
+    "started_at": "2026-06-28T16:44:34.948703Z",
+    "finished_at": "2026-06-28T16:44:34.948703Z",
+    "duration_minutes": 0,
+    "repaired_blocks": [
+      "setup-browser-cookies-0001-frontmatter",
+      "setup-browser-cookies-0008-paragraph",
+      "setup-browser-cookies-0014-paragraph",
+      "setup-browser-cookies-0015-paragraph",
+      "setup-browser-cookies-0071-heading",
+      "setup-browser-cookies-0074-paragraph",
+      "setup-browser-cookies-0075-paragraph",
+      "setup-browser-cookies-0098-paragraph",
+      "setup-browser-cookies-0106-paragraph"
+    ],
+    "status": "completed",
+    "token_usage": "token_usage_unavailable"
+  }
+}

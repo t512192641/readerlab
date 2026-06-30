@@ -1,0 +1,133 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "skill": "canary",
+  "part": 11,
+  "package": "gstack",
+  "source_file": "SKILL.md",
+  "range": [
+    "canary-0201-paragraph",
+    "canary-0220-heading"
+  ],
+  "blocks": [
+    {
+      "block_id": "canary-0201-paragraph",
+      "source_hash": "f1b57524da4fd1e9d90f5556353b12a26f3d52048610b1333f32002fbbf74ff3",
+      "status": "translated",
+      "translation": "解析用户参数。默认时长是 10 分钟。默认页面：从应用导航中自动发现。"
+    },
+    {
+      "block_id": "canary-0202-heading",
+      "source_hash": "d5336e4d118f739f33de71fac94d952368346a7e465ad77c440329ff3a318765",
+      "status": "translated",
+      "translation": "### 阶段 2：基线采集（--baseline 模式）"
+    },
+    {
+      "block_id": "canary-0203-paragraph",
+      "source_hash": "6b7609b2e02b7a0ffbf915a395d5d148f361ea391647857771273ab53cedd4d9",
+      "status": "translated",
+      "translation": "如果用户传入 `--baseline`，在部署之前采集当前状态。"
+    },
+    {
+      "block_id": "canary-0204-paragraph",
+      "source_hash": "f881a174846cbc73369d9b802a8ca0618d2161d5b33cb90f0b32663dfe4eef47",
+      "status": "translated",
+      "translation": "对每个页面（来自 `--pages` 或首页）执行："
+    },
+    {
+      "block_id": "canary-0205-code-block",
+      "source_hash": "00b96b9ac34661b38f9b4c4cfaf39eed22dbc05d6eceedfea51c93c3a8c61f4c",
+      "status": "translated",
+      "translation": "```bash\n$B goto <page-url>\n$B snapshot -i -a -o \".gstack/canary-reports/baselines/<page-name>.png\"\n$B console --errors\n$B perf\n$B text\n```"
+    },
+    {
+      "block_id": "canary-0206-paragraph",
+      "source_hash": "b514ec31b3f490e4b19846a0a330c4bc9863f9ffe5ccafc3dba5a9be36dc16f4",
+      "status": "translated",
+      "translation": "为每个页面收集：截图路径、控制台错误数量、来自 `perf` 的页面加载时间，以及文本内容快照。"
+    },
+    {
+      "block_id": "canary-0207-paragraph",
+      "source_hash": "ccd90304e0341ef1e65f73f54a8c6fe416cf95e445f3ab731b960379e956d5dd",
+      "status": "translated",
+      "translation": "把基线 manifest 保存到 `.gstack/canary-reports/baseline.json`："
+    },
+    {
+      "block_id": "canary-0208-code-block",
+      "source_hash": "4b2f6a85273300e533d140dd96d8c7eb6fa153e20f669af834866f90be1ae00c",
+      "status": "translated",
+      "translation": "```json\n{\n  \"url\": \"<url>\",\n  \"timestamp\": \"<ISO>\",\n  \"branch\": \"<current branch>\",\n  \"pages\": {\n    \"/\": {\n      \"screenshot\": \"baselines/home.png\",\n      \"console_errors\": 0,\n      \"load_time_ms\": 450\n    }\n  }\n}\n```"
+    },
+    {
+      "block_id": "canary-0209-paragraph",
+      "source_hash": "045ba199a57e15175d3edefd8c42b205eafe96257f31a4daf38b43ce70b3ae24",
+      "status": "translated",
+      "translation": "然后 STOP 并告诉用户：\"Baseline captured. Deploy your changes, then run `/canary <url>` to monitor.\""
+    },
+    {
+      "block_id": "canary-0210-heading",
+      "source_hash": "20a3785f44b5e8fc7625c6ad853d4c3f945b87679f8f8dba4d68a375a50a6247",
+      "status": "translated",
+      "translation": "### 阶段 3：页面发现"
+    },
+    {
+      "block_id": "canary-0211-paragraph",
+      "source_hash": "e8ada6f7b5354aeecaa9b1cc4e6becd9d4c0cce22884280698e29777ab8221a5",
+      "status": "translated",
+      "translation": "如果没有指定 `--pages`，自动发现要监控的页面："
+    },
+    {
+      "block_id": "canary-0212-code-block",
+      "source_hash": "e6beb88017ef155a47a0b924e70d93888bb40d69e1b55389457dbf92ca6c4561",
+      "status": "translated",
+      "translation": "```bash\n$B goto <url>\n$B links\n$B snapshot -i\n```"
+    },
+    {
+      "block_id": "canary-0213-paragraph",
+      "source_hash": "2599948bacbd9ac4c9b564f803864b4e4a3ece596368ee93b7a910a23a2b7b12",
+      "status": "translated",
+      "translation": "从 `links` 输出中提取前 5 个内部导航链接。始终包含首页。通过 AskUserQuestion 展示页面列表："
+    },
+    {
+      "block_id": "canary-0214-paragraph",
+      "source_hash": "448478a7b8828fff850f59e0f031642a723e32681a906019f1f23a8a2900771b",
+      "status": "translated",
+      "translation": "- **上下文：** 正在部署后监控给定 URL 的生产站点。\n- **问题：** canary 应该监控哪些页面？\n- **推荐：** 选择 A，因为这些是主要导航目标。\n- A) 监控这些页面：[列出发现的页面]\n- B) 添加更多页面（用户指定）\n- C) 只监控首页（快速检查）"
+    },
+    {
+      "block_id": "canary-0215-heading",
+      "source_hash": "8e211a1790440a8ea1ce1369bd8f8f38337ba1b9dbb7bbe7a53c1e71568b0b88",
+      "status": "translated",
+      "translation": "### 阶段 4：部署前快照（如果没有基线）"
+    },
+    {
+      "block_id": "canary-0216-paragraph",
+      "source_hash": "96460b2187cef3d66b7f3fbe013464b3c9727f72517dd4264fe1ee573e30580b",
+      "status": "translated",
+      "translation": "如果没有 `baseline.json`，现在快速拍一个快照作为参考点。"
+    },
+    {
+      "block_id": "canary-0217-paragraph",
+      "source_hash": "b9b3a0bac441e77e19deb548d9643276a5f30df089e8e70bbff423c09ece3714",
+      "status": "translated",
+      "translation": "对每个要监控的页面执行："
+    },
+    {
+      "block_id": "canary-0218-code-block",
+      "source_hash": "6e2a741efc138a20d66dd42cad7c03bffd96ef77e9e31a8958c94d225d7ab5a9",
+      "status": "translated",
+      "translation": "```bash\n$B goto <page-url>\n$B snapshot -i -a -o \".gstack/canary-reports/screenshots/pre-<page-name>.png\"\n$B console --errors\n$B perf\n```"
+    },
+    {
+      "block_id": "canary-0219-paragraph",
+      "source_hash": "c1b772b5f048aa2ce9be364c183d1f35eda236d0fad5dc8fb0e87b4620b0c516",
+      "status": "translated",
+      "translation": "记录每个页面的控制台错误数量和加载时间。这些会成为监控期间检测回退的参考。"
+    },
+    {
+      "block_id": "canary-0220-heading",
+      "source_hash": "bc11767307ce32dcf9af49111e353cd4c7a9617bcfd8c8fd8742a2fe2a3cc770",
+      "status": "translated",
+      "translation": "### 阶段 5：持续监控循环"
+    }
+  ]
+}

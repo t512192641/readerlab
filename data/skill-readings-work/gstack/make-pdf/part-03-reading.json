@@ -1,0 +1,129 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "package": "gstack",
+  "skill": "make-pdf",
+  "source_file": "SKILL.md",
+  "part": 3,
+  "blocks": [
+    {
+      "block_id": "make-pdf-0041-paragraph",
+      "source_hash": "487b9771bb23619c7e33181068c8ef15f8c9b557325342c0b73dbfa081841184",
+      "status": "translated",
+      "translation": "如果 B→A：运行 `~/.claude/skills/gstack/bin/gstack-config set telemetry anonymous`\n如果 B→B：运行 `~/.claude/skills/gstack/bin/gstack-config set telemetry off`"
+    },
+    {
+      "block_id": "make-pdf-0042-paragraph",
+      "source_hash": "7a2d7396c8aa0ab9a12f2519ce33846b0b282119d5151584cc9a6cca17907d4d",
+      "status": "translated",
+      "translation": "始终运行："
+    },
+    {
+      "block_id": "make-pdf-0043-code-block",
+      "source_hash": "924b6f973e889327e680f1b4857d85d233ef0062487cb09dc676db34a9ac1efe",
+      "status": "translated",
+      "translation": "```bash\ntouch ~/.gstack/.telemetry-prompted\n```"
+    },
+    {
+      "block_id": "make-pdf-0044-paragraph",
+      "source_hash": "fab5bbfba3add346f3b599b6e32b3a4c5b52c28b5cb5101392228004b15d2b7c",
+      "status": "translated",
+      "translation": "如果 `TEL_PROMPTED` 为 `yes`，则跳过。"
+    },
+    {
+      "block_id": "make-pdf-0045-paragraph",
+      "source_hash": "8feaddb5eb76a038730de7e4b0218272a03cc2e483aa9f9c8738e63fda1e1631",
+      "status": "translated",
+      "translation": "如果 `PROACTIVE_PROMPTED` 为 `no` 且 `TEL_PROMPTED` 为 `yes`：询问一次："
+    },
+    {
+      "block_id": "make-pdf-0046-paragraph",
+      "source_hash": "0141cbe6d8b69571eb284468175f03e9f7682123a57e81507bfabf185fabe2f1",
+      "status": "translated",
+      "translation": "> 是否允许 gstack 主动建议 skills，比如在用户说“这能用吗？”时建议 /qa，或者在遇到 bugs 时建议 /investigate？"
+    },
+    {
+      "block_id": "make-pdf-0047-paragraph",
+      "source_hash": "8a747a1915b37d167ba2253689d126101463f320aa98d14a04190982bd48efd4",
+      "status": "translated",
+      "translation": "选项：\n- A) 保持开启（推荐）\n- B) 关闭它 — 我会自己输入 /commands"
+    },
+    {
+      "block_id": "make-pdf-0048-paragraph",
+      "source_hash": "5d69103da91d9b818a3d8fe6b7effcb8d3d2483d07fc84d51e3a47f6066e5d7e",
+      "status": "translated",
+      "translation": "如果选择 A：运行 `~/.claude/skills/gstack/bin/gstack-config set proactive true`\n如果选择 B：运行 `~/.claude/skills/gstack/bin/gstack-config set proactive false`"
+    },
+    {
+      "block_id": "make-pdf-0049-paragraph",
+      "source_hash": "7a2d7396c8aa0ab9a12f2519ce33846b0b282119d5151584cc9a6cca17907d4d",
+      "status": "translated",
+      "translation": "始终运行："
+    },
+    {
+      "block_id": "make-pdf-0050-code-block",
+      "source_hash": "68fa40904e4be2b145a527c8ad917d0e10b09cc20fd3272a629926187e4e49df",
+      "status": "translated",
+      "translation": "```bash\ntouch ~/.gstack/.proactive-prompted\n```"
+    },
+    {
+      "block_id": "make-pdf-0051-paragraph",
+      "source_hash": "d49db5750fc6bcbf797d6cd2344760dd2fa7018726be3cf02e7d10977be6c63a",
+      "status": "translated",
+      "translation": "如果 `PROACTIVE_PROMPTED` 为 `yes`，则跳过。"
+    },
+    {
+      "block_id": "make-pdf-0052-heading",
+      "source_hash": "fb3db60850ce4fb5bf9f6b2d4949de09ee65afbb0a6e162e64f51e7e6a964a5a",
+      "status": "translated",
+      "translation": "## 首次运行引导（一次性）"
+    },
+    {
+      "block_id": "make-pdf-0053-paragraph",
+      "source_hash": "1bc6b22470fc6a54f89de0d2f65a61185b2790b97e3bf0952a8827bf96ea564f",
+      "status": "translated",
+      "translation": "如果 `ACTIVATED` 为 `no`（这台机器上第一次运行 skill），并且 preamble 打印了非空的 `FIRST_TASK:` 值，且该值不是 `nongit`：根据这个 token 显示一行简短、针对项目的提示，作为提醒；然后继续处理用户实际提出的任务，不要中断用户任务。token 映射如下：`greenfield` → “全新仓库 — 先用 `/spec` 或 `/office-hours` 梳理形状。” `code_node`/`code_python`/`code_rust`/`code_go`/`code_ruby`/`code_ios` → “这里有代码 — 用 `/qa` 看它是否能跑，或者在情况不对时用 `/investigate`。” `branch_ahead` → “这个分支上有尚未交付的工作 — 先 `/review`，再 `/ship`。” `dirty_default` → “有未提交改动 — 提交前先 `/review`。” `clean_default` → “选一个：`/spec`、`/investigate` 或 `/qa`。” 然后用你看到的 token 替换 TASK_TOKEN 并运行（尽力而为），再标记为已激活："
+    },
+    {
+      "block_id": "make-pdf-0054-code-block",
+      "source_hash": "1650fb3aa8b1e0d53dce57c233159bc46d4524264e147e9a7fe54eb0b58d3555",
+      "status": "translated",
+      "translation": "```bash\n~/.claude/skills/gstack/bin/gstack-telemetry-log --event-type first_task_scaffold_shown --skill \"TASK_TOKEN\" --outcome shown 2>/dev/null || true\ntouch ~/.gstack/.activated 2>/dev/null || true\n```"
+    },
+    {
+      "block_id": "make-pdf-0055-paragraph",
+      "source_hash": "ce12d94707c89744c86cce359d18f72203e6c3e147a38807a32706238bce0d0c",
+      "status": "translated",
+      "translation": "如果 `ACTIVATED` 为 `no`，但 `FIRST_TASK:` 为空或为 `nongit`（headless、非 git 仓库，或没有可操作内容）：不显示任何内容，只运行 `touch ~/.gstack/.activated 2>/dev/null || true`。"
+    },
+    {
+      "block_id": "make-pdf-0056-paragraph",
+      "source_hash": "b18e451dd9f7cd101eb08bfc7bc4930a5ca1e83755d123d3951c509743315380",
+      "status": "translated",
+      "translation": "否则，如果 `ACTIVATED` 为 `yes` 且 `FIRST_LOOP_SHOWN` 为 `no`：说一次下面的提醒（然后继续）："
+    },
+    {
+      "block_id": "make-pdf-0057-paragraph",
+      "source_hash": "ba800bede61836206c08fbed03d508faccba07629775649c9ebadfeb8c34e746",
+      "status": "translated",
+      "translation": "> 提示：当你完成一个闭环时，gstack 的价值最明显 — **plan → review → ship**。一个常见的首次闭环是：用 `/office-hours` 或 `/spec` 梳理形状，用 `/plan-eng-review` 锁定方案，然后 `/ship`。"
+    },
+    {
+      "block_id": "make-pdf-0058-paragraph",
+      "source_hash": "7d53816e8ba164fe01156c134ed949fb508efd7419d2f4f8fef731a5cef563f4",
+      "status": "translated",
+      "translation": "然后运行 `touch ~/.gstack/.first-loop-tip-shown 2>/dev/null || true`。"
+    },
+    {
+      "block_id": "make-pdf-0059-paragraph",
+      "source_hash": "9559604cc2833f85e9f2aa9ecdef5debc504c15c387a0d0be749741a7c43e092",
+      "status": "translated",
+      "translation": "如果 `ACTIVATED` 和 `FIRST_LOOP_SHOWN` 都是 `yes`，则跳过本节。"
+    },
+    {
+      "block_id": "make-pdf-0060-paragraph",
+      "source_hash": "105a8e694c015aec6087bf3a0aa923753370de19257f98e0b49b6ca0ed596a0b",
+      "status": "translated",
+      "translation": "如果 `HAS_ROUTING` 为 `no`，且 `ROUTING_DECLINED` 为 `false`，且 `PROACTIVE_PROMPTED` 为 `yes`：\n检查项目根目录中是否存在 CLAUDE.md 文件。如果不存在，就创建它。"
+    }
+  ]
+}

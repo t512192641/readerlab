@@ -1,0 +1,529 @@
+{
+  "schema": "readerlab.location-map.v1",
+  "material": {
+    "id": "dbs-suite__v2.15.1_096f726",
+    "title": "dbs-suite",
+    "type": "skill_package",
+    "source_package_id": "dbs-suite",
+    "version_or_commit": "2.15.1 / 096f726a20407901ca517cfc42509f96232fd0ea"
+  },
+  "locations": [
+    {
+      "location_id": "loc-dbs-skill-main",
+      "source_id": "src-dbs-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs/SKILL.md",
+      "heading_path": [
+        "dbs：商业工具箱",
+        "如何判断模式"
+      ],
+      "line_range": [
+        1,
+        292
+      ],
+      "trigger_summary": "/dbs、不知道用哪个工具、下一步怎么走",
+      "owned_job_summary": "入口路由和任务后导航；只分发任务，不做诊断。",
+      "text_preview": "dontbesilent 商业工具箱主入口。双模式：任务前路由（你的问题该用哪个 skill）+ 任务后导航（刚做完诊断，下一步该干什么）。 触发方式：/dbs、/商业、「帮我看看」、「下一步怎么走」 Main entry point for dontbesilent business toolkit. Dual mode: pre-task routing + post-task navigation. Trigger: /dbs, \"help me with my business\", \"what's next",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-action-skill-main",
+      "source_id": "src-dbs-action-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-action/SKILL.md",
+      "heading_path": [
+        "dbs-action：执行力诊断",
+        "核心哲学（阿德勒个体心理学 + dontbesilent 的实战观察）"
+      ],
+      "line_range": [
+        1,
+        250
+      ],
+      "trigger_summary": "知道该做但不做、拖延、执行阻力",
+      "owned_job_summary": "诊断知道该做但不做的执行阻力，不做激励话术。",
+      "text_preview": "dontbesilent 执行力诊断。用阿德勒心理学框架诊断你「知道该做什么但就是不做」的真正原因。 触发方式：/dbs-action、/action、「我知道该怎么做但就是不做」「为什么我总是拖延」 Execution block diagnosis using Adlerian psychology framework. Trigger: /dbs-action, \"I know what to do but can't do it\", \"why do I procrastinate\"",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-agent-migration-skill-main",
+      "source_id": "src-dbs-agent-migration-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-agent-migration/SKILL.md",
+      "heading_path": [
+        "dbs-agent-migration：Agent 工作台迁移",
+        "什么时候用"
+      ],
+      "line_range": [
+        1,
+        370
+      ],
+      "trigger_summary": "迁移到 Codex/Claude/Grok、统一 AGENTS、整理 bridge",
+      "owned_job_summary": "审计并迁移 Agent 工作台规则、真源和三端 bridge。",
+      "text_preview": "Agent 工作台迁移。把任意项目整理成 Claude Code / Codex / Grok 三端一致、可长期维护的 Agent 工作台：审计规则文件、识别真源、统一命名并生成 bridge。 触发方式：/dbs-agent-migration、/agent迁移、「迁移到 Codex」「迁移到 Claude Code」「迁移到 Grok」「统一 AGENTS.md」「整理 skill bridge」「我的 Agent 工作台很乱」「帮我统一 Claude 和 Codex 和 Grok」 Agent workspa",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-ai-check-skill-main",
+      "source_id": "src-dbs-ai-check-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-ai-check/SKILL.md",
+      "heading_path": [
+        "dbs-ai-check：AI 写作特征识别",
+        "核心哲学"
+      ],
+      "line_range": [
+        1,
+        274
+      ],
+      "trigger_summary": "AI 味检测、帮我看看有没有 AI 特征",
+      "owned_job_summary": "识别文案 AI 写作特征，默认只诊断不改写。",
+      "text_preview": "dontbesilent AI 写作特征识别。扫描文案中的 AI 生成痕迹，输出检测报告。默认只诊断不改。 触发方式：/dbs-ai-check、/AI检测、「帮我看看有没有 AI 味」「检测一下 AI 特征」 AI writing fingerprint detection. Scans copy for AI-generated patterns and outputs a diagnostic report. Diagnosis only by default. Trigger: /dbs-ai-check,",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-benchmark-skill-main",
+      "source_id": "src-dbs-benchmark-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-benchmark/SKILL.md",
+      "heading_path": [
+        "dbs-benchmark：对标分析",
+        "核心哲学"
+      ],
+      "line_range": [
+        1,
+        231
+      ],
+      "trigger_summary": "找对标、想模仿谁、已有对标怎么抄",
+      "owned_job_summary": "用五重过滤找可模仿高利润对标，并检查模仿颗粒度。",
+      "text_preview": "dontbesilent 对标分析。用五重过滤法帮你找到值得模仿的对标，排除一切关于「我」的噪音。 触发方式：/dbs-benchmark、/对标、「帮我找对标」「我该模仿谁」 Benchmark analysis using dontbesilent's five-filter method. Trigger: /dbs-benchmark, \"find me a benchmark\", \"who should I copy\"",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-chatroom-skill-main",
+      "source_id": "src-dbs-chatroom-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-chatroom/SKILL.md",
+      "heading_path": [
+        "dbs-chatroom：定向聊天室",
+        "工作流程"
+      ],
+      "line_range": [
+        1,
+        174
+      ],
+      "trigger_summary": "多角色讨论、定向聊天室、听不同观点",
+      "owned_job_summary": "按话题推荐或接受专家，组织多角色并行讨论和判官总结。",
+      "text_preview": "定向聊天室：根据话题推荐或接受用户指定的专家，模拟多角色对话。触发方式：/dbs-chatroom、/定向聊天室、「定向聊天室」",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-chatroom-austrian-skill-main",
+      "source_id": "src-dbs-chatroom-austrian-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-chatroom-austrian/SKILL.md",
+      "heading_path": [
+        "dbs-chatroom-austrian：奥派经济聊天室",
+        "核心哲学"
+      ],
+      "line_range": [
+        1,
+        179
+      ],
+      "trigger_summary": "奥派聊天室、哈耶克/米塞斯视角讨论",
+      "owned_job_summary": "用哈耶克、米塞斯、Claude 三角色做奥派经济学讨论。",
+      "text_preview": "哈耶克 × 米塞斯 × Claude 三人对话。奥派经济学视角的多角色讨论。 触发方式：/dbs-chatroom-austrian、/chatroom-austrian、/奥派、「奥派聊天室」 Austrian economics chatroom. Hayek × Mises × Claude debate. Trigger: /dbs-chatroom-austrian, /chatroom-austrian, /奥派, \"Austrian chat\"",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-content-skill-main",
+      "source_id": "src-dbs-content-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-content/SKILL.md",
+      "heading_path": [
+        "dbs-content：内容创作诊断",
+        "核心哲学"
+      ],
+      "line_range": [
+        1,
+        232
+      ],
+      "trigger_summary": "这个内容怎么做、内容诊断、文案方向判断",
+      "owned_job_summary": "诊断选题如何变成好内容，不代写。",
+      "text_preview": "dontbesilent 内容创作诊断。选题通过后，诊断怎么把这个选题做成好内容。 触发方式：/dbs-content、/内容诊断、「这个内容怎么做」「帮我看看这个文案」 Content creation diagnosis. After topic passes, diagnose how to turn it into good content. Trigger: /dbs-content, \"how should I create this content\", \"review my copy\"",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-content-system-skill-main",
+      "source_id": "src-dbs-content-system-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-content-system/SKILL.md",
+      "heading_path": [
+        "dbs-content-system：内容结构化系统",
+        "核心边界"
+      ],
+      "line_range": [
+        1,
+        556
+      ],
+      "trigger_summary": "大量本地素材、内容资产工程、结构化系统",
+      "owned_job_summary": "把大量本地内容资产搭成可追溯、可重组、可继续生长的内容工程。",
+      "text_preview": "dontbesilent 内容结构化系统。把本地大量文稿、推文、选题、案例和课程稿搭成一个可持续生长的内容结构化工程：先审计内容规模与边界，再建立新工程、复制素材、抽取内容单元、生成主题地图与选题装配稿。 触发方式：/dbs-content-system、/内容结构化系统、「把我的内容做成结构化系统」「把本地素材变成可重组系统」「帮我搭内容资产工程」「我想把旧内容变成可复用资产」 Content structuring system. Audits local content volume, then builds",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-decision-skill-main",
+      "source_id": "src-dbs-decision-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-decision/SKILL.md",
+      "heading_path": [
+        "dbs-decision：个人决策系统",
+        "一、四层结构"
+      ],
+      "line_range": [
+        1,
+        314
+      ],
+      "trigger_summary": "决策系统、决策立案、结果回填、状态画像",
+      "owned_job_summary": "把长期决策领域做成本地状态、事件和规律系统。",
+      "text_preview": "dontbesilent 个人决策系统。把任何一个需要长期跟踪的领域（业务、关系、健康、职业、学习、投资……）做成一个本地知识工程：四层结构、来源标签、写完不改的快照、能炼出规律的概念库。 触发方式：/dbs-decision、/决策系统、/决策立案、/结果回填、/状态画像 Personal decision system. Turns any long-running domain into a local knowledge project with four layers, source tags, immu",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-deconstruct-skill-main",
+      "source_id": "src-dbs-deconstruct-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-deconstruct/SKILL.md",
+      "heading_path": [
+        "dbs-deconstruct：概念拆解",
+        "核心哲学"
+      ],
+      "line_range": [
+        1,
+        220
+      ],
+      "trigger_summary": "拆概念、术语含混、赛道/IP/流量等词不清楚",
+      "owned_job_summary": "用语言使用和经济学约束拆解模糊商业概念。",
+      "text_preview": "dontbesilent 概念拆解。用维特根斯坦 + 奥派经济学的方法，把模糊的商业概念拆到原子级别。 触发方式：/dbs-deconstruct、/拆概念、「帮我拆解这个概念」「这个词到底什么意思」 Concept deconstruction using Wittgenstein + Austrian economics framework. Trigger: /dbs-deconstruct, \"deconstruct this concept\", \"what does this really mean\"",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-diagnosis-skill-main",
+      "source_id": "src-dbs-diagnosis-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-diagnosis/SKILL.md",
+      "heading_path": [
+        "dbs-diagnosis：商业模式诊断",
+        "核心哲学（非谈判项）"
+      ],
+      "line_range": [
+        1,
+        511
+      ],
+      "trigger_summary": "商业模式诊断、业务问诊、具体商业问题",
+      "owned_job_summary": "商业模式问诊和体检；先消解错误问题，再给诊断报告。",
+      "text_preview": "dontbesilent 商业模式诊断。两种模式：问诊（消解你的问题）和体检（拆解你的商业模式）。 触发方式：/dbs-diagnosis、/问诊、「帮我看看商业模式」「诊断一下我的业务」「我有个商业问题」 Business model diagnosis using dontbesilent's ontological framework. Two modes: consultation (dissolve your question) and checkup (analyze your business mod",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-goal-skill-main",
+      "source_id": "src-dbs-goal-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-goal/SKILL.md",
+      "heading_path": [
+        "dbs-goal：目标清晰化",
+        "核心哲学"
+      ],
+      "line_range": [
+        1,
+        288
+      ],
+      "trigger_summary": "目标空转、想把愿望变成可验收目标",
+      "owned_job_summary": "把空泛目标审计成能决定行动、完成和失败的目标语句。",
+      "text_preview": "dontbesilent 目标清晰化。用维特根斯坦的语言哲学把模糊的目标审计成可检查的交付物。 触发方式：/dbs-goal、/目标、「帮我搞清楚目标」「我想做个人 IP」「我的目标是成为...」「我想变得更...」 Goal clarification using Wittgenstein's philosophy of language. Audits fuzzy goals into checkable deliverables. Trigger: /dbs-goal, \"help me clarify my",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-good-question-skill-main",
+      "source_id": "src-dbs-good-question-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-good-question/SKILL.md",
+      "heading_path": [
+        "dbs-good-question：好问题生成器",
+        "核心哲学"
+      ],
+      "line_range": [
+        1,
+        466
+      ],
+      "trigger_summary": "问题模糊、要写问题说明书、判断 Agent 可解性",
+      "owned_job_summary": "把模糊问题改写成 Agent 可推理、可批评、可验证的问题说明书。",
+      "text_preview": "dontbesilent 好问题生成器。把模糊问题改写成 Agent 可推理、可批评、可验证的问题说明书，并判断它能被自动化解决到什么程度。 触发方式：/dbs-good-question、/好问题、/问题说明书、/Agent可解性、「这个问题能不能自动化解决」「帮我把问题说清楚」 Turn fuzzy problems into agent-solvable problem briefs and evaluate automation readiness. Trigger: /dbs-good-question,",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-hook-skill-main",
+      "source_id": "src-dbs-hook-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-hook/SKILL.md",
+      "heading_path": [
+        "dbs-hook：短视频开头优化",
+        "核心哲学"
+      ],
+      "line_range": [
+        1,
+        305
+      ],
+      "trigger_summary": "短视频开头、hook 优化、开头怎么写",
+      "owned_job_summary": "先检查内容质量，再优化短视频开头。",
+      "text_preview": "dontbesilent 短视频开头优化。诊断开头问题 + 生成优化方案。 触发方式：/dbs-hook、/hook、「帮我优化开头」「开头怎么写」 Short video opening optimization with diagnosis and solutions. Trigger: /dbs-hook, \"optimize my opening\", \"how to write opening\"",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-learning-skill-main",
+      "source_id": "src-dbs-learning-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-learning/SKILL.md",
+      "heading_path": [
+        "dbs-learning：交互式学习",
+        "核心边界"
+      ],
+      "line_range": [
+        1,
+        372
+      ],
+      "trigger_summary": "带我学一个课题、继续下一篇、基于反馈学习",
+      "owned_job_summary": "把课题拆成连续学习文章，并根据反馈调整下一篇。",
+      "text_preview": "dontbesilent 交互式学习。把一个课题拆成连续学习文章，根据用户在上一篇中的反馈调整下一篇的深度、角度和节奏。 触发方式：/dbs-learning、/dbs-learn、/交互式学习、「带我学一个课题」「继续下一篇」「根据我的反馈写下一篇」 Interactive learning workflow. Builds an adaptive sequence of learning articles based on user feedback. Trigger: /dbs-learning, /dbs-",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-report-skill-main",
+      "source_id": "src-dbs-report-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-report/SKILL.md",
+      "heading_path": [
+        "dbs-report：诊断报告",
+        "触发方式"
+      ],
+      "line_range": [
+        1,
+        234
+      ],
+      "trigger_summary": "出报告、打包、整理给合伙人看",
+      "owned_job_summary": "从 dbs-save 存档合并可交付报告，不凭空总结。",
+      "text_preview": "把多次 dbs-save 攒下来的诊断状态合并成一份可交付的 markdown 报告。 触发方式：/dbs-report、/出报告、「打包」「整理一份」「给合伙人看的」 Generate a deliverable diagnosis report by merging all dbs-save snapshots. Trigger: /dbs-report, \"package this up\", \"make me a report\"",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-resonate-skill-main",
+      "source_id": "src-dbs-resonate-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-resonate/SKILL.md",
+      "heading_path": [
+        "dbs-resonate：文稿共鸣诊断",
+        "核心哲学"
+      ],
+      "line_range": [
+        1,
+        171
+      ],
+      "trigger_summary": "文稿有没有戳中人、能不能发、怕没有共鸣",
+      "owned_job_summary": "诊断文稿是否有单一核心机制和心理共鸣。",
+      "text_preview": "文稿共鸣诊断。你写完了一段内容但心里没底——怕没流量、怕没戳中观众、怕完播率低。把文稿给这个 skill，它用传播心理学框架诊断有没有引起共鸣、哪里出了问题、具体怎么改。 触发方式：/dbs-resonate、「这个文稿有没有戳中人」「帮我看看能不能发」「这个完播率会不会低」「文稿发出去有没有流量」 Draft resonance diagnosis. You finished a draft but aren't sure it will connect. Diagnoses psychological reso",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-restore-skill-main",
+      "source_id": "src-dbs-restore-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-restore/SKILL.md",
+      "heading_path": [
+        "dbs-restore：接续诊断",
+        "触发方式"
+      ],
+      "line_range": [
+        1,
+        198
+      ],
+      "trigger_summary": "接着上次、之前的结论、续上",
+      "owned_job_summary": "读取上次存档，紧凑呈现状态，不主动诊断。",
+      "text_preview": "把上次诊断的状态拉出来，接着用。配合 dbs-save 使用。 触发方式：/dbs-restore、/续上、「接着上次」「之前的结论」「上次诊断到哪了」 Restore the most recent diagnosis snapshot saved by dbs-save. Trigger: /dbs-restore, \"continue from last time\", \"where did we leave off\"",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-save-skill-main",
+      "source_id": "src-dbs-save-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-save/SKILL.md",
+      "heading_path": [
+        "dbs-save：诊断存档",
+        "触发方式"
+      ],
+      "line_range": [
+        1,
+        235
+      ],
+      "trigger_summary": "保存这次诊断、记下来、存档",
+      "owned_job_summary": "把已形成的诊断结论、否决方向、待验证假设和下一步存档。",
+      "text_preview": "把当前诊断的关键状态存到本地，下次回来可以接着用。 触发方式：/dbs-save、/存档、「保存这次诊断」「记下来」「这个结论留着」 Save the current diagnosis state to disk for cross-session recall. Trigger: /dbs-save, \"save this diagnosis\", \"remember this\"",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-slowisfast-skill-main",
+      "source_id": "src-dbs-slowisfast-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-slowisfast/SKILL.md",
+      "heading_path": [
+        "dbs-slowisfast：慢就是快",
+        "核心哲学"
+      ],
+      "line_range": [
+        1,
+        232
+      ],
+      "trigger_summary": "是不是太快、有没有更慢但长期更快的方法",
+      "owned_job_summary": "判断哪些慢方法能形成资产和复利，哪些只是拖延。",
+      "text_preview": "dontbesilent 慢就是快。帮创业者找到看起来更慢但长期更快的方法，用摩擦建造资产。 触发方式：/dbs-slowisfast、/慢就是快、「有没有更慢的方法」「我是不是太快了」 Slow-is-fast diagnosis. Help entrepreneurs find seemingly slower methods that build assets through friction. Trigger: /dbs-slowisfast, \"is there a slower way\", \"am I ",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-spread-skill-main",
+      "source_id": "src-dbs-spread-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-spread/SKILL.md",
+      "heading_path": [
+        "dbs-spread：传播心理解码",
+        "核心哲学"
+      ],
+      "line_range": [
+        1,
+        159
+      ],
+      "trigger_summary": "为什么能火、打中了什么情绪、传播心理解码",
+      "owned_job_summary": "用传播学理论解释内容为什么能引发共鸣，并输出讨论方向。",
+      "text_preview": "传播心理解码。给定一段内容，用 5 个经典传播学理论解码它为什么能引起受众共鸣，分析受众情绪底层和有效立场，输出聊天室的讨论方向。 触发方式：/dbs-spread、「传播心理解码」、「为什么这个能火」、「受众想听什么」、「这个内容打中了什么情绪」 Transmission psychology decoder. Given a piece of content, analyze the psychological mechanism that makes it resonate, identify the emo",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-wechat-html-skill-main",
+      "source_id": "src-dbs-wechat-html-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-wechat-html/SKILL.md",
+      "heading_path": [
+        "dbs-wechat-html：微信公众号 HTML 生成",
+        "核心能力"
+      ],
+      "line_range": [
+        1,
+        264
+      ],
+      "trigger_summary": "公众号 HTML、微信排版、Markdown 发布转换",
+      "owned_job_summary": "把 Markdown 转成公众号可粘贴 HTML，不改观点。",
+      "text_preview": "微信公众号 HTML 生成。把 Markdown 转成可粘贴到微信公众号后台的 HTML，内置 15 种经典媒体/科技产品/中文公众号风格。 触发方式：/dbs-wechat-html、/公众号HTML、「生成公众号 HTML」「做微信公众号版本」「微信排版」 WeChat Official Account HTML generator. Converts Markdown into WeChat-ready HTML with 15 built-in publishing styles.",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "loc-dbs-xhs-title-skill-main",
+      "source_id": "src-dbs-xhs-title-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-xhs-title/SKILL.md",
+      "heading_path": [
+        "dbs-xhs-title：小红书标题公式工具",
+        "工作流程"
+      ],
+      "line_range": [
+        1,
+        739
+      ],
+      "trigger_summary": "小红书标题、标题公式、起标题",
+      "owned_job_summary": "从 75 个小红书标题公式中匹配可追溯标题。",
+      "text_preview": "小红书标题公式工具。从 75 个验证过的爆款公式中，帮你挑对的、用对的、理解为什么用这个。 触发方式：/dbs-xhs-title、/小红书标题、「帮我起个小红书标题」「小红书标题公式」 Xiaohongshu title formula tool. Pick the right formula from 75 proven templates. Trigger: /dbs-xhs-title, \"xiaohongshu title\", \"RED title formula\"",
+      "extraction_confidence": "high",
+      "review_required": false
+    }
+  ],
+  "source_scope": {
+    "coverage_status": "full_skill_inventory",
+    "known_total_skill_units": 24,
+    "covered_skill_units": [
+      "dbs",
+      "dbs-action",
+      "dbs-agent-migration",
+      "dbs-ai-check",
+      "dbs-benchmark",
+      "dbs-chatroom",
+      "dbs-chatroom-austrian",
+      "dbs-content",
+      "dbs-content-system",
+      "dbs-decision",
+      "dbs-deconstruct",
+      "dbs-diagnosis",
+      "dbs-goal",
+      "dbs-good-question",
+      "dbs-hook",
+      "dbs-learning",
+      "dbs-report",
+      "dbs-resonate",
+      "dbs-restore",
+      "dbs-save",
+      "dbs-slowisfast",
+      "dbs-spread",
+      "dbs-wechat-html",
+      "dbs-xhs-title"
+    ],
+    "coverage_ratio": 1.0,
+    "coverage_note": "已覆盖 canonical dbs-suite 当前 24 个 */SKILL.md。辅助 tools/templates/scaffold/docs 文件仅做存在性登记，未做执行完整性深审。",
+    "auxiliary_assets_not_deep_audited": [
+      "dbs-content-system/docs/acceptance.md",
+      "dbs-content-system/docs/quickstart.md",
+      "dbs-content-system/scaffold/root/AGENTS.md",
+      "dbs-content-system/scaffold/root/CLAUDE.md",
+      "dbs-content-system/scaffold/root/README.md",
+      "dbs-content-system/scaffold/root/SOURCE_OF_TRUTH.md",
+      "dbs-content-system/scaffold/rules/内容单元关系规则.md",
+      "dbs-content-system/scaffold/rules/内容单元去重与版本规则.md",
+      "dbs-content-system/scaffold/rules/内容单元字段规范.md",
+      "dbs-content-system/scaffold/rules/处理流程.md",
+      "dbs-content-system/scaffold/rules/新增文稿进入系统流程.md",
+      "dbs-content-system/scaffold/rules/来源命名规范.md",
+      "dbs-content-system/templates/主题地图模板.md",
+      "dbs-content-system/templates/方案单元模板.md",
+      "dbs-content-system/templates/案例单元模板.md",
+      "dbs-content-system/templates/概念单元模板.md",
+      "dbs-content-system/templates/观点单元模板.md",
+      "dbs-content-system/templates/选题装配模板.md",
+      "dbs-content-system/templates/问题单元模板.md",
+      "dbs-content-system/tools/assemble-topic-from-units.js",
+      "dbs-content-system/tools/extract-sample-units.js",
+      "dbs-content-system/tools/fill-obsidian-links.js",
+      "dbs-content-system/tools/generate-duplicate-candidates.js",
+      "dbs-content-system/tools/generate-link-map.js",
+      "dbs-content-system/tools/generate-source-registry.js",
+      "dbs-content-system/tools/generate-unit-draft.js",
+      "dbs-content-system/tools/init-content-system.js",
+      "dbs-content-system/tools/rebuild-processing-ledger.js",
+      "dbs-content-system/tools/summarize-system.js",
+      "dbs-wechat-html/templates/styles.md"
+    ]
+  },
+  "confidence": {
+    "level": "high_for_skill_md_inventory; medium_for_auxiliary_execution_integrity",
+    "basis": [
+      "24 个 SKILL.md 来自当前 canonical package 直接读取。",
+      "未运行 dbs-content-system tools，也未验证 wechat-html styles 的渲染效果。"
+    ]
+  },
+  "review_items": [
+    {
+      "id": "dbs-location-r01",
+      "status": "open",
+      "question": "当前每个 Skill 至少有文件级/heading 级可回链位置；若后续要验证单条方法原子，需要补更细 block refs。"
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_markdown_path": "docs/reports/readerlab-dbs-suite-capability-v1/reader/01_能力地图.md",
+    "audit_markdown_path": "docs/reports/readerlab-dbs-suite-capability-v1/audit/90_来源与审计.md",
+    "relationship": "contracts_support_reader_markdown"
+  }
+}

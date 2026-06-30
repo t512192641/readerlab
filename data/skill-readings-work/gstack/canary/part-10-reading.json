@@ -1,0 +1,133 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "skill": "canary",
+  "part": 10,
+  "package": "gstack",
+  "source_file": "SKILL.md",
+  "range": [
+    "canary-0181-paragraph",
+    "canary-0200-code-block"
+  ],
+  "blocks": [
+    {
+      "block_id": "canary-0181-paragraph",
+      "source_hash": "a258d1375e91aad7d590a79df792ce6310cc9e871cc25a6832a6018fb379a9f7",
+      "status": "translated",
+      "translation": "首先，从远程 URL 检测 git 托管平台："
+    },
+    {
+      "block_id": "canary-0182-code-block",
+      "source_hash": "221c017237c8e3ddc839f5a8674432f5e0b4fc2b4d7e5dc1cc22ec7517adb697",
+      "status": "translated",
+      "translation": "```bash\ngit remote get-url origin 2>/dev/null\n```"
+    },
+    {
+      "block_id": "canary-0183-paragraph",
+      "source_hash": "71605d6cad1a40c9659b4e477413d0d0bd7109195a6afdb0cd034e6a047b9c79",
+      "status": "translated",
+      "translation": "- 如果 URL 包含 “github.com” → 平台是 **GitHub**\n- 如果 URL 包含 “gitlab” → 平台是 **GitLab**\n- 否则，检查 CLI 可用性：\n  - `gh auth status 2>/dev/null` 成功 → 平台是 **GitHub**（覆盖 GitHub Enterprise）\n  - `glab auth status 2>/dev/null` 成功 → 平台是 **GitLab**（覆盖 self-hosted）\n  - 两者都不成功 → **unknown**（只使用 git-native 命令）"
+    },
+    {
+      "block_id": "canary-0184-paragraph",
+      "source_hash": "aafe2a3cb533e44b0d4b5d9db3f9cf80538e65deb43d420b60e0e0a61d8ab03d",
+      "status": "translated",
+      "translation": "确定这个 PR/MR 的目标分支；如果没有 PR/MR，就使用 repo 的默认分支。把结果作为后续所有步骤中的 “the base branch”。"
+    },
+    {
+      "block_id": "canary-0185-paragraph",
+      "source_hash": "55daa17b0e27135d787cc1458619ef8c03536e55dd1d0ec078e7466c3683a232",
+      "status": "translated",
+      "translation": "**如果是 GitHub：**\n1. `gh pr view --json baseRefName -q .baseRefName` — 如果成功，就使用它\n2. `gh repo view --json defaultBranchRef -q .defaultBranchRef.name` — 如果成功，就使用它"
+    },
+    {
+      "block_id": "canary-0186-paragraph",
+      "source_hash": "d4fe0921e2cb3a8625256534b261f9c8e802bd9c9285a8ec57066457fd2e0379",
+      "status": "translated",
+      "translation": "**如果是 GitLab：**\n1. `glab mr view -F json 2>/dev/null`，并提取 `target_branch` 字段 — 如果成功，就使用它\n2. `glab repo view -F json 2>/dev/null`，并提取 `default_branch` 字段 — 如果成功，就使用它"
+    },
+    {
+      "block_id": "canary-0187-paragraph",
+      "source_hash": "488b40617c1cdce63d757df44e73c08aa2226cf1ffec9f815e9d5ddf0d44f6b8",
+      "status": "translated",
+      "translation": "**Git 原生回退（如果平台未知，或 CLI 命令失败）：**\n1. `git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||'`\n2. 如果失败：`git rev-parse --verify origin/main 2>/dev/null` → 使用 `main`\n3. 如果失败：`git rev-parse --verify origin/master 2>/dev/null` → 使用 `master`"
+    },
+    {
+      "block_id": "canary-0188-paragraph",
+      "source_hash": "ab99e4bfab8723891a457254a633c9ecaf3e5f006e61b76cfe14943323e123e5",
+      "status": "translated",
+      "translation": "如果全部失败，回退到 `main`."
+    },
+    {
+      "block_id": "canary-0189-paragraph",
+      "source_hash": "e00f0d7fb3f30f20b52e9baa2fa5aba4ab8d1f5bddc2a33bb46fad7d55b1e224",
+      "status": "translated",
+      "translation": "打印检测到的 base branch 名称。后续每一条 `git diff`、`git log`、`git fetch`、`git merge` 以及 PR/MR 创建命令中，只要指令写的是 “the base branch” 或 `<default>`，都要替换成检测到的分支名。"
+    },
+    {
+      "block_id": "canary-0190-paragraph",
+      "source_hash": "f52d711103d50a437830c6fbcd04fb4bab49a0f82f6d26d1c791c6e8488dd090",
+      "status": "translated",
+      "translation": "---"
+    },
+    {
+      "block_id": "canary-0191-heading",
+      "source_hash": "fa8b780eb1939d03bbd66f054a870d36d57bcb003d73b2e33c36cf272b8af94b",
+      "status": "translated",
+      "translation": "# /canary：部署后的可视化监控器"
+    },
+    {
+      "block_id": "canary-0192-paragraph",
+      "source_hash": "50d9883e109a1978effb17af98c5feee9fb9a8ef8dd2304fe2216bf753260c46",
+      "status": "translated",
+      "translation": "你是一名**发布可靠性工程师**，负责在部署后观察生产环境。你见过通过 CI 却在生产环境出问题的部署：缺失的环境变量、CDN 缓存提供了过期资源、数据库迁移在真实数据上比预期更慢。你的工作是在最初 10 分钟内发现这些问题，而不是 10 小时后。"
+    },
+    {
+      "block_id": "canary-0193-paragraph",
+      "source_hash": "63e4be6ffe2ee5454fe26843cbe52afd359d15f42afd6170264061c235627763",
+      "status": "translated",
+      "translation": "你使用 browse daemon 观察线上应用、截图、检查控制台错误，并与基线比较。你是 “shipped” 和 “verified” 之间的安全网。"
+    },
+    {
+      "block_id": "canary-0194-heading",
+      "source_hash": "2bfd6e838e5c44f45ec59c463ddc2f02adda6ac9ba0e17947f7eede163edc470",
+      "status": "translated",
+      "translation": "## 用户可调用"
+    },
+    {
+      "block_id": "canary-0195-paragraph",
+      "source_hash": "4af9851955c3ae62a9b2bdf49bf2676765c3ea37dbd7c5ae969198814e60ddb6",
+      "status": "translated",
+      "translation": "当用户输入 `/canary` 时，运行这个 skill。"
+    },
+    {
+      "block_id": "canary-0196-heading",
+      "source_hash": "cd98b7817a8ca68add8a4ed2e2e259307068ce0d5bb331bae9ef3d5d2bbebf74",
+      "status": "translated",
+      "translation": "## 参数"
+    },
+    {
+      "block_id": "canary-0197-paragraph",
+      "source_hash": "700fa8890765dce42db10c9944df143ed9def7c0fe41b2134071f21d1379314b",
+      "status": "translated",
+      "translation": "- `/canary <url>`：部署后监控一个 URL 10 分钟\n- `/canary <url> --duration 5m`：自定义监控时长（1m 到 30m）\n- `/canary <url> --baseline`：采集基线截图（部署前运行）\n- `/canary <url> --pages /,/dashboard,/settings`：指定要监控的页面\n- `/canary <url> --quick`：单次健康检查（不持续监控）"
+    },
+    {
+      "block_id": "canary-0198-heading",
+      "source_hash": "56b7debbe709bc96fa5ba3bf2be3f3f54a888d27840bca673758f0fa7cbe7cb9",
+      "status": "translated",
+      "translation": "## 指令"
+    },
+    {
+      "block_id": "canary-0199-heading",
+      "source_hash": "57cb3e947c229b2eed4aac892121d913a3d98ac709600e2daf8f27e00e787e57",
+      "status": "translated",
+      "translation": "### 阶段 1：设置"
+    },
+    {
+      "block_id": "canary-0200-code-block",
+      "source_hash": "f041b142b6a083897ff183085c746646c01a9763b286c781be58e1d15219743a",
+      "status": "translated",
+      "translation": "```bash\neval \"$(~/.claude/skills/gstack/bin/gstack-slug 2>/dev/null || echo \"SLUG=unknown\")\"\nmkdir -p .gstack/canary-reports\nmkdir -p .gstack/canary-reports/baselines\nmkdir -p .gstack/canary-reports/screenshots\n```"
+    }
+  ]
+}

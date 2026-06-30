@@ -1,0 +1,143 @@
+{
+  "schema": "readerlab.catalog-map.v1",
+  "material": {
+    "id": "elon-book__readerlab-demo_20260629",
+    "title": "埃隆之书",
+    "type": "book_epub_demo"
+  },
+  "source_scope": {
+    "coverage_status": "partial",
+    "coverage_ratio": null,
+    "coverage_note": "TOC grouping exists for the whole book, but complete body reading exists only for part II."
+  },
+  "catalog": {
+    "top_level_structure": [
+      {
+        "unit_id": "front-matter",
+        "title": "前置材料",
+        "status": "grouped_pending",
+        "chapters": [
+          "本书说明",
+          "前言",
+          "埃里克欢迎辞"
+        ]
+      },
+      {
+        "unit_id": "part1-purpose",
+        "title": "部件 I：追寻目标",
+        "status": "grouped_pending",
+        "chapters": [
+          "活出目标人生",
+          "物理学家式思考",
+          "工程学的价值"
+        ]
+      },
+      {
+        "unit_id": "part2-hardcore-work",
+        "title": "部件 II：极致艰苦工作",
+        "status": "locally_deepread",
+        "chapters": [
+          "成功之道",
+          "打造卓越团队",
+          "组织设计",
+          "极致紧迫感",
+          "我们必须实干制造"
+        ]
+      },
+      {
+        "unit_id": "part3-company-building",
+        "title": "部件 III：企业建设",
+        "status": "grouped_pending",
+        "chapters": [
+          "成为创始人",
+          "打造特斯拉",
+          "创建太空探索技术公司"
+        ]
+      },
+      {
+        "unit_id": "part4-for-humanity",
+        "title": "部件 IV：代表人类",
+        "status": "grouped_pending",
+        "chapters": [
+          "建设我们的未来",
+          "丰饶时代",
+          "我们的生存风险",
+          "成为多行星物种"
+        ]
+      },
+      {
+        "unit_id": "appendices",
+        "title": "附录与工具材料",
+        "status": "grouped_pending",
+        "chapters": [
+          "附加原则",
+          "69项核心马斯克法则",
+          "埃隆·马斯克年表",
+          "埃隆推荐书单",
+          "延伸阅读",
+          "致谢",
+          "关于作者"
+        ]
+      }
+    ],
+    "route_hypothesis": [
+      "第一次阅读先用目录地图理解全书由目标、执行、企业建设、人类未来四层展开。",
+      "当前可深读的是 part II，它把目标和工程价值落到责任、团队、组织、速度和制造系统。",
+      "part III 适合在 part II 后阅读，用公司案例检验这些执行机制是否真实工作。",
+      "附录和书单适合作为查阅材料，不应抢占第一轮主线阅读。"
+    ],
+    "likely_core_questions": [
+      "这本书把马斯克的方法解释为目标、工程、组织、速度、制造和未来叙事之间的什么关系？",
+      "哪些内容是可迁移的方法，哪些只是传记语境中的个人风格或极端案例？",
+      "读者应如何区分硬核工作系统和简单的努力文化口号？"
+    ],
+    "known_covered_units": [
+      {
+        "unit_id": "part2-hardcore-work",
+        "title": "部件 II：极致艰苦工作",
+        "source_refs": [
+          "elon-loc-part2-source-span"
+        ]
+      }
+    ],
+    "not_yet_covered_units": [
+      "前置材料",
+      "部件 I：追寻目标",
+      "部件 III：企业建设",
+      "部件 IV：代表人类",
+      "附录与工具材料"
+    ]
+  },
+  "location_refs": [
+    "elon-loc-manifest-scope",
+    "elon-loc-catalog-part2"
+  ],
+  "confidence": {
+    "level": "medium",
+    "basis": [
+      "Whole-book grouping is based on the demo catalog handbook and manifest.",
+      "Route hypotheses beyond part II are explicitly marked as hypotheses."
+    ],
+    "known_uncertainties": [
+      "The map has not reviewed complete body text outside part II."
+    ]
+  },
+  "review_items": [
+    {
+      "id": "elon-catalog-r01",
+      "status": "open",
+      "question": "Does the proposed first-reading route help a new reader without pretending to be a final interpretation?"
+    },
+    {
+      "id": "elon-catalog-r02",
+      "status": "open",
+      "question": "Do appendix materials need a separate lookup route after main-body coverage expands?"
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "markdown_path": "docs/reports/readerlab-demo-run-v0/elon/reader-demo.md",
+    "relationship": "reader_demo_references_contract"
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "schema": "readerlab.source-registry.v1",
+  "material": {
+    "id": "dbs-suite__v2.15.1_096f726",
+    "title": "dbs-suite",
+    "type": "skill_package",
+    "source_package_id": "dbs-suite",
+    "target_package_id": "dbs-suite__v2.15.1_096f726",
+    "version_or_commit": "2.15.1 / 096f726a20407901ca517cfc42509f96232fd0ea"
+  },
+  "sources": [
+    {
+      "source_id": "dbs-package-json",
+      "source_path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/PACKAGE.json",
+      "source_type": "json",
+      "source_role": "canonical_package_metadata",
+      "version_or_commit": "2.15.1",
+      "content_hash": "sha256:a2048e5ba1b1b3b1",
+      "byte_size": 774,
+      "extraction_method": "direct JSON read",
+      "extraction_status": "read",
+      "coverage_role": "version, upstream source, and package governance evidence",
+      "trust_notes": [
+        "Package metadata declares upstream-first governance and local/upstream version 2.15.1."
+      ],
+      "review_items": []
+    },
+    {
+      "source_id": "dbs-route-core-skill",
+      "source_path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs/SKILL.md",
+      "source_type": "markdown_skill",
+      "source_role": "route_core_entrypoint",
+      "version_or_commit": "2.15.1",
+      "content_hash": "sha256:30c045b8339dba40",
+      "byte_size": 18535,
+      "extraction_method": "direct markdown read",
+      "extraction_status": "read",
+      "coverage_role": "supports route-core domain",
+      "trust_notes": [
+        "The skill states it routes before a task and navigates after a task; it does not diagnose."
+      ],
+      "review_items": []
+    },
+    {
+      "source_id": "dbs-diagnosis-skill",
+      "source_path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-diagnosis/SKILL.md",
+      "source_type": "markdown_skill",
+      "source_role": "diagnosis_and_problem_framing",
+      "version_or_commit": "2.15.1",
+      "content_hash": "sha256:e1feec64bed8d72d",
+      "byte_size": 20529,
+      "extraction_method": "direct markdown read",
+      "extraction_status": "read",
+      "coverage_role": "supports diagnosis-and-problem-framing domain",
+      "trust_notes": [
+        "The skill centers problem dissolution, phase gates, and a diagnostic report structure."
+      ],
+      "review_items": []
+    },
+    {
+      "source_id": "dbs-xhs-title-skill",
+      "source_path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-xhs-title/SKILL.md",
+      "source_type": "markdown_skill",
+      "source_role": "content_expression_title_formulas",
+      "version_or_commit": "2.15.1",
+      "content_hash": "sha256:acbe10ee171c2104",
+      "byte_size": 32385,
+      "extraction_method": "direct markdown read",
+      "extraction_status": "read",
+      "coverage_role": "supports content-expression-and-publishing domain",
+      "trust_notes": [
+        "The skill uses 75 title formulas and requires formula traceability."
+      ],
+      "review_items": []
+    },
+    {
+      "source_id": "dbs-wechat-html-skill",
+      "source_path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-wechat-html/SKILL.md",
+      "source_type": "markdown_skill",
+      "source_role": "content_publishing_format",
+      "version_or_commit": "2.15.1",
+      "content_hash": "sha256:1cd3f4ae691dc5f8",
+      "byte_size": 7440,
+      "extraction_method": "direct markdown read",
+      "extraction_status": "read",
+      "coverage_role": "supports content-expression-and-publishing domain",
+      "trust_notes": [
+        "The skill converts Markdown to WeChat-ready HTML and defines style selection and output rules."
+      ],
+      "review_items": []
+    },
+    {
+      "source_id": "dbs-content-system-skill",
+      "source_path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-content-system/SKILL.md",
+      "source_type": "markdown_skill",
+      "source_role": "state_and_content_engineering",
+      "version_or_commit": "2.15.1",
+      "content_hash": "sha256:2c2240ccee23b014",
+      "byte_size": 17342,
+      "extraction_method": "direct markdown read",
+      "extraction_status": "read",
+      "coverage_role": "supports state-and-content-engineering domain",
+      "trust_notes": [
+        "The skill defines a reusable local content engineering system, templates, tools, gates, and acceptance state."
+      ],
+      "review_items": []
+    },
+    {
+      "source_id": "dbs-save-skill",
+      "source_path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-save/SKILL.md",
+      "source_type": "markdown_skill",
+      "source_role": "diagnosis_state_persistence",
+      "version_or_commit": "2.15.1",
+      "content_hash": "sha256:2dca7065b8c05d7e",
+      "byte_size": 8135,
+      "extraction_method": "direct markdown read",
+      "extraction_status": "read",
+      "coverage_role": "supports state-and-content-engineering domain",
+      "trust_notes": [
+        "The skill writes structured local diagnosis snapshots and separates user-facing wording from technical fields."
+      ],
+      "review_items": []
+    },
+    {
+      "source_id": "dbs-report-skill",
+      "source_path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-report/SKILL.md",
+      "source_type": "markdown_skill",
+      "source_role": "diagnosis_report_generation",
+      "version_or_commit": "2.15.1",
+      "content_hash": "sha256:dc894a7297217f60",
+      "byte_size": 8633,
+      "extraction_method": "direct markdown read",
+      "extraction_status": "read",
+      "coverage_role": "supports state-and-content-engineering domain",
+      "trust_notes": [
+        "The skill merges saved snapshots into a report and explicitly forbids unsourced summarization."
+      ],
+      "review_items": []
+    }
+  ],
+  "source_scope": {
+    "coverage_status": "sample",
+    "coverage_ratio": null,
+    "coverage_note": "Representative sample covering four capability domains. It is not an exhaustive read of all 24 upstream Skills."
+  },
+  "location_refs": [
+    "dbs-loc-route-core",
+    "dbs-loc-diagnosis-funnel",
+    "dbs-loc-title-formula",
+    "dbs-loc-wechat-html",
+    "dbs-loc-content-system",
+    "dbs-loc-save",
+    "dbs-loc-report"
+  ],
+  "confidence": {
+    "level": "medium",
+    "basis": [
+      "Representative SKILL.md files were directly read and mapped to capability domains.",
+      "Package metadata confirms source and version."
+    ],
+    "known_uncertainties": [
+      "Several other dbs-* Skills are included in the suite but not deeply read in this pack.",
+      "Cross-skill route ambiguities are identified as review items rather than resolved."
+    ]
+  },
+  "review_items": [
+    {
+      "id": "dbs-registry-r01",
+      "status": "open",
+      "question": "Should a future full pack map every one of the 24 upstream Skills into domains, or keep a representative review mode?"
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "markdown_path": null,
+    "relationship": "fact_registry_not_reader_markdown"
+  }
+}

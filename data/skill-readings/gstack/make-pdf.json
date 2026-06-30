@@ -1,0 +1,1014 @@
+{
+  "schema": "readerlab.skill-block-reading.v1",
+  "package": "gstack",
+  "skill": "make-pdf",
+  "guide": "这个 Skill 解决的是把网页或文档稳定生成 PDF 时容易遗漏渲染、分页、检查和交付证据的问题。阅读主线是先看运行前环境和安全门，再看 PDF 生成命令、质量检查、失败修复和最终报告如何形成闭环。",
+  "blocks": [
+    {
+      "block_id": "make-pdf-0001-frontmatter",
+      "source_hash": "c1dd6d3b69517a563f6ae1829398f17b1c80cec8d2b7c84480b153acc9a59bb4",
+      "status": "translated",
+      "translation": "---\nname：make-pdf，表示这个 Skill 的名称是 make-pdf。\npreamble-tier：1，表示它属于第 1 级预处理脚本。\nversion：1.0.0，表示当前 Skill 版本。\ndescription：把任意 Markdown 文件转换成出版级质量的 PDF。（gstack）\ntriggers：触发短语包括 markdown to pdf、generate pdf、make pdf、export pdf。\nallowed-tools：允许使用的工具包括 Bash、Read、AskUserQuestion。\n---"
+    },
+    {
+      "block_id": "make-pdf-0002-paragraph",
+      "source_hash": "70095564d0e603b8925783b6d432eb4d22cddba593a021bb8b5178b81372f7fb",
+      "status": "translated",
+      "translation": "<!-- 从 SKILL.md.tmpl 自动生成，请不要直接编辑 -->\n<!-- 重新生成：bun run gen:skill-docs -->"
+    },
+    {
+      "block_id": "make-pdf-0003-heading",
+      "source_hash": "b9eb244df6d65cdc14b6ba1b17a529a9e8a7f8eec8802dc5799ee0905d0d5b5a",
+      "status": "translated",
+      "translation": "## 什么时候调用这个 Skill"
+    },
+    {
+      "block_id": "make-pdf-0004-paragraph",
+      "source_hash": "e40eda7187f56cbe9321a0f66f204c16895be1103c7357f160d6b17968346f49",
+      "status": "translated",
+      "translation": "合适的 1in 边距、智能分页、页码、封面、页眉、弯引号和 em dash、可点击目录，以及斜向 DRAFT 水印。这不是草稿产物，而是成品产物。用户提出原始英文触发示例 “make a PDF”、“export to PDF”、“turn this markdown into a PDF” 或 “generate a document” 时使用。"
+    },
+    {
+      "block_id": "make-pdf-0005-paragraph",
+      "source_hash": "87db61ec5893ca6342aa4d63cdcc571b3d5ba9ff317214772b73585ee9f50ce0",
+      "status": "translated",
+      "translation": "语音触发词（speech-to-text 别名，以下为原始英文触发示例）：\"make this a pdf\"、\"make it a pdf\"、\"export to pdf\"、\"turn this into a pdf\"、\"turn this markdown into a pdf\"、\"generate a pdf\"、\"make a pdf from\"、\"pdf this markdown\"。"
+    },
+    {
+      "block_id": "make-pdf-0006-heading",
+      "source_hash": "63b185863bdd74adeee3495d5171110bb744127c4706b081f4123d501e07b66c",
+      "status": "translated",
+      "translation": "## 预处理脚本（先运行）"
+    },
+    {
+      "block_id": "make-pdf-0007-code-block",
+      "source_hash": "549122872188a6fcc8ca4eee314ac1baf3293a50bc71f761f2887b74efc6c151",
+      "status": "translated",
+      "translation": "```bash\n_UPD=$(~/.claude/skills/gstack/bin/gstack-update-check 2>/dev/null || .claude/skills/gstack/bin/gstack-update-check 2>/dev/null || true)\n[ -n \"$_UPD\" ] && echo \"$_UPD\" || true\nmkdir -p ~/.gstack/sessions\ntouch ~/.gstack/sessions/\"$PPID\"\n_SESSIONS=$(find ~/.gstack/sessions -mmin -120 -type f 2>/dev/null | wc -l | tr -d ' ')\nfind ~/.gstack/sessions -mmin +120 -type f -exec rm {} + 2>/dev/null || true\n_PROACTIVE=$(~/.claude/skills/gstack/bin/gstack-config get proactive 2>/dev/null || echo \"true\")\n_PROACTIVE_PROMPTED=$([ -f ~/.gstack/.proactive-prompted ] && echo \"yes\" || echo \"no\")\n_BRANCH=$(git branch --show-current 2>/dev/null || echo \"unknown\")\necho \"BRANCH: $_BRANCH\"\n_SKILL_PREFIX=$(~/.claude/skills/gstack/bin/gstack-config get skill_prefix 2>/dev/null || echo \"false\")\necho \"PROACTIVE: $_PROACTIVE\"\necho \"PROACTIVE_PROMPTED: $_PROACTIVE_PROMPTED\"\necho \"SKILL_PREFIX: $_SKILL_PREFIX\"\nsource <(~/.claude/skills/gstack/bin/gstack-repo-mode 2>/dev/null) || true\nREPO_MODE=${REPO_MODE:-unknown}\necho \"REPO_MODE: $REPO_MODE\"\n_SESSION_KIND=$(~/.claude/skills/gstack/bin/gstack-session-kind 2>/dev/null || echo \"interactive\")\ncase \"$_SESSION_KIND\" in spawned|headless|interactive) ;; *) _SESSION_KIND=\"interactive\" ;; esac\necho \"SESSION_KIND: $_SESSION_KIND\"\n# Conductor host：AskUserQuestion 在这里不可靠（native 被禁用，MCP\n# 变体也不稳定），所以 skills 会把决策渲染成文字，而不是调用\n# tool。用 !headless 做门控，这样 Conductor 内部的 eval/CI 运行（GSTACK_HEADLESS）\n# 仍然会 BLOCK，而不是把文字输出给不存在的接收者。\nif [ \"$_SESSION_KIND\" != \"headless\" ] && { [ -n \"${CONDUCTOR_WORKSPACE_PATH:-}\" ] || [ -n \"${CONDUCTOR_PORT:-}\" ]; }; then\n  echo \"CONDUCTOR_SESSION: true\"\nfi\n_ACTIVATED=$([ -f ~/.gstack/.activated ] && echo \"yes\" || echo \"no\")\n_FIRST_LOOP_SHOWN=$([ -f ~/.gstack/.first-loop-tip-shown ] && echo \"yes\" || echo \"no\")\necho \"ACTIVATED: $_ACTIVATED\"\necho \"FIRST_LOOP_SHOWN: $_FIRST_LOOP_SHOWN\"\n# 首次运行项目检测：只在第一次 skill 运行时执行检测器\n#（ACTIVATED=no，interactive），这样之后每次运行都不会进入热路径。\n_FIRST_TASK=\"\"\nif [ \"$_ACTIVATED\" = \"no\" ] && [ \"$_SESSION_KIND\" != \"headless\" ]; then\n  _FIRST_TASK=$(~/.claude/skills/gstack/bin/gstack-first-task-detect 2>/dev/null || true)\nfi\necho \"FIRST_TASK: $_FIRST_TASK\"\n_LAKE_SEEN=$([ -f ~/.gstack/.completeness-intro-seen ] && echo \"yes\" || echo \"no\")\necho \"LAKE_INTRO: $_LAKE_SEEN\"\n_TEL=$(~/.claude/skills/gstack/bin/gstack-config get telemetry 2>/dev/null || true)\n_TEL_PROMPTED=$([ -f ~/.gstack/.telemetry-prompted ] && echo \"yes\" || echo \"no\")\n_TEL_START=$(date +%s)\n_SESSION_ID=\"$$-$(date +%s)\"\necho \"TELEMETRY: ${_TEL:-off}\"\necho \"TEL_PROMPTED: $_TEL_PROMPTED\"\n_EXPLAIN_LEVEL=$(~/.claude/skills/gstack/bin/gstack-config get explain_level 2>/dev/null || echo \"default\")\nif [ \"$_EXPLAIN_LEVEL\" != \"default\" ] && [ \"$_EXPLAIN_LEVEL\" != \"terse\" ]; then _EXPLAIN_LEVEL=\"default\"; fi\necho \"EXPLAIN_LEVEL: $_EXPLAIN_LEVEL\"\n_QUESTION_TUNING=$(~/.claude/skills/gstack/bin/gstack-config get question_tuning 2>/dev/null || echo \"false\")\necho \"QUESTION_TUNING: $_QUESTION_TUNING\"\nmkdir -p ~/.gstack/analytics\nif [ \"$_TEL\" != \"off\" ]; then\necho '{\"skill\":\"make-pdf\",\"ts\":\"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'\",\"repo\":\"'$(_repo=$(basename \"$(git rev-parse --show-toplevel 2>/dev/null)\" 2>/dev/null | tr -cd 'a-zA-Z0-9._-'); echo \"${_repo:-unknown}\")'\"}'  >> ~/.gstack/analytics/skill-usage.jsonl 2>/dev/null || true\nfi\nfor _PF in $(find ~/.gstack/analytics -maxdepth 1 -name '.pending-*' 2>/dev/null); do\n  if [ -f \"$_PF\" ]; then\n    if [ \"$_TEL\" != \"off\" ] && [ -x \"~/.claude/skills/gstack/bin/gstack-telemetry-log\" ]; then\n      ~/.claude/skills/gstack/bin/gstack-telemetry-log --event-type skill_run --skill _pending_finalize --outcome unknown --session-id \"$_SESSION_ID\" 2>/dev/null || true\n    fi\n    rm -f \"$_PF\" 2>/dev/null || true\n  fi\n  break\ndone\neval \"$(~/.claude/skills/gstack/bin/gstack-slug 2>/dev/null)\" 2>/dev/null || true\n_LEARN_FILE=\"${GSTACK_HOME:-$HOME/.gstack}/projects/${SLUG:-unknown}/learnings.jsonl\"\nif [ -f \"$_LEARN_FILE\" ]; then\n  _LEARN_COUNT=$(wc -l < \"$_LEARN_FILE\" 2>/dev/null | tr -d ' ')\n  echo \"LEARNINGS: $_LEARN_COUNT entries loaded\"\n  if [ \"$_LEARN_COUNT\" -gt 5 ] 2>/dev/null; then\n    ~/.claude/skills/gstack/bin/gstack-learnings-search --limit 3 2>/dev/null || true\n  fi\nelse\n  echo \"LEARNINGS: 0\"\nfi\n~/.claude/skills/gstack/bin/gstack-timeline-log '{\"skill\":\"make-pdf\",\"event\":\"started\",\"branch\":\"'\"$_BRANCH\"'\",\"session\":\"'\"$_SESSION_ID\"'\"}' 2>/dev/null &\n_HAS_ROUTING=\"no\"\nif [ -f CLAUDE.md ] && grep -q \"## Skill routing\" CLAUDE.md 2>/dev/null; then\n  _HAS_ROUTING=\"yes\"\nfi\n_ROUTING_DECLINED=$(~/.claude/skills/gstack/bin/gstack-config get routing_declined 2>/dev/null || echo \"false\")\necho \"HAS_ROUTING: $_HAS_ROUTING\"\necho \"ROUTING_DECLINED: $_ROUTING_DECLINED\"\n_VENDORED=\"no\"\nif [ -d \".claude/skills/gstack\" ] && [ ! -L \".claude/skills/gstack\" ]; then\n  if [ -f \".claude/skills/gstack/VERSION\" ] || [ -d \".claude/skills/gstack/.git\" ]; then\n    _VENDORED=\"yes\"\n  fi\nfi\necho \"VENDORED_GSTACK: $_VENDORED\"\necho \"MODEL_OVERLAY: claude\"\n_CHECKPOINT_MODE=$(~/.claude/skills/gstack/bin/gstack-config get checkpoint_mode 2>/dev/null || echo \"explicit\")\n_CHECKPOINT_PUSH=$(~/.claude/skills/gstack/bin/gstack-config get checkpoint_push 2>/dev/null || echo \"false\")\necho \"CHECKPOINT_MODE: $_CHECKPOINT_MODE\"\necho \"CHECKPOINT_PUSH: $_CHECKPOINT_PUSH\"\n# 用于 /spec 这类会根据 plan-mode 状态分支行为的 skill 的 plan-mode 提示。\n# Claude Code 会通过 system reminders 暴露 plan mode；这里尽力从\n# CLAUDE_PLAN_FILE（harness 在 plan mode 激活时设置）检测，并\n# 回退为 \"inactive\"。Codex host 和 Claude execution mode 都会得到\n# inactive，这是安全默认值（默认使用 file+execute pipeline）。\nif [ -n \"${CLAUDE_PLAN_FILE:-}${GSTACK_PLAN_MODE_FORCE:-}\" ]; then\n  export GSTACK_PLAN_MODE=\"active\"\nelif [ \"${GSTACK_PLAN_MODE:-}\" = \"active\" ]; then\n  export GSTACK_PLAN_MODE=\"active\"\nelse\n  export GSTACK_PLAN_MODE=\"inactive\"\nfi\necho \"GSTACK_PLAN_MODE: $GSTACK_PLAN_MODE\"\n[ -n \"$OPENCLAW_SESSION\" ] && echo \"SPAWNED_SESSION: true\" || true\n```"
+    },
+    {
+      "block_id": "make-pdf-0008-heading",
+      "source_hash": "9569b603060810919486d08fce188fe40a15099b27b551140a4977360f058b29",
+      "status": "translated",
+      "translation": "## MAKE-PDF 设置（在任何 make-pdf 命令前运行此检查）"
+    },
+    {
+      "block_id": "make-pdf-0009-code-block",
+      "source_hash": "c31faf8f8dd49af5c183027dcbc6206ec9559befd6daa83f6ace03dd0f9b3ae6",
+      "status": "translated",
+      "translation": "```bash\n_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)\nP=\"\"\n[ -n \"$MAKE_PDF_BIN\" ] && [ -x \"$MAKE_PDF_BIN\" ] && P=\"$MAKE_PDF_BIN\"\n[ -z \"$P\" ] && [ -n \"$_ROOT\" ] && [ -x \"$_ROOT/.claude/skills/gstack/make-pdf/dist/pdf\" ] && P=\"$_ROOT/.claude/skills/gstack/make-pdf/dist/pdf\"\n[ -z \"$P\" ] && P=\"$HOME/.claude/skills/gstack/make-pdf/dist/pdf\"\nif [ -x \"$P\" ]; then\n  echo \"MAKE_PDF_READY: $P\"\n  alias _p_=\"$P\"   # shellcheck 别名助手（不导出）\n  export P   # 在同一次 skill 调用的后续代码块中可作为 $P 使用\nelse\n  echo \"MAKE_PDF_NOT_AVAILABLE (run './setup' in the gstack repo to build it)\"\nfi\n```"
+    },
+    {
+      "block_id": "make-pdf-0010-paragraph",
+      "source_hash": "0c7dc1e1f7fa39577445fadf7f14041f6dc3742bdf76a600b52ea0eb6e5b53e2",
+      "status": "translated",
+      "translation": "如果打印了 `MAKE_PDF_NOT_AVAILABLE`：告诉用户二进制文件还没有构建。让他们在 gstack repo 中运行 `./setup`，然后重试。"
+    },
+    {
+      "block_id": "make-pdf-0011-paragraph",
+      "source_hash": "0f8a2cd717cfbe185edfa15166af1d1ff0abf654f9adabc78f2c696d65d01387",
+      "status": "translated",
+      "translation": "如果打印了 `MAKE_PDF_READY`：`$P` 就是本 skill 剩余部分使用的二进制路径。使用 `$P`（不要写死显式路径），这样 skill 正文保持可移植。"
+    },
+    {
+      "block_id": "make-pdf-0012-paragraph",
+      "source_hash": "6fa4eb760074271b8320db34c473082ab253ede9cac41e8fce9e577e49b969bc",
+      "status": "translated",
+      "translation": "核心命令：\n- `$P generate <input.md> [output.pdf]`：把 Markdown 渲染为 PDF（80% 使用场景）\n- `$P generate --cover --toc essay.md out.pdf`：完整出版版式\n- `$P generate --watermark DRAFT memo.md draft.pdf`：斜向 DRAFT 水印\n- `$P preview <input.md>`：渲染 HTML 并在浏览器中打开（快速迭代）\n- `$P setup`：验证 browse、Chromium 和 pdftotext，并运行冒烟测试\n- `$P --help`：完整 flag 参考"
+    },
+    {
+      "block_id": "make-pdf-0013-paragraph",
+      "source_hash": "518604669d17c83df13acf6912f0007a7f5abddb62d89fa2cb760b0cb07c283e",
+      "status": "translated",
+      "translation": "输出契约：\n- `stdout`：成功时只输出路径。一行。\n- `stderr`：进度（`Rendering HTML... Generating PDF...`），除非使用 `--quiet`。\n- 退出码 0 表示成功 / 1 表示参数错误 / 2 表示渲染错误 / 3 表示 Paged.js 超时 / 4 表示 browse 不可用。"
+    },
+    {
+      "block_id": "make-pdf-0014-heading",
+      "source_hash": "3202d880057aad792ddad929fb6e3b619713fa780359a77f8c65b13e64fd7af9",
+      "status": "translated",
+      "translation": "## Plan Mode 中的安全操作"
+    },
+    {
+      "block_id": "make-pdf-0015-paragraph",
+      "source_hash": "9a3b6c210f6d590191797ab25d38666bbabaef009cc7f262ff839cf449863d7e",
+      "status": "translated",
+      "translation": "在 plan mode 中，以下操作是允许的，因为它们会为计划提供信息：`$B`、`$D`、`codex exec`/`codex review`、写入 `~/.gstack/`、写入计划文件，以及为了生成的产物调用 `open`。"
+    },
+    {
+      "block_id": "make-pdf-0016-heading",
+      "source_hash": "239110f127baf80e15415997d8270285fa44abfd30038951c5cbfa91510c07fc",
+      "status": "translated",
+      "translation": "## Plan Mode 期间的 Skill 调用"
+    },
+    {
+      "block_id": "make-pdf-0017-paragraph",
+      "source_hash": "e916305ddda46f9a0abc23249ad35a9f29730468c5ddad22e19bac14b4b733ac",
+      "status": "translated",
+      "translation": "如果用户在 plan mode 中调用某个 skill，该 skill 优先于通用的 plan mode 行为。**把 skill 文件当成可执行指令，而不是参考资料。** 从 Step 0 开始逐步执行；第一次 AskUserQuestion 表示工作流正在进入 plan mode，并不违反 plan mode。AskUserQuestion（任意变体，包括 `mcp__*__AskUserQuestion` 或 native；参见“AskUserQuestion Format → Tool resolution”）满足 plan mode 对本轮结束的要求。如果 AskUserQuestion 不可用或调用失败，则遵循 AskUserQuestion Format 的失败回退：`headless` → BLOCKED；`interactive` → 文字回退（也满足本轮结束要求）。遇到 STOP 点时，必须立即停止。不要继续工作流，也不要在那里调用 ExitPlanMode。标记为 `PLAN MODE EXCEPTION — ALWAYS RUN` 的命令会执行。只有在 skill 工作流完成后，或者用户要求你取消该 skill 或离开 plan mode 时，才调用 ExitPlanMode。"
+    },
+    {
+      "block_id": "make-pdf-0018-paragraph",
+      "source_hash": "290644d69ce75f8efd870ae5b1f4beaa60abee6126b314692d452b7989858569",
+      "status": "translated",
+      "translation": "如果 `PROACTIVE` 是 `\"false\"`，不要自动调用或主动建议 skills。如果某个 skill 看起来有帮助，询问：\"我觉得 /skillname 可能有帮助，要我运行它吗？\""
+    },
+    {
+      "block_id": "make-pdf-0019-paragraph",
+      "source_hash": "885973bcb57ce30cf97be2c9081a1af3410e88279c77d92ebdfd8a9e9994890c",
+      "status": "translated",
+      "translation": "如果 `SKILL_PREFIX` 是 `\"true\"`，建议或调用 `/gstack-*` 形式的名称。磁盘路径仍然是 `~/.claude/skills/gstack/[skill-name]/SKILL.md`。"
+    },
+    {
+      "block_id": "make-pdf-0020-paragraph",
+      "source_hash": "1a160e9abe3f2a287ff6a89b79c75363ebf60e446cf3836c3d147d422fe6fd23",
+      "status": "translated",
+      "translation": "如果输出显示 `UPGRADE_AVAILABLE <old> <new>`：读取 `~/.claude/skills/gstack/gstack-upgrade/SKILL.md`，并遵循 \"Inline upgrade flow\"（如果已配置则自动升级，否则用 AskUserQuestion 提供 4 个选项；如果用户拒绝，则写入 snooze state）。"
+    },
+    {
+      "block_id": "make-pdf-0021-paragraph",
+      "source_hash": "b998deba3c7b80dbaeb39ac912509a4f3cb1f2876009f2e6ecb1282b7fbbe817",
+      "status": "translated",
+      "translation": "如果输出显示 `JUST_UPGRADED <from> <to>`：打印原始英文状态句 `Running gstack v{to} (just updated!)`。如果 `SPAWNED_SESSION` 为 true，则跳过功能发现。"
+    },
+    {
+      "block_id": "make-pdf-0022-paragraph",
+      "source_hash": "87d48454684364c0a77bf8457cb9977e885a27f9fa840bd5df05da259231f2d5",
+      "status": "translated",
+      "translation": "功能发现，每个会话最多提示一次：\n- 缺少 `~/.claude/skills/gstack/.feature-prompted-continuous-checkpoint`：通过 AskUserQuestion 询问是否启用连续 checkpoint 自动提交。如果接受，运行 `~/.claude/skills/gstack/bin/gstack-config set checkpoint_mode continuous`。始终 touch 这个 marker。\n- 缺少 `~/.claude/skills/gstack/.feature-prompted-model-overlay`：告知原始英文提示 `Model overlays are active. MODEL_OVERLAY shows the patch.` 始终 touch 这个 marker。"
+    },
+    {
+      "block_id": "make-pdf-0023-paragraph",
+      "source_hash": "2383ebcc86083d85ac5e7531fb3a9066a1402d984c47da6810b6911bc3d192d1",
+      "status": "translated",
+      "translation": "升级提示结束后，继续执行工作流。"
+    },
+    {
+      "block_id": "make-pdf-0024-paragraph",
+      "source_hash": "41b1cd7d34aae24c172c479d1e25661ae94672fdee796ee29beebbc7928fd84f",
+      "status": "translated",
+      "translation": "如果 `WRITING_STYLE_PENDING` 是 `yes`：就写作风格询问一次："
+    },
+    {
+      "block_id": "make-pdf-0025-paragraph",
+      "source_hash": "ec0ef0ebfb8c3cd78cd790dd97dc7687cfd4b375c42742a0c7f4049970048381",
+      "status": "translated",
+      "translation": "> v1 prompts 更简单：第一次使用时解释术语、问题围绕结果来问、文字更短。保留默认风格，还是恢复 terse？"
+    },
+    {
+      "block_id": "make-pdf-0026-paragraph",
+      "source_hash": "932b800bc0f52bb2199e1b54a43f9d718611a8633100ecf6b664a235b8851907",
+      "status": "translated",
+      "translation": "选项：\n- A) 保留新的默认风格（推荐，好的写作对每个人都有帮助）\n- B) 恢复 V0 文风，将 `explain_level` 设置为 `terse`"
+    },
+    {
+      "block_id": "make-pdf-0027-paragraph",
+      "source_hash": "576c58d79465dbdf25629ee69e27aa5b23faa72abb64f1d3727eff50646eb950",
+      "status": "translated",
+      "translation": "如果选择 A：保持 `explain_level` 不设置（默认值为 `default`）。\n如果选择 B：运行 `~/.claude/skills/gstack/bin/gstack-config set explain_level terse`。"
+    },
+    {
+      "block_id": "make-pdf-0028-paragraph",
+      "source_hash": "bdba758df114204973d141202d452863a6c7146b58c5428896aa87eda78d21e0",
+      "status": "translated",
+      "translation": "无论选择什么，都始终运行："
+    },
+    {
+      "block_id": "make-pdf-0029-code-block",
+      "source_hash": "f7546f65bad271f93e2e9a51f95f54cdc5c96ef3bc689ae5343cba2ae43c4f85",
+      "status": "translated",
+      "translation": "```bash\nrm -f ~/.gstack/.writing-style-prompt-pending\ntouch ~/.gstack/.writing-style-prompted\n```"
+    },
+    {
+      "block_id": "make-pdf-0030-paragraph",
+      "source_hash": "4689987bfeb3f4d2244b003dbe5850128404d0b01988ef2b73dd88caa9671428",
+      "status": "translated",
+      "translation": "如果 `WRITING_STYLE_PENDING` 为 `no`，则跳过。"
+    },
+    {
+      "block_id": "make-pdf-0031-paragraph",
+      "source_hash": "3070366727c055efc95d138ca1890ecaaa421375f512b8d2a3e9081cd0f9f8ca",
+      "status": "translated",
+      "translation": "如果 `LAKE_INTRO` 为 `no`：说“gstack 遵循 **Boil the Ocean** 原则，也就是当 AI 让边际成本接近于零时，就把事情完整做完。阅读更多：https://garryslist.org/posts/boil-the-ocean” 然后询问是否打开："
+    },
+    {
+      "block_id": "make-pdf-0032-code-block",
+      "source_hash": "bffcc824e63bc1f8f2a35384c726c128873da729e9702db53ca0006475bf1511",
+      "status": "translated",
+      "translation": "```bash\nopen https://garryslist.org/posts/boil-the-ocean\ntouch ~/.gstack/.completeness-intro-seen\n```"
+    },
+    {
+      "block_id": "make-pdf-0033-paragraph",
+      "source_hash": "b8ff8939e7ba81000d8b812415f9566d4152f47576abdb114aba800b0e1687c3",
+      "status": "translated",
+      "translation": "只有用户同意时才运行 `open`。始终运行 `touch`。"
+    },
+    {
+      "block_id": "make-pdf-0034-paragraph",
+      "source_hash": "f4625eb928edb6ca458e9c5f80a9627e52f2cbce52f459e20e701e981a7bcadd",
+      "status": "translated",
+      "translation": "如果 `TEL_PROMPTED` 为 `no` 且 `LAKE_INTRO` 为 `yes`：通过 AskUserQuestion 询问一次 telemetry："
+    },
+    {
+      "block_id": "make-pdf-0035-paragraph",
+      "source_hash": "aae80c47beff8b8fb246524f1080c82f1f12e9559287c92fbaa7a3461bdc30f1",
+      "status": "translated",
+      "translation": "> 帮助 gstack 变得更好。只分享使用数据：skill、duration、crashes、stable device ID。不包含代码或文件路径。你的 repo 名称只会记录在本地，在任何上传前都会被去除。"
+    },
+    {
+      "block_id": "make-pdf-0036-paragraph",
+      "source_hash": "d3c66c7356854c6fb53c54a532a454ac3abcff0bcae4bcacd034117b8ade1abe",
+      "status": "translated",
+      "translation": "选项：\n- A) 帮助 gstack 变得更好！（推荐）\n- B) 不用了，谢谢"
+    },
+    {
+      "block_id": "make-pdf-0037-paragraph",
+      "source_hash": "cdfdbed931341989c499ecdb9860dd12c73bce5c965e382900c27e809ffbd224",
+      "status": "translated",
+      "translation": "如果选择 A：运行 `~/.claude/skills/gstack/bin/gstack-config set telemetry community`"
+    },
+    {
+      "block_id": "make-pdf-0038-paragraph",
+      "source_hash": "45249ffb165663727f8bca2a70256b8a9f0ae7fb3d36c470a25a8ea1034f795e",
+      "status": "translated",
+      "translation": "如果选择 B：继续追问："
+    },
+    {
+      "block_id": "make-pdf-0039-paragraph",
+      "source_hash": "3ba94e947ce25819929356bc5cea9a6721cbeb1d5f595c326fb775b7db8d78fb",
+      "status": "translated",
+      "translation": "> 匿名模式只发送汇总使用数据，不发送唯一 ID。"
+    },
+    {
+      "block_id": "make-pdf-0040-paragraph",
+      "source_hash": "6bcd64ad49441fb26270dad89f57890e9d97f4d055abc7089253382fdfb8a092",
+      "status": "translated",
+      "translation": "选项：\n- A) 可以，anonymous 就行\n- B) 不用了，谢谢，完全关闭"
+    },
+    {
+      "block_id": "make-pdf-0041-paragraph",
+      "source_hash": "487b9771bb23619c7e33181068c8ef15f8c9b557325342c0b73dbfa081841184",
+      "status": "translated",
+      "translation": "如果 B→A：运行 `~/.claude/skills/gstack/bin/gstack-config set telemetry anonymous`\n如果 B→B：运行 `~/.claude/skills/gstack/bin/gstack-config set telemetry off`"
+    },
+    {
+      "block_id": "make-pdf-0042-paragraph",
+      "source_hash": "7a2d7396c8aa0ab9a12f2519ce33846b0b282119d5151584cc9a6cca17907d4d",
+      "status": "translated",
+      "translation": "始终运行："
+    },
+    {
+      "block_id": "make-pdf-0043-code-block",
+      "source_hash": "924b6f973e889327e680f1b4857d85d233ef0062487cb09dc676db34a9ac1efe",
+      "status": "translated",
+      "translation": "```bash\ntouch ~/.gstack/.telemetry-prompted\n```"
+    },
+    {
+      "block_id": "make-pdf-0044-paragraph",
+      "source_hash": "fab5bbfba3add346f3b599b6e32b3a4c5b52c28b5cb5101392228004b15d2b7c",
+      "status": "translated",
+      "translation": "如果 `TEL_PROMPTED` 为 `yes`，则跳过。"
+    },
+    {
+      "block_id": "make-pdf-0045-paragraph",
+      "source_hash": "8feaddb5eb76a038730de7e4b0218272a03cc2e483aa9f9c8738e63fda1e1631",
+      "status": "translated",
+      "translation": "如果 `PROACTIVE_PROMPTED` 为 `no` 且 `TEL_PROMPTED` 为 `yes`：询问一次："
+    },
+    {
+      "block_id": "make-pdf-0046-paragraph",
+      "source_hash": "0141cbe6d8b69571eb284468175f03e9f7682123a57e81507bfabf185fabe2f1",
+      "status": "translated",
+      "translation": "> 是否允许 gstack 主动建议 skills，比如在用户说“这能用吗？”时建议 /qa，或者在遇到 bugs 时建议 /investigate？"
+    },
+    {
+      "block_id": "make-pdf-0047-paragraph",
+      "source_hash": "8a747a1915b37d167ba2253689d126101463f320aa98d14a04190982bd48efd4",
+      "status": "translated",
+      "translation": "选项：\n- A) 保持开启（推荐）\n- B) 关闭它 — 我会自己输入 /commands"
+    },
+    {
+      "block_id": "make-pdf-0048-paragraph",
+      "source_hash": "5d69103da91d9b818a3d8fe6b7effcb8d3d2483d07fc84d51e3a47f6066e5d7e",
+      "status": "translated",
+      "translation": "如果选择 A：运行 `~/.claude/skills/gstack/bin/gstack-config set proactive true`\n如果选择 B：运行 `~/.claude/skills/gstack/bin/gstack-config set proactive false`"
+    },
+    {
+      "block_id": "make-pdf-0049-paragraph",
+      "source_hash": "7a2d7396c8aa0ab9a12f2519ce33846b0b282119d5151584cc9a6cca17907d4d",
+      "status": "translated",
+      "translation": "始终运行："
+    },
+    {
+      "block_id": "make-pdf-0050-code-block",
+      "source_hash": "68fa40904e4be2b145a527c8ad917d0e10b09cc20fd3272a629926187e4e49df",
+      "status": "translated",
+      "translation": "```bash\ntouch ~/.gstack/.proactive-prompted\n```"
+    },
+    {
+      "block_id": "make-pdf-0051-paragraph",
+      "source_hash": "d49db5750fc6bcbf797d6cd2344760dd2fa7018726be3cf02e7d10977be6c63a",
+      "status": "translated",
+      "translation": "如果 `PROACTIVE_PROMPTED` 为 `yes`，则跳过。"
+    },
+    {
+      "block_id": "make-pdf-0052-heading",
+      "source_hash": "fb3db60850ce4fb5bf9f6b2d4949de09ee65afbb0a6e162e64f51e7e6a964a5a",
+      "status": "translated",
+      "translation": "## 首次运行引导（一次性）"
+    },
+    {
+      "block_id": "make-pdf-0053-paragraph",
+      "source_hash": "1bc6b22470fc6a54f89de0d2f65a61185b2790b97e3bf0952a8827bf96ea564f",
+      "status": "translated",
+      "translation": "如果 `ACTIVATED` 为 `no`（这台机器上第一次运行 skill），并且 preamble 打印了非空的 `FIRST_TASK:` 值，且该值不是 `nongit`：根据这个 token 显示一行简短、针对项目的提示，作为提醒；然后继续处理用户实际提出的任务，不要中断用户任务。token 映射如下：`greenfield` → “全新仓库 — 先用 `/spec` 或 `/office-hours` 梳理形状。” `code_node`/`code_python`/`code_rust`/`code_go`/`code_ruby`/`code_ios` → “这里有代码 — 用 `/qa` 看它是否能跑，或者在情况不对时用 `/investigate`。” `branch_ahead` → “这个分支上有尚未交付的工作 — 先 `/review`，再 `/ship`。” `dirty_default` → “有未提交改动 — 提交前先 `/review`。” `clean_default` → “选一个：`/spec`、`/investigate` 或 `/qa`。” 然后用你看到的 token 替换 TASK_TOKEN 并运行（尽力而为），再标记为已激活："
+    },
+    {
+      "block_id": "make-pdf-0054-code-block",
+      "source_hash": "1650fb3aa8b1e0d53dce57c233159bc46d4524264e147e9a7fe54eb0b58d3555",
+      "status": "translated",
+      "translation": "```bash\n~/.claude/skills/gstack/bin/gstack-telemetry-log --event-type first_task_scaffold_shown --skill \"TASK_TOKEN\" --outcome shown 2>/dev/null || true\ntouch ~/.gstack/.activated 2>/dev/null || true\n```"
+    },
+    {
+      "block_id": "make-pdf-0055-paragraph",
+      "source_hash": "ce12d94707c89744c86cce359d18f72203e6c3e147a38807a32706238bce0d0c",
+      "status": "translated",
+      "translation": "如果 `ACTIVATED` 为 `no`，但 `FIRST_TASK:` 为空或为 `nongit`（headless、非 git 仓库，或没有可操作内容）：不显示任何内容，只运行 `touch ~/.gstack/.activated 2>/dev/null || true`。"
+    },
+    {
+      "block_id": "make-pdf-0056-paragraph",
+      "source_hash": "b18e451dd9f7cd101eb08bfc7bc4930a5ca1e83755d123d3951c509743315380",
+      "status": "translated",
+      "translation": "否则，如果 `ACTIVATED` 为 `yes` 且 `FIRST_LOOP_SHOWN` 为 `no`：说一次下面的提醒（然后继续）："
+    },
+    {
+      "block_id": "make-pdf-0057-paragraph",
+      "source_hash": "ba800bede61836206c08fbed03d508faccba07629775649c9ebadfeb8c34e746",
+      "status": "translated",
+      "translation": "> 提示：当你完成一个闭环时，gstack 的价值最明显 — **plan → review → ship**。一个常见的首次闭环是：用 `/office-hours` 或 `/spec` 梳理形状，用 `/plan-eng-review` 锁定方案，然后 `/ship`。"
+    },
+    {
+      "block_id": "make-pdf-0058-paragraph",
+      "source_hash": "7d53816e8ba164fe01156c134ed949fb508efd7419d2f4f8fef731a5cef563f4",
+      "status": "translated",
+      "translation": "然后运行 `touch ~/.gstack/.first-loop-tip-shown 2>/dev/null || true`。"
+    },
+    {
+      "block_id": "make-pdf-0059-paragraph",
+      "source_hash": "9559604cc2833f85e9f2aa9ecdef5debc504c15c387a0d0be749741a7c43e092",
+      "status": "translated",
+      "translation": "如果 `ACTIVATED` 和 `FIRST_LOOP_SHOWN` 都是 `yes`，则跳过本节。"
+    },
+    {
+      "block_id": "make-pdf-0060-paragraph",
+      "source_hash": "105a8e694c015aec6087bf3a0aa923753370de19257f98e0b49b6ca0ed596a0b",
+      "status": "translated",
+      "translation": "如果 `HAS_ROUTING` 为 `no`，且 `ROUTING_DECLINED` 为 `false`，且 `PROACTIVE_PROMPTED` 为 `yes`：\n检查项目根目录中是否存在 CLAUDE.md 文件。如果不存在，就创建它。"
+    },
+    {
+      "block_id": "make-pdf-0061-paragraph",
+      "source_hash": "1144df04fa4faf8fb38a7d6fdbf82b47fd83d14ca2905facfc9e203eb2695915",
+      "status": "translated",
+      "translation": "使用 AskUserQuestion："
+    },
+    {
+      "block_id": "make-pdf-0062-paragraph",
+      "source_hash": "a5706ba8222aea1fbb72917987d1dd5f974d1f3557a9ebc5264acd83c8273ee8",
+      "status": "translated",
+      "translation": "> 当你的项目 CLAUDE.md 包含 skill 路由规则时，gstack 的效果最好。"
+    },
+    {
+      "block_id": "make-pdf-0063-paragraph",
+      "source_hash": "14b385643fcfaa0bbe92e71d71f8b5af084c8aef8ee5c0373eef2225daebc66e",
+      "status": "translated",
+      "translation": "选项：\n- A) 将路由规则添加到 CLAUDE.md（推荐）\n- B) 不用了，我会手动调用 skills"
+    },
+    {
+      "block_id": "make-pdf-0064-paragraph",
+      "source_hash": "fe67290b3c1987798373f7d058017defaa7f89a27efa1afa48e4f2c395ad7fc6",
+      "status": "translated",
+      "translation": "如果选择 A：把这一节追加到 CLAUDE.md 末尾："
+    },
+    {
+      "block_id": "make-pdf-0065-code-block",
+      "source_hash": "fef6e6b3ca29254e44b4b1f84a40fce96b8eb0068370dfd980167f932832bdc8",
+      "status": "translated",
+      "translation": "```markdown\n\n## Skill 路由\n\n当用户请求匹配某个可用 skill 时，通过 Skill tool 调用它。拿不准时，也调用这个 skill。\n\n关键路由规则：\n- 产品想法/头脑风暴 → 调用 /office-hours\n- 策略/范围 → 调用 /plan-ceo-review\n- 架构 → 调用 /plan-eng-review\n- 设计系统/方案评审 → 调用 /design-consultation 或 /plan-design-review\n- 完整评审流水线 → 调用 /autoplan\n- Bug/错误 → 调用 /investigate\n- QA/测试网站行为 → 调用 /qa 或 /qa-only\n- 代码评审/diff 检查 → 调用 /review\n- 视觉打磨 → 调用 /design-review\n- 发布/部署/PR → 调用 /ship 或 /land-and-deploy\n- 保存进度 → 调用 /context-save\n- 恢复上下文 → 调用 /context-restore\n- 编写可进入 backlog 的 spec/issue → 调用 /spec\n```"
+    },
+    {
+      "block_id": "make-pdf-0066-paragraph",
+      "source_hash": "a5c339a023162abcda46e4cf4580e79b1a67e815ba08c4ba61488a88c9f95ef6",
+      "status": "translated",
+      "translation": "然后提交该改动：`git add CLAUDE.md && git commit -m \"chore: add gstack skill routing rules to CLAUDE.md\"`"
+    },
+    {
+      "block_id": "make-pdf-0067-paragraph",
+      "source_hash": "c916db33cde64b08a8cf03e34fda2d509e168b86b9fbf052ad686eab198131ea",
+      "status": "translated",
+      "translation": "如果选择 B：运行 `~/.claude/skills/gstack/bin/gstack-config set routing_declined true`，并告诉用户以后可以用 `gstack-config set routing_declined false` 重新启用。"
+    },
+    {
+      "block_id": "make-pdf-0068-paragraph",
+      "source_hash": "df94c54a64e15cf8b5116ac50d7eae233638d1e1079cf0e2e04247985643d7ff",
+      "status": "translated",
+      "translation": "每个项目只会发生一次。如果 `HAS_ROUTING` 是 `yes`，或 `ROUTING_DECLINED` 是 `true`，就跳过。"
+    },
+    {
+      "block_id": "make-pdf-0069-paragraph",
+      "source_hash": "e4adc40f9c4a820507c5efc8e98d13be57fe0b2bac4e2026e7f2d311300859d0",
+      "status": "translated",
+      "translation": "如果 `VENDORED_GSTACK` 是 `yes`，并且 `~/.gstack/.vendoring-warned-$SLUG` 不存在，就通过 AskUserQuestion 提醒一次："
+    },
+    {
+      "block_id": "make-pdf-0070-paragraph",
+      "source_hash": "1fd7fe156364cee23364f1ed631b02f3dc0bc4369aa0ae20fb8fe341a1aa8cff",
+      "status": "translated",
+      "translation": "> 这个项目把 gstack 内置在 `.claude/skills/gstack/` 中。内置方式已废弃。\n> 要迁移到 team mode 吗？"
+    },
+    {
+      "block_id": "make-pdf-0071-paragraph",
+      "source_hash": "00dfcec10c592d41a51c201f2cfc923f9a5042d65bbd578ce7d7feba1c1d43d9",
+      "status": "translated",
+      "translation": "选项：\n- A) 是，现在迁移到 team mode\n- B) 否，我自己处理"
+    },
+    {
+      "block_id": "make-pdf-0072-paragraph",
+      "source_hash": "cf837eeaf159cac16f253fcfd743e9a32c4f7059ce6a629ccedcf45eab113288",
+      "status": "translated",
+      "translation": "如果选择 A：\n1. 运行 `git rm -r .claude/skills/gstack/`\n2. 运行 `echo '.claude/skills/gstack/' >> .gitignore`\n3. 运行 `~/.claude/skills/gstack/bin/gstack-team-init required`（或 `optional`）\n4. 运行 `git add .claude/ .gitignore CLAUDE.md && git commit -m \"chore: migrate gstack from vendored to team mode\"`\n5. 告诉用户：“已完成。现在每位开发者都需要运行：`cd ~/.claude/skills/gstack && ./setup --team`”"
+    },
+    {
+      "block_id": "make-pdf-0073-paragraph",
+      "source_hash": "64a6b841c2c4f71d08956223517b6d7910689e65620238d7de52f91466396106",
+      "status": "translated",
+      "translation": "如果选择 B：说“好的，之后你需要自己保持内置副本为最新。”"
+    },
+    {
+      "block_id": "make-pdf-0074-paragraph",
+      "source_hash": "bdba758df114204973d141202d452863a6c7146b58c5428896aa87eda78d21e0",
+      "status": "translated",
+      "translation": "无论选择什么，都始终运行："
+    },
+    {
+      "block_id": "make-pdf-0075-code-block",
+      "source_hash": "dacc22d0895e888c3e1ea8d8df1a96215c1082a06e3873e96c042c8c881ff797",
+      "status": "translated",
+      "translation": "```bash\neval \"$(~/.claude/skills/gstack/bin/gstack-slug 2>/dev/null)\" 2>/dev/null || true\ntouch ~/.gstack/.vendoring-warned-${SLUG:-unknown}\n```"
+    },
+    {
+      "block_id": "make-pdf-0076-paragraph",
+      "source_hash": "5941c7b9f9ed5b4e050c866e1d9281fd8baf5aab04692ef743576efaddc570c2",
+      "status": "translated",
+      "translation": "如果标记存在，就跳过。"
+    },
+    {
+      "block_id": "make-pdf-0077-paragraph",
+      "source_hash": "59f277edcdd9f6c0108bb011c5d4c88e6b3b0ebc77acd3f7b0ed327782cb0c63",
+      "status": "translated",
+      "translation": "如果 `SPAWNED_SESSION` 是 `\"true\"`，说明你正在一个由 AI 编排器（例如 OpenClaw）派生出来的会话中运行。在派生会话中：\n- 不要使用 AskUserQuestion 做交互式提示。自动选择推荐选项。\n- 不要运行升级检查、telemetry 提示、routing 注入或 lake 介绍。\n- 专注完成任务，并通过文字输出报告结果。\n- 以完成报告结尾：交付了什么、做了哪些决定、还有什么不确定。"
+    },
+    {
+      "block_id": "make-pdf-0078-heading",
+      "source_hash": "b645ca4bdfed6631559f854e988ce5c54fe12409aa4b6d57f5dd67639c0dc4da",
+      "status": "translated",
+      "translation": "## Artifacts Sync（Skill 启动时）"
+    },
+    {
+      "block_id": "make-pdf-0079-code-block",
+      "source_hash": "bb69f7819501f95d3de2b6fa4572d547651f734e07fe9f9f91ea0a95b16d4299",
+      "status": "translated",
+      "translation": "```bash\n_GSTACK_HOME=\"${GSTACK_HOME:-$HOME/.gstack}\"\n# 优先使用 v1.27.0.0 的 artifacts 文件；对于迁移脚本运行前正在升级的用户，回退到 brain 文件。\nif [ -f \"$HOME/.gstack-artifacts-remote.txt\" ]; then\n  _BRAIN_REMOTE_FILE=\"$HOME/.gstack-artifacts-remote.txt\"\nelse\n  _BRAIN_REMOTE_FILE=\"$HOME/.gstack-brain-remote.txt\"\nfi\n_BRAIN_SYNC_BIN=\"~/.claude/skills/gstack/bin/gstack-brain-sync\"\n_BRAIN_CONFIG_BIN=\"~/.claude/skills/gstack/bin/gstack-config\"\n\n# /sync-gbrain context-load：在 gbrain 可用时，教 agent 使用 gbrain。\n# 每个 worktree 的 pin：post-spike redesign 使用 kubectl 风格的 `.gbrain-source`，放在 git 顶层来限定查询范围。在 worktree 中寻找这个 pin（不是全局状态文件），这样打开没有 pin 的 worktree B 时，不会因为 worktree A 已经同步过就声称“已索引”。gbrain 未配置时为空字符串（对非 gbrain 用户零上下文成本）。\n_GBRAIN_CONFIG=\"$HOME/.gbrain/config.json\"\nif [ -f \"$_GBRAIN_CONFIG\" ] && command -v gbrain >/dev/null 2>&1; then\n  _GBRAIN_VERSION_OK=$(gbrain --version 2>/dev/null | grep -c '^gbrain ' || echo 0)\n  if [ \"$_GBRAIN_VERSION_OK\" -gt 0 ] 2>/dev/null; then\n    _GBRAIN_PIN_PATH=\"\"\n    _REPO_TOP=$(git rev-parse --show-toplevel 2>/dev/null || echo \"\")\n    if [ -n \"$_REPO_TOP\" ] && [ -f \"$_REPO_TOP/.gbrain-source\" ]; then\n      _GBRAIN_PIN_PATH=\"$_REPO_TOP/.gbrain-source\"\n    fi\n    if [ -n \"$_GBRAIN_PIN_PATH\" ]; then\n      echo \"GBrain configured. Prefer \\`gbrain search\\`/\\`gbrain query\\` over Grep for\"\n      echo \"semantic questions; use \\`gbrain code-def\\`/\\`code-refs\\`/\\`code-callers\\` for\"\n      echo \"symbol-aware code lookup. See \\\"## GBrain Search Guidance\\\" in CLAUDE.md.\"\n      echo \"Run /sync-gbrain to refresh.\"\n    else\n      echo \"GBrain configured but this worktree isn't pinned yet. Run \\`/sync-gbrain --full\\`\"\n      echo \"before relying on \\`gbrain search\\` for code questions in this worktree.\"\n      echo \"Falls back to Grep until pinned.\"\n    fi\n  fi\nfi\n\n_BRAIN_SYNC_MODE=$(\"$_BRAIN_CONFIG_BIN\" get artifacts_sync_mode 2>/dev/null || echo off)\n\n# 检测 remote-MCP 模式（/setup-gbrain 的路径 4）。远程模式下，本地 artifacts sync 是 no-op；brain server 会按自己的节奏从 GitHub/GitLab 拉取。直接读取 claude.json，让这个前置段保持快速（避免每次 Skill 启动都调用 claude CLI 子进程）。\n_GBRAIN_MCP_MODE=\"none\"\nif command -v jq >/dev/null 2>&1 && [ -f \"$HOME/.claude.json\" ]; then\n  _GBRAIN_MCP_TYPE=$(jq -r '.mcpServers.gbrain.type // .mcpServers.gbrain.transport // empty' \"$HOME/.claude.json\" 2>/dev/null)\n  case \"$_GBRAIN_MCP_TYPE\" in\n    url|http|sse) _GBRAIN_MCP_MODE=\"remote-http\" ;;\n    stdio) _GBRAIN_MCP_MODE=\"local-stdio\" ;;\n  esac\nfi\n\nif [ -f \"$_BRAIN_REMOTE_FILE\" ] && [ ! -d \"$_GSTACK_HOME/.git\" ] && [ \"$_BRAIN_SYNC_MODE\" = \"off\" ]; then\n  _BRAIN_NEW_URL=$(head -1 \"$_BRAIN_REMOTE_FILE\" 2>/dev/null | tr -d '[:space:]')\n  if [ -n \"$_BRAIN_NEW_URL\" ]; then\n    echo \"ARTIFACTS_SYNC: artifacts repo detected: $_BRAIN_NEW_URL\"\n    echo \"ARTIFACTS_SYNC: run 'gstack-brain-restore' to pull your cross-machine artifacts (or 'gstack-config set artifacts_sync_mode off' to dismiss forever)\"\n  fi\nfi\n\nif [ -d \"$_GSTACK_HOME/.git\" ] && [ \"$_BRAIN_SYNC_MODE\" != \"off\" ]; then\n  _BRAIN_LAST_PULL_FILE=\"$_GSTACK_HOME/.brain-last-pull\"\n  _BRAIN_NOW=$(date +%s)\n  _BRAIN_DO_PULL=1\n  if [ -f \"$_BRAIN_LAST_PULL_FILE\" ]; then\n    _BRAIN_LAST=$(cat \"$_BRAIN_LAST_PULL_FILE\" 2>/dev/null || echo 0)\n    _BRAIN_AGE=$(( _BRAIN_NOW - _BRAIN_LAST ))\n    [ \"$_BRAIN_AGE\" -lt 86400 ] && _BRAIN_DO_PULL=0\n  fi\n  if [ \"$_BRAIN_DO_PULL\" = \"1\" ]; then\n    ( cd \"$_GSTACK_HOME\" && git fetch origin >/dev/null 2>&1 && git merge --ff-only \"origin/$(git rev-parse --abbrev-ref HEAD)\" >/dev/null 2>&1 ) || true\n    echo \"$_BRAIN_NOW\" > \"$_BRAIN_LAST_PULL_FILE\"\n  fi\n  \"$_BRAIN_SYNC_BIN\" --once 2>/dev/null || true\nfi\n\nif [ \"$_GBRAIN_MCP_MODE\" = \"remote-http\" ]; then\n  # Remote-MCP 模式：本地 artifacts sync 是 no-op（brain admin 的服务器会从 GitHub/GitLab 拉取）。向用户显示这是设计如此，不是故障。\n  _GBRAIN_HOST=$(jq -r '.mcpServers.gbrain.url // empty' \"$HOME/.claude.json\" 2>/dev/null | sed -E 's|^https?://([^/:]+).*|\\1|')\n  echo \"ARTIFACTS_SYNC: remote-mode (managed by brain server ${_GBRAIN_HOST:-remote})\"\nelif [ -d \"$_GSTACK_HOME/.git\" ] && [ \"$_BRAIN_SYNC_MODE\" != \"off\" ]; then\n  _BRAIN_QUEUE_DEPTH=0\n  [ -f \"$_GSTACK_HOME/.brain-queue.jsonl\" ] && _BRAIN_QUEUE_DEPTH=$(wc -l < \"$_GSTACK_HOME/.brain-queue.jsonl\" | tr -d ' ')\n  _BRAIN_LAST_PUSH=\"never\"\n  [ -f \"$_GSTACK_HOME/.brain-last-push\" ] && _BRAIN_LAST_PUSH=$(cat \"$_GSTACK_HOME/.brain-last-push\" 2>/dev/null || echo never)\n  echo \"ARTIFACTS_SYNC: mode=$_BRAIN_SYNC_MODE | last_push=$_BRAIN_LAST_PUSH | queue=$_BRAIN_QUEUE_DEPTH\"\nelse\n  echo \"ARTIFACTS_SYNC: off\"\nfi\n```"
+    },
+    {
+      "block_id": "make-pdf-0080-paragraph",
+      "source_hash": "e59a3c76f29ebb8985b1ca7bdd7e008a5e9c6ca8235bb23b3b4606d4f5ce762f",
+      "status": "translated",
+      "translation": "隐私停止门：如果输出显示 `ARTIFACTS_SYNC: off`，`artifacts_sync_mode_prompted` 是 `false`，并且 gbrain 在 PATH 中，或 `gbrain doctor --fast --json` 可以运行，就询问一次："
+    },
+    {
+      "block_id": "make-pdf-0081-paragraph",
+      "source_hash": "41d544d0c2a01bc69d43c94601ac5492187e170f0a4f37853a4ef7f7d86b7035",
+      "status": "translated",
+      "translation": "> gstack 可以把你的产物（CEO 计划、设计稿、报告）发布到一个私有 GitHub repo，让 GBrain 跨机器索引。应该同步多少内容？"
+    },
+    {
+      "block_id": "make-pdf-0082-paragraph",
+      "source_hash": "0dcfc20ebc416363ad991d5bf8ad95439434e4d7cfb051b1a83c9c72327b8853",
+      "status": "translated",
+      "translation": "选项：\n- A) allowlist 允许的全部内容（推荐）\n- B) 仅 artifacts\n- C) 拒绝，全部保持本地"
+    },
+    {
+      "block_id": "make-pdf-0083-paragraph",
+      "source_hash": "37a8d44537fa71b5129575e58c234f169fe8fee51db05e1d89717aae7cc42bf6",
+      "status": "translated",
+      "translation": "回答之后："
+    },
+    {
+      "block_id": "make-pdf-0084-code-block",
+      "source_hash": "e25cbcbe6d38718a698ecff6079c1ac39de57f265ac207eb419274c6e672491b",
+      "status": "translated",
+      "translation": "```bash\n# 选择的模式：full | artifacts-only | off\n\"$_BRAIN_CONFIG_BIN\" set artifacts_sync_mode <choice>\n\"$_BRAIN_CONFIG_BIN\" set artifacts_sync_mode_prompted true\n```"
+    },
+    {
+      "block_id": "make-pdf-0085-paragraph",
+      "source_hash": "cd13373da431efb3b210ea216087f9bff663362eb1cef4861bc588f393f8ec3d",
+      "status": "translated",
+      "translation": "如果选择 A/B，并且 `~/.gstack/.git` 缺失，就询问是否运行 `gstack-artifacts-init`。不要阻塞这个 Skill。"
+    },
+    {
+      "block_id": "make-pdf-0086-paragraph",
+      "source_hash": "1d34cbb6bbfc5165595656496ca20c8a96f78d1126620d110a2ac6c32fa27785",
+      "status": "translated",
+      "translation": "在 Skill 结束时、telemetry 之前："
+    },
+    {
+      "block_id": "make-pdf-0087-code-block",
+      "source_hash": "521cbd74f1629f3169e9920f1f617cdbd6ecbabd61f616546a6fe5743773d488",
+      "status": "translated",
+      "translation": "```bash\n\"~/.claude/skills/gstack/bin/gstack-brain-sync\" --discover-new 2>/dev/null || true\n\"~/.claude/skills/gstack/bin/gstack-brain-sync\" --once 2>/dev/null || true\n```"
+    },
+    {
+      "block_id": "make-pdf-0088-heading",
+      "source_hash": "27beb03d0ae0560977b6d650ed049fccfe3beeb2918648f6849970e60587d97d",
+      "status": "translated",
+      "translation": "## 针对特定模型的行为补丁（claude）"
+    },
+    {
+      "block_id": "make-pdf-0089-paragraph",
+      "source_hash": "34816ad53bd405a11a5b7748b08a55768d9a7416b5b21753260d7d734b969db0",
+      "status": "translated",
+      "translation": "下面这些推动提示是为 claude 模型家族调校的。它们**从属于** Skill 工作流、STOP 点、AskUserQuestion 闸门、plan-mode 安全机制，以及 /ship 评审闸门。如果下面某条推动提示与 Skill 指令冲突，以 Skill 为准。把这些内容当作偏好，而不是规则。"
+    },
+    {
+      "block_id": "make-pdf-0090-paragraph",
+      "source_hash": "983d67518ed3f31730a5e5dcddbf1c0f46c16203f4efa0559c87939c5c1b9b57",
+      "status": "translated",
+      "translation": "**待办清单纪律。** 执行多步骤计划时，每完成一项任务就单独标记完成。不要等到最后再批量标记完成。如果某项任务后来证明没有必要，把它标记为 skipped，并用一句话说明原因。"
+    },
+    {
+      "block_id": "make-pdf-0091-paragraph",
+      "source_hash": "1327fefabce8ff515512bac9ea6cbe4b7ceadc6a12b195fd6ebbbea18841277e",
+      "status": "translated",
+      "translation": "**执行重动作前先思考。** 对复杂操作（重构、迁移、非平凡的新功能）来说，执行前先简短说明你的做法。这样用户可以低成本地纠偏，而不是等你执行到一半才介入。"
+    },
+    {
+      "block_id": "make-pdf-0092-paragraph",
+      "source_hash": "e19afb5ebdcb47d075336a5366c80b9cfc8668d39227d0d0bd5a5828ce502d96",
+      "status": "translated",
+      "translation": "**优先使用专用工具，而不是 Bash。** 相比 shell 等价命令（cat、sed、find、grep），优先使用 Read、Edit、Write、Glob、Grep。专用工具成本更低，也更清晰。"
+    },
+    {
+      "block_id": "make-pdf-0093-heading",
+      "source_hash": "8ed686f5bf26e6173204a9bd3c501d815909b4aaa46cd0915ac7597ece094798",
+      "status": "translated",
+      "translation": "## 语气"
+    },
+    {
+      "block_id": "make-pdf-0094-paragraph",
+      "source_hash": "6903c44b1911327c9b9bb86291fef7379d58366508f4436fcd0341a900137a4e",
+      "status": "translated",
+      "translation": "直接、具体，像建设者和建设者之间沟通。说清文件、函数、命令，以及用户可见的影响。不要填充话。"
+    },
+    {
+      "block_id": "make-pdf-0095-paragraph",
+      "source_hash": "4849c6b095b8342d90f25266d59a9f37c6e1591c5d73e21c859bd6e54660f71d",
+      "status": "translated",
+      "translation": "不要使用 em dash。不要使用 AI 词汇：delve、crucial、robust、comprehensive、nuanced、multifaceted。绝不要写成公司腔或学术腔。段落要短。结尾写清下一步该做什么。"
+    },
+    {
+      "block_id": "make-pdf-0096-paragraph",
+      "source_hash": "84bf7e8a742f8cd63c641dbd03e330a055e2356b2ab9695e7b738b79243b1536",
+      "status": "translated",
+      "translation": "用户掌握着你没有的上下文。多个模型意见一致只是一条建议，不是决定。决定由用户作出。"
+    },
+    {
+      "block_id": "make-pdf-0097-heading",
+      "source_hash": "ca3e1965517fe64c013ab73eb05391023331eba741d0c2149dc6fe06d66d1245",
+      "status": "translated",
+      "translation": "## 完成状态协议"
+    },
+    {
+      "block_id": "make-pdf-0098-paragraph",
+      "source_hash": "819b02821022c0c3700d37cfb3a3e88754edf424a8eaa360bb976819387c3aaa",
+      "status": "translated",
+      "translation": "完成一个 Skill 工作流时，使用以下状态之一报告：\n- **DONE** — 已完成，并提供证据。\n- **DONE_WITH_CONCERNS** — 已完成，但列出顾虑。\n- **BLOCKED** — 无法继续；说明阻塞点以及已经尝试过什么。\n- **NEEDS_CONTEXT** — 缺少信息；准确说明需要什么。"
+    },
+    {
+      "block_id": "make-pdf-0099-paragraph",
+      "source_hash": "7166ab25cd3a09f9102137a58405c551481ec9fc2133afd7e03db5f0fd1b160b",
+      "status": "translated",
+      "translation": "在 3 次尝试失败、安全敏感改动存在不确定性，或遇到你无法验证的范围时升级处理。格式：`STATUS`、`REASON`、`ATTEMPTED`、`RECOMMENDATION`。"
+    },
+    {
+      "block_id": "make-pdf-0100-heading",
+      "source_hash": "434e832742b0079c34b19bc1cf169b4c5ff9d91200c6237c31bde515beac8a78",
+      "status": "translated",
+      "translation": "## 运行层面的自我改进"
+    },
+    {
+      "block_id": "make-pdf-0101-paragraph",
+      "source_hash": "c611aecd7152cb062c41f91fc9e5213b55276849d3f0ec37c9c9a25feb67afff",
+      "status": "translated",
+      "translation": "完成前，如果你发现了一个耐久的项目特殊点或命令修复，且下次能节省 5 分钟以上，就记录下来："
+    },
+    {
+      "block_id": "make-pdf-0102-code-block",
+      "source_hash": "d841b9db8eea1f8221a37beb14b1d79ff8a2529749dd71f042d89e1defd4a7d3",
+      "status": "translated",
+      "translation": "```bash\n~/.claude/skills/gstack/bin/gstack-learnings-log '{\"skill\":\"SKILL_NAME\",\"type\":\"operational\",\"key\":\"SHORT_KEY\",\"insight\":\"DESCRIPTION\",\"confidence\":N,\"source\":\"observed\"}'\n```"
+    },
+    {
+      "block_id": "make-pdf-0103-paragraph",
+      "source_hash": "7223a4de2d6c4cb94a8ad844f1dbd2afd4181814478ab432edabdd22913beaf8",
+      "status": "translated",
+      "translation": "不要记录显而易见的事实，也不要记录一次性的临时错误。"
+    },
+    {
+      "block_id": "make-pdf-0104-heading",
+      "source_hash": "c82767d57199ff2747bd53a894f98763986d2b19cee7a8153eaa51f796ad92ae",
+      "status": "translated",
+      "translation": "## 遥测（最后运行）"
+    },
+    {
+      "block_id": "make-pdf-0105-paragraph",
+      "source_hash": "bebcbbd3352cbd05066ec2b1b78776b77b7559d496e427832205039d4451dd04",
+      "status": "translated",
+      "translation": "工作流完成后，记录 telemetry。使用 frontmatter 中的 Skill `name:`。`OUTCOME` 取值为 `success`、`error`、`abort` 或 `unknown`。"
+    },
+    {
+      "block_id": "make-pdf-0106-paragraph",
+      "source_hash": "874e228fc697602aa6f26889f82f03ced234c146978f3b5b5f909df54d5a0d5b",
+      "status": "translated",
+      "translation": "**PLAN MODE 例外 — 始终运行：** 这条命令会把 telemetry 写入 `~/.gstack/analytics/`，与 preamble analytics 写入保持一致。"
+    },
+    {
+      "block_id": "make-pdf-0107-paragraph",
+      "source_hash": "76dfba488b923307259ecc6bef7dd6f714c7381861a3b3dd9401fcecde549b19",
+      "status": "translated",
+      "translation": "运行下面的 bash："
+    },
+    {
+      "block_id": "make-pdf-0108-code-block",
+      "source_hash": "d99683acfc2c7cbd1acabee117610e0ccc4983d0b6f2b847c74857cdcb704c07",
+      "status": "translated",
+      "translation": "```bash\n_TEL_END=$(date +%s)\n_TEL_DUR=$(( _TEL_END - _TEL_START ))\nrm -f ~/.gstack/analytics/.pending-\"$_SESSION_ID\" 2>/dev/null || true\n# 会话时间线：记录 skill 完成状态（仅本地保存，不发送到任何地方）\n~/.claude/skills/gstack/bin/gstack-timeline-log '{\"skill\":\"SKILL_NAME\",\"event\":\"completed\",\"branch\":\"'$(git branch --show-current 2>/dev/null || echo unknown)'\",\"outcome\":\"OUTCOME\",\"duration_s\":\"'\"$_TEL_DUR\"'\",\"session\":\"'\"$_SESSION_ID\"'\"}' 2>/dev/null || true\n# 本地 analytics（受 telemetry 设置控制）\nif [ \"$_TEL\" != \"off\" ]; then\necho '{\"skill\":\"SKILL_NAME\",\"duration_s\":\"'\"$_TEL_DUR\"'\",\"outcome\":\"OUTCOME\",\"browse\":\"USED_BROWSE\",\"session\":\"'\"$_SESSION_ID\"'\",\"ts\":\"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'\"}' >> ~/.gstack/analytics/skill-usage.jsonl 2>/dev/null || true\nfi\n# 远程 telemetry（opt-in，需要 binary）\nif [ \"$_TEL\" != \"off\" ] && [ -x ~/.claude/skills/gstack/bin/gstack-telemetry-log ]; then\n  ~/.claude/skills/gstack/bin/gstack-telemetry-log \\\n    --skill \"SKILL_NAME\" --duration \"$_TEL_DUR\" --outcome \"OUTCOME\" \\\n    --used-browse \"USED_BROWSE\" --session-id \"$_SESSION_ID\" 2>/dev/null &\nfi\n```"
+    },
+    {
+      "block_id": "make-pdf-0109-paragraph",
+      "source_hash": "b1b64d78c5944c9bb3a8071522ec132a29828b993ec2dae48426d00b9ce77075",
+      "status": "translated",
+      "translation": "运行前替换 `SKILL_NAME`、`OUTCOME` 和 `USED_BROWSE`。"
+    },
+    {
+      "block_id": "make-pdf-0110-heading",
+      "source_hash": "b16b407bd1995dff444cc730c9b8ba2d253791b4d0800f5f9c13155b76a295b2",
+      "status": "translated",
+      "translation": "## 计划状态页脚"
+    },
+    {
+      "block_id": "make-pdf-0111-paragraph",
+      "source_hash": "2b23d62f8774561c3016e477c7e1e54878358aefff3ed4ab057edfcdea3b5892",
+      "status": "translated",
+      "translation": "会运行计划审查的 Skills（`/plan-*-review`、`/codex review`）会在 skill 末尾包含 EXIT PLAN MODE GATE 阻断检查清单。这个清单会在调用 ExitPlanMode 之前，验证计划文件以 `## GSTACK REVIEW REPORT` 结尾。不运行计划审查的 Skills（例如 `/ship`、`/qa`、`/review` 这类操作型 skills）通常不在 plan mode 中运行，也没有需要验证的 review report；这个页脚对它们来说不执行任何动作。写入计划文件是在 plan mode 中唯一允许的编辑。"
+    },
+    {
+      "block_id": "make-pdf-0112-heading",
+      "source_hash": "e255f7cd4133265c7a90e1f987405d7691a7871f37373295e93544020993c136",
+      "status": "translated",
+      "translation": "# make-pdf：从 Markdown 生成出版级质量的 PDF"
+    },
+    {
+      "block_id": "make-pdf-0113-paragraph",
+      "source_hash": "30c6b54d8acb87c42765bc51961b0de16bf089b98374b834f975065fec70fdc6",
+      "status": "translated",
+      "translation": "把 `.md` 文件转换成看起来像 Faber & Faber 随笔的 PDF：1in 边距、正文左对齐、全篇 Helvetica、弯引号和 em dash、可选封面和可点击目录，以及需要时使用的斜向 DRAFT 水印。从 PDF 复制粘贴会得到干净的单词，绝不会变成 \"S a i l i n g\"。"
+    },
+    {
+      "block_id": "make-pdf-0114-paragraph",
+      "source_hash": "1157abd71c6f410fa84f31958247880e902effc751691677105d3e6e252b4442",
+      "status": "translated",
+      "translation": "在 Linux 上，安装 `fonts-liberation` 以获得正确渲染。Helvetica 和 Arial 默认不存在，而 Liberation Sans 是标准的度量兼容 fallback。CI 和 Docker 构建会通过 Dockerfile.ci 自动安装它。"
+    },
+    {
+      "block_id": "make-pdf-0115-paragraph",
+      "source_hash": "3f43a4c043e06f377c8094179e769e6787c4da38b57c6eab45b5a6338290fd21",
+      "status": "translated",
+      "translation": "Emoji 需要彩色 emoji 字体。macOS 自带 Apple Color Emoji，Windows 自带 Segoe UI Emoji；多数 Linux 发行版和容器没有内置彩色 emoji 字体，所以 emoji 可能会渲染成空方框（▯）。`./setup` 会在 Linux 上尽力通过 apt、dnf、pacman 或 apk 自动安装 `fonts-noto-color-emoji`；打印 CSS 会按 Apple、Segoe 和 Noto emoji 字体族依次回退。设置 `GSTACK_SKIP_FONTS=1` 可以跳过字体安装，适用于无 sudo 的 CI、受管机器或离线机器。"
+    },
+    {
+      "block_id": "make-pdf-0116-heading",
+      "source_hash": "a2e4ac4f718ebd8d31fb8f530c0068601aa1af02472605d36b359b8b33fa10a5",
+      "status": "translated",
+      "translation": "## 核心模式"
+    },
+    {
+      "block_id": "make-pdf-0117-heading",
+      "source_hash": "c3543b3cd14c2aaede58854c68178604dc25cd4e8cd00d85f7b9bd747becf55c",
+      "status": "translated",
+      "translation": "### 80% 场景：memo/letter"
+    },
+    {
+      "block_id": "make-pdf-0118-paragraph",
+      "source_hash": "b017a02631b7105b1f8fa02e06c4b9c9dd18487de9b9d598dda9637d2c9d44ed",
+      "status": "translated",
+      "translation": "一个命令，不加 flag。默认得到带运行页眉、页码和 CONFIDENTIAL 页脚的干净 PDF。"
+    },
+    {
+      "block_id": "make-pdf-0119-code-block",
+      "source_hash": "780d940a1746fc3ac1138e148253977ace91a48d8840090da6f307761cd13231",
+      "status": "translated",
+      "translation": "```bash\n$P generate letter.md                 # 写入 /tmp/letter.pdf\n$P generate letter.md letter.pdf      # 显式输出路径\n```"
+    },
+    {
+      "block_id": "make-pdf-0120-heading",
+      "source_hash": "733c1ee1ee5668fe23ff12f1685a13c2586a37dc087edcfde63fda25b5922e6a",
+      "status": "translated",
+      "translation": "### 出版模式：封面 + 目录 + 章节分页"
+    },
+    {
+      "block_id": "make-pdf-0121-code-block",
+      "source_hash": "f7d380d416a44ade7b559b064e4c09e372e253d66ef90f51a2b445475f388f61",
+      "status": "translated",
+      "translation": "```bash\n$P generate --cover --toc --author \"Garry Tan\" --title \"On Horizons\" \\\n  essay.md essay.pdf\n```"
+    },
+    {
+      "block_id": "make-pdf-0122-paragraph",
+      "source_hash": "d8eab95c5122c6d8e0c899ca21fd144fe5b04e834af5092593432263a6982045",
+      "status": "translated",
+      "translation": "Markdown 中每个顶层 H1 都会从新页面开始。对于碰巧有多个 H1 的 memo，可用 `--no-chapter-breaks` 关闭。"
+    },
+    {
+      "block_id": "make-pdf-0123-heading",
+      "source_hash": "6013d7f990700f36f443a71bab79aecfdb8ff29b61712059ffe96a433f469c04",
+      "status": "translated",
+      "translation": "### 草稿阶段水印"
+    },
+    {
+      "block_id": "make-pdf-0124-code-block",
+      "source_hash": "1a7e93989ecfaf17a3a640c5f930c600a1c36a31deeadb93d49e3ffd699be833",
+      "status": "translated",
+      "translation": "```bash\n$P generate --watermark DRAFT memo.md draft.pdf\n```"
+    },
+    {
+      "block_id": "make-pdf-0125-paragraph",
+      "source_hash": "4345c5cf49a9418b4d0fc75f210e6c37ff7f3e6bb734cf4ad0ee8d33016ae5d0",
+      "status": "translated",
+      "translation": "每一页上都有斜向 10% 不透明度的 DRAFT。草稿定稿后，去掉这个 flag 并重新生成。"
+    },
+    {
+      "block_id": "make-pdf-0126-heading",
+      "source_hash": "bb0ba716b72090d2c6bc305c1b8032b59cd53ab1efbc8b1d636ea00da041c859",
+      "status": "translated",
+      "translation": "### 通过 preview 快速迭代"
+    },
+    {
+      "block_id": "make-pdf-0127-code-block",
+      "source_hash": "97044194c59914f7ddc94da4ae606b5cfd91fbadb75e5c151e9caada4212197c",
+      "status": "translated",
+      "translation": "```bash\n$P preview essay.md\n```"
+    },
+    {
+      "block_id": "make-pdf-0128-paragraph",
+      "source_hash": "919df67d74cb064ddd43ac9e7b9af62212c5c16eb99063385d3a1cb1b53760af",
+      "status": "translated",
+      "translation": "使用同一套打印 CSS 渲染 HTML，并在浏览器中打开。编辑 Markdown 时刷新即可。准备好之前，先跳过 PDF 往返。"
+    },
+    {
+      "block_id": "make-pdf-0129-heading",
+      "source_hash": "ef25fc70e38db22362fa39ec16e25a75a1c24395cad1d1b2bc149893c47b5dac",
+      "status": "translated",
+      "translation": "### 无品牌信息（不显示 CONFIDENTIAL 页脚）"
+    },
+    {
+      "block_id": "make-pdf-0130-code-block",
+      "source_hash": "5e551de611c32cf81e9735c17cc30ee7a325aa4a2139b59cc9edf2e2ea2e841f",
+      "status": "translated",
+      "translation": "```bash\n$P generate --no-confidential memo.md memo.pdf\n```"
+    },
+    {
+      "block_id": "make-pdf-0131-heading",
+      "source_hash": "948da57376b63e8972f856a7e8e0826932b7ed897809a70e3fc95326943bc1df",
+      "status": "translated",
+      "translation": "### 图表：mermaid 和 excalidraw fence 会被渲染成图片"
+    },
+    {
+      "block_id": "make-pdf-0132-paragraph",
+      "source_hash": "a5e39bb268209e2960de3682b5e704ab1e294d6e8f676ee44d37d47263ddd461",
+      "status": "translated",
+      "translation": "Markdown 中位于第 0 列的 ` ```mermaid ` 或 ` ```excalidraw ` fence 会渲染为清晰的矢量图，并且完全离线（vendored bundle，无 CDN）。缩进的 fence（位于列表内部）会按设计保留为普通代码块。损坏的 fence 会生成可见的红色诊断块，显示解析错误，绝不会静默输出原始代码。"
+    },
+    {
+      "block_id": "make-pdf-0133-paragraph",
+      "source_hash": "44c8b19be14b035b7ab79e0374687da1a613e96258359cf58ea937bdbf2d3810",
+      "status": "translated",
+      "translation": "Fence info-string 选项："
+    },
+    {
+      "block_id": "make-pdf-0134-code-block",
+      "source_hash": "19723e64df1d3a26224b79adf27e75846ece0344ec28040d82799bb2129d441b",
+      "status": "translated",
+      "translation": "```\n```mermaid title=\"Auth flow\"        ← 图注 + aria-label"
+    },
+    {
+      "block_id": "make-pdf-0135-code-block",
+      "source_hash": "d8961b403bcc47759baa413dff965bd398c4924546f731a32296c79c704b2899",
+      "status": "translated",
+      "translation": "```mermaid render=false             ← 保留为代码块（当前行为）\n```mermaid page=landscape           ← 强制把这个图表放到横向页面"
+    },
+    {
+      "block_id": "make-pdf-0136-code-block",
+      "source_hash": "2aab13d282e02c5dc0729781bc660b2e395c50266220976e5577d6273f15aef7",
+      "status": "translated",
+      "translation": "```mermaid page=portrait            ← 否决自动横向页面\n```"
+    },
+    {
+      "block_id": "make-pdf-0137-paragraph",
+      "source_hash": "3ea57e1a21fc73e0b6e75e87b175ac200d443896044cc7768be2c4e9fc3aa4f2",
+      "status": "translated",
+      "translation": "` ```excalidraw ` fence 包含一个完整的 `.excalidraw` 场景文件（excalidraw.com 保存的格式）。从英文描述创作新图表是 `/diagram` 的职责，它会输出一个可编辑三件套（source、`.excalidraw`、SVG/PNG），并与本 skill 配合：把 `.mmd` 源嵌入 Markdown，而不是嵌入 PNG。"
+    },
+    {
+      "block_id": "make-pdf-0138-heading",
+      "source_hash": "40209662313205bd042129907c0e026cf209059018f6fc6e4200b214c0a5aad0",
+      "status": "translated",
+      "translation": "### 图片：正确缩放，绝不截断"
+    },
+    {
+      "block_id": "make-pdf-0139-paragraph",
+      "source_hash": "79680e0044d9dcaa56b10fff53253f7f090b1efeeccfbb8a60a6fb65b5bb45ec",
+      "status": "translated",
+      "translation": "本地图片会自动内联（相对路径按 Markdown 文件解析）。每张图片都会限制在内容框内，永远不会截断。超大照片会降采样到打印分辨率（300dpi），因此 payload 保持较小，同时没有可见质量损失。"
+    },
+    {
+      "block_id": "make-pdf-0140-paragraph",
+      "source_hash": "446cf1d1c866abf6296e83dfb87ad7a50f4f988c3ee8e3e0335e27904e0d8aca",
+      "status": "translated",
+      "translation": "远程（http/https）图片默认会被**阻止，并显示可见占位符**，这是离线姿态；传入 `--allow-network` 才会抓取。解析到 Markdown 目录之外的图片（即使通过 symlink）仍会内联，但会明确警告；`--strict` 会把它变成致命错误。超过 64MB 的文件或非普通文件（fifo、device）会降级为占位符，而不是卡住运行。"
+    },
+    {
+      "block_id": "make-pdf-0141-paragraph",
+      "source_hash": "e7a3fa7f9744b611179873c2967588685100a62373b078b54956ceea1671164c",
+      "status": "translated",
+      "translation": "单图指令，紧跟在图片之后书写："
+    },
+    {
+      "block_id": "make-pdf-0142-code-block",
+      "source_hash": "c26bd0e03dbdeb9422e3506578d7782a52c4a07571a2994ae5bb31d94494d036",
+      "status": "translated",
+      "translation": "```\n![chart](data.png){width=full}      ← 拉伸到内容框宽度\n![chart](data.png){width=50%}       ← 百分比或 3in/8cm/200px\n![wide](arch.png){page=landscape}   ← 给它自己的横向页面\n![wide](shot.png){page=portrait}    ← 否决自动横向页面\n```"
+    },
+    {
+      "block_id": "make-pdf-0143-paragraph",
+      "source_hash": "f9ff24861f7a6820adb0d7b3b64f49b8834a00f1005baf4ecf0e02ab010a64e5",
+      "status": "translated",
+      "translation": "宽幅、小字图表图片会自动提升到自己的横向页面（保守规则：宽高比 ≥ 1.8、宽度超过内容框约 2.5 倍，并且 alt 中有偏图表的词：diagram/architecture/flowchart/chart/graph）。提升后的页面会垂直居中。启发式判断错误时，用 `{page=portrait}` 否决；漏判时只需加 `{page=landscape}`。"
+    },
+    {
+      "block_id": "make-pdf-0144-heading",
+      "source_hash": "ddd2eaeb8d44ef84c03351bafd7c393532b0f707c21f6483528f9b62573b0488",
+      "status": "translated",
+      "translation": "### 其他格式：单文件 HTML 和 Word"
+    },
+    {
+      "block_id": "make-pdf-0145-code-block",
+      "source_hash": "af18fce69ac14d4b05ba3e88e7b069d4a367201324bfa577fccdb742464c6115",
+      "status": "translated",
+      "translation": "```bash\n$P generate readme.md out.html --to html    # 一个自包含文件：内联\n                                            # SVG 图表、data-URI 图片、\n                                            # 零网络引用、适合屏幕阅读\n$P generate readme.md out.docx --to docx    # Word：内容保真（标题、\n                                            # 表格、代码、图表作为 PNG）-\n                                            # 版式由 Word 负责，不由我们负责\n```"
+    },
+    {
+      "block_id": "make-pdf-0146-paragraph",
+      "source_hash": "7375a28a21b3181f1c392f2e33ee85adcf4ec66a44398552934ab42c3a524189",
+      "status": "translated",
+      "translation": "`--to` 是输出格式。`--format` 是完全不同的东西（`--page-size` 的别名），不要混淆。"
+    },
+    {
+      "block_id": "make-pdf-0147-heading",
+      "source_hash": "45e12b61b4bdc7e98bec69e2b805218d1c2e4b32009c8dd8834d1834ebdbb915",
+      "status": "translated",
+      "translation": "### CI 模式：缺失资产时明确失败"
+    },
+    {
+      "block_id": "make-pdf-0148-code-block",
+      "source_hash": "4877b1669ef998e468aa933cfef446d92af6f27b8389b5e60e0e7e1c02bb52d3",
+      "status": "translated",
+      "translation": "```bash\n$P generate docs.md --strict     # 缺失、远程、树外、超大、\n                                 # 以及非普通文件图片会以非零退出\n                                 # 而不是警告 + 占位符\n```"
+    },
+    {
+      "block_id": "make-pdf-0149-heading",
+      "source_hash": "44e1fa84d69c69235039f69d6fb49e4b1a9a2e614d6f95296a375f589512b4db",
+      "status": "translated",
+      "translation": "## 常用 flags"
+    },
+    {
+      "block_id": "make-pdf-0150-code-block",
+      "source_hash": "7af1d45c43947fb2e192ed9bd5bcb20d2d5582e89e55d19be0734a3fcc0ebffb",
+      "status": "translated",
+      "translation": "```\n页面布局：\n  --margins <dim>            1in（默认）| 72pt | 2.54cm | 25mm\n  --page-size letter|a4|legal\n\n结构：\n  --cover                    封面页（标题、作者、日期、细线）\n  --toc                      带页码的可点击目录\n  --no-chapter-breaks        不要在每个 H1 处开始新页\n\n品牌信息：\n  --watermark <text>         斜向水印（\"DRAFT\"、\"CONFIDENTIAL\"）\n  --header-template <html>   自定义运行页眉\n  --footer-template <html>   自定义页脚（与 --page-numbers 互斥）\n  --no-confidential          隐藏右侧 CONFIDENTIAL 页脚\n\n输出：\n  --to pdf|html|docx         输出格式（默认：pdf）。html = 单个\n                             自包含文件；docx = 内容保真。\n  --strict                   缺失、远程、树外、超大或\n                             非普通文件图片会使运行失败（CI 模式）。\n  --page-numbers             \"N of M\" 页脚（默认开启）\n  --tagged                   可访问 PDF（默认开启）\n  --outline                  从标题生成 PDF 书签（默认开启）\n  --quiet                    抑制 stderr 上的进度\n  --verbose                  每阶段耗时\n\n网络：\n  --allow-network            抓取外部图片。默认关闭：远程\n                             图片会渲染为可见的 blocked 占位符\n                             （打印时不会抓取追踪像素）。\n\n元数据：\n  --title \"...\"              文档标题（默认为第一个 H1）\n  --author \"...\"             封面和 PDF 元数据的作者\n  --date \"...\"               封面日期（默认为今天）\n```"
+    },
+    {
+      "block_id": "make-pdf-0151-heading",
+      "source_hash": "12b643a40ef9e6757347e8d795b8e18ac0711e44b1a5821dd22675ed06facbe0",
+      "status": "translated",
+      "translation": "## Claude 什么时候应该运行它"
+    },
+    {
+      "block_id": "make-pdf-0152-paragraph",
+      "source_hash": "729c95cd2540316101755453186204d39ad4c17c4e4cd573e859b6b549205857",
+      "status": "translated",
+      "translation": "留意 Markdown 转 PDF 的意图。以下任一模式出现时，运行 `$P generate`："
+    },
+    {
+      "block_id": "make-pdf-0153-paragraph",
+      "source_hash": "75694d2d24a32e072818e2fa4313daa429984c961ef5fdb6a792672bbd81f1dc",
+      "status": "translated",
+      "translation": "原始英文触发示例：\n- \"Can you make this markdown a PDF\"\n- \"Export it as a PDF\"\n- \"Turn this letter into a PDF\"\n- \"I need a PDF of the essay\"\n- \"Print this as a PDF for me\""
+    },
+    {
+      "block_id": "make-pdf-0154-paragraph",
+      "source_hash": "bac9798e5dc8cb7d71275ef63b10250067397c685740273a869bc9a1f9c53074",
+      "status": "translated",
+      "translation": "如果用户打开了一个 `.md` 文件并说 \"make it look nice\"，建议使用 `$P generate --cover --toc`，并在运行前询问。"
+    },
+    {
+      "block_id": "make-pdf-0155-heading",
+      "source_hash": "6e478190b98efab728f76593eb2244924bdee9cf27a2119c2e5d7f6328f9591e",
+      "status": "translated",
+      "translation": "## 调试"
+    },
+    {
+      "block_id": "make-pdf-0156-paragraph",
+      "source_hash": "0dedcd5e04f7aab94411d0fdf27f5d94f623c1d1334b97676330bc8c9b0f6eef",
+      "status": "translated",
+      "translation": "- 输出看起来为空 / 空白：检查 browse daemon 是否正在运行：`$B status`。\n- 复制粘贴时文本碎裂：highlight.js 输出（Phase 4）。该 flag 存在后，用 `--no-syntax` 重试。目前先移除 fenced code block 并重新生成。\n- Paged.js 超时：Markdown 中可能没有标题。去掉 `--toc`。\n- 输出中出现 \"[remote image blocked]\" 占位符：添加 `--allow-network`（理解这等于授权 Markdown 文件从其 image URL 抓取）。\n- 生成的 PDF 过高/过宽：使用 `--page-size a4` 或 `--margins 0.75in`。"
+    },
+    {
+      "block_id": "make-pdf-0157-heading",
+      "source_hash": "4508707bade6b04d7fc39701459b36466736ce086b1ef3f32b9ea922df077124",
+      "status": "translated",
+      "translation": "## 输出契约"
+    },
+    {
+      "block_id": "make-pdf-0158-code-block",
+      "source_hash": "028b585e9d7f05c2f42ad1dc6ee7ad6958be541708edf33aa89987aea1fabc2c",
+      "status": "translated",
+      "translation": "```\nstdout: /tmp/letter.pdf          ← 只有路径，一行\nstderr: Rendering HTML...        ← 进度提示（除非 --quiet）\n        Generating PDF...\n        Done in 1.5s. 43 words · 22KB · /tmp/letter.pdf\n\nexit code: 0 成功 / 1 参数错误 / 2 渲染错误 / 3 Paged.js 超时\n           / 4 browse 不可用\n```"
+    },
+    {
+      "block_id": "make-pdf-0159-paragraph",
+      "source_hash": "57d762ed3890bdcd95ada8222eb7836a9b49cc5f52d6565bf58412bd048bc60c",
+      "status": "translated",
+      "translation": "捕获路径：`PDF=$($P generate letter.md)`，然后使用 `$PDF`。"
+    }
+  ],
+  "related_materials_explanation": "本页正文只翻译 `make-pdf/SKILL.md`。PDF 生成相关命令、脚本、模板和检查机制由 ReaderLab 的关联材料扫描补充说明；这里保留分块产物的来源证据。",
+  "highlights": [
+    {
+      "quote": "PDF 生成不是单个命令，而是渲染、检查、修复和交付证据的闭环。",
+      "comment": "这能帮助读者区分“生成了文件”和“产物可交付”两个层次。",
+      "source": "Skill 正文"
+    },
+    {
+      "quote": "保留原始命令与文件路径。",
+      "comment": "PDF 流程依赖具体工具调用，翻译时不能把命令解释成自然语言后丢失可执行性。",
+      "source": "Skill 正文"
+    }
+  ],
+  "evidence": {
+    "skill_md": "make-pdf/SKILL.md",
+    "skill_md_sha256": "7c00be6908b4bd4629042218ffbff8d91247fecb606c9885494f488dda45da3b",
+    "coverage": "由 8 个 readerlab.skill-block-reading-part.v1 产物合并，覆盖 159/159 个 block。",
+    "related_sources": [
+      {
+        "path": "data/skill-readings-work/gstack/make-pdf/part-01-reading.json",
+        "note": "分块翻译产物"
+      },
+      {
+        "path": "data/skill-readings-work/gstack/make-pdf/part-02-reading.json",
+        "note": "分块翻译产物"
+      },
+      {
+        "path": "data/skill-readings-work/gstack/make-pdf/part-03-reading.json",
+        "note": "分块翻译产物"
+      },
+      {
+        "path": "data/skill-readings-work/gstack/make-pdf/part-04-reading.json",
+        "note": "分块翻译产物"
+      },
+      {
+        "path": "data/skill-readings-work/gstack/make-pdf/part-05-reading.json",
+        "note": "分块翻译产物"
+      },
+      {
+        "path": "data/skill-readings-work/gstack/make-pdf/part-06-reading.json",
+        "note": "分块翻译产物"
+      },
+      {
+        "path": "data/skill-readings-work/gstack/make-pdf/part-07-reading.json",
+        "note": "分块翻译产物"
+      },
+      {
+        "path": "data/skill-readings-work/gstack/make-pdf/part-08-reading.json",
+        "note": "分块翻译产物"
+      }
+    ]
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "schema": "readerlab.location-map.v1",
+  "material": {
+    "id": "dbs-suite__v2.15.1_096f726",
+    "title": "dbs-suite",
+    "type": "skill_package"
+  },
+  "locations": [
+    {
+      "location_id": "dbs-loc-route-core",
+      "source_id": "dbs-route-core-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs/SKILL.md",
+      "spine": "",
+      "page": null,
+      "heading_path": [
+        "dbs：商业工具箱",
+        "模式 A：任务前路由",
+        "路由表"
+      ],
+      "block_id": "route-core.routing-table",
+      "char_range": [
+        0,
+        18535
+      ],
+      "line_range": [
+        10,
+        61
+      ],
+      "text_preview": "The entry skill says it only routes and provides a table from user intent signals to dbs-* skills.",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "dbs-loc-diagnosis-funnel",
+      "source_id": "dbs-diagnosis-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-diagnosis/SKILL.md",
+      "spine": "",
+      "page": null,
+      "heading_path": [
+        "dbs-diagnosis：商业模式诊断",
+        "Phase 3A：消解漏斗"
+      ],
+      "block_id": "diagnosis.problem-dissolution-funnel",
+      "char_range": [
+        0,
+        20529
+      ],
+      "line_range": [
+        18,
+        191
+      ],
+      "text_preview": "Core philosophy and the five-layer dissolution funnel define diagnosis and problem framing.",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "dbs-loc-title-formula",
+      "source_id": "dbs-xhs-title-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-xhs-title/SKILL.md",
+      "spine": "",
+      "page": null,
+      "heading_path": [
+        "dbs-xhs-title：小红书标题公式工具",
+        "公式库速查表",
+        "工作流程"
+      ],
+      "block_id": "content-expression.title-formula-traceability",
+      "char_range": [
+        0,
+        32385
+      ],
+      "line_range": [
+        10,
+        190
+      ],
+      "text_preview": "The title skill maps topics to 75 formula IDs and requires every title to trace to a formula number.",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "dbs-loc-wechat-html",
+      "source_id": "dbs-wechat-html-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-wechat-html/SKILL.md",
+      "spine": "",
+      "page": null,
+      "heading_path": [
+        "dbs-wechat-html：微信公众号 HTML 生成",
+        "核心能力"
+      ],
+      "block_id": "content-publishing.wechat-html",
+      "char_range": [
+        0,
+        7440
+      ],
+      "line_range": [
+        9,
+        216
+      ],
+      "text_preview": "The WeChat HTML skill converts Markdown to one, six, or fifteen styles and defines file naming and conversion rules.",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "dbs-loc-content-system",
+      "source_id": "dbs-content-system-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-content-system/SKILL.md",
+      "spine": "",
+      "page": null,
+      "heading_path": [
+        "dbs-content-system：内容结构化系统",
+        "标准工程结构",
+        "工作流程"
+      ],
+      "block_id": "state-content-engineering.content-system",
+      "char_range": [
+        0,
+        17342
+      ],
+      "line_range": [
+        10,
+        507
+      ],
+      "text_preview": "The content-system skill defines audit gates, scaffold, templates, tools, content units, processing phases, and usable-state criteria.",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "dbs-loc-save",
+      "source_id": "dbs-save-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-save/SKILL.md",
+      "spine": "",
+      "page": null,
+      "heading_path": [
+        "dbs-save：诊断存档",
+        "工作流程",
+        "写文件"
+      ],
+      "block_id": "state-persistence.save-snapshot",
+      "char_range": [
+        0,
+        8135
+      ],
+      "line_range": [
+        10,
+        144
+      ],
+      "text_preview": "The save skill defines local diagnosis state snapshots with frontmatter and six markdown sections.",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "dbs-loc-report",
+      "source_id": "dbs-report-skill",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/dbs-suite/dbs-report/SKILL.md",
+      "spine": "",
+      "page": null,
+      "heading_path": [
+        "dbs-report：诊断报告",
+        "工作流程",
+        "报告内容"
+      ],
+      "block_id": "state-persistence.report-generation",
+      "char_range": [
+        0,
+        8633
+      ],
+      "line_range": [
+        10,
+        191
+      ],
+      "text_preview": "The report skill merges dbs-save snapshots and says reports must trace back to stored fields.",
+      "extraction_confidence": "high",
+      "review_required": false
+    }
+  ],
+  "source_scope": {
+    "coverage_status": "sample",
+    "coverage_note": "Representative file and line locations for four capability domains. This location map is sample-level and intentionally partial."
+  },
+  "confidence": {
+    "level": "medium",
+    "basis": [
+      "Each location points to a directly read canonical package file and line range.",
+      "The sample covers both entry routing and deeper domain skills."
+    ],
+    "known_uncertainties": [
+      "Line ranges are broad section ranges, not exact semantic block offsets.",
+      "Not all 24 upstream Skills are included."
+    ]
+  },
+  "review_items": [
+    {
+      "id": "dbs-location-r01",
+      "status": "open",
+      "question": "Future full pass should add all skill files and exact block anchors."
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "markdown_path": null,
+    "relationship": "sample_location_index_not_reader_markdown"
+  }
+}

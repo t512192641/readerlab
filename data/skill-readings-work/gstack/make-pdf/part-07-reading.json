@@ -1,0 +1,129 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "package": "gstack",
+  "skill": "make-pdf",
+  "source_file": "SKILL.md",
+  "part": 7,
+  "blocks": [
+    {
+      "block_id": "make-pdf-0121-code-block",
+      "source_hash": "f7d380d416a44ade7b559b064e4c09e372e253d66ef90f51a2b445475f388f61",
+      "status": "translated",
+      "translation": "```bash\n$P generate --cover --toc --author \"Garry Tan\" --title \"On Horizons\" \\\n  essay.md essay.pdf\n```"
+    },
+    {
+      "block_id": "make-pdf-0122-paragraph",
+      "source_hash": "d8eab95c5122c6d8e0c899ca21fd144fe5b04e834af5092593432263a6982045",
+      "status": "translated",
+      "translation": "Markdown 中每个顶层 H1 都会从新页面开始。对于碰巧有多个 H1 的 memo，可用 `--no-chapter-breaks` 关闭。"
+    },
+    {
+      "block_id": "make-pdf-0123-heading",
+      "source_hash": "6013d7f990700f36f443a71bab79aecfdb8ff29b61712059ffe96a433f469c04",
+      "status": "translated",
+      "translation": "### 草稿阶段水印"
+    },
+    {
+      "block_id": "make-pdf-0124-code-block",
+      "source_hash": "1a7e93989ecfaf17a3a640c5f930c600a1c36a31deeadb93d49e3ffd699be833",
+      "status": "translated",
+      "translation": "```bash\n$P generate --watermark DRAFT memo.md draft.pdf\n```"
+    },
+    {
+      "block_id": "make-pdf-0125-paragraph",
+      "source_hash": "4345c5cf49a9418b4d0fc75f210e6c37ff7f3e6bb734cf4ad0ee8d33016ae5d0",
+      "status": "translated",
+      "translation": "每一页上都有斜向 10% 不透明度的 DRAFT。草稿定稿后，去掉这个 flag 并重新生成。"
+    },
+    {
+      "block_id": "make-pdf-0126-heading",
+      "source_hash": "bb0ba716b72090d2c6bc305c1b8032b59cd53ab1efbc8b1d636ea00da041c859",
+      "status": "translated",
+      "translation": "### 通过 preview 快速迭代"
+    },
+    {
+      "block_id": "make-pdf-0127-code-block",
+      "source_hash": "97044194c59914f7ddc94da4ae606b5cfd91fbadb75e5c151e9caada4212197c",
+      "status": "translated",
+      "translation": "```bash\n$P preview essay.md\n```"
+    },
+    {
+      "block_id": "make-pdf-0128-paragraph",
+      "source_hash": "919df67d74cb064ddd43ac9e7b9af62212c5c16eb99063385d3a1cb1b53760af",
+      "status": "translated",
+      "translation": "使用同一套打印 CSS 渲染 HTML，并在浏览器中打开。编辑 Markdown 时刷新即可。准备好之前，先跳过 PDF 往返。"
+    },
+    {
+      "block_id": "make-pdf-0129-heading",
+      "source_hash": "ef25fc70e38db22362fa39ec16e25a75a1c24395cad1d1b2bc149893c47b5dac",
+      "status": "translated",
+      "translation": "### 无品牌信息（不显示 CONFIDENTIAL 页脚）"
+    },
+    {
+      "block_id": "make-pdf-0130-code-block",
+      "source_hash": "5e551de611c32cf81e9735c17cc30ee7a325aa4a2139b59cc9edf2e2ea2e841f",
+      "status": "translated",
+      "translation": "```bash\n$P generate --no-confidential memo.md memo.pdf\n```"
+    },
+    {
+      "block_id": "make-pdf-0131-heading",
+      "source_hash": "948da57376b63e8972f856a7e8e0826932b7ed897809a70e3fc95326943bc1df",
+      "status": "translated",
+      "translation": "### 图表：mermaid 和 excalidraw fence 会被渲染成图片"
+    },
+    {
+      "block_id": "make-pdf-0132-paragraph",
+      "source_hash": "a5e39bb268209e2960de3682b5e704ab1e294d6e8f676ee44d37d47263ddd461",
+      "status": "translated",
+      "translation": "Markdown 中位于第 0 列的 ` ```mermaid ` 或 ` ```excalidraw ` fence 会渲染为清晰的矢量图，并且完全离线（vendored bundle，无 CDN）。缩进的 fence（位于列表内部）会按设计保留为普通代码块。损坏的 fence 会生成可见的红色诊断块，显示解析错误，绝不会静默输出原始代码。"
+    },
+    {
+      "block_id": "make-pdf-0133-paragraph",
+      "source_hash": "44c8b19be14b035b7ab79e0374687da1a613e96258359cf58ea937bdbf2d3810",
+      "status": "translated",
+      "translation": "Fence info-string 选项："
+    },
+    {
+      "block_id": "make-pdf-0134-code-block",
+      "source_hash": "19723e64df1d3a26224b79adf27e75846ece0344ec28040d82799bb2129d441b",
+      "status": "translated",
+      "translation": "```\n```mermaid title=\"Auth flow\"        ← 图注 + aria-label"
+    },
+    {
+      "block_id": "make-pdf-0135-code-block",
+      "source_hash": "d8961b403bcc47759baa413dff965bd398c4924546f731a32296c79c704b2899",
+      "status": "translated",
+      "translation": "```mermaid render=false             ← 保留为代码块（当前行为）\n```mermaid page=landscape           ← 强制把这个图表放到横向页面"
+    },
+    {
+      "block_id": "make-pdf-0136-code-block",
+      "source_hash": "2aab13d282e02c5dc0729781bc660b2e395c50266220976e5577d6273f15aef7",
+      "status": "translated",
+      "translation": "```mermaid page=portrait            ← 否决自动横向页面\n```"
+    },
+    {
+      "block_id": "make-pdf-0137-paragraph",
+      "source_hash": "3ea57e1a21fc73e0b6e75e87b175ac200d443896044cc7768be2c4e9fc3aa4f2",
+      "status": "translated",
+      "translation": "` ```excalidraw ` fence 包含一个完整的 `.excalidraw` 场景文件（excalidraw.com 保存的格式）。从英文描述创作新图表是 `/diagram` 的职责，它会输出一个可编辑三件套（source、`.excalidraw`、SVG/PNG），并与本 skill 配合：把 `.mmd` 源嵌入 Markdown，而不是嵌入 PNG。"
+    },
+    {
+      "block_id": "make-pdf-0138-heading",
+      "source_hash": "40209662313205bd042129907c0e026cf209059018f6fc6e4200b214c0a5aad0",
+      "status": "translated",
+      "translation": "### 图片：正确缩放，绝不截断"
+    },
+    {
+      "block_id": "make-pdf-0139-paragraph",
+      "source_hash": "79680e0044d9dcaa56b10fff53253f7f090b1efeeccfbb8a60a6fb65b5bb45ec",
+      "status": "translated",
+      "translation": "本地图片会自动内联（相对路径按 Markdown 文件解析）。每张图片都会限制在内容框内，永远不会截断。超大照片会降采样到打印分辨率（300dpi），因此 payload 保持较小，同时没有可见质量损失。"
+    },
+    {
+      "block_id": "make-pdf-0140-paragraph",
+      "source_hash": "446cf1d1c866abf6296e83dfb87ad7a50f4f988c3ee8e3e0335e27904e0d8aca",
+      "status": "translated",
+      "translation": "远程（http/https）图片默认会被**阻止，并显示可见占位符**，这是离线姿态；传入 `--allow-network` 才会抓取。解析到 Markdown 目录之外的图片（即使通过 symlink）仍会内联，但会明确警告；`--strict` 会把它变成致命错误。超过 64MB 的文件或非普通文件（fifo、device）会降级为占位符，而不是卡住运行。"
+    }
+  ]
+}

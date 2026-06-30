@@ -1,0 +1,129 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "package": "gstack",
+  "skill": "make-pdf",
+  "source_file": "SKILL.md",
+  "part": 1,
+  "blocks": [
+    {
+      "block_id": "make-pdf-0001-frontmatter",
+      "source_hash": "c1dd6d3b69517a563f6ae1829398f17b1c80cec8d2b7c84480b153acc9a59bb4",
+      "status": "translated",
+      "translation": "---\nname：make-pdf，表示这个 Skill 的名称是 make-pdf。\npreamble-tier：1，表示它属于第 1 级预处理脚本。\nversion：1.0.0，表示当前 Skill 版本。\ndescription：把任意 Markdown 文件转换成出版级质量的 PDF。（gstack）\ntriggers：触发短语包括 markdown to pdf、generate pdf、make pdf、export pdf。\nallowed-tools：允许使用的工具包括 Bash、Read、AskUserQuestion。\n---"
+    },
+    {
+      "block_id": "make-pdf-0002-paragraph",
+      "source_hash": "70095564d0e603b8925783b6d432eb4d22cddba593a021bb8b5178b81372f7fb",
+      "status": "translated",
+      "translation": "<!-- 从 SKILL.md.tmpl 自动生成，请不要直接编辑 -->\n<!-- 重新生成：bun run gen:skill-docs -->"
+    },
+    {
+      "block_id": "make-pdf-0003-heading",
+      "source_hash": "b9eb244df6d65cdc14b6ba1b17a529a9e8a7f8eec8802dc5799ee0905d0d5b5a",
+      "status": "translated",
+      "translation": "## 什么时候调用这个 Skill"
+    },
+    {
+      "block_id": "make-pdf-0004-paragraph",
+      "source_hash": "e40eda7187f56cbe9321a0f66f204c16895be1103c7357f160d6b17968346f49",
+      "status": "translated",
+      "translation": "合适的 1in 边距、智能分页、页码、封面、页眉、弯引号和 em dash、可点击目录，以及斜向 DRAFT 水印。这不是草稿产物，而是成品产物。用户提出原始英文触发示例 “make a PDF”、“export to PDF”、“turn this markdown into a PDF” 或 “generate a document” 时使用。"
+    },
+    {
+      "block_id": "make-pdf-0005-paragraph",
+      "source_hash": "87db61ec5893ca6342aa4d63cdcc571b3d5ba9ff317214772b73585ee9f50ce0",
+      "status": "translated",
+      "translation": "语音触发词（speech-to-text 别名，以下为原始英文触发示例）：\"make this a pdf\"、\"make it a pdf\"、\"export to pdf\"、\"turn this into a pdf\"、\"turn this markdown into a pdf\"、\"generate a pdf\"、\"make a pdf from\"、\"pdf this markdown\"。"
+    },
+    {
+      "block_id": "make-pdf-0006-heading",
+      "source_hash": "63b185863bdd74adeee3495d5171110bb744127c4706b081f4123d501e07b66c",
+      "status": "translated",
+      "translation": "## 预处理脚本（先运行）"
+    },
+    {
+      "block_id": "make-pdf-0007-code-block",
+      "source_hash": "549122872188a6fcc8ca4eee314ac1baf3293a50bc71f761f2887b74efc6c151",
+      "status": "translated",
+      "translation": "```bash\n_UPD=$(~/.claude/skills/gstack/bin/gstack-update-check 2>/dev/null || .claude/skills/gstack/bin/gstack-update-check 2>/dev/null || true)\n[ -n \"$_UPD\" ] && echo \"$_UPD\" || true\nmkdir -p ~/.gstack/sessions\ntouch ~/.gstack/sessions/\"$PPID\"\n_SESSIONS=$(find ~/.gstack/sessions -mmin -120 -type f 2>/dev/null | wc -l | tr -d ' ')\nfind ~/.gstack/sessions -mmin +120 -type f -exec rm {} + 2>/dev/null || true\n_PROACTIVE=$(~/.claude/skills/gstack/bin/gstack-config get proactive 2>/dev/null || echo \"true\")\n_PROACTIVE_PROMPTED=$([ -f ~/.gstack/.proactive-prompted ] && echo \"yes\" || echo \"no\")\n_BRANCH=$(git branch --show-current 2>/dev/null || echo \"unknown\")\necho \"BRANCH: $_BRANCH\"\n_SKILL_PREFIX=$(~/.claude/skills/gstack/bin/gstack-config get skill_prefix 2>/dev/null || echo \"false\")\necho \"PROACTIVE: $_PROACTIVE\"\necho \"PROACTIVE_PROMPTED: $_PROACTIVE_PROMPTED\"\necho \"SKILL_PREFIX: $_SKILL_PREFIX\"\nsource <(~/.claude/skills/gstack/bin/gstack-repo-mode 2>/dev/null) || true\nREPO_MODE=${REPO_MODE:-unknown}\necho \"REPO_MODE: $REPO_MODE\"\n_SESSION_KIND=$(~/.claude/skills/gstack/bin/gstack-session-kind 2>/dev/null || echo \"interactive\")\ncase \"$_SESSION_KIND\" in spawned|headless|interactive) ;; *) _SESSION_KIND=\"interactive\" ;; esac\necho \"SESSION_KIND: $_SESSION_KIND\"\n# Conductor host：AskUserQuestion 在这里不可靠（native 被禁用，MCP\n# 变体也不稳定），所以 skills 会把决策渲染成文字，而不是调用\n# tool。用 !headless 做门控，这样 Conductor 内部的 eval/CI 运行（GSTACK_HEADLESS）\n# 仍然会 BLOCK，而不是把文字输出给不存在的接收者。\nif [ \"$_SESSION_KIND\" != \"headless\" ] && { [ -n \"${CONDUCTOR_WORKSPACE_PATH:-}\" ] || [ -n \"${CONDUCTOR_PORT:-}\" ]; }; then\n  echo \"CONDUCTOR_SESSION: true\"\nfi\n_ACTIVATED=$([ -f ~/.gstack/.activated ] && echo \"yes\" || echo \"no\")\n_FIRST_LOOP_SHOWN=$([ -f ~/.gstack/.first-loop-tip-shown ] && echo \"yes\" || echo \"no\")\necho \"ACTIVATED: $_ACTIVATED\"\necho \"FIRST_LOOP_SHOWN: $_FIRST_LOOP_SHOWN\"\n# 首次运行项目检测：只在第一次 skill 运行时执行检测器\n#（ACTIVATED=no，interactive），这样之后每次运行都不会进入热路径。\n_FIRST_TASK=\"\"\nif [ \"$_ACTIVATED\" = \"no\" ] && [ \"$_SESSION_KIND\" != \"headless\" ]; then\n  _FIRST_TASK=$(~/.claude/skills/gstack/bin/gstack-first-task-detect 2>/dev/null || true)\nfi\necho \"FIRST_TASK: $_FIRST_TASK\"\n_LAKE_SEEN=$([ -f ~/.gstack/.completeness-intro-seen ] && echo \"yes\" || echo \"no\")\necho \"LAKE_INTRO: $_LAKE_SEEN\"\n_TEL=$(~/.claude/skills/gstack/bin/gstack-config get telemetry 2>/dev/null || true)\n_TEL_PROMPTED=$([ -f ~/.gstack/.telemetry-prompted ] && echo \"yes\" || echo \"no\")\n_TEL_START=$(date +%s)\n_SESSION_ID=\"$$-$(date +%s)\"\necho \"TELEMETRY: ${_TEL:-off}\"\necho \"TEL_PROMPTED: $_TEL_PROMPTED\"\n_EXPLAIN_LEVEL=$(~/.claude/skills/gstack/bin/gstack-config get explain_level 2>/dev/null || echo \"default\")\nif [ \"$_EXPLAIN_LEVEL\" != \"default\" ] && [ \"$_EXPLAIN_LEVEL\" != \"terse\" ]; then _EXPLAIN_LEVEL=\"default\"; fi\necho \"EXPLAIN_LEVEL: $_EXPLAIN_LEVEL\"\n_QUESTION_TUNING=$(~/.claude/skills/gstack/bin/gstack-config get question_tuning 2>/dev/null || echo \"false\")\necho \"QUESTION_TUNING: $_QUESTION_TUNING\"\nmkdir -p ~/.gstack/analytics\nif [ \"$_TEL\" != \"off\" ]; then\necho '{\"skill\":\"make-pdf\",\"ts\":\"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'\",\"repo\":\"'$(_repo=$(basename \"$(git rev-parse --show-toplevel 2>/dev/null)\" 2>/dev/null | tr -cd 'a-zA-Z0-9._-'); echo \"${_repo:-unknown}\")'\"}'  >> ~/.gstack/analytics/skill-usage.jsonl 2>/dev/null || true\nfi\nfor _PF in $(find ~/.gstack/analytics -maxdepth 1 -name '.pending-*' 2>/dev/null); do\n  if [ -f \"$_PF\" ]; then\n    if [ \"$_TEL\" != \"off\" ] && [ -x \"~/.claude/skills/gstack/bin/gstack-telemetry-log\" ]; then\n      ~/.claude/skills/gstack/bin/gstack-telemetry-log --event-type skill_run --skill _pending_finalize --outcome unknown --session-id \"$_SESSION_ID\" 2>/dev/null || true\n    fi\n    rm -f \"$_PF\" 2>/dev/null || true\n  fi\n  break\ndone\neval \"$(~/.claude/skills/gstack/bin/gstack-slug 2>/dev/null)\" 2>/dev/null || true\n_LEARN_FILE=\"${GSTACK_HOME:-$HOME/.gstack}/projects/${SLUG:-unknown}/learnings.jsonl\"\nif [ -f \"$_LEARN_FILE\" ]; then\n  _LEARN_COUNT=$(wc -l < \"$_LEARN_FILE\" 2>/dev/null | tr -d ' ')\n  echo \"LEARNINGS: $_LEARN_COUNT entries loaded\"\n  if [ \"$_LEARN_COUNT\" -gt 5 ] 2>/dev/null; then\n    ~/.claude/skills/gstack/bin/gstack-learnings-search --limit 3 2>/dev/null || true\n  fi\nelse\n  echo \"LEARNINGS: 0\"\nfi\n~/.claude/skills/gstack/bin/gstack-timeline-log '{\"skill\":\"make-pdf\",\"event\":\"started\",\"branch\":\"'\"$_BRANCH\"'\",\"session\":\"'\"$_SESSION_ID\"'\"}' 2>/dev/null &\n_HAS_ROUTING=\"no\"\nif [ -f CLAUDE.md ] && grep -q \"## Skill routing\" CLAUDE.md 2>/dev/null; then\n  _HAS_ROUTING=\"yes\"\nfi\n_ROUTING_DECLINED=$(~/.claude/skills/gstack/bin/gstack-config get routing_declined 2>/dev/null || echo \"false\")\necho \"HAS_ROUTING: $_HAS_ROUTING\"\necho \"ROUTING_DECLINED: $_ROUTING_DECLINED\"\n_VENDORED=\"no\"\nif [ -d \".claude/skills/gstack\" ] && [ ! -L \".claude/skills/gstack\" ]; then\n  if [ -f \".claude/skills/gstack/VERSION\" ] || [ -d \".claude/skills/gstack/.git\" ]; then\n    _VENDORED=\"yes\"\n  fi\nfi\necho \"VENDORED_GSTACK: $_VENDORED\"\necho \"MODEL_OVERLAY: claude\"\n_CHECKPOINT_MODE=$(~/.claude/skills/gstack/bin/gstack-config get checkpoint_mode 2>/dev/null || echo \"explicit\")\n_CHECKPOINT_PUSH=$(~/.claude/skills/gstack/bin/gstack-config get checkpoint_push 2>/dev/null || echo \"false\")\necho \"CHECKPOINT_MODE: $_CHECKPOINT_MODE\"\necho \"CHECKPOINT_PUSH: $_CHECKPOINT_PUSH\"\n# 用于 /spec 这类会根据 plan-mode 状态分支行为的 skill 的 plan-mode 提示。\n# Claude Code 会通过 system reminders 暴露 plan mode；这里尽力从\n# CLAUDE_PLAN_FILE（harness 在 plan mode 激活时设置）检测，并\n# 回退为 \"inactive\"。Codex host 和 Claude execution mode 都会得到\n# inactive，这是安全默认值（默认使用 file+execute pipeline）。\nif [ -n \"${CLAUDE_PLAN_FILE:-}${GSTACK_PLAN_MODE_FORCE:-}\" ]; then\n  export GSTACK_PLAN_MODE=\"active\"\nelif [ \"${GSTACK_PLAN_MODE:-}\" = \"active\" ]; then\n  export GSTACK_PLAN_MODE=\"active\"\nelse\n  export GSTACK_PLAN_MODE=\"inactive\"\nfi\necho \"GSTACK_PLAN_MODE: $GSTACK_PLAN_MODE\"\n[ -n \"$OPENCLAW_SESSION\" ] && echo \"SPAWNED_SESSION: true\" || true\n```"
+    },
+    {
+      "block_id": "make-pdf-0008-heading",
+      "source_hash": "9569b603060810919486d08fce188fe40a15099b27b551140a4977360f058b29",
+      "status": "translated",
+      "translation": "## MAKE-PDF 设置（在任何 make-pdf 命令前运行此检查）"
+    },
+    {
+      "block_id": "make-pdf-0009-code-block",
+      "source_hash": "c31faf8f8dd49af5c183027dcbc6206ec9559befd6daa83f6ace03dd0f9b3ae6",
+      "status": "translated",
+      "translation": "```bash\n_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)\nP=\"\"\n[ -n \"$MAKE_PDF_BIN\" ] && [ -x \"$MAKE_PDF_BIN\" ] && P=\"$MAKE_PDF_BIN\"\n[ -z \"$P\" ] && [ -n \"$_ROOT\" ] && [ -x \"$_ROOT/.claude/skills/gstack/make-pdf/dist/pdf\" ] && P=\"$_ROOT/.claude/skills/gstack/make-pdf/dist/pdf\"\n[ -z \"$P\" ] && P=\"$HOME/.claude/skills/gstack/make-pdf/dist/pdf\"\nif [ -x \"$P\" ]; then\n  echo \"MAKE_PDF_READY: $P\"\n  alias _p_=\"$P\"   # shellcheck 别名助手（不导出）\n  export P   # 在同一次 skill 调用的后续代码块中可作为 $P 使用\nelse\n  echo \"MAKE_PDF_NOT_AVAILABLE (run './setup' in the gstack repo to build it)\"\nfi\n```"
+    },
+    {
+      "block_id": "make-pdf-0010-paragraph",
+      "source_hash": "0c7dc1e1f7fa39577445fadf7f14041f6dc3742bdf76a600b52ea0eb6e5b53e2",
+      "status": "translated",
+      "translation": "如果打印了 `MAKE_PDF_NOT_AVAILABLE`：告诉用户二进制文件还没有构建。让他们在 gstack repo 中运行 `./setup`，然后重试。"
+    },
+    {
+      "block_id": "make-pdf-0011-paragraph",
+      "source_hash": "0f8a2cd717cfbe185edfa15166af1d1ff0abf654f9adabc78f2c696d65d01387",
+      "status": "translated",
+      "translation": "如果打印了 `MAKE_PDF_READY`：`$P` 就是本 skill 剩余部分使用的二进制路径。使用 `$P`（不要写死显式路径），这样 skill 正文保持可移植。"
+    },
+    {
+      "block_id": "make-pdf-0012-paragraph",
+      "source_hash": "6fa4eb760074271b8320db34c473082ab253ede9cac41e8fce9e577e49b969bc",
+      "status": "translated",
+      "translation": "核心命令：\n- `$P generate <input.md> [output.pdf]`：把 Markdown 渲染为 PDF（80% 使用场景）\n- `$P generate --cover --toc essay.md out.pdf`：完整出版版式\n- `$P generate --watermark DRAFT memo.md draft.pdf`：斜向 DRAFT 水印\n- `$P preview <input.md>`：渲染 HTML 并在浏览器中打开（快速迭代）\n- `$P setup`：验证 browse、Chromium 和 pdftotext，并运行冒烟测试\n- `$P --help`：完整 flag 参考"
+    },
+    {
+      "block_id": "make-pdf-0013-paragraph",
+      "source_hash": "518604669d17c83df13acf6912f0007a7f5abddb62d89fa2cb760b0cb07c283e",
+      "status": "translated",
+      "translation": "输出契约：\n- `stdout`：成功时只输出路径。一行。\n- `stderr`：进度（`Rendering HTML... Generating PDF...`），除非使用 `--quiet`。\n- 退出码 0 表示成功 / 1 表示参数错误 / 2 表示渲染错误 / 3 表示 Paged.js 超时 / 4 表示 browse 不可用。"
+    },
+    {
+      "block_id": "make-pdf-0014-heading",
+      "source_hash": "3202d880057aad792ddad929fb6e3b619713fa780359a77f8c65b13e64fd7af9",
+      "status": "translated",
+      "translation": "## Plan Mode 中的安全操作"
+    },
+    {
+      "block_id": "make-pdf-0015-paragraph",
+      "source_hash": "9a3b6c210f6d590191797ab25d38666bbabaef009cc7f262ff839cf449863d7e",
+      "status": "translated",
+      "translation": "在 plan mode 中，以下操作是允许的，因为它们会为计划提供信息：`$B`、`$D`、`codex exec`/`codex review`、写入 `~/.gstack/`、写入计划文件，以及为了生成的产物调用 `open`。"
+    },
+    {
+      "block_id": "make-pdf-0016-heading",
+      "source_hash": "239110f127baf80e15415997d8270285fa44abfd30038951c5cbfa91510c07fc",
+      "status": "translated",
+      "translation": "## Plan Mode 期间的 Skill 调用"
+    },
+    {
+      "block_id": "make-pdf-0017-paragraph",
+      "source_hash": "e916305ddda46f9a0abc23249ad35a9f29730468c5ddad22e19bac14b4b733ac",
+      "status": "translated",
+      "translation": "如果用户在 plan mode 中调用某个 skill，该 skill 优先于通用的 plan mode 行为。**把 skill 文件当成可执行指令，而不是参考资料。** 从 Step 0 开始逐步执行；第一次 AskUserQuestion 表示工作流正在进入 plan mode，并不违反 plan mode。AskUserQuestion（任意变体，包括 `mcp__*__AskUserQuestion` 或 native；参见“AskUserQuestion Format → Tool resolution”）满足 plan mode 对本轮结束的要求。如果 AskUserQuestion 不可用或调用失败，则遵循 AskUserQuestion Format 的失败回退：`headless` → BLOCKED；`interactive` → 文字回退（也满足本轮结束要求）。遇到 STOP 点时，必须立即停止。不要继续工作流，也不要在那里调用 ExitPlanMode。标记为 `PLAN MODE EXCEPTION — ALWAYS RUN` 的命令会执行。只有在 skill 工作流完成后，或者用户要求你取消该 skill 或离开 plan mode 时，才调用 ExitPlanMode。"
+    },
+    {
+      "block_id": "make-pdf-0018-paragraph",
+      "source_hash": "290644d69ce75f8efd870ae5b1f4beaa60abee6126b314692d452b7989858569",
+      "status": "translated",
+      "translation": "如果 `PROACTIVE` 是 `\"false\"`，不要自动调用或主动建议 skills。如果某个 skill 看起来有帮助，询问：\"我觉得 /skillname 可能有帮助，要我运行它吗？\""
+    },
+    {
+      "block_id": "make-pdf-0019-paragraph",
+      "source_hash": "885973bcb57ce30cf97be2c9081a1af3410e88279c77d92ebdfd8a9e9994890c",
+      "status": "translated",
+      "translation": "如果 `SKILL_PREFIX` 是 `\"true\"`，建议或调用 `/gstack-*` 形式的名称。磁盘路径仍然是 `~/.claude/skills/gstack/[skill-name]/SKILL.md`。"
+    },
+    {
+      "block_id": "make-pdf-0020-paragraph",
+      "source_hash": "1a160e9abe3f2a287ff6a89b79c75363ebf60e446cf3836c3d147d422fe6fd23",
+      "status": "translated",
+      "translation": "如果输出显示 `UPGRADE_AVAILABLE <old> <new>`：读取 `~/.claude/skills/gstack/gstack-upgrade/SKILL.md`，并遵循 \"Inline upgrade flow\"（如果已配置则自动升级，否则用 AskUserQuestion 提供 4 个选项；如果用户拒绝，则写入 snooze state）。"
+    }
+  ]
+}

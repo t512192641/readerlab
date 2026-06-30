@@ -1,0 +1,207 @@
+{
+  "schema": "readerlab.catalog-map.v1",
+  "material": {
+    "id": "elon-book__readerlab-elon-full-product-v0",
+    "title": "埃隆之书",
+    "type": "book_epub_readerlab_experiment",
+    "target_package_id": "readerlab-elon-full-product-v0"
+  },
+  "source_scope": {
+    "coverage_status": "toc_only",
+    "coverage_ratio": null,
+    "coverage_note": "This contract records the formal reading structure and route hypothesis from TOC/title evidence. Full source-text coverage is recorded separately in source-registry and grounded-global-map."
+  },
+  "catalog": {
+    "top_level_structure": [
+      {
+        "unit_id": "front-matter",
+        "formal_title": "前置材料",
+        "traceable_title_mapping": [
+          "本书说明",
+          "前言",
+          "埃里克欢迎辞"
+        ],
+        "reader_job": "确认本书是马斯克言论选编，并建立引用边界。",
+        "chapters": [
+          "本书说明",
+          "前言",
+          "埃里克欢迎辞"
+        ],
+        "location_refs": [
+          "loc-source-editorial-boundary",
+          "loc-spine-007-title",
+          "loc-spine-008-title"
+        ]
+      },
+      {
+        "unit_id": "part-i-purpose",
+        "formal_title": "第一部分：追寻目标",
+        "traceable_title_mapping": [
+          "第一部分",
+          "追寻目标"
+        ],
+        "reader_job": "理解目标、价值、真理、第一性原理和工程价值的入口。",
+        "chapters": [
+          "活出目标人生",
+          "物理学家式思考",
+          "工程学的价值"
+        ],
+        "location_refs": [
+          "loc-purpose-value",
+          "loc-first-principles",
+          "loc-engineering-value"
+        ]
+      },
+      {
+        "unit_id": "part-ii-hardcore-work",
+        "formal_title": "第二部分：极限硬核工作",
+        "traceable_title_mapping": [
+          "旧 demo 名：部件 II：极致艰苦工作",
+          "v101-13.xhtml..v101-18.xhtml"
+        ],
+        "reader_job": "把目标压入责任、团队、组织、速度、算法和制造系统。",
+        "chapters": [
+          "成功之道",
+          "打造卓越团队",
+          "组织设计",
+          "极致紧迫感",
+          "我们必须实干制造"
+        ],
+        "location_refs": [
+          "loc-responsibility",
+          "loc-team-goal",
+          "loc-algorithm-way",
+          "loc-factory-as-product"
+        ]
+      },
+      {
+        "unit_id": "part-iii-company-building",
+        "formal_title": "第三部分：企业建设",
+        "traceable_title_mapping": [
+          "Zip2",
+          "PayPal",
+          "特斯拉",
+          "太空探索技术公司"
+        ],
+        "reader_job": "用公司案例检验目标、工程、组织和制造机制。",
+        "chapters": [
+          "成为创始人",
+          "打造特斯拉",
+          "创建太空探索技术公司"
+        ],
+        "location_refs": [
+          "loc-zip2",
+          "loc-paypal-reinvest",
+          "loc-tesla-mission",
+          "loc-spacex-first-principles"
+        ]
+      },
+      {
+        "unit_id": "part-iv-for-humanity",
+        "formal_title": "第四部分：代表人类",
+        "traceable_title_mapping": [
+          "建设我们的未来",
+          "丰饶时代",
+          "我们的生存风险",
+          "成为多行星物种"
+        ],
+        "reader_job": "把公司行动放入富足、AI、风险和多行星的文明尺度。",
+        "chapters": [
+          "建设我们的未来",
+          "丰饶时代",
+          "我们的生存风险",
+          "成为多行星物种"
+        ],
+        "location_refs": [
+          "loc-company-progress",
+          "loc-abundance-ai",
+          "loc-ai-risk",
+          "loc-multiplanet-thesis"
+        ]
+      },
+      {
+        "unit_id": "appendices",
+        "formal_title": "附录与工具材料",
+        "traceable_title_mapping": [
+          "69项核心马斯克法则",
+          "年表",
+          "推荐书单"
+        ],
+        "reader_job": "复盘原则、查时间线和延伸阅读，不抢占第一轮主线。",
+        "chapters": [
+          "附加原则",
+          "69项核心马斯克法则",
+          "埃隆·马斯克年表",
+          "埃隆推荐书单",
+          "延伸阅读",
+          "致谢",
+          "关于作者"
+        ],
+        "location_refs": [
+          "loc-core-laws-algorithm",
+          "loc-spine-032-title",
+          "loc-spine-033-title"
+        ]
+      }
+    ],
+    "route_hypothesis": [
+      "先读前置材料，确认它是言论选编，避免把编校文本当作连续传记或学术论证。",
+      "再读第一部分，建立目标、价值和第一性原理的判断入口。",
+      "重点深读第二部分，理解所谓硬核工作其实是责任、沟通、算法、速度和制造系统。",
+      "随后读第三部分，用 Zip2、PayPal、Tesla、SpaceX 检验方法如何在公司压力中变形或成立。",
+      "最后读第四部分，把企业行动放到富足、AI、生存风险和多行星尺度下判断。"
+    ],
+    "likely_core_questions": [
+      "目标如何变成可执行的工程、组织和制造系统？",
+      "哪些原则可以迁移，哪些只是高风险公司和个人风格下的极端做法？",
+      "本书的文明叙事是支持行动的尺度，还是容易变成绕过边界的宏大借口？"
+    ],
+    "known_covered_units": [
+      {
+        "unit_id": "all-spine-text",
+        "title": "EPUB OPF spine 36/36 text extracted",
+        "source_refs": [
+          "elon-epub-original"
+        ]
+      }
+    ],
+    "not_yet_covered_units": [
+      "人工逐章细读未完成",
+      "精选译文正文未生成",
+      "正式 LifeAtlas 沉淀未进行"
+    ]
+  },
+  "location_refs": [
+    "loc-source-editorial-boundary",
+    "loc-purpose-value",
+    "loc-first-principles",
+    "loc-algorithm-way",
+    "loc-zip2",
+    "loc-tesla-mission",
+    "loc-spacex-first-principles",
+    "loc-multiplanet-thesis"
+  ],
+  "confidence": {
+    "level": "medium",
+    "basis": [
+      "TOC/title refs are complete.",
+      "Route hypothesis is supported by block-level refs but still requires human reading review."
+    ],
+    "known_uncertainties": [
+      "章节命名存在正式标题与旧 demo 中文名差异，已显式映射。"
+    ]
+  },
+  "review_items": [
+    {
+      "id": "catalog-r01",
+      "status": "open",
+      "question": "正式标题映射是否足够贴近读者已有 demo 习惯？"
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "markdown_path": "docs/reports/readerlab-elon-full-product-v0/reader/01_全书阅读路线.md",
+    "relationship": "reader_pages_reference_contract"
+  }
+}

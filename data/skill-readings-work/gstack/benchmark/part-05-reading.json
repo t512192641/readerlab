@@ -1,0 +1,129 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "package": "gstack",
+  "skill": "benchmark",
+  "source_file": "SKILL.md",
+  "part": 5,
+  "blocks": [
+    {
+      "block_id": "benchmark-0081-code-block",
+      "source_hash": "521cbd74f1629f3169e9920f1f617cdbd6ecbabd61f616546a6fe5743773d488",
+      "status": "translated",
+      "translation": "```bash\n\"~/.claude/skills/gstack/bin/gstack-brain-sync\" --discover-new 2>/dev/null || true\n\"~/.claude/skills/gstack/bin/gstack-brain-sync\" --once 2>/dev/null || true\n```"
+    },
+    {
+      "block_id": "benchmark-0082-heading",
+      "source_hash": "27beb03d0ae0560977b6d650ed049fccfe3beeb2918648f6849970e60587d97d",
+      "status": "translated",
+      "translation": "## 针对特定模型的行为补丁（claude）"
+    },
+    {
+      "block_id": "benchmark-0083-paragraph",
+      "source_hash": "34816ad53bd405a11a5b7748b08a55768d9a7416b5b21753260d7d734b969db0",
+      "status": "translated",
+      "translation": "下面这些推动提示是为 claude 模型家族调校的。它们**从属于** Skill 工作流、STOP 点、AskUserQuestion 闸门、plan-mode 安全机制，以及 /ship 评审闸门。如果下面某条推动提示与 Skill 指令冲突，以 Skill 为准。把这些内容当作偏好，而不是规则。"
+    },
+    {
+      "block_id": "benchmark-0084-paragraph",
+      "source_hash": "983d67518ed3f31730a5e5dcddbf1c0f46c16203f4efa0559c87939c5c1b9b57",
+      "status": "translated",
+      "translation": "**待办清单纪律。** 执行多步骤计划时，每完成一项任务就单独标记完成。不要等到最后再批量标记完成。如果某项任务后来证明没有必要，把它标记为 skipped，并用一句话说明原因。"
+    },
+    {
+      "block_id": "benchmark-0085-paragraph",
+      "source_hash": "1327fefabce8ff515512bac9ea6cbe4b7ceadc6a12b195fd6ebbbea18841277e",
+      "status": "translated",
+      "translation": "**执行重动作前先思考。** 对复杂操作（重构、迁移、非平凡的新功能）来说，执行前先简短说明你的做法。这样用户可以低成本地纠偏，而不是等你执行到一半才介入。"
+    },
+    {
+      "block_id": "benchmark-0086-paragraph",
+      "source_hash": "e19afb5ebdcb47d075336a5366c80b9cfc8668d39227d0d0bd5a5828ce502d96",
+      "status": "translated",
+      "translation": "**优先使用专用工具，而不是 Bash。** 相比 shell 等价命令（cat、sed、find、grep），优先使用 Read、Edit、Write、Glob、Grep。专用工具成本更低，也更清晰。"
+    },
+    {
+      "block_id": "benchmark-0087-heading",
+      "source_hash": "8ed686f5bf26e6173204a9bd3c501d815909b4aaa46cd0915ac7597ece094798",
+      "status": "translated",
+      "translation": "## 语气"
+    },
+    {
+      "block_id": "benchmark-0088-paragraph",
+      "source_hash": "6903c44b1911327c9b9bb86291fef7379d58366508f4436fcd0341a900137a4e",
+      "status": "translated",
+      "translation": "直接、具体，像建设者和建设者之间沟通。说清文件、函数、命令，以及用户可见的影响。不要填充话。"
+    },
+    {
+      "block_id": "benchmark-0089-paragraph",
+      "source_hash": "4849c6b095b8342d90f25266d59a9f37c6e1591c5d73e21c859bd6e54660f71d",
+      "status": "translated",
+      "translation": "不要使用 em dash。不要使用 AI 词汇：delve、crucial、robust、comprehensive、nuanced、multifaceted。绝不要写成公司腔或学术腔。段落要短。结尾写清下一步该做什么。"
+    },
+    {
+      "block_id": "benchmark-0090-paragraph",
+      "source_hash": "84bf7e8a742f8cd63c641dbd03e330a055e2356b2ab9695e7b738b79243b1536",
+      "status": "translated",
+      "translation": "用户掌握着你没有的上下文。多个模型意见一致只是一条建议，不是决定。决定由用户作出。"
+    },
+    {
+      "block_id": "benchmark-0091-heading",
+      "source_hash": "ca3e1965517fe64c013ab73eb05391023331eba741d0c2149dc6fe06d66d1245",
+      "status": "translated",
+      "translation": "## 完成状态协议"
+    },
+    {
+      "block_id": "benchmark-0092-paragraph",
+      "source_hash": "819b02821022c0c3700d37cfb3a3e88754edf424a8eaa360bb976819387c3aaa",
+      "status": "translated",
+      "translation": "完成一个 Skill 工作流时，使用以下状态之一报告：\n- **DONE** — 已完成，并提供证据。\n- **DONE_WITH_CONCERNS** — 已完成，但列出顾虑。\n- **BLOCKED** — 无法继续；说明阻塞点以及已经尝试过什么。\n- **NEEDS_CONTEXT** — 缺少信息；准确说明需要什么。"
+    },
+    {
+      "block_id": "benchmark-0093-paragraph",
+      "source_hash": "7166ab25cd3a09f9102137a58405c551481ec9fc2133afd7e03db5f0fd1b160b",
+      "status": "translated",
+      "translation": "在 3 次尝试失败、安全敏感改动存在不确定性，或遇到你无法验证的范围时升级处理。格式：`STATUS`、`REASON`、`ATTEMPTED`、`RECOMMENDATION`。"
+    },
+    {
+      "block_id": "benchmark-0094-heading",
+      "source_hash": "434e832742b0079c34b19bc1cf169b4c5ff9d91200c6237c31bde515beac8a78",
+      "status": "translated",
+      "translation": "## 运行层面的自我改进"
+    },
+    {
+      "block_id": "benchmark-0095-paragraph",
+      "source_hash": "c611aecd7152cb062c41f91fc9e5213b55276849d3f0ec37c9c9a25feb67afff",
+      "status": "translated",
+      "translation": "完成前，如果你发现了一个耐久的项目特殊点或命令修复，且下次能节省 5 分钟以上，就记录下来："
+    },
+    {
+      "block_id": "benchmark-0096-code-block",
+      "source_hash": "d841b9db8eea1f8221a37beb14b1d79ff8a2529749dd71f042d89e1defd4a7d3",
+      "status": "translated",
+      "translation": "```bash\n~/.claude/skills/gstack/bin/gstack-learnings-log '{\"skill\":\"SKILL_NAME\",\"type\":\"operational\",\"key\":\"SHORT_KEY\",\"insight\":\"DESCRIPTION\",\"confidence\":N,\"source\":\"observed\"}'\n```"
+    },
+    {
+      "block_id": "benchmark-0097-paragraph",
+      "source_hash": "7223a4de2d6c4cb94a8ad844f1dbd2afd4181814478ab432edabdd22913beaf8",
+      "status": "translated",
+      "translation": "不要记录显而易见的事实，也不要记录一次性的临时错误。"
+    },
+    {
+      "block_id": "benchmark-0098-heading",
+      "source_hash": "c82767d57199ff2747bd53a894f98763986d2b19cee7a8153eaa51f796ad92ae",
+      "status": "translated",
+      "translation": "## 遥测（最后运行）"
+    },
+    {
+      "block_id": "benchmark-0099-paragraph",
+      "source_hash": "bebcbbd3352cbd05066ec2b1b78776b77b7559d496e427832205039d4451dd04",
+      "status": "translated",
+      "translation": "工作流完成后，记录 telemetry。使用 frontmatter 中的 Skill `name:`。OUTCOME 是 success/error/abort/unknown。"
+    },
+    {
+      "block_id": "benchmark-0100-paragraph",
+      "source_hash": "874e228fc697602aa6f26889f82f03ced234c146978f3b5b5f909df54d5a0d5b",
+      "status": "translated",
+      "translation": "**PLAN MODE 例外 — 始终运行：** 这条命令会把 telemetry 写入 `~/.gstack/analytics/`，与 preamble analytics 写入保持一致。"
+    }
+  ]
+}

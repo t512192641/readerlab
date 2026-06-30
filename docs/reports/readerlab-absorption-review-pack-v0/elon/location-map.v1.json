@@ -1,0 +1,274 @@
+{
+  "schema": "readerlab.location-map.v1",
+  "material": {
+    "id": "elon-book__readerlab-demo_20260629",
+    "title": "埃隆之书 ReaderLab Demo",
+    "type": "book_epub_demo"
+  },
+  "locations": [
+    {
+      "location_id": "elon-loc-manifest-scope",
+      "source_id": "elon-demo-manifest",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629/manifest.json",
+      "spine": "",
+      "page": null,
+      "heading_path": [
+        "book_demo_scope"
+      ],
+      "block_id": "book_demo_scope.completed_source_files",
+      "char_range": [
+        0,
+        41409
+      ],
+      "line_range": null,
+      "text_preview": "delivery_status=demo_partial; completed_unit=part2-hardcore-work; completed_source_files include v101-13.xhtml to v101-18.xhtml",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "elon-loc-catalog-part2",
+      "source_id": "elon-catalog-handbook",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629/01_全书分组与章节手册.md",
+      "spine": "",
+      "page": null,
+      "heading_path": [
+        "全书分组与章节手册",
+        "部件 II：极致艰苦工作"
+      ],
+      "block_id": "catalog.part2.table",
+      "char_range": [
+        0,
+        6187
+      ],
+      "line_range": [
+        27,
+        37
+      ],
+      "text_preview": "部件 II marks 成功之道, 打造卓越团队, 组织设计, 极致紧迫感, 我们必须实干制造 as 已完整处理.",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "elon-loc-part2-source-span",
+      "source_id": "elon-part2-reading-page",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629/10_中文精读/02_极致艰苦工作/部件II_极致艰苦工作.md",
+      "spine": "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-13.xhtml..v101-18.xhtml",
+      "page": null,
+      "heading_path": [
+        "部件 II：极致艰苦工作",
+        "原文"
+      ],
+      "block_id": "part2.original_text",
+      "char_range": [
+        0,
+        71684
+      ],
+      "line_range": [
+        32,
+        721
+      ],
+      "text_preview": "Source file markers list v101-13.xhtml, v101-14.xhtml, v101-15.xhtml, v101-16.xhtml, v101-17.xhtml, and v101-18.xhtml.",
+      "extraction_confidence": "high",
+      "review_required": false
+    },
+    {
+      "location_id": "elon-loc-part2-algorithm-way",
+      "source_id": "elon-part2-reading-page",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629/10_中文精读/02_极致艰苦工作/部件II_极致艰苦工作.md",
+      "spine": "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "page": null,
+      "heading_path": [
+        "部件 II：极致艰苦工作",
+        "原文",
+        "组织设计",
+        "算法之道"
+      ],
+      "block_id": "part2.org.algorithm-way",
+      "char_range": [
+        0,
+        71684
+      ],
+      "line_range": [
+        455,
+        529
+      ],
+      "text_preview": "算法之道 section is the source for the delete, simplify, accelerate, automate method chain.",
+      "extraction_confidence": "medium",
+      "review_required": true
+    },
+    {
+      "location_id": "elon-loc-part2-shortest-path-communication",
+      "source_id": "elon-part2-reading-page",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629/10_中文精读/02_极致艰苦工作/部件II_极致艰苦工作.md",
+      "spine": "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "page": null,
+      "heading_path": [
+        "部件 II：极致艰苦工作",
+        "原文",
+        "组织设计",
+        "破除组织壁垒"
+      ],
+      "block_id": "part2.org.shortest-path-communication",
+      "char_range": [
+        0,
+        71684
+      ],
+      "line_range": [
+        303,
+        323
+      ],
+      "text_preview": "Lines describe direct cross-department communication, shortest-path communication, and communication authority not being limited by hierarchy.",
+      "extraction_confidence": "medium",
+      "review_required": true
+    },
+    {
+      "location_id": "elon-loc-part2-algorithm-steps",
+      "source_id": "elon-part2-reading-page",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629/10_中文精读/02_极致艰苦工作/部件II_极致艰苦工作.md",
+      "spine": "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "page": null,
+      "heading_path": [
+        "部件 II：极致艰苦工作",
+        "原文",
+        "组织设计",
+        "算法之道"
+      ],
+      "block_id": "part2.org.algorithm-way.steps",
+      "char_range": [
+        0,
+        71684
+      ],
+      "line_range": [
+        455,
+        469
+      ],
+      "text_preview": "The five-step algorithm lists requirement challenge, deletion, simplification/optimization, acceleration, and automation in order.",
+      "extraction_confidence": "medium",
+      "review_required": true
+    },
+    {
+      "location_id": "elon-loc-part2-delete-before-automate",
+      "source_id": "elon-part2-reading-page",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629/10_中文精读/02_极致艰苦工作/部件II_极致艰苦工作.md",
+      "spine": "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "page": null,
+      "heading_path": [
+        "部件 II：极致艰苦工作",
+        "原文",
+        "组织设计",
+        "算法之道"
+      ],
+      "block_id": "part2.org.algorithm-way.delete-before-automate",
+      "char_range": [
+        0,
+        71684
+      ],
+      "line_range": [
+        491,
+        529
+      ],
+      "text_preview": "The detailed steps say to challenge requirements, delete parts or processes, simplify only after deletion, accelerate only after the first three steps, and automate last.",
+      "extraction_confidence": "medium",
+      "review_required": true
+    },
+    {
+      "location_id": "elon-loc-part2-factory-as-product",
+      "source_id": "elon-part2-reading-page",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629/10_中文精读/02_极致艰苦工作/部件II_极致艰苦工作.md",
+      "spine": "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-18.xhtml",
+      "page": null,
+      "heading_path": [
+        "部件 II：极致艰苦工作",
+        "原文",
+        "我们必须实干制造",
+        "工厂即产品"
+      ],
+      "block_id": "part2.manufacturing.factory-as-product",
+      "char_range": [
+        0,
+        71684
+      ],
+      "line_range": [
+        657,
+        669
+      ],
+      "text_preview": "The section frames the factory as the machine that builds the machine and says manufacturing innovation can exceed car design innovation.",
+      "extraction_confidence": "medium",
+      "review_required": true
+    },
+    {
+      "location_id": "elon-loc-part2-manufacturing-bottleneck",
+      "source_id": "elon-part2-reading-page",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629/10_中文精读/02_极致艰苦工作/部件II_极致艰苦工作.md",
+      "spine": "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-18.xhtml",
+      "page": null,
+      "heading_path": [
+        "部件 II：极致艰苦工作",
+        "原文",
+        "我们必须实干制造",
+        "攻克瓶颈"
+      ],
+      "block_id": "part2.manufacturing.bottleneck",
+      "char_range": [
+        0,
+        71684
+      ],
+      "line_range": [
+        671,
+        687
+      ],
+      "text_preview": "The section distinguishes prototypes from mass production and says production systems can require far more work than the product design itself.",
+      "extraction_confidence": "medium",
+      "review_required": true
+    },
+    {
+      "location_id": "elon-loc-part2-distillation",
+      "source_id": "elon-part2-distillation-page",
+      "path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629/20_读后提炼/仓颉式提炼样张_部件II_极致艰苦工作.md",
+      "spine": "",
+      "page": null,
+      "heading_path": [
+        "仓颉式提炼样张：部件 II 极致艰苦工作"
+      ],
+      "block_id": "part2.distillation.whole_page",
+      "char_range": [
+        0,
+        3381
+      ],
+      "line_range": [
+        1,
+        66
+      ],
+      "text_preview": "The page lists framework, principles, cases, counterexamples, glossary, and candidate skillization notes.",
+      "extraction_confidence": "medium",
+      "review_required": true
+    }
+  ],
+  "source_scope": {
+    "coverage_status": "partial",
+    "coverage_note": "Location map covers manifest scope, catalog handbook part II rows, and the part II reader/distillation pages only."
+  },
+  "confidence": {
+    "level": "medium",
+    "basis": [
+      "Location refs point to files and line ranges directly read in this worker pass.",
+      "EPUB member-level hashes were captured for v101-13.xhtml through v101-18.xhtml."
+    ],
+    "known_uncertainties": [
+      "Character ranges are whole-file ranges for markdown files; narrower block offsets are left as review work."
+    ]
+  },
+  "review_items": [
+    {
+      "id": "elon-location-r01",
+      "status": "open",
+      "question": "Future validator should compute exact char offsets instead of relying on whole-file markdown ranges."
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "markdown_path": null,
+    "relationship": "fact_location_index_not_reader_markdown"
+  }
+}

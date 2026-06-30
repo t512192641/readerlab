@@ -1,0 +1,129 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "package": "gstack",
+  "skill": "setup-browser-cookies",
+  "source_file": "SKILL.md",
+  "part": 3,
+  "blocks": [
+    {
+      "block_id": "setup-browser-cookies-0041-paragraph",
+      "source_hash": "5d69103da91d9b818a3d8fe6b7effcb8d3d2483d07fc84d51e3a47f6066e5d7e",
+      "status": "translated",
+      "translation": "如果选择 A：运行 `~/.claude/skills/gstack/bin/gstack-config set proactive true`\n如果选择 B：运行 `~/.claude/skills/gstack/bin/gstack-config set proactive false`"
+    },
+    {
+      "block_id": "setup-browser-cookies-0042-paragraph",
+      "source_hash": "7a2d7396c8aa0ab9a12f2519ce33846b0b282119d5151584cc9a6cca17907d4d",
+      "status": "translated",
+      "translation": "始终运行："
+    },
+    {
+      "block_id": "setup-browser-cookies-0043-code-block",
+      "source_hash": "68fa40904e4be2b145a527c8ad917d0e10b09cc20fd3272a629926187e4e49df",
+      "status": "translated",
+      "translation": "```bash\ntouch ~/.gstack/.proactive-prompted\n```"
+    },
+    {
+      "block_id": "setup-browser-cookies-0044-paragraph",
+      "source_hash": "d49db5750fc6bcbf797d6cd2344760dd2fa7018726be3cf02e7d10977be6c63a",
+      "status": "translated",
+      "translation": "如果 `PROACTIVE_PROMPTED` 为 `yes`，则跳过。"
+    },
+    {
+      "block_id": "setup-browser-cookies-0045-heading",
+      "source_hash": "fb3db60850ce4fb5bf9f6b2d4949de09ee65afbb0a6e162e64f51e7e6a964a5a",
+      "status": "translated",
+      "translation": "## 首次运行引导（一次性）"
+    },
+    {
+      "block_id": "setup-browser-cookies-0046-paragraph",
+      "source_hash": "1bc6b22470fc6a54f89de0d2f65a61185b2790b97e3bf0952a8827bf96ea564f",
+      "status": "translated",
+      "translation": "如果 `ACTIVATED` 为 `no`（这台机器上第一次运行 skill），并且 preamble 打印了非空的 `FIRST_TASK:` 值，且该值不是 `nongit`：根据这个 token 显示一行简短、针对项目的提示，作为提醒；然后继续处理用户实际提出的任务，不要中断用户任务。token 映射如下：`greenfield` → “全新仓库 — 先用 `/spec` 或 `/office-hours` 梳理形状。” `code_node`/`code_python`/`code_rust`/`code_go`/`code_ruby`/`code_ios` → “这里有代码 — 用 `/qa` 看它是否能跑，或者在情况不对时用 `/investigate`。” `branch_ahead` → “这个分支上有尚未交付的工作 — 先 `/review`，再 `/ship`。” `dirty_default` → “有未提交改动 — 提交前先 `/review`。” `clean_default` → “选一个：`/spec`、`/investigate` 或 `/qa`。” 然后用你看到的 token 替换 TASK_TOKEN 并运行（尽力而为），再标记为已激活："
+    },
+    {
+      "block_id": "setup-browser-cookies-0047-code-block",
+      "source_hash": "1650fb3aa8b1e0d53dce57c233159bc46d4524264e147e9a7fe54eb0b58d3555",
+      "status": "translated",
+      "translation": "```bash\n~/.claude/skills/gstack/bin/gstack-telemetry-log --event-type first_task_scaffold_shown --skill \"TASK_TOKEN\" --outcome shown 2>/dev/null || true\ntouch ~/.gstack/.activated 2>/dev/null || true\n```"
+    },
+    {
+      "block_id": "setup-browser-cookies-0048-paragraph",
+      "source_hash": "ce12d94707c89744c86cce359d18f72203e6c3e147a38807a32706238bce0d0c",
+      "status": "translated",
+      "translation": "如果 `ACTIVATED` 为 `no`，但 `FIRST_TASK:` 为空或为 `nongit`（headless、非 git 仓库，或没有可操作内容）：不显示任何内容，只运行 `touch ~/.gstack/.activated 2>/dev/null || true`。"
+    },
+    {
+      "block_id": "setup-browser-cookies-0049-paragraph",
+      "source_hash": "b18e451dd9f7cd101eb08bfc7bc4930a5ca1e83755d123d3951c509743315380",
+      "status": "translated",
+      "translation": "否则，如果 `ACTIVATED` 为 `yes` 且 `FIRST_LOOP_SHOWN` 为 `no`：说一次下面的提醒（然后继续）："
+    },
+    {
+      "block_id": "setup-browser-cookies-0050-paragraph",
+      "source_hash": "ba800bede61836206c08fbed03d508faccba07629775649c9ebadfeb8c34e746",
+      "status": "translated",
+      "translation": "> 提示：当你完成一个闭环时，gstack 的价值最明显 — **plan → review → ship**。一个常见的首次闭环是：用 `/office-hours` 或 `/spec` 梳理形状，用 `/plan-eng-review` 锁定方案，然后 `/ship`。"
+    },
+    {
+      "block_id": "setup-browser-cookies-0051-paragraph",
+      "source_hash": "7d53816e8ba164fe01156c134ed949fb508efd7419d2f4f8fef731a5cef563f4",
+      "status": "translated",
+      "translation": "然后运行 `touch ~/.gstack/.first-loop-tip-shown 2>/dev/null || true`。"
+    },
+    {
+      "block_id": "setup-browser-cookies-0052-paragraph",
+      "source_hash": "9559604cc2833f85e9f2aa9ecdef5debc504c15c387a0d0be749741a7c43e092",
+      "status": "translated",
+      "translation": "如果 `ACTIVATED` 和 `FIRST_LOOP_SHOWN` 都是 `yes`，则跳过本节。"
+    },
+    {
+      "block_id": "setup-browser-cookies-0053-paragraph",
+      "source_hash": "105a8e694c015aec6087bf3a0aa923753370de19257f98e0b49b6ca0ed596a0b",
+      "status": "translated",
+      "translation": "如果 `HAS_ROUTING` 为 `no`，且 `ROUTING_DECLINED` 为 `false`，且 `PROACTIVE_PROMPTED` 为 `yes`：\n检查项目根目录中是否存在 CLAUDE.md 文件。如果不存在，就创建它。"
+    },
+    {
+      "block_id": "setup-browser-cookies-0054-paragraph",
+      "source_hash": "1144df04fa4faf8fb38a7d6fdbf82b47fd83d14ca2905facfc9e203eb2695915",
+      "status": "translated",
+      "translation": "使用 AskUserQuestion："
+    },
+    {
+      "block_id": "setup-browser-cookies-0055-paragraph",
+      "source_hash": "a5706ba8222aea1fbb72917987d1dd5f974d1f3557a9ebc5264acd83c8273ee8",
+      "status": "translated",
+      "translation": "> 当你的项目 CLAUDE.md 包含 skill 路由规则时，gstack 的效果最好。"
+    },
+    {
+      "block_id": "setup-browser-cookies-0056-paragraph",
+      "source_hash": "14b385643fcfaa0bbe92e71d71f8b5af084c8aef8ee5c0373eef2225daebc66e",
+      "status": "translated",
+      "translation": "选项：\n- A) 将路由规则添加到 CLAUDE.md（推荐）\n- B) 不用了，我会手动调用 skills"
+    },
+    {
+      "block_id": "setup-browser-cookies-0057-paragraph",
+      "source_hash": "fe67290b3c1987798373f7d058017defaa7f89a27efa1afa48e4f2c395ad7fc6",
+      "status": "translated",
+      "translation": "如果选择 A：把这一节追加到 CLAUDE.md 末尾："
+    },
+    {
+      "block_id": "setup-browser-cookies-0058-code-block",
+      "source_hash": "fef6e6b3ca29254e44b4b1f84a40fce96b8eb0068370dfd980167f932832bdc8",
+      "status": "translated",
+      "translation": "```markdown\n\n## Skill 路由\n\n当用户请求匹配某个可用 skill 时，通过 Skill tool 调用它。拿不准时，也调用这个 skill。\n\n关键路由规则：\n- 产品想法/头脑风暴 → 调用 /office-hours\n- 策略/范围 → 调用 /plan-ceo-review\n- 架构 → 调用 /plan-eng-review\n- 设计系统/方案评审 → 调用 /design-consultation 或 /plan-design-review\n- 完整评审流水线 → 调用 /autoplan\n- Bug/错误 → 调用 /investigate\n- QA/测试网站行为 → 调用 /qa 或 /qa-only\n- 代码评审/diff 检查 → 调用 /review\n- 视觉打磨 → 调用 /design-review\n- 发布/部署/PR → 调用 /ship 或 /land-and-deploy\n- 保存进度 → 调用 /context-save\n- 恢复上下文 → 调用 /context-restore\n- 编写可进入 backlog 的 spec/issue → 调用 /spec\n```"
+    },
+    {
+      "block_id": "setup-browser-cookies-0059-paragraph",
+      "source_hash": "a5c339a023162abcda46e4cf4580e79b1a67e815ba08c4ba61488a88c9f95ef6",
+      "status": "translated",
+      "translation": "然后提交该改动：`git add CLAUDE.md && git commit -m \"chore: add gstack skill routing rules to CLAUDE.md\"`"
+    },
+    {
+      "block_id": "setup-browser-cookies-0060-paragraph",
+      "source_hash": "c916db33cde64b08a8cf03e34fda2d509e168b86b9fbf052ad686eab198131ea",
+      "status": "translated",
+      "translation": "如果选择 B：运行 `~/.claude/skills/gstack/bin/gstack-config set routing_declined true`，并告诉用户以后可以用 `gstack-config set routing_declined false` 重新启用。"
+    }
+  ]
+}

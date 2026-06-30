@@ -1,0 +1,152 @@
+{
+  "skill_name": "make-pdf",
+  "started_at": "2026-06-29T00:13:57+08:00",
+  "finished_at": "2026-06-29T00:16:20+08:00",
+  "duration_minutes": 2.38,
+  "source_chars": 36471,
+  "source_blocks": 159,
+  "part_count": 8,
+  "agent_count": 1,
+  "part_metrics": [
+    {
+      "part": 1,
+      "block_range": [
+        "make-pdf-0001-frontmatter",
+        "make-pdf-0020-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-make-pdf",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 2,
+      "block_range": [
+        "make-pdf-0021-paragraph",
+        "make-pdf-0040-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-make-pdf",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 3,
+      "block_range": [
+        "make-pdf-0041-paragraph",
+        "make-pdf-0060-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-make-pdf",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 4,
+      "block_range": [
+        "make-pdf-0061-paragraph",
+        "make-pdf-0080-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-make-pdf",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 5,
+      "block_range": [
+        "make-pdf-0081-paragraph",
+        "make-pdf-0100-heading"
+      ],
+      "block_count": 20,
+      "agent": "worker-make-pdf",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 6,
+      "block_range": [
+        "make-pdf-0101-paragraph",
+        "make-pdf-0120-heading"
+      ],
+      "block_count": 20,
+      "agent": "worker-make-pdf",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 7,
+      "block_range": [
+        "make-pdf-0121-code-block",
+        "make-pdf-0140-paragraph"
+      ],
+      "block_count": 20,
+      "agent": "worker-make-pdf",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    },
+    {
+      "part": 8,
+      "block_range": [
+        "make-pdf-0141-paragraph",
+        "make-pdf-0159-paragraph"
+      ],
+      "block_count": 19,
+      "agent": "worker-make-pdf",
+      "started_at": "part_time_unavailable",
+      "finished_at": "part_time_unavailable",
+      "duration_minutes": "part_duration_unavailable",
+      "status": "completed",
+      "token_usage": "token_usage_unavailable"
+    }
+  ],
+  "merge_metrics": {
+    "started_at": "2026-06-28T16:23:20.199577Z",
+    "finished_at": "2026-06-28T16:23:20.204524Z",
+    "duration_minutes": 0.0,
+    "status": "completed",
+    "output": "data/skill-readings/gstack/make-pdf.json"
+  },
+  "token_usage": "token_usage_unavailable",
+  "quality_repair_metrics": {
+    "started_at": "2026-06-28T16:44:34.952203Z",
+    "finished_at": "2026-06-28T16:44:34.952203Z",
+    "duration_minutes": 0,
+    "repaired_blocks": [
+      "make-pdf-0004-paragraph",
+      "make-pdf-0005-paragraph",
+      "make-pdf-0009-code-block",
+      "make-pdf-0015-paragraph",
+      "make-pdf-0021-paragraph",
+      "make-pdf-0022-paragraph",
+      "make-pdf-0081-paragraph",
+      "make-pdf-0105-paragraph",
+      "make-pdf-0131-heading",
+      "make-pdf-0137-paragraph",
+      "make-pdf-0153-paragraph"
+    ],
+    "status": "completed",
+    "token_usage": "token_usage_unavailable"
+  }
+}

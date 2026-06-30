@@ -1,0 +1,133 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "skill": "canary",
+  "part": 4,
+  "package": "gstack",
+  "source_file": "SKILL.md",
+  "range": [
+    "canary-0061-paragraph",
+    "canary-0080-paragraph"
+  ],
+  "blocks": [
+    {
+      "block_id": "canary-0061-paragraph",
+      "source_hash": "df94c54a64e15cf8b5116ac50d7eae233638d1e1079cf0e2e04247985643d7ff",
+      "status": "translated",
+      "translation": "每个项目只会发生一次。如果 `HAS_ROUTING` 为 `yes`，或 `ROUTING_DECLINED` 为 `true`，就跳过。"
+    },
+    {
+      "block_id": "canary-0062-paragraph",
+      "source_hash": "e4adc40f9c4a820507c5efc8e98d13be57fe0b2bac4e2026e7f2d311300859d0",
+      "status": "translated",
+      "translation": "如果 `VENDORED_GSTACK` 为 `yes`，并且 `~/.gstack/.vendoring-warned-$SLUG` 不存在，就通过 AskUserQuestion 提醒一次："
+    },
+    {
+      "block_id": "canary-0063-paragraph",
+      "source_hash": "1fd7fe156364cee23364f1ed631b02f3dc0bc4369aa0ae20fb8fe341a1aa8cff",
+      "status": "translated",
+      "translation": "> 这个项目把 gstack vendored 到了 `.claude/skills/gstack/`。Vendoring 已废弃。\n> 要迁移到 team mode 吗？"
+    },
+    {
+      "block_id": "canary-0064-paragraph",
+      "source_hash": "00dfcec10c592d41a51c201f2cfc923f9a5042d65bbd578ce7d7feba1c1d43d9",
+      "status": "translated",
+      "translation": "选项：\n- A) 是，现在迁移到 team mode\n- B) 否，我自己处理"
+    },
+    {
+      "block_id": "canary-0065-paragraph",
+      "source_hash": "cf837eeaf159cac16f253fcfd743e9a32c4f7059ce6a629ccedcf45eab113288",
+      "status": "translated",
+      "translation": "如果选择 A：\n1. 运行 `git rm -r .claude/skills/gstack/`\n2. 运行 `echo '.claude/skills/gstack/' >> .gitignore`\n3. 运行 `~/.claude/skills/gstack/bin/gstack-team-init required`（或 `optional`）\n4. 运行 `git add .claude/ .gitignore CLAUDE.md && git commit -m \"chore: migrate gstack from vendored to team mode\"`\n5. 告诉用户：“已完成。现在每位开发者都需要运行：`cd ~/.claude/skills/gstack && ./setup --team`”"
+    },
+    {
+      "block_id": "canary-0066-paragraph",
+      "source_hash": "64a6b841c2c4f71d08956223517b6d7910689e65620238d7de52f91466396106",
+      "status": "translated",
+      "translation": "如果选 B： say \"OK, you're on your own to keep the vendored copy up to date.\""
+    },
+    {
+      "block_id": "canary-0067-paragraph",
+      "source_hash": "bdba758df114204973d141202d452863a6c7146b58c5428896aa87eda78d21e0",
+      "status": "translated",
+      "translation": "始终运行 (regardless of choice):"
+    },
+    {
+      "block_id": "canary-0068-code-block",
+      "source_hash": "dacc22d0895e888c3e1ea8d8df1a96215c1082a06e3873e96c042c8c881ff797",
+      "status": "translated",
+      "translation": "```bash\neval \"$(~/.claude/skills/gstack/bin/gstack-slug 2>/dev/null)\" 2>/dev/null || true\ntouch ~/.gstack/.vendoring-warned-${SLUG:-unknown}\n```"
+    },
+    {
+      "block_id": "canary-0069-paragraph",
+      "source_hash": "5941c7b9f9ed5b4e050c866e1d9281fd8baf5aab04692ef743576efaddc570c2",
+      "status": "translated",
+      "translation": "如果 marker 已存在，则跳过。"
+    },
+    {
+      "block_id": "canary-0070-paragraph",
+      "source_hash": "59f277edcdd9f6c0108bb011c5d4c88e6b3b0ebc77acd3f7b0ed327782cb0c63",
+      "status": "translated",
+      "translation": "如果 `SPAWNED_SESSION` 是 `\"true\"`，说明你正在一个由 AI 编排器（例如 OpenClaw）派生出的会话中运行。在派生会话中：\n- 不要用 AskUserQuestion 做交互式提示。自动选择推荐选项。\n- 不要运行升级检查、遥测提示、路由注入或 lake intro。\n- 专注完成任务，并用文字输出报告结果。\n- 以完成报告结尾：交付了什么、做了哪些决定、还有什么不确定。"
+    },
+    {
+      "block_id": "canary-0071-heading",
+      "source_hash": "56ba6b92e9a16ad71ec2f4e5ea21dc3c5668cd3205a90cb6a48f40ea062fef6f",
+      "status": "translated",
+      "translation": "## AskUserQuestion 格式"
+    },
+    {
+      "block_id": "canary-0072-heading",
+      "source_hash": "9c3150415efbee3d387cbaebdf7389a26cb1a7c3bf13ab8672d722d387401cea",
+      "status": "translated",
+      "translation": "### 工具解析（先读）"
+    },
+    {
+      "block_id": "canary-0073-paragraph",
+      "source_hash": "a0a3d66678994e1eada371ea082b873c885b0d028a2657eba65aedd2c2eb255b",
+      "status": "translated",
+      "translation": "\"AskUserQuestion\" can resolve to two tools at runtime: the **host MCP variant** (e.g. `mcp__conductor__AskUserQuestion` — appears in your tool list when the host registers it) or the **native** Claude Code tool."
+    },
+    {
+      "block_id": "canary-0074-paragraph",
+      "source_hash": "4ab10b3ef62bedab6f0f9342b932953f4db4d27d4e98153321d62728287226bf",
+      "status": "translated",
+      "translation": "**Conductor 规则（先于 MCP 规则阅读）：** 如果前置脚本回显了 `CONDUCTOR_SESSION: true`，完全不要调用 AskUserQuestion，包括原生工具和任何 `mcp__*__AskUserQuestion` 变体。把每个决策简报渲染成下面的 **prose form**，然后 STOP。这是主动路径，不是失败后的反应：Conductor 会禁用原生 AUQ，而且它的 MCP 变体不稳定（会返回 `[Tool result missing due to internal error]`），所以文字形式才是可靠路径。**自动决策偏好仍然优先适用：** 如果某个问题已经出现 `[plan-tune auto-decide] <id> → <option>` 结果，就按该选项继续（不渲染文字简报）。因为在 Conductor 中你会不调用工具而直接进入文字形式，所以“自动决策优先”的顺序在这里强制执行，而不只由 PreToolUse hook 执行。渲染 Conductor 文字简报时，也要用 `bin/gstack-question-log` 记录它（PostToolUse 捕获 hook 在文字路径上不会触发，因此 `/plan-tune` 历史和学习依赖这次调用）。"
+    },
+    {
+      "block_id": "canary-0075-paragraph",
+      "source_hash": "04b48ce6dd74efee194dbb6439dede662010fbaa6451cad8c292a15de54b1520",
+      "status": "translated",
+      "translation": "**规则（非 Conductor）：** 如果工具列表中有任何 `mcp__*__AskUserQuestion` 变体，优先使用它。宿主可能通过 `--disallowedTools AskUserQuestion` 禁用原生 AUQ（Conductor 默认如此），并通过 MCP 变体路由；在那里调用原生工具会静默失败。问题和选项的结构相同，决策简报格式也相同。"
+    },
+    {
+      "block_id": "canary-0076-paragraph",
+      "source_hash": "abf437f5c06f3d893d0d87847652e9027ad6beeaeec8b2ea0e73a0384094f0dc",
+      "status": "translated",
+      "translation": "如果 AskUserQuestion 不可用（你的工具列表里没有任何变体），或调用它失败，不要静默自动决策，也不要把决策写进计划文件来代替提问。按下面的**失败回退**处理。"
+    },
+    {
+      "block_id": "canary-0077-heading",
+      "source_hash": "009c633ddd573fdf942c5d91494b5b8dc99d05b435125fd57249ade8b37a4705",
+      "status": "translated",
+      "translation": "### 当 AskUserQuestion 不可用或调用失败时"
+    },
+    {
+      "block_id": "canary-0078-paragraph",
+      "source_hash": "c97fc4e37cd78a42904e0c9abd879049c4babf3fe10478bf07e78335dacf6dc6",
+      "status": "translated",
+      "translation": "区分三种结果："
+    },
+    {
+      "block_id": "canary-0079-paragraph",
+      "source_hash": "ae29e3b3d24804a0863fc444e5bac39bcd967b47896306b48770f2f04c8f4309",
+      "status": "translated",
+      "translation": "1. **自动决策拒绝（不是失败）。** 结果包含 `[plan-tune auto-decide] <id> → <option>`，说明偏好 hook 正常工作。按该选项继续。不要重试，不要回退成文字。\n2. **真正失败**：工具列表中没有变体，或变体存在但调用返回错误或缺失结果（MCP 传输错误、空结果、宿主 bug，例如 Conductor 的 MCP AskUserQuestion 不稳定并返回 `[Tool result missing due to internal error]`）。\n   - 如果变体存在且**报错**（不是缺席），同一个调用**重试一次**，但前提是没有答案可能已经出现过。缺失结果错误可能在用户已经看到问题之后到达；重试会重复提示，所以如果可能已经触达用户，就视为待答，不要重试。\n   - 然后按 `SESSION_KIND` 分支（由前置脚本回显；为空或不存在则视为 `interactive`）：\n     - `spawned` → 转到 **Spawned session** 块：自动选择推荐项。绝不用文字简报，绝不 BLOCKED。\n     - `headless` → `BLOCKED — AskUserQuestion unavailable`；停止并等待（无人可答）。\n     - `interactive` → **prose fallback**（见下）。"
+    },
+    {
+      "block_id": "canary-0080-paragraph",
+      "source_hash": "4a3459115b769303ea751e0af768b12ebefeedcae1da464401e83a1c96d9b906",
+      "status": "translated",
+      "translation": "**文字回退：把决策简报渲染成 markdown 消息，而不是工具调用。** 信息与下面的工具格式相同，但结构不同（用段落，不用 ✅/❌ bullet）。它必须呈现这三项："
+    }
+  ]
+}

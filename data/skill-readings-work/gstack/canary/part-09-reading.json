@@ -1,0 +1,133 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "skill": "canary",
+  "part": 9,
+  "package": "gstack",
+  "source_file": "SKILL.md",
+  "range": [
+    "canary-0161-heading",
+    "canary-0180-heading"
+  ],
+  "blocks": [
+    {
+      "block_id": "canary-0161-heading",
+      "source_hash": "ca3e1965517fe64c013ab73eb05391023331eba741d0c2149dc6fe06d66d1245",
+      "status": "translated",
+      "translation": "## 完成状态协议"
+    },
+    {
+      "block_id": "canary-0162-paragraph",
+      "source_hash": "819b02821022c0c3700d37cfb3a3e88754edf424a8eaa360bb976819387c3aaa",
+      "status": "translated",
+      "translation": "完成一个 skill 工作流时，使用以下状态之一报告：\n- **DONE**：已完成且有证据。\n- **DONE_WITH_CONCERNS**：已完成，但列出担忧。\n- **BLOCKED**：无法继续；说明阻塞点和已尝试内容。\n- **NEEDS_CONTEXT**：缺少信息；精确说明需要什么。"
+    },
+    {
+      "block_id": "canary-0163-paragraph",
+      "source_hash": "7166ab25cd3a09f9102137a58405c551481ec9fc2133afd7e03db5f0fd1b160b",
+      "status": "translated",
+      "translation": "Escalate after 3 failed attempts, uncertain security-sensitive changes, or scope you cannot verify. Format: `STATUS`, `REASON`, `ATTEMPTED`, `RECOMMENDATION`."
+    },
+    {
+      "block_id": "canary-0164-heading",
+      "source_hash": "434e832742b0079c34b19bc1cf169b4c5ff9d91200c6237c31bde515beac8a78",
+      "status": "translated",
+      "translation": "## 操作性自我改进"
+    },
+    {
+      "block_id": "canary-0165-paragraph",
+      "source_hash": "c611aecd7152cb062c41f91fc9e5213b55276849d3f0ec37c9c9a25feb67afff",
+      "status": "translated",
+      "translation": "完成前，如果你发现了一个耐久的项目怪癖或命令修复，且下次能节省 5 分钟以上，就记录它："
+    },
+    {
+      "block_id": "canary-0166-code-block",
+      "source_hash": "d841b9db8eea1f8221a37beb14b1d79ff8a2529749dd71f042d89e1defd4a7d3",
+      "status": "translated",
+      "translation": "```bash\n~/.claude/skills/gstack/bin/gstack-learnings-log '{\"skill\":\"SKILL_NAME\",\"type\":\"operational\",\"key\":\"SHORT_KEY\",\"insight\":\"DESCRIPTION\",\"confidence\":N,\"source\":\"observed\"}'\n```"
+    },
+    {
+      "block_id": "canary-0167-paragraph",
+      "source_hash": "7223a4de2d6c4cb94a8ad844f1dbd2afd4181814478ab432edabdd22913beaf8",
+      "status": "translated",
+      "translation": "不要 log obvious facts or one-time transient errors."
+    },
+    {
+      "block_id": "canary-0168-heading",
+      "source_hash": "c82767d57199ff2747bd53a894f98763986d2b19cee7a8153eaa51f796ad92ae",
+      "status": "translated",
+      "translation": "## 遥测（最后运行）"
+    },
+    {
+      "block_id": "canary-0169-paragraph",
+      "source_hash": "bebcbbd3352cbd05066ec2b1b78776b77b7559d496e427832205039d4451dd04",
+      "status": "translated",
+      "translation": "工作流完成后记录遥测。 Use skill `name:` from frontmatter. OUTCOME is success/error/abort/unknown."
+    },
+    {
+      "block_id": "canary-0170-paragraph",
+      "source_hash": "874e228fc697602aa6f26889f82f03ced234c146978f3b5b5f909df54d5a0d5b",
+      "status": "translated",
+      "translation": "**PLAN MODE EXCEPTION — ALWAYS RUN:** This command writes telemetry to\n`~/.gstack/analytics/`, matching preamble analytics writes."
+    },
+    {
+      "block_id": "canary-0171-paragraph",
+      "source_hash": "76dfba488b923307259ecc6bef7dd6f714c7381861a3b3dd9401fcecde549b19",
+      "status": "translated",
+      "translation": "运行下面的 bash："
+    },
+    {
+      "block_id": "canary-0172-code-block",
+      "source_hash": "d99683acfc2c7cbd1acabee117610e0ccc4983d0b6f2b847c74857cdcb704c07",
+      "status": "translated",
+      "translation": "```bash\n_TEL_END=$(date +%s)\n_TEL_DUR=$(( _TEL_END - _TEL_START ))\nrm -f ~/.gstack/analytics/.pending-\"$_SESSION_ID\" 2>/dev/null || true\n# 会话时间线：记录 skill 完成状态（仅本地保存，不发送到任何地方）\n~/.claude/skills/gstack/bin/gstack-timeline-log '{\"skill\":\"SKILL_NAME\",\"event\":\"completed\",\"branch\":\"'$(git branch --show-current 2>/dev/null || echo unknown)'\",\"outcome\":\"OUTCOME\",\"duration_s\":\"'\"$_TEL_DUR\"'\",\"session\":\"'\"$_SESSION_ID\"'\"}' 2>/dev/null || true\n# 本地 analytics（受 telemetry 设置控制）\nif [ \"$_TEL\" != \"off\" ]; then\necho '{\"skill\":\"SKILL_NAME\",\"duration_s\":\"'\"$_TEL_DUR\"'\",\"outcome\":\"OUTCOME\",\"browse\":\"USED_BROWSE\",\"session\":\"'\"$_SESSION_ID\"'\",\"ts\":\"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'\"}' >> ~/.gstack/analytics/skill-usage.jsonl 2>/dev/null || true\nfi\n# 远程 telemetry（opt-in，需要 binary）\nif [ \"$_TEL\" != \"off\" ] && [ -x ~/.claude/skills/gstack/bin/gstack-telemetry-log ]; then\n  ~/.claude/skills/gstack/bin/gstack-telemetry-log     --skill \"SKILL_NAME\" --duration \"$_TEL_DUR\" --outcome \"OUTCOME\"     --used-browse \"USED_BROWSE\" --session-id \"$_SESSION_ID\" 2>/dev/null &\nfi\n```"
+    },
+    {
+      "block_id": "canary-0173-paragraph",
+      "source_hash": "b1b64d78c5944c9bb3a8071522ec132a29828b993ec2dae48426d00b9ce77075",
+      "status": "translated",
+      "translation": "替换 `SKILL_NAME`, `OUTCOME`, and `USED_BROWSE` 后再运行."
+    },
+    {
+      "block_id": "canary-0174-heading",
+      "source_hash": "b16b407bd1995dff444cc730c9b8ba2d253791b4d0800f5f9c13155b76a295b2",
+      "status": "translated",
+      "translation": "## 计划状态页脚"
+    },
+    {
+      "block_id": "canary-0175-paragraph",
+      "source_hash": "2b23d62f8774561c3016e477c7e1e54878358aefff3ed4ab057edfcdea3b5892",
+      "status": "translated",
+      "translation": "运行计划评审的 skills（`/plan-*-review`、`/codex review`）会在 skill 末尾包含“退出计划模式门禁”的阻塞检查清单，它会在调用 ExitPlanMode 前验证计划文件以 `## GSTACK REVIEW REPORT` 结尾。不运行计划评审的 skills（如 `/ship`、`/qa`、`/review` 等操作型 skills）通常不在计划模式中运行，也没有要验证的 review report；这个页脚对它们是空操作。写入计划文件是计划模式中允许的一项编辑。"
+    },
+    {
+      "block_id": "canary-0176-heading",
+      "source_hash": "3b4e89cda125d42865407dca62635d60afb5ea472a3154a7e7d79b61864cfd28",
+      "status": "translated",
+      "translation": "## 设置（任何 browse 命令之前先运行此检查）"
+    },
+    {
+      "block_id": "canary-0177-code-block",
+      "source_hash": "4a58d860af5056e5c21f87295d1c366a7ca4ef4b3375db57af1d53eeb80c1926",
+      "status": "translated",
+      "translation": "```bash\n_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)\nB=\"\"\n[ -n \"$_ROOT\" ] && [ -x \"$_ROOT/.claude/skills/gstack/browse/dist/browse\" ] && B=\"$_ROOT/.claude/skills/gstack/browse/dist/browse\"\n[ -z \"$B\" ] && B=\"$HOME/.claude/skills/gstack/browse/dist/browse\"\nif [ -x \"$B\" ]; then\n  echo \"READY: $B\"\nelse\n  echo \"NEEDS_SETUP\"\nfi\n```"
+    },
+    {
+      "block_id": "canary-0178-paragraph",
+      "source_hash": "04345d3f5b68ee81b1cc40c870646e51efade56e8c018f25469083bb8e522f18",
+      "status": "translated",
+      "translation": "如果出现 `NEEDS_SETUP`：\n1. 告诉用户：“gstack browse 需要一次性构建（约 10 秒）。可以继续吗？” 然后停止并等待。\n2. 运行：`cd <SKILL_DIR> && ./setup`\n3. 如果尚未安装 `bun`："
+    },
+    {
+      "block_id": "canary-0179-code-block",
+      "source_hash": "cb0077aa65f042313fe753e7b16c6bfc289d76e7079854deaa36fb35c3c8f560",
+      "status": "translated",
+      "translation": "   ```bash\n   if ! command -v bun >/dev/null 2>&1; then\n     BUN_VERSION=\"1.3.10\"\n     BUN_INSTALL_SHA=\"bab8acfb046aac8c72407bdcce903957665d655d7acaa3e11c7c4616beae68dd\"\n     tmpfile=$(mktemp)\n     curl -fsSL \"https://bun.sh/install\" -o \"$tmpfile\"\n     actual_sha=$(shasum -a 256 \"$tmpfile\" | awk '{print $1}')\n     if [ \"$actual_sha\" != \"$BUN_INSTALL_SHA\" ]; then\n       echo \"ERROR: bun install script checksum mismatch\" >&2\n       echo \"  expected: $BUN_INSTALL_SHA\" >&2\n       echo \"  got:      $actual_sha\" >&2\n       rm \"$tmpfile\"; exit 1\n     fi\n     BUN_VERSION=\"$BUN_VERSION\" bash \"$tmpfile\"\n     rm \"$tmpfile\"\n   fi\n   ```"
+    },
+    {
+      "block_id": "canary-0180-heading",
+      "source_hash": "6f491ac1f0dc7194eaa146058558c7692167308018277e90b6671e2a858ef3be",
+      "status": "translated",
+      "translation": "## 步骤 0：检测平台和基准分支"
+    }
+  ]
+}

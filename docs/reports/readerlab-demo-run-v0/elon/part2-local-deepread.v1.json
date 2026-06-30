@@ -1,0 +1,221 @@
+{
+  "schema": "readerlab.local-deepread.v1",
+  "material": {
+    "id": "elon-book__readerlab-demo_20260629:part2-hardcore-work",
+    "title": "部件 II：极致艰苦工作",
+    "type": "book_part_local_deepread",
+    "parent_material_id": "elon-book__readerlab-demo_20260629"
+  },
+  "source_scope": {
+    "coverage_status": "partial",
+    "coverage_ratio": null,
+    "coverage_note": "This contract covers only part II, sourced from EPUB members v101-13.xhtml through v101-18.xhtml and the existing part II ReaderLab page."
+  },
+  "local_deepread": {
+    "covered_unit": "部件 II：极致艰苦工作",
+    "covered_source_files": [
+      "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-13.xhtml",
+      "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-14.xhtml",
+      "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-15.xhtml",
+      "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-16.xhtml",
+      "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-17.xhtml",
+      "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-18.xhtml"
+    ],
+    "reading_thesis": "This unit is not merely about working hard; it describes a hard-problem execution system: responsibility, deep understanding, frontline exposure, high-density teams, short-path communication, deletion before optimization, speed, and manufacturing capability.",
+    "reading_route": [
+      {
+        "step": 1,
+        "title": "责任和深度理解",
+        "purpose": "Read CEO responsibility as problem ownership, not status.",
+        "source_refs": [
+          "elon-loc-part2-source-span"
+        ]
+      },
+      {
+        "step": 2,
+        "title": "团队和组织",
+        "purpose": "Connect talent density, goal alignment, and communication structure to product quality.",
+        "source_refs": [
+          "elon-loc-part2-shortest-path-communication"
+        ]
+      },
+      {
+        "step": 3,
+        "title": "算法之道",
+        "purpose": "Treat deletion before automation as the main transferable method atom.",
+        "source_refs": [
+          "elon-loc-part2-algorithm-steps",
+          "elon-loc-part2-delete-before-automate"
+        ]
+      },
+      {
+        "step": 4,
+        "title": "速度和制造",
+        "purpose": "Separate correct-direction acceleration from blind urgency, then connect manufacturing to durable capability.",
+        "source_refs": [
+          "elon-loc-part2-factory-as-product",
+          "elon-loc-part2-manufacturing-bottleneck"
+        ]
+      }
+    ],
+    "distillation_candidates": [
+      {
+        "candidate_id": "delete-before-automating",
+        "claim": "Before optimizing or automating a process, first challenge the requirement and delete unnecessary parts.",
+        "applicability_boundary": "Useful for process, product, or organization design reviews; risky if used to delete regulatory, safety, or human-context requirements without domain review.",
+        "source_refs": [
+          "elon-loc-part2-algorithm-steps",
+          "elon-loc-part2-delete-before-automate"
+        ],
+        "claim_refs": [
+          {
+            "claim_ref_id": "elon-part2-claim-delete-before-automating",
+            "primary_location_refs": [
+              "elon-loc-part2-algorithm-steps",
+              "elon-loc-part2-delete-before-automate"
+            ],
+            "derived_location_refs": [
+              "elon-loc-part2-distillation"
+            ],
+            "evidence_note": "Primary support comes from the reader page original-text section for the algorithm steps and the detailed delete-before-automate explanation; the distillation page is only a derived comparison point."
+          }
+        ],
+        "confidence": "medium",
+        "human_status": "pending"
+      },
+      {
+        "candidate_id": "shortest-path-communication",
+        "claim": "Communication should travel directly to the person who can solve the problem rather than through status-preserving layers.",
+        "applicability_boundary": "Useful for cross-functional execution bottlenecks; still needs judgment where accountability, audit, or safety gates matter.",
+        "source_refs": [
+          "elon-loc-part2-shortest-path-communication"
+        ],
+        "claim_refs": [
+          {
+            "claim_ref_id": "elon-part2-claim-shortest-path-communication",
+            "primary_location_refs": [
+              "elon-loc-part2-shortest-path-communication"
+            ],
+            "derived_location_refs": [
+              "elon-loc-part2-distillation"
+            ],
+            "evidence_note": "Primary support is the original-text section on direct cross-department and shortest-path communication; the derived distillation page is not the main evidence."
+          }
+        ],
+        "confidence": "medium",
+        "human_status": "pending"
+      },
+      {
+        "candidate_id": "factory-as-product",
+        "claim": "Manufacturing and delivery systems are part of the product, not a downstream afterthought.",
+        "applicability_boundary": "Most relevant to physical production, operations, infrastructure, or repeatable delivery systems; not every creative or research task has a factory-like layer.",
+        "source_refs": [
+          "elon-loc-part2-factory-as-product",
+          "elon-loc-part2-manufacturing-bottleneck"
+        ],
+        "claim_refs": [
+          {
+            "claim_ref_id": "elon-part2-claim-factory-as-product",
+            "primary_location_refs": [
+              "elon-loc-part2-factory-as-product",
+              "elon-loc-part2-manufacturing-bottleneck"
+            ],
+            "derived_location_refs": [
+              "elon-loc-part2-distillation"
+            ],
+            "evidence_note": "Primary support is the part II reader page original-text sections on factory-as-product and manufacturing bottlenecks; the distillation page is only an auxiliary derived artifact."
+          }
+        ],
+        "confidence": "medium",
+        "human_status": "pending"
+      }
+    ],
+    "misread_guards": [
+      "Do not reduce the unit to generic hustle culture.",
+      "Do not treat extreme emergency work patterns as normal operating advice.",
+      "Do not promote candidate skills without item-level source review and separate human acceptance."
+    ]
+  },
+  "location_refs": [
+    "elon-loc-part2-source-span",
+    "elon-loc-part2-algorithm-way",
+    "elon-loc-part2-shortest-path-communication",
+    "elon-loc-part2-algorithm-steps",
+    "elon-loc-part2-delete-before-automate",
+    "elon-loc-part2-factory-as-product",
+    "elon-loc-part2-manufacturing-bottleneck",
+    "elon-loc-part2-distillation"
+  ],
+  "claim_refs": [
+    {
+      "claim_id": "elon-part2-claim-delete-before-automating",
+      "claim": "Before optimizing or automating a process, first challenge the requirement and delete unnecessary parts.",
+      "primary_location_refs": [
+        "elon-loc-part2-algorithm-steps",
+        "elon-loc-part2-delete-before-automate"
+      ],
+      "derived_location_refs": [
+        "elon-loc-part2-distillation"
+      ],
+      "applicability_boundary": "Useful for process, product, or organization design reviews; risky if used to delete regulatory, safety, or human-context requirements without domain review.",
+      "confidence": "medium",
+      "review_status": "open"
+    },
+    {
+      "claim_id": "elon-part2-claim-shortest-path-communication",
+      "claim": "Communication should travel directly to the person who can solve the problem rather than through status-preserving layers.",
+      "primary_location_refs": [
+        "elon-loc-part2-shortest-path-communication"
+      ],
+      "derived_location_refs": [
+        "elon-loc-part2-distillation"
+      ],
+      "applicability_boundary": "Useful for cross-functional execution bottlenecks; still needs judgment where accountability, audit, or safety gates matter.",
+      "confidence": "medium",
+      "review_status": "open"
+    },
+    {
+      "claim_id": "elon-part2-claim-factory-as-product",
+      "claim": "Manufacturing and delivery systems are part of the product, not a downstream afterthought.",
+      "primary_location_refs": [
+        "elon-loc-part2-factory-as-product",
+        "elon-loc-part2-manufacturing-bottleneck"
+      ],
+      "derived_location_refs": [
+        "elon-loc-part2-distillation"
+      ],
+      "applicability_boundary": "Most relevant to physical production, operations, infrastructure, or repeatable delivery systems; not every creative or research task has a factory-like layer.",
+      "confidence": "medium",
+      "review_status": "open"
+    }
+  ],
+  "confidence": {
+    "level": "medium",
+    "basis": [
+      "The part II page includes source file markers, original text, a reading map, and local interpretation.",
+      "Distillation candidates are limited to the locally covered part and now point first to reader-page original-text spans."
+    ],
+    "known_uncertainties": [
+      "This local deepread has not been checked against the complete book's later case chapters.",
+      "Claim refs are narrowed to reader-page line ranges, but exact EPUB char offsets have not been computed."
+    ]
+  },
+  "review_items": [
+    {
+      "id": "elon-part2-r01",
+      "status": "open",
+      "question": "Does the reading thesis preserve enough first-hand content, or does it over-compress the unit into management advice?"
+    },
+    {
+      "id": "elon-part2-r02",
+      "status": "open",
+      "question": "Do the candidate method atoms need exact EPUB span refs before any future Skill draft?"
+    }
+  ],
+  "machine_status": "needs_review",
+  "human_status": "pending",
+  "display": {
+    "markdown_path": "docs/reports/readerlab-demo-run-v0/elon/reader-demo.md",
+    "relationship": "reader_demo_references_contract"
+  }
+}

@@ -1,0 +1,913 @@
+{
+  "schema": "readerlab.skill-block-reading.v1",
+  "package": "gstack",
+  "skill": "benchmark-models",
+  "guide": "这个 Skill 解决的是“该用哪个模型”不能靠感觉判断的问题。它用同一份 prompt 横向比较 Claude、GPT/Codex CLI 和 Gemini，并把认证状态、延迟、token、成本和可选质量评分放到同一条证据链里。阅读主线是：先看通用 preamble 如何建立运行边界，再看 plan mode、首次引导、artifacts、telemetry 等机制约束，最后进入真正的 `/benchmark-models` 六步流程：定位二进制、选择 prompt、选择 provider、决定 judge、运行 benchmark、解释并保存结果。",
+  "blocks": [
+    {
+      "block_id": "benchmark-models-0001-frontmatter",
+      "source_hash": "5ca2b49435e440067e42c61682a7ac10174e7451712ab85fed232606b9385b15",
+      "status": "translated",
+      "translation": "---\nname: benchmark-models\npreamble-tier: 1\nversion: 1.0.0\ndescription: 为 gstack skills 做跨模型基准评测。 (gstack)\ntriggers:\n  - cross model benchmark\n  - compare claude gpt gemini\n  - benchmark skill across models\n  - which model should I use\nallowed-tools:\n  - Bash\n  - Read\n  - AskUserQuestion\n---"
+    },
+    {
+      "block_id": "benchmark-models-0002-paragraph",
+      "source_hash": "70095564d0e603b8925783b6d432eb4d22cddba593a021bb8b5178b81372f7fb",
+      "status": "translated",
+      "translation": "<!-- 从 SKILL.md.tmpl 自动生成，不要直接编辑 -->\n<!-- 重新生成：bun run gen:skill-docs -->"
+    },
+    {
+      "block_id": "benchmark-models-0003-heading",
+      "source_hash": "b9eb244df6d65cdc14b6ba1b17a529a9e8a7f8eec8802dc5799ee0905d0d5b5a",
+      "status": "translated",
+      "translation": "## 什么时候调用这个 Skill"
+    },
+    {
+      "block_id": "benchmark-models-0004-paragraph",
+      "source_hash": "763b8a04eb7b551fe989c8b7af2a319a7a9e714b07523894c715b4ad6c721b01",
+      "status": "translated",
+      "translation": "把同一份 prompt 并排交给 Claude、GPT（通过 Codex CLI）和 Gemini，比较延迟、token、成本，并可选用 LLM judge 比较质量。它用数据回答“哪个模型对这个 skill 实际最好？”，而不是凭感觉判断。它不同于 `/benchmark`，后者衡量网页性能。适用场景包括：基准评测模型、比较模型、判断某个任务最适合哪个模型、做跨模型比较或模型横评。"
+    },
+    {
+      "block_id": "benchmark-models-0005-paragraph",
+      "source_hash": "1684abed8e10ff52e9b9e8430b2969b11f4afceb4d4dc807f364310f0ecb660d",
+      "status": "translated",
+      "translation": "语音触发词（语音转文字别名）：\"compare models\"、\"model shootout\"、\"which model is best\"。"
+    },
+    {
+      "block_id": "benchmark-models-0006-heading",
+      "source_hash": "63b185863bdd74adeee3495d5171110bb744127c4706b081f4123d501e07b66c",
+      "status": "translated",
+      "translation": "## Preamble（先运行）"
+    },
+    {
+      "block_id": "benchmark-models-0007-code-block",
+      "source_hash": "791643b2dc1dc38659511adf3e5ed19868f64c0d39bea7f349b70f40f2450bf2",
+      "status": "translated",
+      "translation": "```bash\n_UPD=$(~/.claude/skills/gstack/bin/gstack-update-check 2>/dev/null || .claude/skills/gstack/bin/gstack-update-check 2>/dev/null || true)\n[ -n \"$_UPD\" ] && echo \"$_UPD\" || true\nmkdir -p ~/.gstack/sessions\ntouch ~/.gstack/sessions/\"$PPID\"\n_SESSIONS=$(find ~/.gstack/sessions -mmin -120 -type f 2>/dev/null | wc -l | tr -d ' ')\nfind ~/.gstack/sessions -mmin +120 -type f -exec rm {} + 2>/dev/null || true\n_PROACTIVE=$(~/.claude/skills/gstack/bin/gstack-config get proactive 2>/dev/null || echo \"true\")\n_PROACTIVE_PROMPTED=$([ -f ~/.gstack/.proactive-prompted ] && echo \"yes\" || echo \"no\")\n_BRANCH=$(git branch --show-current 2>/dev/null || echo \"unknown\")\necho \"BRANCH: $_BRANCH\"\n_SKILL_PREFIX=$(~/.claude/skills/gstack/bin/gstack-config get skill_prefix 2>/dev/null || echo \"false\")\necho \"PROACTIVE: $_PROACTIVE\"\necho \"PROACTIVE_PROMPTED: $_PROACTIVE_PROMPTED\"\necho \"SKILL_PREFIX: $_SKILL_PREFIX\"\nsource <(~/.claude/skills/gstack/bin/gstack-repo-mode 2>/dev/null) || true\nREPO_MODE=${REPO_MODE:-unknown}\necho \"REPO_MODE: $REPO_MODE\"\n_SESSION_KIND=$(~/.claude/skills/gstack/bin/gstack-session-kind 2>/dev/null || echo \"interactive\")\ncase \"$_SESSION_KIND\" in spawned|headless|interactive) ;; *) _SESSION_KIND=\"interactive\" ;; esac\necho \"SESSION_KIND: $_SESSION_KIND\"\n# Conductor host：AskUserQuestion 在这里不可靠（native 被禁用，MCP\n# 变体也不稳定），所以 skills 会把决策渲染成文字，而不是调用\n# tool。用 !headless 做门控，这样 Conductor 内部的 eval/CI 运行（GSTACK_HEADLESS）\n# 仍然会 BLOCK，而不是把文字输出给不存在的接收者。\nif [ \"$_SESSION_KIND\" != \"headless\" ] && { [ -n \"${CONDUCTOR_WORKSPACE_PATH:-}\" ] || [ -n \"${CONDUCTOR_PORT:-}\" ]; }; then\n  echo \"CONDUCTOR_SESSION: true\"\nfi\n_ACTIVATED=$([ -f ~/.gstack/.activated ] && echo \"yes\" || echo \"no\")\n_FIRST_LOOP_SHOWN=$([ -f ~/.gstack/.first-loop-tip-shown ] && echo \"yes\" || echo \"no\")\necho \"ACTIVATED: $_ACTIVATED\"\necho \"FIRST_LOOP_SHOWN: $_FIRST_LOOP_SHOWN\"\n# 首次运行项目检测：只在第一次 skill 运行时执行检测器\n# (ACTIVATED=no, interactive) so it stays off the hot path for every run after.\n_FIRST_TASK=\"\"\nif [ \"$_ACTIVATED\" = \"no\" ] && [ \"$_SESSION_KIND\" != \"headless\" ]; then\n  _FIRST_TASK=$(~/.claude/skills/gstack/bin/gstack-first-task-detect 2>/dev/null || true)\nfi\necho \"FIRST_TASK: $_FIRST_TASK\"\n_LAKE_SEEN=$([ -f ~/.gstack/.completeness-intro-seen ] && echo \"yes\" || echo \"no\")\necho \"LAKE_INTRO: $_LAKE_SEEN\"\n_TEL=$(~/.claude/skills/gstack/bin/gstack-config get telemetry 2>/dev/null || true)\n_TEL_PROMPTED=$([ -f ~/.gstack/.telemetry-prompted ] && echo \"yes\" || echo \"no\")\n_TEL_START=$(date +%s)\n_SESSION_ID=\"$$-$(date +%s)\"\necho \"TELEMETRY: ${_TEL:-off}\"\necho \"TEL_PROMPTED: $_TEL_PROMPTED\"\n_EXPLAIN_LEVEL=$(~/.claude/skills/gstack/bin/gstack-config get explain_level 2>/dev/null || echo \"default\")\nif [ \"$_EXPLAIN_LEVEL\" != \"default\" ] && [ \"$_EXPLAIN_LEVEL\" != \"terse\" ]; then _EXPLAIN_LEVEL=\"default\"; fi\necho \"EXPLAIN_LEVEL: $_EXPLAIN_LEVEL\"\n_QUESTION_TUNING=$(~/.claude/skills/gstack/bin/gstack-config get question_tuning 2>/dev/null || echo \"false\")\necho \"QUESTION_TUNING: $_QUESTION_TUNING\"\nmkdir -p ~/.gstack/analytics\nif [ \"$_TEL\" != \"off\" ]; then\necho '{\"skill\":\"benchmark-models\",\"ts\":\"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'\",\"repo\":\"'$(_repo=$(basename \"$(git rev-parse --show-toplevel 2>/dev/null)\" 2>/dev/null | tr -cd 'a-zA-Z0-9._-'); echo \"${_repo:-unknown}\")'\"}'  >> ~/.gstack/analytics/skill-usage.jsonl 2>/dev/null || true\nfi\nfor _PF in $(find ~/.gstack/analytics -maxdepth 1 -name '.pending-*' 2>/dev/null); do\n  if [ -f \"$_PF\" ]; then\n    if [ \"$_TEL\" != \"off\" ] && [ -x \"~/.claude/skills/gstack/bin/gstack-telemetry-log\" ]; then\n      ~/.claude/skills/gstack/bin/gstack-telemetry-log --event-type skill_run --skill _pending_finalize --outcome unknown --session-id \"$_SESSION_ID\" 2>/dev/null || true\n    fi\n    rm -f \"$_PF\" 2>/dev/null || true\n  fi\n  break\ndone\neval \"$(~/.claude/skills/gstack/bin/gstack-slug 2>/dev/null)\" 2>/dev/null || true\n_LEARN_FILE=\"${GSTACK_HOME:-$HOME/.gstack}/projects/${SLUG:-unknown}/learnings.jsonl\"\nif [ -f \"$_LEARN_FILE\" ]; then\n  _LEARN_COUNT=$(wc -l < \"$_LEARN_FILE\" 2>/dev/null | tr -d ' ')\n  echo \"LEARNINGS: $_LEARN_COUNT entries loaded\"\n  if [ \"$_LEARN_COUNT\" -gt 5 ] 2>/dev/null; then\n    ~/.claude/skills/gstack/bin/gstack-learnings-search --limit 3 2>/dev/null || true\n  fi\nelse\n  echo \"LEARNINGS: 0\"\nfi\n~/.claude/skills/gstack/bin/gstack-timeline-log '{\"skill\":\"benchmark-models\",\"event\":\"started\",\"branch\":\"'\"$_BRANCH\"'\",\"session\":\"'\"$_SESSION_ID\"'\"}' 2>/dev/null &\n_HAS_ROUTING=\"no\"\nif [ -f CLAUDE.md ] && grep -q \"## Skill routing\" CLAUDE.md 2>/dev/null; then\n  _HAS_ROUTING=\"yes\"\nfi\n_ROUTING_DECLINED=$(~/.claude/skills/gstack/bin/gstack-config get routing_declined 2>/dev/null || echo \"false\")\necho \"HAS_ROUTING: $_HAS_ROUTING\"\necho \"ROUTING_DECLINED: $_ROUTING_DECLINED\"\n_VENDORED=\"no\"\nif [ -d \".claude/skills/gstack\" ] && [ ! -L \".claude/skills/gstack\" ]; then\n  if [ -f \".claude/skills/gstack/VERSION\" ] || [ -d \".claude/skills/gstack/.git\" ]; then\n    _VENDORED=\"yes\"\n  fi\nfi\necho \"VENDORED_GSTACK: $_VENDORED\"\necho \"MODEL_OVERLAY: claude\"\n_CHECKPOINT_MODE=$(~/.claude/skills/gstack/bin/gstack-config get checkpoint_mode 2>/dev/null || echo \"explicit\")\n_CHECKPOINT_PUSH=$(~/.claude/skills/gstack/bin/gstack-config get checkpoint_push 2>/dev/null || echo \"false\")\necho \"CHECKPOINT_MODE: $_CHECKPOINT_MODE\"\necho \"CHECKPOINT_PUSH: $_CHECKPOINT_PUSH\"\n# Plan-mode hint for skills like /spec that branch behavior on plan-mode state.\n# Claude Code 会通过 system reminders 暴露 plan mode；这里尽力从\n# CLAUDE_PLAN_FILE（harness 在 plan mode 激活时设置）检测，并\n# 回退为 \"inactive\"。Codex host 和 Claude execution mode 都会得到\n# inactive，这是安全默认值（默认使用 file+execute pipeline）。\nif [ -n \"${CLAUDE_PLAN_FILE:-}${GSTACK_PLAN_MODE_FORCE:-}\" ]; then\n  export GSTACK_PLAN_MODE=\"active\"\nelif [ \"${GSTACK_PLAN_MODE:-}\" = \"active\" ]; then\n  export GSTACK_PLAN_MODE=\"active\"\nelse\n  export GSTACK_PLAN_MODE=\"inactive\"\nfi\necho \"GSTACK_PLAN_MODE: $GSTACK_PLAN_MODE\"\n[ -n \"$OPENCLAW_SESSION\" ] && echo \"SPAWNED_SESSION: true\" || true\n```"
+    },
+    {
+      "block_id": "benchmark-models-0008-heading",
+      "source_hash": "3202d880057aad792ddad929fb6e3b619713fa780359a77f8c65b13e64fd7af9",
+      "status": "translated",
+      "translation": "## Plan Mode 中的安全操作"
+    },
+    {
+      "block_id": "benchmark-models-0009-paragraph",
+      "source_hash": "9a3b6c210f6d590191797ab25d38666bbabaef009cc7f262ff839cf449863d7e",
+      "status": "translated",
+      "translation": "在 plan mode 中，以下操作允许执行，因为它们会为计划提供依据：`$B`、`$D`、`codex exec`/`codex review`、写入 `~/.gstack/`、写入计划文件，以及对生成产物执行 `open`。"
+    },
+    {
+      "block_id": "benchmark-models-0010-heading",
+      "source_hash": "239110f127baf80e15415997d8270285fa44abfd30038951c5cbfa91510c07fc",
+      "status": "translated",
+      "translation": "## Plan Mode 中调用 Skill"
+    },
+    {
+      "block_id": "benchmark-models-0011-paragraph",
+      "source_hash": "e916305ddda46f9a0abc23249ad35a9f29730468c5ddad22e19bac14b4b733ac",
+      "status": "translated",
+      "translation": "如果用户在 plan mode 中调用某个 skill，该 skill 优先于通用 plan mode 行为。**把 skill 文件当作可执行指令，而不是参考资料。** 从 Step 0 开始逐步执行；第一次 AskUserQuestion 是工作流进入 plan mode 的动作，不违反 plan mode。AskUserQuestion（任何变体，包括 `mcp__*__AskUserQuestion` 或原生工具；参见 “AskUserQuestion Format -> Tool resolution”）满足 plan mode 的回合结束要求。如果 AskUserQuestion 不可用或调用失败，按 AskUserQuestion Format 的失败回退处理：`headless` -> BLOCKED；`interactive` -> prose fallback（同样满足回合结束要求）。遇到 STOP 点必须立即停止。不要继续工作流，也不要在此处调用 ExitPlanMode。标记为 “PLAN MODE EXCEPTION - ALWAYS RUN” 的命令要执行。只有 skill 工作流完成后，或用户要求取消 skill / 离开 plan mode 时，才调用 ExitPlanMode。"
+    },
+    {
+      "block_id": "benchmark-models-0012-paragraph",
+      "source_hash": "290644d69ce75f8efd870ae5b1f4beaa60abee6126b314692d452b7989858569",
+      "status": "translated",
+      "translation": "如果 `PROACTIVE` 是 `\"false\"`，不要自动调用 skill，也不要主动建议 skill。如果某个 skill 看起来有帮助，只询问用户：“我觉得 /skillname 可能有帮助，要我运行它吗？”"
+    },
+    {
+      "block_id": "benchmark-models-0013-paragraph",
+      "source_hash": "885973bcb57ce30cf97be2c9081a1af3410e88279c77d92ebdfd8a9e9994890c",
+      "status": "translated",
+      "translation": "如果 `SKILL_PREFIX` 是 `\"true\"`，建议或调用 `/gstack-*` 形式的名称。磁盘路径仍保持为 `~/.claude/skills/gstack/[skill-name]/SKILL.md`。"
+    },
+    {
+      "block_id": "benchmark-models-0014-paragraph",
+      "source_hash": "1a160e9abe3f2a287ff6a89b79c75363ebf60e446cf3836c3d147d422fe6fd23",
+      "status": "translated",
+      "translation": "如果输出显示 `UPGRADE_AVAILABLE <old> <new>`：读取 `~/.claude/skills/gstack/gstack-upgrade/SKILL.md`，并遵循 “Inline upgrade flow”。如果已配置自动升级，就自动升级；否则用包含 4 个选项的 AskUserQuestion 询问；如果用户拒绝，则写入 snooze 状态。"
+    },
+    {
+      "block_id": "benchmark-models-0015-paragraph",
+      "source_hash": "b998deba3c7b80dbaeb39ac912509a4f3cb1f2876009f2e6ecb1282b7fbbe817",
+      "status": "translated",
+      "translation": "如果输出显示 `JUST_UPGRADED <from> <to>`：打印“正在运行 gstack v{to}（刚刚已更新）”。如果 `SPAWNED_SESSION` 为 true，跳过功能发现。"
+    },
+    {
+      "block_id": "benchmark-models-0016-paragraph",
+      "source_hash": "87d48454684364c0a77bf8457cb9977e885a27f9fa840bd5df05da259231f2d5",
+      "status": "translated",
+      "translation": "功能发现：每个会话最多提示一次。\n- 如果缺少 `~/.claude/skills/gstack/.feature-prompted-continuous-checkpoint`：用 AskUserQuestion 询问是否开启 Continuous checkpoint 自动提交。如果用户接受，运行 `~/.claude/skills/gstack/bin/gstack-config set checkpoint_mode continuous`。无论结果如何，都 touch 标记文件。\n- 如果缺少 `~/.claude/skills/gstack/.feature-prompted-model-overlay`：告知用户“Model overlays 已启用。MODEL_OVERLAY 会显示补丁。”无论结果如何，都 touch 标记文件。"
+    },
+    {
+      "block_id": "benchmark-models-0017-paragraph",
+      "source_hash": "2383ebcc86083d85ac5e7531fb3a9066a1402d984c47da6810b6911bc3d192d1",
+      "status": "translated",
+      "translation": "升级提示处理完后，继续原工作流。"
+    },
+    {
+      "block_id": "benchmark-models-0018-paragraph",
+      "source_hash": "41b1cd7d34aae24c172c479d1e25661ae94672fdee796ee29beebbc7928fd84f",
+      "status": "translated",
+      "translation": "如果 `WRITING_STYLE_PENDING` 是 `yes`：就写作风格询问一次："
+    },
+    {
+      "block_id": "benchmark-models-0019-paragraph",
+      "source_hash": "ec0ef0ebfb8c3cd78cd790dd97dc7687cfd4b375c42742a0c7f4049970048381",
+      "status": "translated",
+      "translation": "> v1 prompts 更简单：首次出现术语时解释、问题围绕结果组织、文字更短。保留默认值，还是恢复 terse？"
+    },
+    {
+      "block_id": "benchmark-models-0020-paragraph",
+      "source_hash": "932b800bc0f52bb2199e1b54a43f9d718611a8633100ecf6b664a235b8851907",
+      "status": "translated",
+      "translation": "选项：\n- A) 保留新的默认值（推荐，好的写法对所有人都有帮助）\n- B) 恢复 V0 文风，设置 `explain_level: terse`"
+    },
+    {
+      "block_id": "benchmark-models-0021-paragraph",
+      "source_hash": "576c58d79465dbdf25629ee69e27aa5b23faa72abb64f1d3727eff50646eb950",
+      "status": "translated",
+      "translation": "如果选择 A：保持 `explain_level` 未设置（默认是 `default`）。\n如果选择 B：运行 `~/.claude/skills/gstack/bin/gstack-config set explain_level terse`。"
+    },
+    {
+      "block_id": "benchmark-models-0022-paragraph",
+      "source_hash": "bdba758df114204973d141202d452863a6c7146b58c5428896aa87eda78d21e0",
+      "status": "translated",
+      "translation": "无论选择什么，都要运行："
+    },
+    {
+      "block_id": "benchmark-models-0023-code-block",
+      "source_hash": "f7546f65bad271f93e2e9a51f95f54cdc5c96ef3bc689ae5343cba2ae43c4f85",
+      "status": "translated",
+      "translation": "```bash\nrm -f ~/.gstack/.writing-style-prompt-pending\ntouch ~/.gstack/.writing-style-prompted\n```"
+    },
+    {
+      "block_id": "benchmark-models-0024-paragraph",
+      "source_hash": "4689987bfeb3f4d2244b003dbe5850128404d0b01988ef2b73dd88caa9671428",
+      "status": "translated",
+      "translation": "如果 `WRITING_STYLE_PENDING` 是 `no`，跳过。"
+    },
+    {
+      "block_id": "benchmark-models-0025-paragraph",
+      "source_hash": "3070366727c055efc95d138ca1890ecaaa421375f512b8d2a3e9081cd0f9f8ca",
+      "status": "translated",
+      "translation": "如果 `LAKE_INTRO` 是 `no`：说明“gstack 遵循 **Boil the Ocean** 原则：当 AI 让边际成本接近零时，就把事情完整做完。更多信息：https://garryslist.org/posts/boil-the-ocean”，并询问是否打开："
+    },
+    {
+      "block_id": "benchmark-models-0026-code-block",
+      "source_hash": "bffcc824e63bc1f8f2a35384c726c128873da729e9702db53ca0006475bf1511",
+      "status": "translated",
+      "translation": "```bash\nopen https://garryslist.org/posts/boil-the-ocean\ntouch ~/.gstack/.completeness-intro-seen\n```"
+    },
+    {
+      "block_id": "benchmark-models-0027-paragraph",
+      "source_hash": "b8ff8939e7ba81000d8b812415f9566d4152f47576abdb114aba800b0e1687c3",
+      "status": "translated",
+      "translation": "只有用户同意时才运行 `open`。始终运行 `touch`。"
+    },
+    {
+      "block_id": "benchmark-models-0028-paragraph",
+      "source_hash": "f4625eb928edb6ca458e9c5f80a9627e52f2cbce52f459e20e701e981a7bcadd",
+      "status": "translated",
+      "translation": "如果 `TEL_PROMPTED` 是 `no` 且 `LAKE_INTRO` 是 `yes`：通过 AskUserQuestion 询问一次 telemetry："
+    },
+    {
+      "block_id": "benchmark-models-0029-paragraph",
+      "source_hash": "aae80c47beff8b8fb246524f1080c82f1f12e9559287c92fbaa7a3461bdc30f1",
+      "status": "translated",
+      "translation": "> 帮助 gstack 变得更好。只分享使用数据：skill、耗时、崩溃、稳定设备 ID。不包含代码或文件路径。仓库名只会记录在本地，上传前会被移除。"
+    },
+    {
+      "block_id": "benchmark-models-0030-paragraph",
+      "source_hash": "d3c66c7356854c6fb53c54a532a454ac3abcff0bcae4bcacd034117b8ade1abe",
+      "status": "translated",
+      "translation": "选项：\n- A) 帮助 gstack 变得更好！（推荐）\n- B) 不用了，谢谢"
+    },
+    {
+      "block_id": "benchmark-models-0031-paragraph",
+      "source_hash": "cdfdbed931341989c499ecdb9860dd12c73bce5c965e382900c27e809ffbd224",
+      "status": "translated",
+      "translation": "如果选择 A：运行 `~/.claude/skills/gstack/bin/gstack-config set telemetry community`。"
+    },
+    {
+      "block_id": "benchmark-models-0032-paragraph",
+      "source_hash": "45249ffb165663727f8bca2a70256b8a9f0ae7fb3d36c470a25a8ea1034f795e",
+      "status": "translated",
+      "translation": "如果选择 B：继续追问："
+    },
+    {
+      "block_id": "benchmark-models-0033-paragraph",
+      "source_hash": "3ba94e947ce25819929356bc5cea9a6721cbeb1d5f595c326fb775b7db8d78fb",
+      "status": "translated",
+      "translation": "> Anonymous mode 只发送聚合使用情况，不发送唯一 ID。"
+    },
+    {
+      "block_id": "benchmark-models-0034-paragraph",
+      "source_hash": "6bcd64ad49441fb26270dad89f57890e9d97f4d055abc7089253382fdfb8a092",
+      "status": "translated",
+      "translation": "选项：\n- A) 可以，anonymous 没问题\n- B) 不用了，完全关闭"
+    },
+    {
+      "block_id": "benchmark-models-0035-paragraph",
+      "source_hash": "487b9771bb23619c7e33181068c8ef15f8c9b557325342c0b73dbfa081841184",
+      "status": "translated",
+      "translation": "如果 B -> A：运行 `~/.claude/skills/gstack/bin/gstack-config set telemetry anonymous`。\n如果 B -> B：运行 `~/.claude/skills/gstack/bin/gstack-config set telemetry off`。"
+    },
+    {
+      "block_id": "benchmark-models-0036-paragraph",
+      "source_hash": "7a2d7396c8aa0ab9a12f2519ce33846b0b282119d5151584cc9a6cca17907d4d",
+      "status": "translated",
+      "translation": "始终运行："
+    },
+    {
+      "block_id": "benchmark-models-0037-code-block",
+      "source_hash": "924b6f973e889327e680f1b4857d85d233ef0062487cb09dc676db34a9ac1efe",
+      "status": "translated",
+      "translation": "```bash\ntouch ~/.gstack/.telemetry-prompted\n```"
+    },
+    {
+      "block_id": "benchmark-models-0038-paragraph",
+      "source_hash": "fab5bbfba3add346f3b599b6e32b3a4c5b52c28b5cb5101392228004b15d2b7c",
+      "status": "translated",
+      "translation": "如果 `TEL_PROMPTED` 是 `yes`，跳过。"
+    },
+    {
+      "block_id": "benchmark-models-0039-paragraph",
+      "source_hash": "8feaddb5eb76a038730de7e4b0218272a03cc2e483aa9f9c8738e63fda1e1631",
+      "status": "translated",
+      "translation": "如果 `PROACTIVE_PROMPTED` 是 `no` 且 `TEL_PROMPTED` 是 `yes`：询问一次："
+    },
+    {
+      "block_id": "benchmark-models-0040-paragraph",
+      "source_hash": "0141cbe6d8b69571eb284468175f03e9f7682123a57e81507bfabf185fabe2f1",
+      "status": "translated",
+      "translation": "> 是否允许 gstack 主动建议 skill？例如对“这样能用吗？”建议 /qa，或对 bug 建议 /investigate。"
+    },
+    {
+      "block_id": "benchmark-models-0041-paragraph",
+      "source_hash": "8a747a1915b37d167ba2253689d126101463f320aa98d14a04190982bd48efd4",
+      "status": "translated",
+      "translation": "选项：\n- A) 保持开启（推荐）\n- B) 关闭，我会自己输入 /commands"
+    },
+    {
+      "block_id": "benchmark-models-0042-paragraph",
+      "source_hash": "5d69103da91d9b818a3d8fe6b7effcb8d3d2483d07fc84d51e3a47f6066e5d7e",
+      "status": "translated",
+      "translation": "如果选择 A：运行 `~/.claude/skills/gstack/bin/gstack-config set proactive true`。\n如果选择 B：运行 `~/.claude/skills/gstack/bin/gstack-config set proactive false`。"
+    },
+    {
+      "block_id": "benchmark-models-0043-paragraph",
+      "source_hash": "7a2d7396c8aa0ab9a12f2519ce33846b0b282119d5151584cc9a6cca17907d4d",
+      "status": "translated",
+      "translation": "始终运行："
+    },
+    {
+      "block_id": "benchmark-models-0044-code-block",
+      "source_hash": "68fa40904e4be2b145a527c8ad917d0e10b09cc20fd3272a629926187e4e49df",
+      "status": "translated",
+      "translation": "```bash\ntouch ~/.gstack/.proactive-prompted\n```"
+    },
+    {
+      "block_id": "benchmark-models-0045-paragraph",
+      "source_hash": "d49db5750fc6bcbf797d6cd2344760dd2fa7018726be3cf02e7d10977be6c63a",
+      "status": "translated",
+      "translation": "如果 `PROACTIVE_PROMPTED` 是 `yes`，跳过。"
+    },
+    {
+      "block_id": "benchmark-models-0046-heading",
+      "source_hash": "fb3db60850ce4fb5bf9f6b2d4949de09ee65afbb0a6e162e64f51e7e6a964a5a",
+      "status": "translated",
+      "translation": "## 首次运行引导（一次性）"
+    },
+    {
+      "block_id": "benchmark-models-0047-paragraph",
+      "source_hash": "1bc6b22470fc6a54f89de0d2f65a61185b2790b97e3bf0952a8827bf96ea564f",
+      "status": "translated",
+      "translation": "如果 `ACTIVATED` 是 `no`（这台机器首次运行 skill），且 preamble 打印了非空的 `FIRST_TASK:` 值，并且该值不是 `nongit`：根据 token 显示一行很短的、贴合项目的提示，然后继续用户原本要求的任务，不要中断用户任务。token 映射为：`greenfield` -> “新仓库，先用 `/spec` 或 `/office-hours` 定形。”；`code_node`/`code_python`/`code_rust`/`code_go`/`code_ruby`/`code_ios` -> “这里有代码；用 `/qa` 看它是否能跑，或在不对劲时用 `/investigate`。”；`branch_ahead` -> “这个分支有尚未交付的工作，先 `/review` 再 `/ship`。”；`dirty_default` -> “有未提交改动，提交前先 `/review`。”；`clean_default` -> “选择一个：`/spec`、`/investigate` 或 `/qa`。” 然后用实际看到的 token 替换 TASK_TOKEN，尽力运行，并标记为已激活："
+    },
+    {
+      "block_id": "benchmark-models-0048-code-block",
+      "source_hash": "1650fb3aa8b1e0d53dce57c233159bc46d4524264e147e9a7fe54eb0b58d3555",
+      "status": "translated",
+      "translation": "```bash\n~/.claude/skills/gstack/bin/gstack-telemetry-log --event-type first_task_scaffold_shown --skill \"TASK_TOKEN\" --outcome shown 2>/dev/null || true\ntouch ~/.gstack/.activated 2>/dev/null || true\n```"
+    },
+    {
+      "block_id": "benchmark-models-0049-paragraph",
+      "source_hash": "ce12d94707c89744c86cce359d18f72203e6c3e147a38807a32706238bce0d0c",
+      "status": "translated",
+      "translation": "如果 `ACTIVATED` 是 `no`，但 `FIRST_TASK:` 为空或为 `nongit`（headless、非 git，或没有可行动内容）：什么也不显示，只运行 `touch ~/.gstack/.activated 2>/dev/null || true`。"
+    },
+    {
+      "block_id": "benchmark-models-0050-paragraph",
+      "source_hash": "b18e451dd9f7cd101eb08bfc7bc4930a5ca1e83755d123d3951c509743315380",
+      "status": "translated",
+      "translation": "否则，如果 `ACTIVATED` 是 `yes` 且 `FIRST_LOOP_SHOWN` 是 `no`：只提示一次作为提醒，然后继续："
+    },
+    {
+      "block_id": "benchmark-models-0051-paragraph",
+      "source_hash": "ba800bede61836206c08fbed03d508faccba07629775649c9ebadfeb8c34e746",
+      "status": "translated",
+      "translation": "> 提示：gstack 在你完成一个闭环时最有价值：**plan -> review -> ship**。一个常见的首次闭环是：用 `/office-hours` 或 `/spec` 定形，用 `/plan-eng-review` 锁定方案，然后 `/ship`。"
+    },
+    {
+      "block_id": "benchmark-models-0052-paragraph",
+      "source_hash": "7d53816e8ba164fe01156c134ed949fb508efd7419d2f4f8fef731a5cef563f4",
+      "status": "translated",
+      "translation": "然后运行 `touch ~/.gstack/.first-loop-tip-shown 2>/dev/null || true`。"
+    },
+    {
+      "block_id": "benchmark-models-0053-paragraph",
+      "source_hash": "9559604cc2833f85e9f2aa9ecdef5debc504c15c387a0d0be749741a7c43e092",
+      "status": "translated",
+      "translation": "如果 `ACTIVATED` 和 `FIRST_LOOP_SHOWN` 都是 `yes`，跳过本节。"
+    },
+    {
+      "block_id": "benchmark-models-0054-paragraph",
+      "source_hash": "105a8e694c015aec6087bf3a0aa923753370de19257f98e0b49b6ca0ed596a0b",
+      "status": "translated",
+      "translation": "如果 `HAS_ROUTING` 是 `no`，`ROUTING_DECLINED` 是 `false`，且 `PROACTIVE_PROMPTED` 是 `yes`：\n检查项目根目录是否存在 CLAUDE.md 文件。如果不存在，就创建它。"
+    },
+    {
+      "block_id": "benchmark-models-0055-paragraph",
+      "source_hash": "1144df04fa4faf8fb38a7d6fdbf82b47fd83d14ca2905facfc9e203eb2695915",
+      "status": "translated",
+      "translation": "使用 AskUserQuestion："
+    },
+    {
+      "block_id": "benchmark-models-0056-paragraph",
+      "source_hash": "a5706ba8222aea1fbb72917987d1dd5f974d1f3557a9ebc5264acd83c8273ee8",
+      "status": "translated",
+      "translation": "> 当项目的 CLAUDE.md 包含 skill routing rules 时，gstack 的效果最好。"
+    },
+    {
+      "block_id": "benchmark-models-0057-paragraph",
+      "source_hash": "14b385643fcfaa0bbe92e71d71f8b5af084c8aef8ee5c0373eef2225daebc66e",
+      "status": "translated",
+      "translation": "选项：\n- A) 向 CLAUDE.md 添加 routing rules（推荐）\n- B) 不用了，我会手动调用 skill"
+    },
+    {
+      "block_id": "benchmark-models-0058-paragraph",
+      "source_hash": "fe67290b3c1987798373f7d058017defaa7f89a27efa1afa48e4f2c395ad7fc6",
+      "status": "translated",
+      "translation": "如果选择 A：把以下章节追加到 CLAUDE.md 末尾："
+    },
+    {
+      "block_id": "benchmark-models-0059-code-block",
+      "source_hash": "fef6e6b3ca29254e44b4b1f84a40fce96b8eb0068370dfd980167f932832bdc8",
+      "status": "translated",
+      "translation": "```markdown\n\n## Skill routing\n\nWhen the user's request matches an available skill, invoke it via the Skill tool. When in doubt, invoke the skill.\n\nKey routing rules:\n- Product ideas/brainstorming → invoke /office-hours\n- Strategy/scope → invoke /plan-ceo-review\n- Architecture → invoke /plan-eng-review\n- Design system/plan review → invoke /design-consultation or /plan-design-review\n- Full review pipeline → invoke /autoplan\n- Bugs/errors → invoke /investigate\n- QA/testing site behavior → invoke /qa or /qa-only\n- Code review/diff check → invoke /review\n- Visual polish → invoke /design-review\n- Ship/deploy/PR → invoke /ship or /land-and-deploy\n- Save progress → invoke /context-save\n- Resume context → invoke /context-restore\n- Author a backlog-ready spec/issue → invoke /spec\n```"
+    },
+    {
+      "block_id": "benchmark-models-0060-paragraph",
+      "source_hash": "a5c339a023162abcda46e4cf4580e79b1a67e815ba08c4ba61488a88c9f95ef6",
+      "status": "translated",
+      "translation": "然后提交改动：`git add CLAUDE.md && git commit -m \"chore: add gstack skill routing rules to CLAUDE.md\"`。"
+    },
+    {
+      "block_id": "benchmark-models-0061-paragraph",
+      "source_hash": "c916db33cde64b08a8cf03e34fda2d509e168b86b9fbf052ad686eab198131ea",
+      "status": "translated",
+      "translation": "如果选择 B：运行 `~/.claude/skills/gstack/bin/gstack-config set routing_declined true`，并说明以后可以用 `gstack-config set routing_declined false` 重新开启。"
+    },
+    {
+      "block_id": "benchmark-models-0062-paragraph",
+      "source_hash": "df94c54a64e15cf8b5116ac50d7eae233638d1e1079cf0e2e04247985643d7ff",
+      "status": "translated",
+      "translation": "每个项目只执行一次。如果 `HAS_ROUTING` 是 `yes` 或 `ROUTING_DECLINED` 是 `true`，跳过。"
+    },
+    {
+      "block_id": "benchmark-models-0063-paragraph",
+      "source_hash": "e4adc40f9c4a820507c5efc8e98d13be57fe0b2bac4e2026e7f2d311300859d0",
+      "status": "translated",
+      "translation": "如果 `VENDORED_GSTACK` 是 `yes`，除非 `~/.gstack/.vendoring-warned-$SLUG` 已存在，否则通过 AskUserQuestion 警告一次："
+    },
+    {
+      "block_id": "benchmark-models-0064-paragraph",
+      "source_hash": "1fd7fe156364cee23364f1ed631b02f3dc0bc4369aa0ae20fb8fe341a1aa8cff",
+      "status": "translated",
+      "translation": "> 这个项目把 gstack vendored 到 `.claude/skills/gstack/`。Vendoring 已废弃。\n> 要迁移到 team mode 吗？"
+    },
+    {
+      "block_id": "benchmark-models-0065-paragraph",
+      "source_hash": "00dfcec10c592d41a51c201f2cfc923f9a5042d65bbd578ce7d7feba1c1d43d9",
+      "status": "translated",
+      "translation": "选项：\n- A) 是，现在迁移到 team mode\n- B) 否，我自己处理"
+    },
+    {
+      "block_id": "benchmark-models-0066-paragraph",
+      "source_hash": "cf837eeaf159cac16f253fcfd743e9a32c4f7059ce6a629ccedcf45eab113288",
+      "status": "translated",
+      "translation": "如果选择 A：\n1. 运行 `git rm -r .claude/skills/gstack/`\n2. 运行 `echo '.claude/skills/gstack/' >> .gitignore`\n3. 运行 `~/.claude/skills/gstack/bin/gstack-team-init required`（或 `optional`）\n4. 运行 `git add .claude/ .gitignore CLAUDE.md && git commit -m \"chore: migrate gstack from vendored to team mode\"`\n5. 告诉用户：“完成。每位开发者现在运行：`cd ~/.claude/skills/gstack && ./setup --team`”"
+    },
+    {
+      "block_id": "benchmark-models-0067-paragraph",
+      "source_hash": "64a6b841c2c4f71d08956223517b6d7910689e65620238d7de52f91466396106",
+      "status": "translated",
+      "translation": "如果选择 B：说明“好的，vendored 副本的后续更新由你自己维护。”"
+    },
+    {
+      "block_id": "benchmark-models-0068-paragraph",
+      "source_hash": "bdba758df114204973d141202d452863a6c7146b58c5428896aa87eda78d21e0",
+      "status": "translated",
+      "translation": "无论选择什么，都要运行："
+    },
+    {
+      "block_id": "benchmark-models-0069-code-block",
+      "source_hash": "dacc22d0895e888c3e1ea8d8df1a96215c1082a06e3873e96c042c8c881ff797",
+      "status": "translated",
+      "translation": "```bash\neval \"$(~/.claude/skills/gstack/bin/gstack-slug 2>/dev/null)\" 2>/dev/null || true\ntouch ~/.gstack/.vendoring-warned-${SLUG:-unknown}\n```"
+    },
+    {
+      "block_id": "benchmark-models-0070-paragraph",
+      "source_hash": "5941c7b9f9ed5b4e050c866e1d9281fd8baf5aab04692ef743576efaddc570c2",
+      "status": "translated",
+      "translation": "如果标记文件已经存在，跳过。"
+    },
+    {
+      "block_id": "benchmark-models-0071-paragraph",
+      "source_hash": "59f277edcdd9f6c0108bb011c5d4c88e6b3b0ebc77acd3f7b0ed327782cb0c63",
+      "status": "translated",
+      "translation": "如果 `SPAWNED_SESSION` 是 `\"true\"`，说明你正在由 AI orchestrator（例如 OpenClaw）启动的会话中运行。在 spawned session 中：\n- 不要使用 AskUserQuestion 做交互式提示。自动选择推荐项。\n- 不要运行升级检查、telemetry 提示、routing 注入或 lake intro。\n- 专注完成任务，并用文字报告结果。\n- 以完成报告收尾：交付了什么、做了哪些决定、还有什么不确定。"
+    },
+    {
+      "block_id": "benchmark-models-0072-heading",
+      "source_hash": "b645ca4bdfed6631559f854e988ce5c54fe12409aa4b6d57f5dd67639c0dc4da",
+      "status": "translated",
+      "translation": "## Artifacts 同步（Skill 启动时）"
+    },
+    {
+      "block_id": "benchmark-models-0073-code-block",
+      "source_hash": "bb69f7819501f95d3de2b6fa4572d547651f734e07fe9f9f91ea0a95b16d4299",
+      "status": "translated",
+      "translation": "```bash\n_GSTACK_HOME=\"${GSTACK_HOME:-$HOME/.gstack}\"\n# 优先使用 v1.27.0.0 的 artifacts 文件；对于迁移脚本运行前正在升级的用户，回退到 brain 文件。\nif [ -f \"$HOME/.gstack-artifacts-remote.txt\" ]; then\n  _BRAIN_REMOTE_FILE=\"$HOME/.gstack-artifacts-remote.txt\"\nelse\n  _BRAIN_REMOTE_FILE=\"$HOME/.gstack-brain-remote.txt\"\nfi\n_BRAIN_SYNC_BIN=\"~/.claude/skills/gstack/bin/gstack-brain-sync\"\n_BRAIN_CONFIG_BIN=\"~/.claude/skills/gstack/bin/gstack-config\"\n\n# /sync-gbrain context-load：在 gbrain 可用时，教 agent 使用 gbrain。\n# 每个 worktree 的 pin：post-spike redesign 使用 kubectl 风格的 `.gbrain-source`，\n# 放在 git 顶层来限定查询范围。在 worktree 中寻找这个 pin（不是全局\n# 状态文件），这样打开没有 pin 的 worktree B 时，不会因为 worktree A 已经同步过\n# 就声称“已索引”。gbrain 未配置时为空字符串（对非 gbrain 用户零上下文成本）。\n_GBRAIN_CONFIG=\"$HOME/.gbrain/config.json\"\nif [ -f \"$_GBRAIN_CONFIG\" ] && command -v gbrain >/dev/null 2>&1; then\n  _GBRAIN_VERSION_OK=$(gbrain --version 2>/dev/null | grep -c '^gbrain ' || echo 0)\n  if [ \"$_GBRAIN_VERSION_OK\" -gt 0 ] 2>/dev/null; then\n    _GBRAIN_PIN_PATH=\"\"\n    _REPO_TOP=$(git rev-parse --show-toplevel 2>/dev/null || echo \"\")\n    if [ -n \"$_REPO_TOP\" ] && [ -f \"$_REPO_TOP/.gbrain-source\" ]; then\n      _GBRAIN_PIN_PATH=\"$_REPO_TOP/.gbrain-source\"\n    fi\n    if [ -n \"$_GBRAIN_PIN_PATH\" ]; then\n      echo \"GBrain configured. Prefer \\`gbrain search\\`/\\`gbrain query\\` over Grep for\"\n      echo \"semantic questions; use \\`gbrain code-def\\`/\\`code-refs\\`/\\`code-callers\\` for\"\n      echo \"symbol-aware code lookup. See \\\"## GBrain Search Guidance\\\" in CLAUDE.md.\"\n      echo \"Run /sync-gbrain to refresh.\"\n    else\n      echo \"GBrain configured but this worktree isn't pinned yet. Run \\`/sync-gbrain --full\\`\"\n      echo \"before relying on \\`gbrain search\\` for code questions in this worktree.\"\n      echo \"Falls back to Grep until pinned.\"\n    fi\n  fi\nfi\n\n_BRAIN_SYNC_MODE=$(\"$_BRAIN_CONFIG_BIN\" get artifacts_sync_mode 2>/dev/null || echo off)\n\n# Detect remote-MCP mode (Path 4 of /setup-gbrain). Local artifacts sync is\n# a no-op in remote mode; the brain server pulls from GitHub/GitLab on its\n# 用户自己的节奏。直接读取 claude.json，以保持这个 preamble 足够快（不\n# subprocess to claude CLI on every skill start).\n_GBRAIN_MCP_MODE=\"none\"\nif command -v jq >/dev/null 2>&1 && [ -f \"$HOME/.claude.json\" ]; then\n  _GBRAIN_MCP_TYPE=$(jq -r '.mcpServers.gbrain.type // .mcpServers.gbrain.transport // empty' \"$HOME/.claude.json\" 2>/dev/null)\n  case \"$_GBRAIN_MCP_TYPE\" in\n    url|http|sse) _GBRAIN_MCP_MODE=\"remote-http\" ;;\n    stdio) _GBRAIN_MCP_MODE=\"local-stdio\" ;;\n  esac\nfi\n\nif [ -f \"$_BRAIN_REMOTE_FILE\" ] && [ ! -d \"$_GSTACK_HOME/.git\" ] && [ \"$_BRAIN_SYNC_MODE\" = \"off\" ]; then\n  _BRAIN_NEW_URL=$(head -1 \"$_BRAIN_REMOTE_FILE\" 2>/dev/null | tr -d '[:space:]')\n  if [ -n \"$_BRAIN_NEW_URL\" ]; then\n    echo \"ARTIFACTS_SYNC: artifacts repo detected: $_BRAIN_NEW_URL\"\n    echo \"ARTIFACTS_SYNC: run 'gstack-brain-restore' to pull your cross-machine artifacts (or 'gstack-config set artifacts_sync_mode off' to dismiss forever)\"\n  fi\nfi\n\nif [ -d \"$_GSTACK_HOME/.git\" ] && [ \"$_BRAIN_SYNC_MODE\" != \"off\" ]; then\n  _BRAIN_LAST_PULL_FILE=\"$_GSTACK_HOME/.brain-last-pull\"\n  _BRAIN_NOW=$(date +%s)\n  _BRAIN_DO_PULL=1\n  if [ -f \"$_BRAIN_LAST_PULL_FILE\" ]; then\n    _BRAIN_LAST=$(cat \"$_BRAIN_LAST_PULL_FILE\" 2>/dev/null || echo 0)\n    _BRAIN_AGE=$(( _BRAIN_NOW - _BRAIN_LAST ))\n    [ \"$_BRAIN_AGE\" -lt 86400 ] && _BRAIN_DO_PULL=0\n  fi\n  if [ \"$_BRAIN_DO_PULL\" = \"1\" ]; then\n    ( cd \"$_GSTACK_HOME\" && git fetch origin >/dev/null 2>&1 && git merge --ff-only \"origin/$(git rev-parse --abbrev-ref HEAD)\" >/dev/null 2>&1 ) || true\n    echo \"$_BRAIN_NOW\" > \"$_BRAIN_LAST_PULL_FILE\"\n  fi\n  \"$_BRAIN_SYNC_BIN\" --once 2>/dev/null || true\nfi\n\nif [ \"$_GBRAIN_MCP_MODE\" = \"remote-http\" ]; then\n  # Remote-MCP 模式：本地 artifacts sync 是 no-op（brain admin 的服务器\n  # pulls from GitHub/GitLab). Show the user this is by design, not broken.\n  _GBRAIN_HOST=$(jq -r '.mcpServers.gbrain.url // empty' \"$HOME/.claude.json\" 2>/dev/null | sed -E 's|^https?://([^/:]+).*|\\1|')\n  echo \"ARTIFACTS_SYNC: remote-mode (managed by brain server ${_GBRAIN_HOST:-remote})\"\nelif [ -d \"$_GSTACK_HOME/.git\" ] && [ \"$_BRAIN_SYNC_MODE\" != \"off\" ]; then\n  _BRAIN_QUEUE_DEPTH=0\n  [ -f \"$_GSTACK_HOME/.brain-queue.jsonl\" ] && _BRAIN_QUEUE_DEPTH=$(wc -l < \"$_GSTACK_HOME/.brain-queue.jsonl\" | tr -d ' ')\n  _BRAIN_LAST_PUSH=\"never\"\n  [ -f \"$_GSTACK_HOME/.brain-last-push\" ] && _BRAIN_LAST_PUSH=$(cat \"$_GSTACK_HOME/.brain-last-push\" 2>/dev/null || echo never)\n  echo \"ARTIFACTS_SYNC: mode=$_BRAIN_SYNC_MODE | last_push=$_BRAIN_LAST_PUSH | queue=$_BRAIN_QUEUE_DEPTH\"\nelse\n  echo \"ARTIFACTS_SYNC: off\"\nfi\n```"
+    },
+    {
+      "block_id": "benchmark-models-0074-paragraph",
+      "source_hash": "e59a3c76f29ebb8985b1ca7bdd7e008a5e9c6ca8235bb23b3b4606d4f5ce762f",
+      "status": "translated",
+      "translation": "隐私停顿门：如果输出显示 `ARTIFACTS_SYNC: off`，`artifacts_sync_mode_prompted` 是 `false`，并且 gbrain 在 PATH 中或 `gbrain doctor --fast --json` 可运行，则询问一次："
+    },
+    {
+      "block_id": "benchmark-models-0075-paragraph",
+      "source_hash": "41d544d0c2a01bc69d43c94601ac5492187e170f0a4f37853a4ef7f7d86b7035",
+      "status": "translated",
+      "translation": "> gstack 可以把你的 artifacts（CEO plans、designs、reports）发布到一个私有 GitHub 仓库，由 GBrain 跨机器索引。要同步多少？"
+    },
+    {
+      "block_id": "benchmark-models-0076-paragraph",
+      "source_hash": "0dcfc20ebc416363ad991d5bf8ad95439434e4d7cfb051b1a83c9c72327b8853",
+      "status": "translated",
+      "translation": "选项：\n- A) allowlist 中的所有内容（推荐）\n- B) 只同步 artifacts\n- C) 拒绝，全部保留在本地"
+    },
+    {
+      "block_id": "benchmark-models-0077-paragraph",
+      "source_hash": "37a8d44537fa71b5129575e58c234f169fe8fee51db05e1d89717aae7cc42bf6",
+      "status": "translated",
+      "translation": "回答之后："
+    },
+    {
+      "block_id": "benchmark-models-0078-code-block",
+      "source_hash": "e25cbcbe6d38718a698ecff6079c1ac39de57f265ac207eb419274c6e672491b",
+      "status": "translated",
+      "translation": "```bash\n# Chosen mode: full | artifacts-only | off\n\"$_BRAIN_CONFIG_BIN\" set artifacts_sync_mode <choice>\n\"$_BRAIN_CONFIG_BIN\" set artifacts_sync_mode_prompted true\n```"
+    },
+    {
+      "block_id": "benchmark-models-0079-paragraph",
+      "source_hash": "cd13373da431efb3b210ea216087f9bff663362eb1cef4861bc588f393f8ec3d",
+      "status": "translated",
+      "translation": "如果选择 A/B 且缺少 `~/.gstack/.git`，询问是否运行 `gstack-artifacts-init`。不要因此阻塞 skill。"
+    },
+    {
+      "block_id": "benchmark-models-0080-paragraph",
+      "source_hash": "1d34cbb6bbfc5165595656496ca20c8a96f78d1126620d110a2ac6c32fa27785",
+      "status": "translated",
+      "translation": "在 skill 结束、telemetry 之前："
+    },
+    {
+      "block_id": "benchmark-models-0081-code-block",
+      "source_hash": "521cbd74f1629f3169e9920f1f617cdbd6ecbabd61f616546a6fe5743773d488",
+      "status": "translated",
+      "translation": "```bash\n\"~/.claude/skills/gstack/bin/gstack-brain-sync\" --discover-new 2>/dev/null || true\n\"~/.claude/skills/gstack/bin/gstack-brain-sync\" --once 2>/dev/null || true\n```"
+    },
+    {
+      "block_id": "benchmark-models-0082-heading",
+      "source_hash": "27beb03d0ae0560977b6d650ed049fccfe3beeb2918648f6849970e60587d97d",
+      "status": "translated",
+      "translation": "## 模型专用行为补丁（claude）"
+    },
+    {
+      "block_id": "benchmark-models-0083-paragraph",
+      "source_hash": "34816ad53bd405a11a5b7748b08a55768d9a7416b5b21753260d7d734b969db0",
+      "status": "translated",
+      "translation": "以下提示针对 claude 模型族调校。它们**从属于** skill 工作流、STOP 点、AskUserQuestion 门、plan-mode 安全规则和 /ship review gates。如果下面某条提示与 skill 指令冲突，以 skill 为准。把它们视为偏好，而不是规则。"
+    },
+    {
+      "block_id": "benchmark-models-0084-paragraph",
+      "source_hash": "983d67518ed3f31730a5e5dcddbf1c0f46c16203f4efa0559c87939c5c1b9b57",
+      "status": "translated",
+      "translation": "**待办清单纪律。** 执行多步骤计划时，每完成一个任务就单独标记完成。不要到最后批量标记。如果某个任务后来发现不需要做，就标记为 skipped，并用一句话说明原因。"
+    },
+    {
+      "block_id": "benchmark-models-0085-paragraph",
+      "source_hash": "1327fefabce8ff515512bac9ea6cbe4b7ceadc6a12b195fd6ebbbea18841277e",
+      "status": "translated",
+      "translation": "**重动作之前先说明思路。** 对复杂操作（重构、迁移、非平凡新功能），执行前先简要说明方法。这样用户可以用较低成本纠偏，而不是等做到一半才改方向。"
+    },
+    {
+      "block_id": "benchmark-models-0086-paragraph",
+      "source_hash": "e19afb5ebdcb47d075336a5366c80b9cfc8668d39227d0d0bd5a5828ce502d96",
+      "status": "translated",
+      "translation": "**优先使用专用工具，而不是 Bash。** 优先使用 Read、Edit、Write、Glob、Grep，而不是 shell 等价命令（cat、sed、find、grep）。专用工具成本更低，也更清晰。"
+    },
+    {
+      "block_id": "benchmark-models-0087-heading",
+      "source_hash": "8ed686f5bf26e6173204a9bd3c501d815909b4aaa46cd0915ac7597ece094798",
+      "status": "translated",
+      "translation": "## 表达方式"
+    },
+    {
+      "block_id": "benchmark-models-0088-paragraph",
+      "source_hash": "6903c44b1911327c9b9bb86291fef7379d58366508f4436fcd0341a900137a4e",
+      "status": "translated",
+      "translation": "表达要直接、具体，像 builder 对 builder 说话。说清文件、函数、命令和用户可见影响。不要填充废话。"
+    },
+    {
+      "block_id": "benchmark-models-0089-paragraph",
+      "source_hash": "4849c6b095b8342d90f25266d59a9f37c6e1591c5d73e21c859bd6e54660f71d",
+      "status": "translated",
+      "translation": "不要使用长破折号。不要使用 AI 腔词汇：delve、crucial、robust、comprehensive、nuanced、multifaceted。不要写得像公司公文或学术文。段落要短。结尾说明要做什么。"
+    },
+    {
+      "block_id": "benchmark-models-0090-paragraph",
+      "source_hash": "84bf7e8a742f8cd63c641dbd03e330a055e2356b2ab9695e7b738b79243b1536",
+      "status": "translated",
+      "translation": "用户拥有你没有的上下文。跨模型一致性只是推荐，不是决定。由用户决定。"
+    },
+    {
+      "block_id": "benchmark-models-0091-heading",
+      "source_hash": "ca3e1965517fe64c013ab73eb05391023331eba741d0c2149dc6fe06d66d1245",
+      "status": "translated",
+      "translation": "## 完成状态协议"
+    },
+    {
+      "block_id": "benchmark-models-0092-paragraph",
+      "source_hash": "819b02821022c0c3700d37cfb3a3e88754edf424a8eaa360bb976819387c3aaa",
+      "status": "translated",
+      "translation": "完成 skill 工作流时，使用以下状态之一报告：\n- **DONE**：已完成，并有证据。\n- **DONE_WITH_CONCERNS**：已完成，但列出顾虑。\n- **BLOCKED**：无法继续；说明阻塞点和已尝试内容。\n- **NEEDS_CONTEXT**：缺少信息；精确说明需要什么。"
+    },
+    {
+      "block_id": "benchmark-models-0093-paragraph",
+      "source_hash": "7166ab25cd3a09f9102137a58405c551481ec9fc2133afd7e03db5f0fd1b160b",
+      "status": "translated",
+      "translation": "失败 3 次后、遇到不确定的安全敏感改动时、或范围无法验证时，升级说明。格式：`STATUS`、`REASON`、`ATTEMPTED`、`RECOMMENDATION`。"
+    },
+    {
+      "block_id": "benchmark-models-0094-heading",
+      "source_hash": "434e832742b0079c34b19bc1cf169b4c5ff9d91200c6237c31bde515beac8a78",
+      "status": "translated",
+      "translation": "## 运行中的自我改进"
+    },
+    {
+      "block_id": "benchmark-models-0095-paragraph",
+      "source_hash": "c611aecd7152cb062c41f91fc9e5213b55276849d3f0ec37c9c9a25feb67afff",
+      "status": "translated",
+      "translation": "完成前，如果发现一个可长期复用的项目怪癖或命令修复，且下次能节省 5 分钟以上，就记录它："
+    },
+    {
+      "block_id": "benchmark-models-0096-code-block",
+      "source_hash": "d841b9db8eea1f8221a37beb14b1d79ff8a2529749dd71f042d89e1defd4a7d3",
+      "status": "translated",
+      "translation": "```bash\n~/.claude/skills/gstack/bin/gstack-learnings-log '{\"skill\":\"SKILL_NAME\",\"type\":\"operational\",\"key\":\"SHORT_KEY\",\"insight\":\"DESCRIPTION\",\"confidence\":N,\"source\":\"observed\"}'\n```"
+    },
+    {
+      "block_id": "benchmark-models-0097-paragraph",
+      "source_hash": "7223a4de2d6c4cb94a8ad844f1dbd2afd4181814478ab432edabdd22913beaf8",
+      "status": "translated",
+      "translation": "不要记录显而易见的事实或一次性的临时错误。"
+    },
+    {
+      "block_id": "benchmark-models-0098-heading",
+      "source_hash": "c82767d57199ff2747bd53a894f98763986d2b19cee7a8153eaa51f796ad92ae",
+      "status": "translated",
+      "translation": "## Telemetry（最后运行）"
+    },
+    {
+      "block_id": "benchmark-models-0099-paragraph",
+      "source_hash": "bebcbbd3352cbd05066ec2b1b78776b77b7559d496e427832205039d4451dd04",
+      "status": "translated",
+      "translation": "工作流完成后记录 telemetry。使用 frontmatter 中的 skill `name:`。OUTCOME 为 success/error/abort/unknown。"
+    },
+    {
+      "block_id": "benchmark-models-0100-paragraph",
+      "source_hash": "874e228fc697602aa6f26889f82f03ced234c146978f3b5b5f909df54d5a0d5b",
+      "status": "translated",
+      "translation": "**PLAN MODE EXCEPTION - ALWAYS RUN：** 这个命令把 telemetry 写入 `~/.gstack/analytics/`，与 preamble 中的 analytics 写入保持一致。"
+    },
+    {
+      "block_id": "benchmark-models-0101-paragraph",
+      "source_hash": "76dfba488b923307259ecc6bef7dd6f714c7381861a3b3dd9401fcecde549b19",
+      "status": "translated",
+      "translation": "运行以下 bash："
+    },
+    {
+      "block_id": "benchmark-models-0102-code-block",
+      "source_hash": "d99683acfc2c7cbd1acabee117610e0ccc4983d0b6f2b847c74857cdcb704c07",
+      "status": "translated",
+      "translation": "```bash\n_TEL_END=$(date +%s)\n_TEL_DUR=$(( _TEL_END - _TEL_START ))\nrm -f ~/.gstack/analytics/.pending-\"$_SESSION_ID\" 2>/dev/null || true\n# Session timeline：记录 skill 完成事件（仅本地，不会发送到任何地方）\n~/.claude/skills/gstack/bin/gstack-timeline-log '{\"skill\":\"SKILL_NAME\",\"event\":\"completed\",\"branch\":\"'$(git branch --show-current 2>/dev/null || echo unknown)'\",\"outcome\":\"OUTCOME\",\"duration_s\":\"'\"$_TEL_DUR\"'\",\"session\":\"'\"$_SESSION_ID\"'\"}' 2>/dev/null || true\n# 本地 analytics（受 telemetry 设置控制）\nif [ \"$_TEL\" != \"off\" ]; then\necho '{\"skill\":\"SKILL_NAME\",\"duration_s\":\"'\"$_TEL_DUR\"'\",\"outcome\":\"OUTCOME\",\"browse\":\"USED_BROWSE\",\"session\":\"'\"$_SESSION_ID\"'\",\"ts\":\"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'\"}' >> ~/.gstack/analytics/skill-usage.jsonl 2>/dev/null || true\nfi\n# 远程 telemetry（选择加入，需要对应二进制文件）\nif [ \"$_TEL\" != \"off\" ] && [ -x ~/.claude/skills/gstack/bin/gstack-telemetry-log ]; then\n  ~/.claude/skills/gstack/bin/gstack-telemetry-log \\\n    --skill \"SKILL_NAME\" --duration \"$_TEL_DUR\" --outcome \"OUTCOME\" \\\n    --used-browse \"USED_BROWSE\" --session-id \"$_SESSION_ID\" 2>/dev/null &\nfi\n```"
+    },
+    {
+      "block_id": "benchmark-models-0103-paragraph",
+      "source_hash": "b1b64d78c5944c9bb3a8071522ec132a29828b993ec2dae48426d00b9ce77075",
+      "status": "translated",
+      "translation": "运行前替换 `SKILL_NAME`、`OUTCOME` 和 `USED_BROWSE`。"
+    },
+    {
+      "block_id": "benchmark-models-0104-heading",
+      "source_hash": "b16b407bd1995dff444cc730c9b8ba2d253791b4d0800f5f9c13155b76a295b2",
+      "status": "translated",
+      "translation": "## Plan 状态页脚"
+    },
+    {
+      "block_id": "benchmark-models-0105-paragraph",
+      "source_hash": "2b23d62f8774561c3016e477c7e1e54878358aefff3ed4ab057edfcdea3b5892",
+      "status": "translated",
+      "translation": "运行 plan review 的 skill（`/plan-*-review`、`/codex review`）会在 skill 末尾包含 EXIT PLAN MODE GATE 阻塞清单，用于确认 plan 文件在调用 ExitPlanMode 前以 `## GSTACK REVIEW REPORT` 结尾。不运行 plan review 的 skill（例如 `/ship`、`/qa`、`/review` 这类操作型 skill）通常不在 plan mode 中工作，也没有 review report 需要验证；这个页脚对它们是 no-op。写入 plan 文件是 plan mode 中唯一允许的编辑。"
+    },
+    {
+      "block_id": "benchmark-models-0106-heading",
+      "source_hash": "3cdf18adc4b3823d9261006f3bd443d20a6d4091618154217b28b760ba341beb",
+      "status": "translated",
+      "translation": "# /benchmark-models：跨模型 Skill 基准评测"
+    },
+    {
+      "block_id": "benchmark-models-0107-paragraph",
+      "source_hash": "68862c655eccad3ba41c68d207d0ac975affef9e53f64fac153be15983ecca32",
+      "status": "translated",
+      "translation": "你正在运行 `/benchmark-models` 工作流。它用交互式流程包装 `gstack-model-benchmark` 二进制：选择 prompt、确认 providers、预览认证状态，并运行 benchmark。"
+    },
+    {
+      "block_id": "benchmark-models-0108-paragraph",
+      "source_hash": "f5032e06706538d5216038ec52365a235c96693fb4368298a9531ccb7af1d3f8",
+      "status": "translated",
+      "translation": "它不同于 `/benchmark`：那个 skill 衡量网页性能（Core Web Vitals、加载时间）。本 skill 衡量 AI 模型在 gstack skills 或任意 prompts 上的表现。"
+    },
+    {
+      "block_id": "benchmark-models-0109-paragraph",
+      "source_hash": "f52d711103d50a437830c6fbcd04fb4bab49a0f82f6d26d1c791c6e8488dd090",
+      "status": "translated",
+      "translation": "---"
+    },
+    {
+      "block_id": "benchmark-models-0110-heading",
+      "source_hash": "037bc0c2d5f1a88e43614f63dde675c09c29e8d7668290c8df1b89150f2a667f",
+      "status": "translated",
+      "translation": "## Step 0：定位二进制文件"
+    },
+    {
+      "block_id": "benchmark-models-0111-code-block",
+      "source_hash": "db751f6a01a0eeb8632d25f9ca9a47703fce399245390e0a3a8c01c75ca60471",
+      "status": "translated",
+      "translation": "```bash\nBIN=\"$HOME/.claude/skills/gstack/bin/gstack-model-benchmark\"\n[ -x \"$BIN\" ] || BIN=\".claude/skills/gstack/bin/gstack-model-benchmark\"\n[ -x \"$BIN\" ] || { echo \"ERROR: gstack-model-benchmark not found. Run ./setup in the gstack install dir.\" >&2; exit 1; }\necho \"BIN: $BIN\"\n```"
+    },
+    {
+      "block_id": "benchmark-models-0112-paragraph",
+      "source_hash": "16fbe466b648d93a2b8f03d1739473c21fb75694204a0981c640364fea54c063",
+      "status": "translated",
+      "translation": "如果找不到，停止并告诉用户重新安装 gstack。"
+    },
+    {
+      "block_id": "benchmark-models-0113-paragraph",
+      "source_hash": "f52d711103d50a437830c6fbcd04fb4bab49a0f82f6d26d1c791c6e8488dd090",
+      "status": "translated",
+      "translation": "---"
+    },
+    {
+      "block_id": "benchmark-models-0114-heading",
+      "source_hash": "c0e3bee163493642ab583d30cb7729fa45b8b4fffdb106e59c1868dc4d27ecf4",
+      "status": "translated",
+      "translation": "## Step 1：选择 prompt"
+    },
+    {
+      "block_id": "benchmark-models-0115-paragraph",
+      "source_hash": "71b254da4dd7f9eeb07d1d07fc346c8d703a0ee253b38f120c80643dc4462fdf",
+      "status": "translated",
+      "translation": "使用带 preamble 的 AskUserQuestion 格式：\n- **Re-ground:** 当前项目 + 分支。\n- **Simplify:** “跨模型 benchmark 会让 2 到 3 个 AI 模型运行同一份 prompt，并展示它们在速度、成本和输出质量上的差异。我们应该使用哪份 prompt？”\n- **RECOMMENDATION:** 推荐 A，因为用真实 skill 做 benchmark 能暴露工具使用差异，而不只是原始生成能力差异。\n- **Options:**\n  - A) 对我的一个 gstack skill 做 benchmark（下一步再选具体 skill）。Completeness: 10/10。\n  - B) 使用 inline prompt，在下一回合输入。Completeness: 8/10。\n  - C) 指向磁盘上的 prompt 文件，在下一回合提供路径。Completeness: 8/10。"
+    },
+    {
+      "block_id": "benchmark-models-0116-paragraph",
+      "source_hash": "add25022b96a29a0fec66f2b985dee3d0916561776cfb987127267340df6aff8",
+      "status": "translated",
+      "translation": "如果选择 A：列出拥有 SKILL.md 文件的顶层 gstack skills（来自 `find . -maxdepth 2 -name SKILL.md -not -path './.*'`），通过第二个 AskUserQuestion 让用户选择一个。把选中的 SKILL.md 路径作为 prompt 文件。"
+    },
+    {
+      "block_id": "benchmark-models-0117-paragraph",
+      "source_hash": "edd70d3e0c0b357be4aaa829653d197139723ceb83d9d989e7b7999d463bc38e",
+      "status": "translated",
+      "translation": "如果选择 B：向用户索取 inline prompt。通过 `--prompt \"<text>\"` 原样使用它。"
+    },
+    {
+      "block_id": "benchmark-models-0118-paragraph",
+      "source_hash": "30dd9f4336e1be5ed74136002b2e3342f994aef3130dcb142f9667b2418581a9",
+      "status": "translated",
+      "translation": "如果选择 C：询问路径。验证它存在。把它作为位置参数使用。"
+    },
+    {
+      "block_id": "benchmark-models-0119-paragraph",
+      "source_hash": "f52d711103d50a437830c6fbcd04fb4bab49a0f82f6d26d1c791c6e8488dd090",
+      "status": "translated",
+      "translation": "---"
+    },
+    {
+      "block_id": "benchmark-models-0120-heading",
+      "source_hash": "0dbb798b139000e7a67a632e55b125a0defed9e0e481e8b526c116d73440f2e7",
+      "status": "translated",
+      "translation": "## Step 2：选择 provider"
+    },
+    {
+      "block_id": "benchmark-models-0121-code-block",
+      "source_hash": "b4ae43a32cebaf6667ad468508fb2f2fc1357333c8490b756b3ec2f3802b2d79",
+      "status": "translated",
+      "translation": "```bash\n\"$BIN\" --prompt \"unused, dry-run\" --models claude,gpt,gemini --dry-run\n```"
+    },
+    {
+      "block_id": "benchmark-models-0122-paragraph",
+      "source_hash": "8dface934b2e277aadf51e0d5e250223603dc63b78b11f409f8c721d99399a03",
+      "status": "translated",
+      "translation": "展示 dry-run 输出。\"Adapter availability\" 小节会告诉用户哪些 providers 会实际运行（OK），哪些会被跳过（NOT READY，并包含修复提示）。"
+    },
+    {
+      "block_id": "benchmark-models-0123-paragraph",
+      "source_hash": "2f866554f3386ec12ce46b652b3e574f51854380c75c97ae6fcb9ea62461dfe6",
+      "status": "translated",
+      "translation": "如果三个 provider 都显示 NOT READY：用清楚的信息停止。没有至少一个已认证 provider，benchmark 不能运行。建议执行 `claude login`、`codex login`，或 `gemini login` / `export GOOGLE_API_KEY`。"
+    },
+    {
+      "block_id": "benchmark-models-0124-paragraph",
+      "source_hash": "9207394fc4f96a64769579deea25ef723a0aeeee55c117813447fbb9674864e8",
+      "status": "translated",
+      "translation": "如果至少一个 provider 是 OK：使用 AskUserQuestion：\n- **Simplify:** “要包含哪些模型？上面的 dry-run 已经显示哪些模型已认证。未认证的模型会被干净地跳过，不会中止整个批次。”\n- **RECOMMENDATION:** 推荐 A（所有已认证 providers），因为尽可能多地运行可以得到最丰富的比较。\n- **Options:**\n  - A) 所有已认证 providers。Completeness: 10/10。\n  - B) 只用 Claude。Completeness: 6/10（没有跨模型信号；单独的 Claude benchmark 应使用 /ship 的 review）。\n  - C) 选择两个，在下一回合指定。Completeness: 8/10。"
+    },
+    {
+      "block_id": "benchmark-models-0125-paragraph",
+      "source_hash": "f52d711103d50a437830c6fbcd04fb4bab49a0f82f6d26d1c791c6e8488dd090",
+      "status": "translated",
+      "translation": "---"
+    },
+    {
+      "block_id": "benchmark-models-0126-heading",
+      "source_hash": "d097de5f0940fb9d6ab507e9bdbbbe2faf61802f0e79d8c4c3475f2a1465e13a",
+      "status": "translated",
+      "translation": "## Step 3：决定是否使用 judge"
+    },
+    {
+      "block_id": "benchmark-models-0127-code-block",
+      "source_hash": "575a5cbd90b5598391b2d341bef3c416a216817cba436f8e37d8357541090cb3",
+      "status": "translated",
+      "translation": "```bash\n[ -n \"$ANTHROPIC_API_KEY\" ] || grep -q 'ANTHROPIC' \"$HOME/.claude/.credentials.json\" 2>/dev/null && echo \"JUDGE_AVAILABLE\" || echo \"JUDGE_UNAVAILABLE\"\n```"
+    },
+    {
+      "block_id": "benchmark-models-0128-paragraph",
+      "source_hash": "d277aa1005bb207d4371ed5dc2ac3655c4d13c447b2c76376957be9acd183c34",
+      "status": "translated",
+      "translation": "如果 judge 可用，使用 AskUserQuestion：\n- **Simplify:** “质量 judge 会使用 Anthropic 的 Claude 作为裁判，按 0 到 10 分给每个模型输出打分。每次运行约增加 0.05 美元成本。如果你关心输出质量，而不只是延迟和成本，建议开启。”\n- **RECOMMENDATION:** 推荐 A，因为重点就是比较质量，而不只是比较速度。\n- **Options:**\n  - A) 开启 judge（约增加 0.05 美元）。Completeness: 10/10。\n  - B) 跳过 judge，只比较速度、成本和 tokens。Completeness: 7/10。"
+    },
+    {
+      "block_id": "benchmark-models-0129-paragraph",
+      "source_hash": "a2c9bc594b2b4e18119fb9e3962bc3a7a768ae42fc2091d5c305cc663d91995d",
+      "status": "translated",
+      "translation": "如果 judge 不可用，跳过这个问题，并省略 `--judge` 标志。"
+    },
+    {
+      "block_id": "benchmark-models-0130-paragraph",
+      "source_hash": "f52d711103d50a437830c6fbcd04fb4bab49a0f82f6d26d1c791c6e8488dd090",
+      "status": "translated",
+      "translation": "---"
+    },
+    {
+      "block_id": "benchmark-models-0131-heading",
+      "source_hash": "ab07f7f4b70a8894ef10f7bfb524075b02490baf93919e6cbadf1bb75d821dff",
+      "status": "translated",
+      "translation": "## Step 4：运行 benchmark"
+    },
+    {
+      "block_id": "benchmark-models-0132-paragraph",
+      "source_hash": "8b92d8bcc4d44d011d1c44506f8a6eeba9cfc1e88ae72b200d63e3e862ab6cdf",
+      "status": "translated",
+      "translation": "根据 Step 1、2、3 的决定构造命令："
+    },
+    {
+      "block_id": "benchmark-models-0133-code-block",
+      "source_hash": "5381f3f9e945393a39b7880d6d1577a4650284f15f173d3945ecbba8a5793ea4",
+      "status": "translated",
+      "translation": "```bash\n\"$BIN\" <prompt-spec> --models <picked-models> [--judge] --output table\n```"
+    },
+    {
+      "block_id": "benchmark-models-0134-paragraph",
+      "source_hash": "0e83046937365b547031f9f3a589b4660f91c06c76d63eaf47e6b8e62bc38c60",
+      "status": "translated",
+      "translation": "其中 `<prompt-spec>` 要么是 `--prompt \"<text>\"`（Step 1B），要么是一个文件路径（Step 1A 或 1C）；`<picked-models>` 是 Step 2 中选出的逗号分隔列表。"
+    },
+    {
+      "block_id": "benchmark-models-0135-paragraph",
+      "source_hash": "90e246fd1faac9baca894c8747ceb3a947fd30f0389817dc9c70bca1366c7297",
+      "status": "translated",
+      "translation": "输出到达时就流式展示。这会比较慢，因为每个 provider 都会完整运行该 prompt。根据 prompt 复杂度以及是否开启 `--judge`，预计需要 30 秒到 5 分钟。"
+    },
+    {
+      "block_id": "benchmark-models-0136-paragraph",
+      "source_hash": "f52d711103d50a437830c6fbcd04fb4bab49a0f82f6d26d1c791c6e8488dd090",
+      "status": "translated",
+      "translation": "---"
+    },
+    {
+      "block_id": "benchmark-models-0137-heading",
+      "source_hash": "b45c8adabd0c75856d47ed7ec19c9d98df10d983ed7d29d5abdb7b451873b582",
+      "status": "translated",
+      "translation": "## Step 5：解释结果"
+    },
+    {
+      "block_id": "benchmark-models-0138-paragraph",
+      "source_hash": "ffd526081da217bc8c57c95a7c59177dd9762d04c20c8ca95e83da9633485569",
+      "status": "translated",
+      "translation": "表格打印后，为用户总结：\n- **Fastest**：延迟最低的 provider。\n- **Cheapest**：成本最低的 provider。\n- **Highest quality**（如果运行了 `--judge`）：得分最高的 provider。\n- **Best overall**：使用判断。如果运行了 judge，则按质量加权；否则说明用户需要做出的取舍。"
+    },
+    {
+      "block_id": "benchmark-models-0139-paragraph",
+      "source_hash": "73f547e0241b8728b24d611c2e43ca6d7842f153c69665970fd8079b66b63bdb",
+      "status": "translated",
+      "translation": "如果任何 provider 遇到错误（auth/timeout/rate_limit），明确指出，并给出修复路径。"
+    },
+    {
+      "block_id": "benchmark-models-0140-paragraph",
+      "source_hash": "f52d711103d50a437830c6fbcd04fb4bab49a0f82f6d26d1c791c6e8488dd090",
+      "status": "translated",
+      "translation": "---"
+    },
+    {
+      "block_id": "benchmark-models-0141-heading",
+      "source_hash": "87280f5dd8c4cc9fb9eb23c0c22eddca625aa9255a00b4d7c90aeebfb3941937",
+      "status": "translated",
+      "translation": "## Step 6：询问是否保存结果"
+    },
+    {
+      "block_id": "benchmark-models-0142-paragraph",
+      "source_hash": "d31f31c54065831743f3ae9882874c0a38ec1cd2311c23058f815fc33f7e6529",
+      "status": "translated",
+      "translation": "使用 AskUserQuestion：\n- **Simplify:** “要把这次 benchmark 保存为 JSON，方便未来运行时对比吗？”\n- **RECOMMENDATION:** 推荐 A，因为 provider 更新模型后 skill 表现会漂移；保存基线可以捕捉质量回退。\n- **Options:**\n  - A) 保存到 `~/.gstack/benchmarks/<date>-<skill-or-prompt-slug>.json`。Completeness: 10/10。\n  - B) 只打印，不保存。Completeness: 5/10（会丢失趋势数据）。"
+    },
+    {
+      "block_id": "benchmark-models-0143-paragraph",
+      "source_hash": "8cfe588a7d003d3a7f166d3d96b092e675834edaac317e9e4fd4f5ea5889b322",
+      "status": "translated",
+      "translation": "如果选择 A：用 `--output json` 重新运行，并 tee 到带日期的文件。打印路径，让用户之后可以用它和未来运行结果做 diff。"
+    },
+    {
+      "block_id": "benchmark-models-0144-paragraph",
+      "source_hash": "f52d711103d50a437830c6fbcd04fb4bab49a0f82f6d26d1c791c6e8488dd090",
+      "status": "translated",
+      "translation": "---"
+    },
+    {
+      "block_id": "benchmark-models-0145-heading",
+      "source_hash": "cd1d6fde9db54f2de8aa1a70080d36833b8d9260e00fa7510250243c29d22fd8",
+      "status": "translated",
+      "translation": "## 重要规则"
+    },
+    {
+      "block_id": "benchmark-models-0146-paragraph",
+      "source_hash": "394a1c7b67da54cbbed2b222327b7afc7448c4dc9905454f08e8c8707803e4fd",
+      "status": "translated",
+      "translation": "- **绝不要在没有先执行 Step 2 dry-run 的情况下运行真实 benchmark。** 用户需要在花费 API 调用前看到认证状态。\n- **绝不要硬编码模型名称。** 始终传入用户在 Step 2 中选择的 providers，其余由二进制处理。\n- **绝不要自动包含 `--judge`。** 它会产生真实成本，必须由用户选择开启。\n- **如果零个 provider 已认证，STOP。** 不要尝试 benchmark，因为它不会产生有用输出。\n- **成本必须可见。** 每次运行都在表格中显示每个 provider 的成本。用户应该在下一次运行前看到它。"
+    }
+  ],
+  "related_materials_explanation": "### 机制盘点\n\n- 来源：`benchmark-models/SKILL.md.tmpl`。这是当前 `SKILL.md` 的模板源，说明本文中的 preamble、plan mode 规则、artifacts sync、telemetry 和最终 benchmark 流程来自统一生成机制。\n- 执行入口：正文定位并调用 `gstack-model-benchmark` 二进制；本 Skill 目录本身没有独立 `bin/` 或 `scripts/` 子目录。\n- 工作流边界：`SKILL.md` 正文负责说明模型评测流程；模板来源和二进制调用机制只在关联材料中解释，不混入正文译文。\n\n### 执行机制\n\n运行时先执行通用 gstack preamble，检查升级、会话状态、计划模式、telemetry、routing、artifacts sync 等上下文；真正的模型评测从 `/benchmark-models` 标题后开始，先 dry-run provider 认证状态，再根据用户选择运行真实 benchmark。`--judge` 会产生真实成本，所以必须由用户显式选择。",
+  "highlights": [
+    {
+      "quote": "同一份 prompt 是公平比较的前提。",
+      "source": "Skill 正文：Step 1 / Important Rules",
+      "comment": "模型、provider、judge 都可以变，但输入必须一致，否则结果不可比。"
+    },
+    {
+      "quote": "Step 2 的 dry-run 是真实 benchmark 前的硬门槛。",
+      "source": "Skill 正文：Step 2 / Important Rules",
+      "comment": "先暴露认证状态和可运行 provider，避免花费 API 调用后才发现比较无效。"
+    },
+    {
+      "quote": "跨模型一致性是推荐，不是决定。",
+      "source": "Skill 正文：Voice",
+      "comment": "评测输出帮助判断，但模型选择仍要服务于用户的任务目标、风险和成本偏好。"
+    }
+  ],
+  "evidence": {
+    "skill_md": "benchmark-models/SKILL.md",
+    "skill_md_sha256": "9b7af18a0b3886d68992e8b15e2b67eab642926c79cae8aad3d747b289eeadd9",
+    "coverage": "正文译文由 readerlab.skill-block-reading.v1 分块产物合并生成；代码块完整保留，关联机制单独说明。",
+    "related_sources": [
+      {
+        "path": "benchmark-models/SKILL.md.tmpl",
+        "note": "模板源，解释生成来源和维护机制。"
+      }
+    ]
+  }
+}

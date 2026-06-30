@@ -1,0 +1,133 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "skill": "canary",
+  "part": 2,
+  "package": "gstack",
+  "source_file": "SKILL.md",
+  "range": [
+    "canary-0021-paragraph",
+    "canary-0040-paragraph"
+  ],
+  "blocks": [
+    {
+      "block_id": "canary-0021-paragraph",
+      "source_hash": "bdba758df114204973d141202d452863a6c7146b58c5428896aa87eda78d21e0",
+      "status": "translated",
+      "translation": "始终运行 (regardless of choice):"
+    },
+    {
+      "block_id": "canary-0022-code-block",
+      "source_hash": "f7546f65bad271f93e2e9a51f95f54cdc5c96ef3bc689ae5343cba2ae43c4f85",
+      "status": "translated",
+      "translation": "```bash\nrm -f ~/.gstack/.writing-style-prompt-pending\ntouch ~/.gstack/.writing-style-prompted\n```"
+    },
+    {
+      "block_id": "canary-0023-paragraph",
+      "source_hash": "4689987bfeb3f4d2244b003dbe5850128404d0b01988ef2b73dd88caa9671428",
+      "status": "translated",
+      "translation": "如果 `WRITING_STYLE_PENDING` 为 `no`，则跳过。"
+    },
+    {
+      "block_id": "canary-0024-paragraph",
+      "source_hash": "3070366727c055efc95d138ca1890ecaaa421375f512b8d2a3e9081cd0f9f8ca",
+      "status": "translated",
+      "translation": "如果 `LAKE_INTRO` 是 `no`：说“gstack 遵循 **Boil the Ocean** 原则：当 AI 让边际成本接近零时，就把事情完整做完。阅读更多：https://garryslist.org/posts/boil-the-ocean”。然后询问是否打开："
+    },
+    {
+      "block_id": "canary-0025-code-block",
+      "source_hash": "bffcc824e63bc1f8f2a35384c726c128873da729e9702db53ca0006475bf1511",
+      "status": "translated",
+      "translation": "```bash\nopen https://garryslist.org/posts/boil-the-ocean\ntouch ~/.gstack/.completeness-intro-seen\n```"
+    },
+    {
+      "block_id": "canary-0026-paragraph",
+      "source_hash": "b8ff8939e7ba81000d8b812415f9566d4152f47576abdb114aba800b0e1687c3",
+      "status": "translated",
+      "translation": "只有用户选择 yes 时才运行 `open`。始终运行 `touch`。"
+    },
+    {
+      "block_id": "canary-0027-paragraph",
+      "source_hash": "f4625eb928edb6ca458e9c5f80a9627e52f2cbce52f459e20e701e981a7bcadd",
+      "status": "translated",
+      "translation": "如果 `TEL_PROMPTED` 为 `no` 且 `LAKE_INTRO` 为 `yes`：通过 AskUserQuestion 询问一次 telemetry："
+    },
+    {
+      "block_id": "canary-0028-paragraph",
+      "source_hash": "aae80c47beff8b8fb246524f1080c82f1f12e9559287c92fbaa7a3461bdc30f1",
+      "status": "translated",
+      "translation": "> 帮助 gstack 变得更好。只分享使用数据：skill、duration、crashes、stable device ID。不包含代码或文件路径。你的仓库名只会记录在本地，并会在任何上传前移除。"
+    },
+    {
+      "block_id": "canary-0029-paragraph",
+      "source_hash": "d3c66c7356854c6fb53c54a532a454ac3abcff0bcae4bcacd034117b8ade1abe",
+      "status": "translated",
+      "translation": "选项：\n- A) 帮助 gstack 变得更好! (推荐)\n- B) 不用了，谢谢"
+    },
+    {
+      "block_id": "canary-0030-paragraph",
+      "source_hash": "cdfdbed931341989c499ecdb9860dd12c73bce5c965e382900c27e809ffbd224",
+      "status": "translated",
+      "translation": "如果选 A：运行 `~/.claude/skills/gstack/bin/gstack-config set telemetry community`"
+    },
+    {
+      "block_id": "canary-0031-paragraph",
+      "source_hash": "45249ffb165663727f8bca2a70256b8a9f0ae7fb3d36c470a25a8ea1034f795e",
+      "status": "translated",
+      "translation": "如果选择 B：继续追问："
+    },
+    {
+      "block_id": "canary-0032-paragraph",
+      "source_hash": "3ba94e947ce25819929356bc5cea9a6721cbeb1d5f595c326fb775b7db8d78fb",
+      "status": "translated",
+      "translation": "> 匿名模式只发送汇总使用数据，不发送唯一 ID。"
+    },
+    {
+      "block_id": "canary-0033-paragraph",
+      "source_hash": "6bcd64ad49441fb26270dad89f57890e9d97f4d055abc7089253382fdfb8a092",
+      "status": "translated",
+      "translation": "选项：\n- A) 可以，匿名 telemetry 没问题\n- B) 不用了，谢谢，完全关闭"
+    },
+    {
+      "block_id": "canary-0034-paragraph",
+      "source_hash": "487b9771bb23619c7e33181068c8ef15f8c9b557325342c0b73dbfa081841184",
+      "status": "translated",
+      "translation": "如果 B→A：运行 `~/.claude/skills/gstack/bin/gstack-config set telemetry anonymous`\n如果 B→B：运行 `~/.claude/skills/gstack/bin/gstack-config set telemetry off`"
+    },
+    {
+      "block_id": "canary-0035-paragraph",
+      "source_hash": "7a2d7396c8aa0ab9a12f2519ce33846b0b282119d5151584cc9a6cca17907d4d",
+      "status": "translated",
+      "translation": "始终运行:"
+    },
+    {
+      "block_id": "canary-0036-code-block",
+      "source_hash": "924b6f973e889327e680f1b4857d85d233ef0062487cb09dc676db34a9ac1efe",
+      "status": "translated",
+      "translation": "```bash\ntouch ~/.gstack/.telemetry-prompted\n```"
+    },
+    {
+      "block_id": "canary-0037-paragraph",
+      "source_hash": "fab5bbfba3add346f3b599b6e32b3a4c5b52c28b5cb5101392228004b15d2b7c",
+      "status": "translated",
+      "translation": "如果 `TEL_PROMPTED` 为 `yes`，则跳过。"
+    },
+    {
+      "block_id": "canary-0038-paragraph",
+      "source_hash": "8feaddb5eb76a038730de7e4b0218272a03cc2e483aa9f9c8738e63fda1e1631",
+      "status": "translated",
+      "translation": "如果 `PROACTIVE_PROMPTED` 为 `no` 且 `TEL_PROMPTED` 为 `yes`：询问一次："
+    },
+    {
+      "block_id": "canary-0039-paragraph",
+      "source_hash": "0141cbe6d8b69571eb284468175f03e9f7682123a57e81507bfabf185fabe2f1",
+      "status": "translated",
+      "translation": "> 是否允许 gstack 主动建议合适的 skills，例如用户问 “does this work?” 时建议 /qa，或遇到 bugs 时建议 /investigate？"
+    },
+    {
+      "block_id": "canary-0040-paragraph",
+      "source_hash": "8a747a1915b37d167ba2253689d126101463f320aa98d14a04190982bd48efd4",
+      "status": "translated",
+      "translation": "选项：\n- A) 保持 it on (推荐)\n- B) 关闭 — I'll type /commands myself"
+    }
+  ]
+}

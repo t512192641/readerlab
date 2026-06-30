@@ -1,0 +1,81 @@
+{
+  "schema": "readerlab.skill-block-reading-part.v1",
+  "package": "gstack",
+  "skill": "setup-browser-cookies",
+  "source_file": "SKILL.md",
+  "part": 7,
+  "blocks": [
+    {
+      "block_id": "setup-browser-cookies-0121-paragraph",
+      "source_hash": "53e9c29313adc245fc8788b9224bb5c46e2acc20386b3b8b7aa8047d3bd49b3c",
+      "status": "translated",
+      "translation": "这会自动检测已安装的 Chromium 浏览器，并在默认浏览器中打开一个交互式 picker UI，你可以在其中：\n- 在已安装的浏览器之间切换\n- 搜索 domains\n- 点击“+”来导入某个 domain 的 cookies\n- 点击垃圾桶来移除已导入的 cookies"
+    },
+    {
+      "block_id": "setup-browser-cookies-0122-paragraph",
+      "source_hash": "f59995e29295e56aa918765a822cb63beeb8d74929825a94bca24978293d46e8",
+      "status": "translated",
+      "translation": "告诉用户：**“Cookie picker 已打开，请在浏览器中选择你想导入的 domains，完成后告诉我。”**"
+    },
+    {
+      "block_id": "setup-browser-cookies-0123-heading",
+      "source_hash": "42e4672e428344074264d86769d4b2143e5d63e93321ccc7f9c6d1b229c01ff7",
+      "status": "translated",
+      "translation": "### 3. 直接导入（替代方式）"
+    },
+    {
+      "block_id": "setup-browser-cookies-0124-paragraph",
+      "source_hash": "7128b16a942944d268b65df2add9db08e15050f96876435e6997bc48d993a0c2",
+      "status": "translated",
+      "translation": "如果用户直接指定了 domain（例如 `/setup-browser-cookies github.com`），跳过 UI："
+    },
+    {
+      "block_id": "setup-browser-cookies-0125-code-block",
+      "source_hash": "5692834618e779b671a37b53beea2bf6cfbd423d27af072913dfed44375e4020",
+      "status": "translated",
+      "translation": "```bash\n$B cookie-import-browser comet --domain github.com\n```"
+    },
+    {
+      "block_id": "setup-browser-cookies-0126-paragraph",
+      "source_hash": "2676bb44ba1fc2da77bef79a73798c1325b5c670f134f98130b775dbdf6efa4a",
+      "status": "translated",
+      "translation": "如果用户指定了浏览器，把 `comet` 替换成对应的浏览器。"
+    },
+    {
+      "block_id": "setup-browser-cookies-0127-heading",
+      "source_hash": "8238f4072d3324c96c310ddd3445245ee7e13339edf2e947d0937ee551c2e0a1",
+      "status": "translated",
+      "translation": "### 4. 验证"
+    },
+    {
+      "block_id": "setup-browser-cookies-0128-paragraph",
+      "source_hash": "f7d808333f41fdd895dc4db4acfd6fda4e48ba63a1d3034c68b6ac2f8b814dce",
+      "status": "translated",
+      "translation": "用户确认完成后："
+    },
+    {
+      "block_id": "setup-browser-cookies-0129-code-block",
+      "source_hash": "f2f11f4036b7755237338cb07c82f0e9816f14e146276436e71347005766e5a6",
+      "status": "translated",
+      "translation": "```bash\n$B cookies\n```"
+    },
+    {
+      "block_id": "setup-browser-cookies-0130-paragraph",
+      "source_hash": "be61e5f44e3d68bd5f4719730363f838e937f95b98ec3fbacabb97ef7c5f1db4",
+      "status": "translated",
+      "translation": "向用户展示已导入 cookies 的摘要（按 domain 统计数量）。"
+    },
+    {
+      "block_id": "setup-browser-cookies-0131-heading",
+      "source_hash": "3e9dd5a6751ee29a95f8b28fc8a679ef5fdae039aea8c3cdcd46056ad87a9f9c",
+      "status": "translated",
+      "translation": "## 说明"
+    },
+    {
+      "block_id": "setup-browser-cookies-0132-paragraph",
+      "source_hash": "71121f898187a6c815e739fd25c06bd74d587e109c14f861b622f0b2690b5eb8",
+      "status": "translated",
+      "translation": "- 在 macOS 上，每个浏览器第一次导入时可能会触发 Keychain 对话框，请点击 `Allow` 或 `Always Allow`。\n- 在 Linux 上，`v11` cookies 可能需要 `secret-tool` / libsecret 访问权限；`v10` cookies 使用 Chromium 的标准 fallback key。\n- Cookie picker 和 browse server 使用同一个端口提供服务，不会启动额外进程。\n- UI 中只显示域名和 cookie 数量，不暴露 cookie 值。\n- browse session 会在命令之间持久保存 cookies，所以导入的 cookies 会立即生效。"
+    }
+  ]
+}
