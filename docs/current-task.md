@@ -19,7 +19,8 @@ GPT Pro review 第八部分行动已执行
 -> GPT Pro two-demo review 已回收并补 review hardening patch
 -> GitHub app 已确认仓库 visibility: private
 -> 私有材料验证产物允许纳入 private GitHub checkpoint
--> 等用户决定是否继续正式 ReaderLab Skill 交付设计
+-> GPT Pro 确认可以进入 ReaderLab Skill 交付设计阶段
+-> Skill 交付设计文档已新增；正式 Skill 草案仍未启动
 ```
 
 不要进入正式 ReaderLab Skill 草案、外部书验证、更大范围扩章或 GPT Pro 审核包，除非两个新 demo 已内部通过且用户明确启动审核。
@@ -36,6 +37,10 @@ GPT Pro review 第八部分行动已执行
 - `two_demo_internal_pass`: `2/2`，仅限 `readerlab-two-demo-run-v0` 的 Demo A / Demo B 内部 writer-reader 验证
 - `two_demo_review_hardening_patch`: `done`，补充 location map、source cleaning map、trace-to-reader 和 Skill / 工程材料 cleaned-body 状态语义
 - `private_material_validation_local_pass`: `2/2`，仅限 `readerlab-private-material-validation-v0` 私有材料验证；GitHub app 已确认仓库 visibility 为 `private`，允许纳入 private checkpoint
+- `formal_skill_delivery_design_ready`: `yes`
+- `skill_delivery_design_docs`: `created`
+- `comment_replay_verified`: `not_verified`
+- `trace_validator_implemented`: `not_started`
 - `transferable_method_kernel_pass`: `not_verified`
 - `skill_draft_not_started`
 - `public_external_material_validation_not_started`
@@ -146,6 +151,34 @@ GPT Pro 结论：
 - `python3 tests/test_readerlab.py`：PASS，30 tests OK。
 - `git diff --check`：PASS。
 
+## ReaderLab Skill 交付设计
+
+GPT Pro 对 private checkpoint 的结论：
+
+- 可以进入 `ReaderLab Skill 交付设计阶段`。
+- 不能进入正式可运行 `SKILL.md` 草案阶段。
+- 仍不能升级为 `transferable_method_kernel_pass`。
+- 关键缺口是 `trace validator` 和 `comment replay`。
+
+本轮新增交付设计文档：
+
+- `docs/readerlab-skill-delivery-spec.md`
+- `docs/readerlab-skill-ir-v1.md`
+- `docs/contracts/location-anchor-v1.md`
+- `docs/contracts/trace-validation-v1.md`
+- `docs/contracts/comment-replay-v1.md`
+
+当前允许做：
+
+- 设计 ReaderLab Skill 的 material routes、body-track rules、workflow、agent/script boundary、trace validator 和 comment replay protocol。
+
+当前禁止做：
+
+- 不写正式 `SKILL.md`。
+- 不标记 `formal_skill_draft_started`。
+- 不标记 `transferable_method_kernel_pass`。
+- 不做 LifeAtlas 自动沉淀、Obsidian UI 改造或外部书籍全量泛化。
+
 ## 默认读取与动作触发
 
 启动时只读 `AGENTS.md` 和本文件。不要因为本文件列出路径，就在启动阶段展开读取。
@@ -172,7 +205,7 @@ GPT Pro 结论：
 
 ## 下一步
 
-当前最小下一步不是自动写 Skill。两个内部 demo 和私有材料验证均已通过，且 private validation 已允许纳入 private GitHub checkpoint；下一步可以让 GPT Pro 审查“是否足以进入正式 ReaderLab Skill 交付设计”。
+当前最小下一步不是自动写正式 Skill。两个内部 demo 和私有材料验证均已通过，GPT Pro 已允许进入 Skill 交付设计；下一步应实现或设计最小 trace validator 与 comment replay fixture，仍不能创建正式 `SKILL.md`。
 
 若用户明确启动 GPT Pro review packet，审查重点应围绕：
 

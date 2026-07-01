@@ -1,3 +1,27 @@
+# 2026-07-01 ReaderLab Skill 交付设计文档
+
+## 摘要
+
+- 用户提交 GPT Pro 对 private checkpoint 的审核结果。
+- GPT Pro 结论：可以进入 `ReaderLab Skill 交付设计阶段`，但不能进入正式可运行 Skill 草案阶段。
+- 关键缺口：真实 comment replay 未验证，trace-to-reader 未机器校验，location-map anchor 还需稳定化。
+
+## 改动
+
+- 新增 `docs/readerlab-skill-delivery-spec.md`，定义 material routes、body-track rules、交付 workflow、agent/script boundary、required outputs 和 stop conditions。
+- 新增 `docs/readerlab-skill-ir-v1.md`，定义未来 ReaderLab Skill 的中间表示和状态机，不是 runnable Skill manifest。
+- 新增 `docs/contracts/location-anchor-v1.md`，定义稳定 anchor 的字段、规则和正式 Skill draft 前的锚点要求。
+- 新增 `docs/contracts/trace-validation-v1.md`，定义 reader-facing paragraph -> claim -> candidate/gate -> anchor 的机器校验合同。
+- 新增 `docs/contracts/comment-replay-v1.md`，定义 comment -> anchor -> nearby body -> claim -> candidate -> gate -> bounded reply 的最小 replay 合同。
+- 更新 `docs/current-task.md`：记录 `formal_skill_delivery_design_ready: yes`，同时保持 `skill_draft_not_started` 和 `transferable_method_kernel_pass: not_verified`。
+
+## 边界
+
+- 本轮没有创建正式 `SKILL.md`。
+- 本轮没有实现 validator 脚本。
+- 本轮没有执行真实 Obsidian UI / 插件 replay。
+- 下一步应先做最小 trace validator 与 comment replay fixture。
+
 # 2026-07-01 私有材料本地验证通过
 
 ## 摘要
