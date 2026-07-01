@@ -1,3 +1,209 @@
+# 2026-07-01 真实 Obsidian UI replay 初测
+
+## 摘要
+
+- 用户在 LifeAtlas Obsidian vault 中用当前批注插件完成 4 条真实批注。
+- Codex 读取到真实 `tandem-comments` 插件存储。
+- 4 条批注均包含 `exact`、`prefix`、`suffix`、`pos`。
+- 4 条 `pos` 均能回到用户实际选中的文本。
+- 新增结果：
+  - `docs/reports/readerlab-real-obsidian-replay-v0/results/comment-replay-real-ui.json`
+  - `docs/reports/readerlab-real-obsidian-replay-v0/results/eval.md`
+
+## 结果
+
+- `real_obsidian_ui_replay`: `pass_with_warning`
+- `real_obsidian_ui_storage_format`: `tandem-comments`
+- `real_obsidian_ui_body_prose_selection`: `not_verified`
+
+## 关键 warning
+
+- 用户实际批注选中的是文件底部可见锚点列表，例如 `L1: 读者必须先接触完整正文`，不是正文段落里的同一句话。
+- Codex 可以通过去掉 `L1/E1` 标签把批注映射回正文短语，并生成 bounded reply。
+- 这证明了真实插件存储可读，但还不能称为严格的正文段落直接选择 replay full pass。
+
+## 边界
+
+- 不声明 annotation loop production ready。
+- 不声明 `transferable_method_kernel_pass`。
+- 不声明 public external validation。
+- 不安装或启用 ReaderLab Skill。
+
+## 验证
+
+- `python3 -m json.tool docs/reports/readerlab-real-obsidian-replay-v0/expected-replay-map.json`：PASS。
+- `python3 -m json.tool docs/reports/readerlab-real-obsidian-replay-v0/results/comment-replay-real-ui.json`：PASS。
+- `python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures`：PASS。
+- `python3 tests/test_readerlab_trace_validator.py`：PASS，2 tests OK。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `rg -n "source refs|claim trace|lens score|machine_status|human_status|Body Track Gate|Claim Ledger|Candidate Tournament|Skillization Gate|Annotation Trigger" docs/drafts/readerlab-skill-v0 docs/reports/readerlab-real-obsidian-replay-v0`：PASS，无命中。
+- `find . -path './.git' -prune -o -path './.agents/skills/readerlab' -print`：PASS，无结果。
+- `git diff --check`：PASS。
+
+# 2026-07-01 product-spec forward test 与路线修正
+
+## 摘要
+
+- 按用户要求完成下一步 1 和 2：做一次 forward test，并根据结果修一版 `SKILL.md`。
+- 使用 repo-owned source：`docs/product-spec.md`。
+- 新增 forward test 证据：
+  - `docs/drafts/readerlab-skill-v0/forward-tests/product-spec-v0/README.md`
+  - `docs/drafts/readerlab-skill-v0/forward-tests/product-spec-v0/baseline-output.md`
+  - `docs/drafts/readerlab-skill-v0/forward-tests/product-spec-v0/with-skill-output.md`
+  - `docs/drafts/readerlab-skill-v0/forward-tests/product-spec-v0/comparison.md`
+- 发现并修复路线风险：概念型 product spec / strategy doc 容易被误判为 engineering cleanup；`SKILL.md` 已加入 route tie-breaker，默认保留完整正文。
+
+## 结果
+
+- Baseline：容易退化为总结，缺少 `10_一手正文/`、route decision、audit separation 和 human review。
+- With draft Skill：能强制 route、body-first、package shape、audit separation 和 human review。
+- Review Studio 仍为 `warn`，因为还没有 provider-backed model eval，也还没有真实 Obsidian UI replay。
+
+## 边界
+
+- 未安装或启用 ReaderLab Skill。
+- 未创建 `.agents/skills/readerlab/`。
+- 未声明 public external validation。
+- 未声明 `transferable_method_kernel_pass`。
+- 真实 Obsidian UI replay 仍为 deferred，下一步由用户配合处理。
+
+## 验证
+
+- `python3 -m json.tool docs/drafts/readerlab-skill-v0/evals/trigger-cases.json`：PASS。
+- `python3 -m json.tool docs/drafts/readerlab-skill-v0/evals/output-cases.json`：PASS。
+- `python3 /Users/tianqiang/.codex/skills/.system/skill-creator/scripts/quick_validate.py docs/drafts/readerlab-skill-v0`：PASS，`Skill is valid!`。
+- `find . -path './.git' -prune -o -path './.agents/skills/readerlab' -print`：PASS，无结果。
+- `python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures`：PASS。
+- `python3 tests/test_readerlab_trace_validator.py`：PASS，2 tests OK。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `rg -n "source refs|claim trace|lens score|machine_status|human_status|Body Track Gate|Claim Ledger|Candidate Tournament|Skillization Gate|Annotation Trigger" docs/drafts/readerlab-skill-v0`：PASS，无命中。
+- `git diff --check`：PASS。
+
+# 2026-07-01 meta-skill 评测与草案收紧
+
+## 摘要
+
+- 按用户建议，用 `yao-meta-skill` 方法对 ReaderLab Skill 原型做轻量评测。
+- 新增：
+  - `docs/drafts/readerlab-skill-v0/evals/trigger-cases.json`
+  - `docs/drafts/readerlab-skill-v0/evals/output-cases.json`
+  - `docs/drafts/readerlab-skill-v0/reports/skill-ir.md`
+  - `docs/drafts/readerlab-skill-v0/reports/output-quality-scorecard.md`
+  - `docs/drafts/readerlab-skill-v0/reports/review-studio.md`
+- 根据评测发现，收紧 `docs/drafts/readerlab-skill-v0/SKILL.md` 的触发边界：明确不用于简单总结、普通笔记清理、普通代码审查、安装启用 Skill 或写永久 LifeAtlas 笔记。
+- `docs/drafts/readerlab-skill-v0/reports/review-studio.md` 当前决策为 `warn`：docs-only prototype 可继续迭代，但不能安装、启用、宣称 public validation 或 transferable pass。
+
+## 边界
+
+- 未创建 `.agents/skills/readerlab/`。
+- 未安装或启用 ReaderLab Skill。
+- 未执行 provider-backed model eval。
+- 未执行 blind A/B review。
+- 真实 Obsidian UI replay 仍为 deferred。
+
+## 下一步
+
+- 做一次小材料 forward test：比较不用 Skill 和使用 draft `SKILL.md` 的输出差异。
+- 根据 forward test 结果继续收紧触发描述、输出合同或 stop conditions。
+
+## 验证
+
+- `python3 -m json.tool docs/drafts/readerlab-skill-v0/evals/trigger-cases.json`：PASS。
+- `python3 -m json.tool docs/drafts/readerlab-skill-v0/evals/output-cases.json`：PASS。
+- `python3 /Users/tianqiang/.codex/skills/.system/skill-creator/scripts/quick_validate.py docs/drafts/readerlab-skill-v0`：PASS，`Skill is valid!`。
+- `find . -path './.git' -prune -o -path './.agents/skills/readerlab' -print`：PASS，无结果。
+- `python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures`：PASS。
+- `python3 tests/test_readerlab_trace_validator.py`：PASS，2 tests OK。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `rg -n "source refs|claim trace|lens score|machine_status|human_status|Body Track Gate|Claim Ledger|Candidate Tournament|Skillization Gate|Annotation Trigger" docs/drafts/readerlab-skill-v0`：PASS，无命中。
+- `git diff --check`：PASS。
+
+# 2026-07-01 docs draft SKILL.md 创建
+
+## 摘要
+
+- 按用户授权创建第一版正式草案文件：`docs/drafts/readerlab-skill-v0/SKILL.md`。
+- 新增 draft packet：
+  - `docs/drafts/readerlab-skill-v0/README.md`
+  - `docs/drafts/readerlab-skill-v0/SKILL.md`
+  - `docs/drafts/readerlab-skill-v0/examples/input-request.json`
+  - `docs/drafts/readerlab-skill-v0/examples/route-decision-example.json`
+  - `docs/drafts/readerlab-skill-v0/checks/readiness-checklist.md`
+- `docs/current-task.md` 已更新为：`formal_skill_draft_started: docs_draft_only`。
+
+## 边界
+
+- 这是 docs draft，不是安装后的 Codex Skill。
+- 未创建 `.agents/skills/readerlab/`。
+- 未安装或启用 ReaderLab Skill。
+- 未写入 LifeAtlas `300/600/800`。
+- 真实 Obsidian UI replay 仍为 deferred，后续由用户配合补测。
+- 不声明 `transferable_method_kernel_pass` 或 public external validation。
+
+## 验证
+
+- `python3 -m json.tool docs/drafts/readerlab-skill-v0/examples/input-request.json`：PASS。
+- `python3 -m json.tool docs/drafts/readerlab-skill-v0/examples/route-decision-example.json`：PASS。
+- `python3 /Users/tianqiang/.codex/skills/.system/skill-creator/scripts/quick_validate.py docs/drafts/readerlab-skill-v0`：PASS，`Skill is valid!`。
+- `find . -path './.git' -prune -o -path './.agents/skills/readerlab' -print`：PASS，无结果。
+- `python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures`：PASS。
+- `python3 tests/test_readerlab_trace_validator.py`：PASS，2 tests OK。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `rg -n "source refs|claim trace|lens score|machine_status|human_status|Body Track Gate|Claim Ledger|Candidate Tournament|Skillization Gate|Annotation Trigger" docs/drafts/readerlab-skill-v0`：PASS，无命中。
+- `git diff --check`：PASS。
+
+# 2026-07-01 用户批准开发 docs draft SKILL.md
+
+## 摘要
+
+- 用户选择范围 2：先开发一版正式草案 `SKILL.md`。
+- 授权边界限定为：只允许创建 `docs/drafts/readerlab-skill-v0/SKILL.md`。
+- 后续真实 Obsidian UI / plugin 批注回放由用户配合补测；当前草案开发不被该项阻塞。
+- `docs/current-task.md` 和 `docs/readerlab-formal-skill-draft-implementation-plan.md` 已同步该授权。
+
+## 边界
+
+- 仍不允许创建 `.agents/skills/readerlab/`。
+- 仍不允许安装或启用 ReaderLab Skill。
+- 仍不写入 LifeAtlas `300/600/800` 正式沉淀区。
+- 不声明 `transferable_method_kernel_pass`。
+- 不声明 public external validation。
+- 不声明真实 Obsidian UI replay 已通过。
+
+## 下一步
+
+- 创建 `docs/drafts/readerlab-skill-v0/` draft packet。
+- 创建 `docs/drafts/readerlab-skill-v0/SKILL.md`，并明确标记为 draft-only / not installed / not activated。
+- 继续使用现有 trace validator 和 comment replay fixture 做机器验证。
+
+# 2026-07-01 正式 Skill draft 最小实现计划
+
+## 摘要
+
+- 用户批准进入正式 ReaderLab Skill draft 的最小实现计划阶段。
+- 新增 `docs/readerlab-formal-skill-draft-implementation-plan.md`，把合同拆成下一阶段可执行切片。
+- 当时计划明确下一阶段只允许创建非安装 draft packet，不允许直接创建正式 `SKILL.md`；该限制已被上一条“docs draft SKILL.md allowed”授权取代。
+- 当时 `docs/current-task.md` 更新为：`formal_skill_draft_human_approval: implementation_plan_only`、`formal_skill_draft_implementation_plan_ready: yes`；当前状态以 `docs/current-task.md` 最新内容为准。
+
+## 边界
+
+- 本轮没有创建正式 `SKILL.md`。
+- 本轮没有创建 `.agents/skills/readerlab/`。
+- 本轮没有安装 Skill，也没有写入 LifeAtlas 正式沉淀区。
+- 当时仍然保持：`skill_draft_not_started`、`transferable_method_kernel_pass: not_verified`、`public_external_material_validation_not_started`。
+- 真实 Obsidian UI replay 仍为 deferred。
+
+## 下一步
+
+- 已由上一条授权推进为：可创建 `docs/drafts/readerlab-skill-v0/SKILL.md`，但不得安装或启用。
+
+## 验证
+
+- `python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures`：PASS。
+- `python3 tests/test_readerlab_trace_validator.py`：PASS，2 tests OK。
+- `python3 tests/test_readerlab.py`：PASS。
+- `git diff --check`：PASS。
+
 # 2026-07-01 正式 Skill 草案实现合同通过审查
 
 ## 摘要

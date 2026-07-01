@@ -13,18 +13,23 @@
 
 ## Active Slice
 
-ReaderLab 已完成 **正式 Skill 草案前的实现合同切片**。
+ReaderLab 已完成 **正式 Skill draft 文档草案切片**。
 
-当前目标仍不是泛化宣称，也不是 public external validation。正式 ReaderLab Skill 草案实现合同已创建并通过独立 reviewer 审查（无 P0/P1）；用户仍未批准创建正式 `SKILL.md`，Skill draft 仍未开始。真实 Obsidian UI replay 仍是后补验收项。
+当前目标仍不是泛化宣称，也不是 public external validation。正式 ReaderLab Skill 草案实现合同已创建并通过独立 reviewer 审查（无 P0/P1）；用户已批准开发一版正式草案 `SKILL.md`，范围限定在 `docs/drafts/readerlab-skill-v0/`，不得安装、启用或创建 `.agents/skills/readerlab/`。当前 docs draft `SKILL.md` 已创建，真实 Obsidian UI replay 后续由用户配合补测，不阻塞当前草案开发。
 
 ```text
 已完成：
 1. 最小 trace validator
 2. 最小 comment replay fixture
 3. 正式 Skill 草案实现合同
+4. 正式 Skill draft 最小实现计划
+5. 用户批准开发 docs/drafts 内的正式草案 `SKILL.md`
+6. docs draft `SKILL.md`
+7. product-spec forward test + route tie-breaker patch
+8. 真实 Obsidian UI replay：插件存储通过，正文段落直接选择未验证
 
 后补：
-4. 真实 Obsidian UI / plugin replay
+9. 严格正文段落直接选择 replay
 ```
 
 ## Current Status
@@ -43,9 +48,17 @@ ReaderLab 已完成 **正式 Skill 草案前的实现合同切片**。
 - `skill_delivery_design_docs`: `created`
 - `formal_skill_draft_contract_ready`: `yes`
 - `formal_skill_draft_contract_review`: `pass_no_p0_p1`
+- `formal_skill_draft_implementation_plan_ready`: `yes`
+- `formal_skill_draft_human_approval`: `docs_draft_skill_md_allowed`
+- `formal_skill_draft_allowed_path`: `docs/drafts/readerlab-skill-v0/SKILL.md`
+- `formal_skill_draft_started`: `docs_draft_only`
+- `formal_skill_draft_path`: `docs/drafts/readerlab-skill-v0/SKILL.md`
 - `trace_validator_implemented`: `minimal_pass`
 - `comment_replay_fixture_pass`: `1/1`
-- `comment_replay_verified`: `fixture_pass_real_obsidian_ui_deferred`
+- `comment_replay_verified`: `fixture_pass_real_obsidian_ui_pass_with_warning`
+- `real_obsidian_ui_replay`: `pass_with_warning`
+- `real_obsidian_ui_storage_format`: `tandem-comments`
+- `real_obsidian_ui_body_prose_selection`: `not_verified`
 - `transferable_method_kernel_pass`: `not_verified`
 - `skill_draft_not_started`
 - `public_external_material_validation_not_started`
@@ -57,6 +70,8 @@ ReaderLab 已完成 **正式 Skill 草案前的实现合同切片**。
 - 不得把 Skill 交付设计文档称为正式可运行 Skill 草案。
 - 不得把正式 Skill 草案实现合同称为正式可运行 Skill 草案。
 - 不得把 `formal_skill_draft_contract_ready` 称为 `formal_skill_draft_started`。
+- 不得把 `formal_skill_draft_implementation_plan_ready` 称为 `formal_skill_draft_started`。
+- 不得把 docs draft `SKILL.md` 称为已安装、已启用或可复用 Skill。
 - 不得把 private/local validation 称为 public external validation。
 
 ## Current Evidence
@@ -75,6 +90,21 @@ ReaderLab 已完成 **正式 Skill 草案前的实现合同切片**。
 - Formal Skill draft contract：
   - `docs/readerlab-formal-skill-draft-contract.md`
   - independent reviewer result: pass, no P0/P1, P2 addressed
+- Formal Skill draft implementation plan：
+  - `docs/readerlab-formal-skill-draft-implementation-plan.md`
+  - approved scope: create one formal draft `SKILL.md` under `docs/drafts/readerlab-skill-v0/`; no install / no activation
+- Formal Skill draft packet：
+  - `docs/drafts/readerlab-skill-v0/SKILL.md`
+  - `docs/drafts/readerlab-skill-v0/README.md`
+  - `docs/drafts/readerlab-skill-v0/examples/input-request.json`
+  - `docs/drafts/readerlab-skill-v0/examples/route-decision-example.json`
+  - `docs/drafts/readerlab-skill-v0/evals/trigger-cases.json`
+  - `docs/drafts/readerlab-skill-v0/evals/output-cases.json`
+  - `docs/drafts/readerlab-skill-v0/reports/skill-ir.md`
+  - `docs/drafts/readerlab-skill-v0/reports/output-quality-scorecard.md`
+  - `docs/drafts/readerlab-skill-v0/reports/review-studio.md`
+  - `docs/drafts/readerlab-skill-v0/forward-tests/product-spec-v0/`
+  - `docs/drafts/readerlab-skill-v0/checks/readiness-checklist.md`
 - minimal trace validator：
   - `scripts/readerlab_trace_validator.py`
   - `tests/test_readerlab_trace_validator.py`
@@ -82,21 +112,26 @@ ReaderLab 已完成 **正式 Skill 草案前的实现合同切片**。
   - `docs/reports/readerlab-comment-replay-v0/`
   - plugin storage format: `tandem-comments`
   - replay cases checked: A2 longform 2 comments + B2 engineering cleaned-body 2 comments
+- real Obsidian UI replay package：
+  - `docs/reports/readerlab-real-obsidian-replay-v0/`
+  - `docs/reports/readerlab-real-obsidian-replay-v0/results/comment-replay-real-ui.json`
+  - result: `pass_with_warning`
+  - warning: comments attached to visible anchor list entries, not direct prose body selections
 
 GitHub state:
 
 - Repository `t512192641/readerlab` verified private by GitHub app.
 - Branch: `readerlab-elon-checkpoint`
 - PR: `https://github.com/t512192641/readerlab/pull/1`
-- Latest pushed commit: `a0706bd Add ReaderLab trace validator checkpoint`
+- Latest pushed commit: `a9fdaa5 Add ReaderLab formal skill draft contract`
 
 ## Next Action
 
 用户已决定先跳过真实 Obsidian UI replay，稍后配合补测。下一步允许做：
 
 1. 提交并推送最小 validator / fixture / formal draft contract checkpoint。
-2. 在用户明确批准后，准备正式 ReaderLab Skill draft 的最小实现计划；批准前不创建正式 `SKILL.md`。
-3. 稍后用户可配合补真实 Obsidian UI replay：从插件真实创建批注，再验证 Codex 能回到 body anchor、claim、candidate 和 gate decision。
+2. 可选再做一次 Skill/engineering source forward test；仍不安装、不启用。
+3. 如需 activation readiness，再和用户补一次严格正文段落直接选择 replay；当前真实插件存储已经通过。
 
 最小 trace validator 已检查：
 
@@ -142,6 +177,7 @@ GitHub state:
 - `docs/contracts/comment-replay-v1.md`
 - `scripts/readerlab_trace_validator.py`
 - `tests/test_readerlab_trace_validator.py`
+- `docs/readerlab-formal-skill-draft-implementation-plan.md`
 
 按需读取：
 
@@ -160,11 +196,13 @@ GitHub state:
 
 立即停止并纠正状态，如果出现：
 
-- 创建正式 `SKILL.md`。
+- 在 `docs/drafts/readerlab-skill-v0/` 之外创建 `SKILL.md`。
 - 创建 `.agents/skills/readerlab/`。
-- 标记 `formal_skill_draft_started`。
+- 安装或启用 ReaderLab Skill。
+- 把 docs draft `SKILL.md` 说成已安装、已启用或生产可复用 Skill。
 - 标记 `transferable_method_kernel_pass`。
 - 把 fixture comment replay 说成真实 Obsidian UI replay。
+- 把 `real_obsidian_ui_replay: pass_with_warning` 说成 full pass 或 production ready。
 - 把 private/local validation 写成 public external validation。
 - reader-facing 暴露 `source refs`、`claim trace`、`lens score`、`machine_status`、`human_status`、`Body Track Gate`、`Claim Ledger`、`Candidate Tournament`、`Skillization Gate`、`Annotation Trigger`。
 - trace validator 不能连接 reader paragraph、anchor、claim、candidate/gate。
@@ -179,4 +217,4 @@ python3 tests/test_readerlab.py
 git diff --check
 ```
 
-新增 validator、replay fixture 或 formal draft contract 后还应运行对应新增测试或命令，并把结果写入 `docs/agent-run-ledger.md`。
+新增 validator、replay fixture、formal draft contract 或 docs draft `SKILL.md` 后还应运行对应新增测试或命令，并把结果写入 `docs/agent-run-ledger.md`。

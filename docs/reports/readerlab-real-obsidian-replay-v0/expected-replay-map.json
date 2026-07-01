@@ -1,0 +1,53 @@
+{
+  "version": "readerlab-real-obsidian-replay.v0",
+  "vault_test_dir": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/readerlab-ui-replay-test",
+  "expected_plugin_format": "tandem-comments",
+  "cases": [
+    {
+      "case_id": "REAL-L1-BODY-FIRST",
+      "file": "longform-body.md",
+      "anchor_ref": "L1",
+      "exact": "读者必须先接触完整正文",
+      "expected_comment": "这里为什么要先读正文，而不是先看 AI 总结？",
+      "claim": "ReaderLab must preserve the source body before AI companion material.",
+      "candidate_decision": "keep",
+      "gate": "body track before companion text",
+      "reply_mode": "explain"
+    },
+    {
+      "case_id": "REAL-L2-AI-BOUNDARY",
+      "file": "longform-body.md",
+      "anchor_ref": "L2",
+      "exact": "AI 陪读只能降低理解阻力",
+      "expected_comment": "这里的“降低阻力”具体应该怎么体现在页面里？",
+      "claim": "AI companion material supports reading but must not replace first judgment.",
+      "candidate_decision": "keep",
+      "gate": "AI boundary before human acceptance",
+      "reply_mode": "connect"
+    },
+    {
+      "case_id": "REAL-E1-CLEANED-SPINE",
+      "file": "engineering-cleaned-body.md",
+      "anchor_ref": "E1",
+      "exact": "净化正文必须保留用途、触发条件、用户意图和核心流程",
+      "expected_comment": "如果删掉命令行，怎么保证流程没有被删坏？",
+      "claim": "Engineering cleaned body must preserve the operational spine.",
+      "candidate_decision": "promote",
+      "gate": "cleaned body preserves essentials",
+      "reply_mode": "verify"
+    },
+    {
+      "case_id": "REAL-E2-AUDIT-APPENDIX",
+      "file": "engineering-cleaned-body.md",
+      "anchor_ref": "E2",
+      "exact": "被剥离的执行外壳进入 audit 或附录",
+      "expected_comment": "哪些内容应该放附录，哪些只放审计？",
+      "claim": "Removed execution shell remains available outside the main reading body.",
+      "candidate_decision": "keep",
+      "gate": "reader body vs audit separation",
+      "reply_mode": "boundary"
+    }
+  ],
+  "status": "pass_with_warning",
+  "warning": "Real comments were attached to visible anchor list entries rather than directly to prose body sentences."
+}

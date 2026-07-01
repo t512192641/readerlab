@@ -1,0 +1,12 @@
+{
+  "material_id": "example-material",
+  "title": "Example Material",
+  "source_paths": [
+    "/absolute/path/to/source"
+  ],
+  "output_root": "/absolute/path/to/readerlab-package",
+  "permission_boundary": "private_only",
+  "intended_reader": "Chinese reader who wants to read, annotate, discuss, and absorb the material",
+  "requested_scope": "selected_unit",
+  "human_review_required": true
+}
