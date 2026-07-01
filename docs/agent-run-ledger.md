@@ -1,3 +1,33 @@
+# 2026-07-01 最小 trace validator 与 comment replay fixture 通过
+
+## 摘要
+
+- 用户明确真实 Obsidian UI replay 可以先跳过，稍后配合补测。
+- 本轮新增最小可重复 validator：`scripts/readerlab_trace_validator.py`。
+- 新增测试：`tests/test_readerlab_trace_validator.py`，覆盖 private A2/B2 trace chain 和 `tandem-comments` 插件格式 replay fixture。
+- 新增 fixture/report 包：`docs/reports/readerlab-comment-replay-v0/`。
+
+## 结果
+
+- `trace_validator_implemented`: `minimal_pass`。
+- `comment_replay_fixture_pass`: `1/1`。
+- `comment_replay_verified`: `fixture_pass_real_obsidian_ui_deferred`。
+- 仍然保持：`skill_draft_not_started`、`transferable_method_kernel_pass: not_verified`、`public_external_material_validation_not_started`。
+
+## 边界
+
+- 本轮没有打开 Obsidian，也没有执行真实 UI 批注操作。
+- replay fixture 使用现有插件的 `tandem-comments` fenced JSON 存储格式，不是 Markdown 正文批注。
+- 本轮没有创建正式 `SKILL.md`。
+
+## 验证
+
+- `python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures`：PASS。
+- `python3 tests/test_readerlab_trace_validator.py`：PASS，2 tests OK。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `find docs/reports/readerlab-comment-replay-v0 -name '*.json' -print -exec python3 -m json.tool {} /tmp/readerlab-trace-json.out \;`：PASS。
+- `git diff --check`：PASS。
+
 # 2026-07-01 MEM Clean 文档状态治理
 
 ## 摘要

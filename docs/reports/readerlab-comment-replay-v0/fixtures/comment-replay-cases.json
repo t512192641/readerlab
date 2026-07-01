@@ -1,0 +1,91 @@
+{
+  "contract": "comment-replay.v1",
+  "material_set": "readerlab-comment-replay-v0",
+  "checked_at": "2026-07-01",
+  "replays": [
+    {
+      "replay_id": "CR-A2-PLAY-001",
+      "comment_id": "rl-a2-play-001",
+      "comment_source": "plugin_export",
+      "fixture": "A_feel_good_productivity.tandem.md",
+      "demo_dir": "../../readerlab-private-material-validation-v0/demos/A_feel_good_productivity",
+      "anchor_ref": "A-BODY-003",
+      "claim_ref": "C4",
+      "candidate_ref": "K3",
+      "gate_refs": [
+        "claim-ledger",
+        "candidate-tournament",
+        "annotation-trigger"
+      ],
+      "reply": {
+        "reply_mode": "boundary",
+        "source_boundary_respected": true,
+        "does_not_claim_author_intent_without_evidence": true,
+        "does_not_promote_rejected_candidate": true
+      }
+    },
+    {
+      "replay_id": "CR-A2-REST-002",
+      "comment_id": "rl-a2-rest-002",
+      "comment_source": "plugin_export",
+      "fixture": "A_feel_good_productivity.tandem.md",
+      "demo_dir": "../../readerlab-private-material-validation-v0/demos/A_feel_good_productivity",
+      "anchor_ref": "A-BODY-005",
+      "claim_ref": "C6",
+      "candidate_ref": "K6",
+      "gate_refs": [
+        "claim-ledger",
+        "candidate-tournament",
+        "annotation-trigger"
+      ],
+      "reply": {
+        "reply_mode": "connect",
+        "source_boundary_respected": true,
+        "does_not_claim_author_intent_without_evidence": true,
+        "does_not_promote_rejected_candidate": true
+      }
+    },
+    {
+      "replay_id": "CR-B2-STATE-003",
+      "comment_id": "rl-b2-state-003",
+      "comment_source": "plugin_export",
+      "fixture": "B_planning_with_files.tandem.md",
+      "demo_dir": "../../readerlab-private-material-validation-v0/demos/B_planning_with_files",
+      "anchor_ref": "B-BODY-003",
+      "claim_ref": "C5",
+      "candidate_ref": "K3",
+      "gate_refs": [
+        "claim-ledger",
+        "candidate-tournament",
+        "skillization-gate"
+      ],
+      "reply": {
+        "reply_mode": "boundary",
+        "source_boundary_respected": true,
+        "does_not_claim_author_intent_without_evidence": true,
+        "does_not_promote_rejected_candidate": true
+      }
+    },
+    {
+      "replay_id": "CR-B2-ERROR-004",
+      "comment_id": "rl-b2-error-004",
+      "comment_source": "plugin_export",
+      "fixture": "B_planning_with_files.tandem.md",
+      "demo_dir": "../../readerlab-private-material-validation-v0/demos/B_planning_with_files",
+      "anchor_ref": "B-BODY-004",
+      "claim_ref": "C6",
+      "candidate_ref": "K4",
+      "gate_refs": [
+        "claim-ledger",
+        "candidate-tournament",
+        "skillization-gate"
+      ],
+      "reply": {
+        "reply_mode": "boundary",
+        "source_boundary_respected": true,
+        "does_not_claim_author_intent_without_evidence": true,
+        "does_not_promote_rejected_candidate": true
+      }
+    }
+  ]
+}

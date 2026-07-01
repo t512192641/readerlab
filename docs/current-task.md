@@ -13,13 +13,17 @@
 
 ## Active Slice
 
-ReaderLab 已从 demo 验证进入 **Skill 交付设计后的验证实现切片**。
+ReaderLab 已完成 **Skill 交付设计后的最小验证实现切片**。
 
-当前目标不是写正式 `SKILL.md`，而是补齐正式 Skill 草案前的两个硬缺口：
+当前目标仍不是泛化宣称，也不是 public external validation。最小 trace validator 和 comment replay fixture 已实现；用户选择暂时跳过真实 Obsidian UI replay，稍后配合补测。
 
 ```text
+已完成：
 1. 最小 trace validator
 2. 最小 comment replay fixture
+
+后补：
+3. 真实 Obsidian UI / plugin replay
 ```
 
 ## Current Status
@@ -36,8 +40,9 @@ ReaderLab 已从 demo 验证进入 **Skill 交付设计后的验证实现切片*
 - `private_material_validation_local_pass`: `2/2`
 - `formal_skill_delivery_design_ready`: `yes`
 - `skill_delivery_design_docs`: `created`
-- `trace_validator_implemented`: `not_started`
-- `comment_replay_verified`: `not_verified`
+- `trace_validator_implemented`: `minimal_pass`
+- `comment_replay_fixture_pass`: `1/1`
+- `comment_replay_verified`: `fixture_pass_real_obsidian_ui_deferred`
 - `transferable_method_kernel_pass`: `not_verified`
 - `skill_draft_not_started`
 - `public_external_material_validation_not_started`
@@ -62,6 +67,13 @@ ReaderLab 已从 demo 验证进入 **Skill 交付设计后的验证实现切片*
   - `docs/contracts/location-anchor-v1.md`
   - `docs/contracts/trace-validation-v1.md`
   - `docs/contracts/comment-replay-v1.md`
+- minimal trace validator：
+  - `scripts/readerlab_trace_validator.py`
+  - `tests/test_readerlab_trace_validator.py`
+- comment replay fixture package：
+  - `docs/reports/readerlab-comment-replay-v0/`
+  - plugin storage format: `tandem-comments`
+  - replay cases checked: A2 longform 2 comments + B2 engineering cleaned-body 2 comments
 
 GitHub state:
 
@@ -72,21 +84,20 @@ GitHub state:
 
 ## Next Action
 
-下一步只允许做：
+用户已决定先跳过真实 Obsidian UI replay，稍后配合补测。下一步允许做：
 
-1. 设计并实现最小 trace validator。
-2. 用现有 demo/private validation artifacts 做最小 comment replay fixture。
-3. 运行验证并更新状态。
+1. 提交并推送最小 validator / fixture checkpoint。
+2. 准备正式 ReaderLab Skill 草案的实现合同，但在用户明确批准前不创建正式 `SKILL.md`。
+3. 稍后用户可配合补真实 Obsidian UI replay：从插件真实创建批注，再验证 Codex 能回到 body anchor、claim、candidate 和 gate decision。
 
-最小 trace validator 应检查：
+最小 trace validator 已检查：
 
 - `location-map.json` 中的 anchors 可被引用。
 - `annotation-trigger.json` 的每个 `anchor_ref` 存在。
-- reader-facing 核心段落能追溯到 body/source anchor、claim、candidate 或 gate decision。
-- promoted candidates 有最终用途或 audit-only 理由。
+- replay case 能追溯到 body/source anchor、claim、candidate 或 gate decision。
 - skill candidates 满足 trigger / input / steps / output / boundary / evidence。
 
-最小 comment replay fixture 应覆盖：
+最小 comment replay fixture 已覆盖：
 
 - A2 private longform 正文位置 2 条 comment。
 - B2 Skill / engineering 净化正文位置 2 条 comment。
@@ -133,6 +144,7 @@ GitHub state:
 - 创建正式 `SKILL.md`。
 - 标记 `formal_skill_draft_started`。
 - 标记 `transferable_method_kernel_pass`。
+- 把 fixture comment replay 说成真实 Obsidian UI replay。
 - 把 private/local validation 写成 public external validation。
 - reader-facing 暴露 `source refs`、`claim trace`、`lens score`、`machine_status`、`human_status`、`Body Track Gate`、`Claim Ledger`、`Candidate Tournament`、`Skillization Gate`、`Annotation Trigger`。
 - trace validator 不能连接 reader paragraph、anchor、claim、candidate/gate。
