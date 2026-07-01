@@ -17,7 +17,7 @@
     }
   ],
   "required_additions": [
-    "20_AI陪读/design-asset-notes.md",
+    "10_中文精读/001_阅读单元.md with cleaned body and nearby companion/design notes",
     "audit/source-cleaning-map.md"
   ],
   "human_review_required": true

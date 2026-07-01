@@ -7,8 +7,8 @@
 - 将 ReaderLab 当前事实压缩到 `docs/current-task.md`、`docs/dev-state.md`、`docs/decisions.md`。
 - 删除旧 `docs/reports/`、`docs/drafts/`、旧过程文档、DBS 测试输入，以及 LifeAtlas 270 下旧 `dbs-suite*` / `gstack` ReaderLab 生成包。
 - 将 validator 仍需要的样本迁移到 `tests/fixtures/readerlab/`。
-- 将《埃隆之书》整书章节解读复制到 LifeAtlas，并清理 270 下旧过程目录后只保留该最终目录：
-  `/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629/10_中文精读/03_ReaderLab整书章节解读/`
+- 将《埃隆之书》旧章节讲解目录清理后，重新生成正文和陪读同页的 ReaderLab v1 本地包：
+  `/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-v1_20260701/`
 - 删除 LifeAtlas 临时批注测试目录：`readerlab-ui-replay-test`。
 - 明确 `/Users/tianqiang/技能项目/skills-canonical/packages/gstack` 原始 Skills 源仓库是用户要继续学习的材料，不能删除、移动或重写。
 

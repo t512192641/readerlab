@@ -26,8 +26,9 @@ Before creating or updating a ReaderLab package, read:
 
 1. The user's request.
 2. The material source paths.
-3. `docs/readerlab-formal-skill-draft-contract.md`.
-4. `docs/readerlab-skill-ir-v1.md`.
+3. `docs/readerlab-package-spec.md`.
+4. `docs/eval-gates.md`.
+5. `docs/product-spec.md` when product boundary is unclear.
 
 Read route-specific contracts only when needed:
 
@@ -74,7 +75,7 @@ Classify the material before writing reader-facing output.
 Use `book_or_longform` for books, chapters, essays, transcripts, long articles, and narrative reports.
 
 - Body mode: `full_body`.
-- Preserve the complete selected source unit under `10_一手正文/`.
+- Preserve the complete selected source unit inside a single annotatable reader page under `10_中文精读/`.
 - AI companion pages cannot replace source body.
 
 Use `skill_or_engineering_doc` for `SKILL.md`, engineering specs, code docs, agent workflow docs, product protocols, and operational manuals.
@@ -124,8 +125,9 @@ Common package shape:
 ```text
 README.md
 source-registry.json
-10_一手正文/
-20_AI陪读/
+10_中文精读/
+  001_阅读单元.md
+  002_阅读单元.md
 audit/location-map.json
 audit/trace-to-reader.md
 audit/contracts/material-profile.json
@@ -139,10 +141,23 @@ audit/contracts/trace-validation.json
 audit/eval.md
 ```
 
+For Obsidian reading, each reader unit must be a single annotatable Markdown page:
+
+```text
+# Unit title
+
+source body paragraph
+
+> 陪读：nearby companion note
+
+source body paragraph
+```
+
+Do not split one unit into separate body, companion, and comment-question files. The user adds comments directly in the reader page through Obsidian; generated "annotation question" files are not the default ReaderLab surface.
+
 For engineering material, also create:
 
 ```text
-20_AI陪读/design-asset-notes.md
 audit/source-cleaning-map.md
 ```
 

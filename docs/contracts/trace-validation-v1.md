@@ -15,7 +15,7 @@ It is a deterministic completeness check. It does not judge whether the prose is
   "reader_paragraphs": [
     {
       "reader_ref": "R1",
-      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "reader_path": "10_中文精读/001_阅读单元.md",
       "paragraph_role": "string",
       "anchor_refs": ["A-BODY-001"],
       "claim_refs": ["C1"],

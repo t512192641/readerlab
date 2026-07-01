@@ -6,7 +6,7 @@
 
 该 contract 属于 `audit/contracts/` 或样本 audit 层，不直接作为读者页内容。
 
-边界：本 contract 通过只代表 `high_order_explanation_pass` 的必要证据之一，不代表 `reader_package_pass`。书籍 / 长文若要进入完整阅读包通过，还必须另过 Body Track Gate，并提供完整一手正文轨或 `10_一手正文/` 显式链接。
+边界：本 contract 通过只代表 `high_order_explanation_pass` 的必要证据之一，不代表 `reader_package_pass`。书籍 / 长文若要进入完整阅读包通过，还必须另过 Body Track Gate，并在同一个可批注阅读页内提供完整一手正文。
 
 ## 最低字段
 

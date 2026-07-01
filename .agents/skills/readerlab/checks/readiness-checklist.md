@@ -25,13 +25,12 @@ Use this checklist before treating `.agents/skills/readerlab/SKILL.md` as repo-l
 - [ ] Route decision covers `book_or_longform`, `skill_or_engineering_doc`, and `mixed_material_package`.
 - [ ] Near-neighbor prompts are covered by `evals/trigger-cases.json`.
 - [ ] Output assertions are covered by `evals/output-cases.json`.
-- [ ] Product spec forward test is recorded in `forward-tests/product-spec-v0/`.
-- [ ] Skill IR is recorded in `reports/skill-ir.md`.
-- [ ] Review status is recorded in `reports/review-studio.md`.
 - [ ] Book and longform route preserves the complete selected body.
 - [ ] Skill and engineering route preserves cleaned body essentials.
+- [ ] Each reader unit is a single annotatable Markdown page with body and nearby AI companion notes together.
+- [ ] The default output does not split one reader unit into separate body, companion, and generated comment-question files.
+- [ ] Generated files do not invent user comments; comments are expected to come from the user's Obsidian annotations.
 - [ ] Mixed package route classifies each meaningful unit before writing body.
-- [ ] Output checklist matches `docs/readerlab-formal-skill-draft-contract.md`.
 - [ ] Required package shape includes `audit/contracts/trace-validation.json`.
 - [ ] `trace-validation.json` maps reader-facing core paragraphs to anchors, claims, and candidates or gates.
 - [ ] Agent/script boundary is explicit.

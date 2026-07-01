@@ -12,8 +12,8 @@
 - 单元测试：`tests/test_readerlab.py`、`tests/test_readerlab_trace_validator.py`
 - 最小 validator fixtures：`tests/fixtures/readerlab/`
 - LifeAtlas 270 目录：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料`
-- 《埃隆之书》当前阅读目录：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629`
-- 《埃隆之书》整书 ReaderLab 解读：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629/10_中文精读/03_ReaderLab整书章节解读/`
+- 《埃隆之书》当前 ReaderLab v1 本地包：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-v1_20260701/`
+- 《埃隆之书》正文陪读同页目录：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-v1_20260701/10_中文精读/`
 - `gstack` 原始 Skills 学习材料：`/Users/tianqiang/技能项目/skills-canonical/packages/gstack`
 
 ## Core Docs

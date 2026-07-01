@@ -28,7 +28,7 @@
 
 - Book and longform pages can be `reader_package_pass` only when first-hand body exists.
 - Skill / engineering materials can be `skill_engineering_cleaned_body_pass` only when a cleaned body exists and preserves purpose, trigger, user intent, workflow, constraints, failure conditions, output requirements, and design highlights.
-- First-hand body means either the full chapter body is present in the page or the page explicitly links to the corresponding file under `10_一手正文/`.
+- First-hand body means the full chapter body is present in the annotatable reader page. Obsidian-facing output should not force readers to jump between separate body and companion files for one unit.
 - For Skill / engineering materials, cleaned body is the body track; runtime shell, command protocol, machine state, paths, telemetry, and repeated templates may be moved to audit, but safety-critical constraints must remain traceable.
 - Explanation-only chapter pages can only be `high_order_explanation_pass`.
 - “讲解贴合正文锚点” cannot replace “一手正文存在”.
