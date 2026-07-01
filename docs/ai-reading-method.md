@@ -129,6 +129,34 @@ Reader Gain Gate 对高阶讲解的额外要求：
 - 是否解释了不同领域之间的同构关系，而不是只做表面类比。
 - 是否明确哪些是原文、哪些是 AI 重组、哪些需要外部验证。
 
+## High-Order Explanation v1
+
+E-R-D-D 中的 Deepen / Decide 对高阶讲解采用 `high-order-explanation.v1` 内部协议。该协议不是读者页展示语言，而是 Agent 生成自然讲解前的质量门：
+
+```text
+Source Anchor
+-> Baseline Summary Trap
+-> Upgrade Question
+-> Mechanism Graph
+-> Lens Auction
+-> Judgment Gate
+-> Natural Explanation
+-> Delta Eval
+```
+
+关键约束：
+
+- Source Anchor：先抽取正文锚点，记录正文支持什么、不能支持什么。
+- Baseline Summary Trap：先写普通总结会怎么讲，用来防止最终稿只是更顺的总结。
+- Upgrade Question：把主题升级成更大的问题，格式是“在什么约束下，谁如何把什么资源转化成什么结果，同时避免什么失败”。
+- Mechanism Graph：把正文观点串成 input / constraint / action / feedback / output / failure_mode / boundary。
+- Lens Auction：候选镜头必须由正文触发，并能解释机制、揭示边界、带来认知增量；最多 Promote 2 个主镜头和 1 个边界镜头。
+- Judgment Gate：必须完成吸收 / 降级 / 拒绝，不停在“有启发”。
+- Natural Explanation：最终写成自然陪读讲解，不展示内部字段。
+- Delta Eval：和 baseline summary 对照；没有问题框架、机制、镜头、边界或裁决，判 FAIL。
+
+完整方法见 [`docs/high-order-explanation-method.md`](high-order-explanation-method.md)，audit contract 见 [`docs/contracts/high-order-explanation-v1.md`](contracts/high-order-explanation-v1.md)。
+
 ## Deepread Card
 
 真正升格的深读内容必须写成 deepread card。

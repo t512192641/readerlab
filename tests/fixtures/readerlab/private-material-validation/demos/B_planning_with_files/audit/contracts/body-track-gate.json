@@ -1,0 +1,15 @@
+{
+  "contract": "body-track-gate.v1",
+  "material_id": "B_planning_with_files_skill_engineering",
+  "material_type": "skill_engineering",
+  "body_track": {
+    "status": "present_full_body",
+    "body_path": "10_一手正文/001_净化正文.md",
+    "link_target": null,
+    "coverage": "full_chapter",
+    "notes": "Cleaned body preserves purpose, trigger, workflow, constraints, failure conditions, outputs, and design ideas while moving host-specific runtime shell to audit."
+  },
+  "allowed_status": "skill_engineering_cleaned_body_pass",
+  "blocking_reasons": [],
+  "checked_at": "2026-07-01"
+}

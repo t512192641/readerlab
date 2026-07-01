@@ -1,5 +1,7 @@
 # Research Log
 
+> Authority boundary: 本文件是研究记录和参考线索库，不是当前任务源。各条记录里的“下一轮 / 下一步”只代表当时研究语境；当前执行、读取范围和停止条件以 `docs/current-task.md` 为准。
+
 ## 2026-06-30 ReaderLab Skill 化参考调研
 
 本条记录本轮对本地 Skill 包、GitHub 能力库存和外部公开项目的可复用结论。它是 ReaderLab 后续设计参考，不表示已实现。

@@ -1,0 +1,28 @@
+{
+  "contract": "material-profile.v1",
+  "material_id": "B_planning_with_files_skill_engineering",
+  "title": "planning-with-files",
+  "material_type": "skill_engineering",
+  "source_basis": [
+    "local SKILL.md selected by user",
+    "cleaned body generated from source content without executing the Skill"
+  ],
+  "coverage": "full",
+  "body_track_status": "present_full_body",
+  "risks": {
+    "translation_or_editing": "low",
+    "context_loss": "medium",
+    "external_verification_needed": false,
+    "ai_reconstruction_risk": "medium"
+  },
+  "reader_gap_filled": [
+    "cleaned body preserves operational spine",
+    "runtime shell is separated from reader body",
+    "design assets are extracted as reusable patterns"
+  ],
+  "reader_gap_not_filled": [
+    "source is local and not independently packaged for public review",
+    "the Skill was not executed or installed",
+    "no real Obsidian annotation replay was run"
+  ]
+}

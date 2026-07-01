@@ -1,0 +1,48 @@
+{
+  "contract": "annotation-trigger.v1",
+  "material_id": "A_feel_good_productivity_private_longform",
+  "triggers": [
+    {
+      "trigger_id": "AT1",
+      "anchor_ref": "A-BODY-001",
+      "reader_question": "目录把全书分成能量、阻碍和蓄能三段，这会怎样改变你对“生产力书”的预期？",
+      "likely_misread": "把目录当普通章节清单，不看三段之间的机制关系。",
+      "reply_mode": "connect"
+    },
+    {
+      "trigger_id": "AT2",
+      "anchor_ref": "A-BODY-002",
+      "reader_question": "医院开场是在批评努力本身，还是在批评错误诊断下的继续加压？",
+      "likely_misread": "把危机场景读成“压力都不好”。",
+      "reply_mode": "boundary"
+    },
+    {
+      "trigger_id": "AT3",
+      "anchor_ref": "A-BODY-003",
+      "reader_question": "“玩”在这里是逃避工作，还是改变行动系统的能量入口？",
+      "likely_misread": "把玩理解成轻松一点的口号。",
+      "reply_mode": "challenge"
+    },
+    {
+      "trigger_id": "AT4",
+      "anchor_ref": "A-BODY-004",
+      "reader_question": "当正文谈清晰、勇气和开始行动时，它把问题从性格弱点转移到了哪些可设计环节？",
+      "likely_misread": "继续用自律不足解释所有拖延。",
+      "reply_mode": "explain"
+    },
+    {
+      "trigger_id": "AT5",
+      "anchor_ref": "A-BODY-005",
+      "reader_question": "休息在正文里是奖赏、放弃，还是维持系统不失真的维护动作？",
+      "likely_misread": "把休息读成低负担鸡汤。",
+      "reply_mode": "boundary"
+    },
+    {
+      "trigger_id": "AT6",
+      "anchor_ref": "A-BODY-005",
+      "reader_question": "最后的校准实验适合迁移到你的哪些项目，哪些项目不适合？",
+      "likely_misread": "把实验精神读成随便试试，而不是小范围、有观察、有复盘。",
+      "reply_mode": "verify"
+    }
+  ]
+}

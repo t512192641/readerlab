@@ -1,0 +1,47 @@
+{
+  "contract": "skillization-gate.v1",
+  "material_id": "A_feel_good_productivity_private_longform",
+  "items": [
+    {
+      "candidate_ref": "K4",
+      "candidate": "Treat stuck work as an action-design problem before treating it as a character flaw.",
+      "trigger": "Reader is stuck, procrastinating, or interpreting stalled work as personal failure.",
+      "input": "A concrete stuck task plus current friction, fear, and next-action ambiguity.",
+      "steps": [
+        "Name the stuck task.",
+        "Separate energy, clarity, fear, environment, and meaning constraints.",
+        "Choose the smallest next action.",
+        "Decide which constraint needs redesign first."
+      ],
+      "output": "A bounded next-action redesign note.",
+      "boundary": "This is a reading-derived candidate only; it is not a formal ReaderLab Skill draft.",
+      "evidence": ["C5", "A-BODY-004"],
+      "decision": "skill_candidate",
+      "decision_reason": "It has trigger, input, steps, output, boundary, and evidence, but remains a candidate."
+    },
+    {
+      "candidate_ref": "K2",
+      "candidate": "Read productivity as energy-system design.",
+      "trigger": null,
+      "input": null,
+      "steps": [],
+      "output": null,
+      "boundary": "Useful interpretive frame, not a repeatable operation by itself.",
+      "evidence": ["C2", "A-BODY-002"],
+      "decision": "insight_only",
+      "decision_reason": "Strong interpretation but missing concrete input and operational steps."
+    },
+    {
+      "candidate_ref": "K7",
+      "candidate": "Happy-productivity absolutism.",
+      "trigger": null,
+      "input": null,
+      "steps": [],
+      "output": null,
+      "boundary": "Dangerous overgeneralization.",
+      "evidence": ["C7"],
+      "decision": "reject",
+      "decision_reason": "Rejected by candidate tournament and unsupported by source."
+    }
+  ]
+}

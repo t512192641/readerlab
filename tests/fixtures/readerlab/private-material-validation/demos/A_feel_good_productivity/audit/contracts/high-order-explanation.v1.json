@@ -1,0 +1,128 @@
+{
+  "contract_type": "high-order-explanation.v1",
+  "unit_id": "A_feel_good_productivity_private_longform",
+  "material_type": "book_longform",
+  "source_scope": "Full private PDF text extracted locally",
+  "source_anchors": [
+    {
+      "anchor_id": "A-BODY-001",
+      "source_ref": "10_一手正文/001_正文.md lines 1-24",
+      "what_text_says": "Title, source note, and table of contents establish a full book-shaped source.",
+      "supports": ["C1"],
+      "does_not_support": ["public external generalization"]
+    },
+    {
+      "anchor_id": "A-BODY-002",
+      "source_ref": "10_一手正文/001_正文.md lines 26-92",
+      "what_text_says": "The author opens with a hospital crisis and the failure of harder work as the default answer.",
+      "supports": ["C2", "C3"],
+      "does_not_support": ["all pressure is harmful"]
+    },
+    {
+      "anchor_id": "A-BODY-003",
+      "source_ref": "10_一手正文/001_正文.md around lines 293-773",
+      "what_text_says": "The first chapter presents play as an energy source and offers experiments.",
+      "supports": ["C4"],
+      "does_not_support": ["pleasure alone guarantees productivity"]
+    },
+    {
+      "anchor_id": "A-BODY-004",
+      "source_ref": "10_一手正文/001_正文.md around lines 1846-3205",
+      "what_text_says": "The middle section treats clarity, courage, and next actions as ways to reduce emotional and practical blockers.",
+      "supports": ["C5"],
+      "does_not_support": ["all blockers are individually controllable"]
+    },
+    {
+      "anchor_id": "A-BODY-005",
+      "source_ref": "10_一手正文/001_正文.md around lines 3277-4681",
+      "what_text_says": "The later chapters treat rest, recharge, and alignment as long-term maintenance and calibration.",
+      "supports": ["C6"],
+      "does_not_support": ["rest removes all structural constraints"]
+    }
+  ],
+  "baseline_summary_trap": "The book says productivity improves when you feel good, play more, rest more, and run experiments.",
+  "upgrade_question": "When painful effort stops working, how can a reader redesign energy, clarity, friction, fear, rest, and meaning so action becomes more sustainable without turning happiness into a universal cure?",
+  "mechanism_graph": {
+    "input": ["stuck work", "overload", "fear", "low energy", "unclear next action"],
+    "constraint": ["responsibility remains real", "source is translated/private", "experiments are context-dependent"],
+    "action": ["diagnose energy sources", "make work clearer", "name fear", "reduce friction", "schedule rest", "run alignment experiments"],
+    "feedback": ["mood", "action initiation", "recovery", "alignment evidence"],
+    "output": ["more sustainable action choices"],
+    "failure_mode": ["happy-productivity absolutism", "rest-as-avoidance", "self-blame loop"],
+    "boundary": ["private source validation only", "not public longform generalization"]
+  },
+  "lens_candidates": [
+    {
+      "lens": "diagnosis shift",
+      "text_trigger": "hospital opening and failed harder-work response",
+      "clarifies": "why the book begins from a breakdown rather than a productivity tactic",
+      "boundary_power": "keeps responsibility distinct from self-punishment",
+      "reader_gain": "reader can inspect the diagnosis before applying tactics",
+      "overreach_risk": "could reject effort entirely",
+      "scores": {
+        "text_trigger_strength": 2,
+        "explanatory_power": 2,
+        "boundary_power": 2,
+        "reader_gain": 2,
+        "overreach_risk": -1,
+        "total": 7
+      },
+      "decision": "promote"
+    },
+    {
+      "lens": "energy-system design",
+      "text_trigger": "play, control, connection, rest, recharge, alignment",
+      "clarifies": "why the book groups tactics around energy and sustainability",
+      "boundary_power": "prevents a single-tactic reading",
+      "reader_gain": "reader can place tactics into a system",
+      "overreach_risk": "could become generic wellness advice",
+      "scores": {
+        "text_trigger_strength": 2,
+        "explanatory_power": 2,
+        "boundary_power": 2,
+        "reader_gain": 2,
+        "overreach_risk": -1,
+        "total": 7
+      },
+      "decision": "promote"
+    },
+    {
+      "lens": "happiness as universal productivity law",
+      "text_trigger": "book title and many feel-good tactics",
+      "clarifies": "a tempting but shallow reading",
+      "boundary_power": "weak because it overgeneralizes",
+      "reader_gain": "low",
+      "overreach_risk": "high",
+      "scores": {
+        "text_trigger_strength": 1,
+        "explanatory_power": 0,
+        "boundary_power": 0,
+        "reader_gain": 0,
+        "overreach_risk": -2,
+        "total": -1
+      },
+      "decision": "reject"
+    }
+  ],
+  "judgments": {
+    "absorb": ["Diagnose the system before blaming willpower.", "Treat experiments as bounded changes with observation."],
+    "downgrade": ["Use feel-good tactics as context-sensitive aids, not universal cures."],
+    "reject": ["Do not treat happiness, play, or rest as proof that responsibility disappears."]
+  },
+  "reader_facing_explanation": {
+    "title": "先读正文：这本书真正反对的是“靠痛苦证明努力”",
+    "body": "The reader-facing page frames the book as a diagnosis shift while pointing back to the full body track."
+  },
+  "delta_eval": {
+    "beyond_summary": true,
+    "upgrade_question_present": true,
+    "mechanism_present": true,
+    "lens_illuminates_text": true,
+    "source_boundaries_clear": true,
+    "overreach_controlled": true,
+    "verdicts_clear": true,
+    "reader_gain": "Reader can distinguish the book's energy-system argument from generic happiness advice."
+  },
+  "machine_status": "machine_checked",
+  "human_status": "pending"
+}

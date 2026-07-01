@@ -1,56 +1,77 @@
 # Current Task
 
-## 当前唯一执行切片
+## Authority
 
-当前切片是 **正文契约已验证出方向，但高阶讲解体验未达标，需要重做 AI 陪读口径**。
+本文件是当前执行事实的唯一入口。新会话启动只读：
 
-前一轮《埃隆之书》第二部分 source alignment 已通过，但 reader-facing 原型连续两次人工反馈未通过。根因已经明确：reader 页仍是 AI 解释材料，没有真正的一手正文轨；把内容切成导读、旁批、误读提醒等栏目会增加认知负担，不能替代阅读材料本身。
+1. `AGENTS.md`
+2. `docs/current-task.md`
 
-因此当前不继续返工旧《埃隆之书》reader 页，不做第二类材料迁移测试，不开发完整生成器。用户已确认输出契约方向，并进一步明确：ReaderLab 的 AI 高阶讲解不能只是章节总结，而应提供高屋建瓴、全局视角、旁征博引、跨学科思维模型和既有经历连接带来的认知增量。
+旧报告、旧 prompt、旧 handoff、旧聊天和已删除过程文档都不是当前事实源。
 
-## 当前判断
+## Active Slice
 
-- source alignment：可以作为审计层证据继续保留。
-- reader experience：FAIL。没有原样正文的一手轨，不能算读者体验通过。
-- product capability：NO。当前样张不证明 ReaderLab 产品能力成立。
-- generator capability：NO。不开发完整生成器。
-- real-source demo v1：正文契约方向基本成立，但高阶讲解被用户判定“不够爽、不够通透”，仍像普通书籍总结，不足以证明 ReaderLab 体验成立。
+ReaderLab 已进入 **repo-local Skill trial 后的收尾清理与真实小材料试用前**。
 
-## 新产品边界
+当前已完成：
 
-- 书籍 / 长文：默认原样保留正文和章节顺序；除非用户明确要求整理原文，否则只允许做空格、空行、断行等轻量排版清理。
-- Skill 包 / 工程材料：默认生成净化正文，剥离安装命令、重复模板、执行外壳和机器噪音，但保留用途、触发条件、用户意图、核心流程、约束、失败条件、输出要求和设计亮点。
-- AI 高阶讲解：像一个读过完整材料、见识足够丰富、能站在更大世界图景里思考的人，引入跨学科模型、历史观、产品 / 组织 / 工程经验和用户既往经历中的同构问题，帮助读者重新看待材料；它不能停在普通总结，也不能堆模型或脱离正文。
-- 技术负责人 / 设计资产提炼：面向产品负责人，替用户识别其不容易感知的技术和系统设计，并沉淀为可复用设计资产卡。
-- audit：保留 source refs、location map、claim trace、machine/human 状态和降级/拒绝记录，不进入读者主阅读页。
+- ReaderLab 产品主线重设为：一手正文轨 + AI 陪读轨 + audit/contracts/eval 事实层。
+- repo-local Skill 已激活：`.agents/skills/readerlab/SKILL.md`。
+- trace validator 已能检查 `trace-validation.json` 中 reader-facing paragraph 到 anchor / claim / candidate 或 gate 的连接。
+- 最小机器 fixtures 已移到 `tests/fixtures/readerlab/`。
+- 《埃隆之书》ReaderLab v1 本地包已重新生成到 LifeAtlas：
+  `/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-v1_20260701/`
+- LifeAtlas 270 目录已清理旧 ReaderLab 生成包：`dbs-suite`、`dbs-suite__v2.15.1_096f726`、`gstack`、Elon 旧 `02/20/40` 过程目录已删除。
+- 新的 Obsidian 阅读面决定：正文、陪读和用户批注必须在同一个可批注 Markdown 阅读页发生；不再默认拆成正文文件、AI 陪读文件和预设批注问题文件。
 
-## 已更新的规格文件
+当前仍不能声明：
 
-- `docs/product-spec.md`
-- `docs/readerlab-package-spec.md`
-- `docs/technical-cofounder-method.md`
-- `docs/eval-gates.md`
-- `docs/decisions.md`：新增 D-046。
-- `README.md`
-- `AGENTS.md`
+- production ready
+- global Skill installed
+- public external validation pass
+- `transferable_method_kernel_pass`
+- real Obsidian body-prose annotation full pass
 
-## 下一步
+## Current Status
 
-1. 先把高阶讲解的新口径落到规格和验收 gate。
-2. 在不改正文主体的前提下，重做一小段真实样章的 AI 陪读层，验证它是否明显优于普通总结。
-3. 新样张必须先满足：
-   - 书籍/长文一手正文硬边界，或 Skill/工程材料净化正文规则。
-   - 高阶讲解成段服务正文阅读，并提供非摘要型认知增量。
-   - 技术负责人层输出设计资产卡。
-   - audit 与读者页分离。
-4. 样张通过人工 reader experience 审查后，再讨论 renderer、第二类材料迁移测试或生成器扩展。
+- `readerlab_skill_repo_local_trial`: `active`
+- `readerlab_skill_repo_local_path`: `.agents/skills/readerlab/`
+- `trace_validator_reader_paragraph_trace`: `implemented`
+- `trace_validation_fixtures`: `tests/fixtures/readerlab/`
+- `real_obsidian_ui_replay`: `pass_with_warning`
+- `real_obsidian_ui_body_prose_selection`: `not_verified`
+- `reader_package_not_verified`
+- `transferable_method_kernel_pass`: `not_verified`
+- `public_external_material_validation_not_started`
 
-## 明确不做
+## Open Skill Work Items
 
-- 不继续扩写《埃隆之书》到新章节。
-- 不把当前《埃隆之书》样张说成 product ready。
-- 不开发完整自动图书生成器。
-- 不自建 UI、数据库、知识图谱或批注系统。
-- 不自动写入 LifeAtlas `300/600/800`。
-- 不安装或启用新 Skill。
-- 不新增依赖，除非用户明确批准。
+- `RL-SKILL-001`: Elon 试生成暴露出旧 Skill/规格仍偏向“正文轨/AI 陪读轨/批注问题文件”分离结构。已改为默认单页阅读面：每个阅读单元一个可批注 Markdown，正文和陪读同页；不得生成预设批注问题文件。后续需要用真实小材料再跑一次，确认 Skill 不再产出三文件结构。
+
+## Next Action
+
+下一步只做两件事：
+
+1. 用 `.agents/skills/readerlab/` 做一次真实小材料 ReaderLab package 使用测试。
+2. 之后再补一次严格正文段落直接选择 Obsidian replay。
+
+`gstack` 原始 Skills 源仓库是用户要继续学习的材料，不删除、不移动。LifeAtlas 270 下旧 `gstack` ReaderLab 生成解读包不是原始 Skills，已清理。
+
+## Verification Commands
+
+```bash
+python3 scripts/readerlab_trace_validator.py validate-suite --demo tests/fixtures/readerlab/private-material-validation/demos/A_feel_good_productivity --demo tests/fixtures/readerlab/private-material-validation/demos/B_planning_with_files --cases-json tests/fixtures/readerlab/comment-replay/fixtures/comment-replay-cases.json --fixture-dir tests/fixtures/readerlab/comment-replay/fixtures
+python3 tests/test_readerlab_trace_validator.py
+python3 tests/test_readerlab.py
+git diff --check
+```
+
+## Stop Conditions
+
+立即停止并纠正状态，如果出现：
+
+- 删除或移动 `/Users/tianqiang/技能项目/skills-canonical/packages/gstack` 原始 Skills 源仓库。
+- 删除 270 目录下用户仍要阅读的电子书或正式阅读材料。
+- 全局安装 ReaderLab Skill 到 `/Users/tianqiang/.codex/skills/`。
+- 把 repo-local trial 说成生产可用、全局安装、public validation pass 或 transferable method pass。
+- 把 `real_obsidian_ui_replay: pass_with_warning` 说成 full pass。

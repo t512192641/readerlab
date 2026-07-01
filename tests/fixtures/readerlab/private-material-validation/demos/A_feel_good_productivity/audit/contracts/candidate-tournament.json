@@ -1,0 +1,103 @@
+{
+  "contract": "candidate-tournament.v1",
+  "material_id": "A_feel_good_productivity_private_longform",
+  "candidates": [
+    {
+      "candidate_id": "K1",
+      "type": "principle",
+      "candidate": "Keep the complete body track primary and make the companion page subordinate.",
+      "claim_refs": ["C1"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "pass",
+      "risk_check": "pass",
+      "decision": "promote",
+      "decision_reason": "This is the core reader-package behavior under test."
+    },
+    {
+      "candidate_id": "K2",
+      "type": "framework",
+      "candidate": "Read the book as a diagnosis shift from painful effort to energy-system design.",
+      "claim_refs": ["C2", "C3"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "pass",
+      "risk_check": "caution",
+      "decision": "promote",
+      "decision_reason": "Strong explanatory value, but must be phrased as interpretation."
+    },
+    {
+      "candidate_id": "K3",
+      "type": "mechanism",
+      "candidate": "Energy sources expand action options: play, control, and connection.",
+      "claim_refs": ["C4"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "weak",
+      "risk_check": "pass",
+      "decision": "keep",
+      "decision_reason": "Useful to the reader, but not unique enough to dominate the companion page."
+    },
+    {
+      "candidate_id": "K4",
+      "type": "transfer_insight",
+      "candidate": "Treat stuck work as an action-design problem before treating it as a character flaw.",
+      "claim_refs": ["C5"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "pass",
+      "risk_check": "pass",
+      "decision": "promote",
+      "decision_reason": "This is both source-supported and actionable."
+    },
+    {
+      "candidate_id": "K5",
+      "type": "hazard",
+      "candidate": "Use the opening crisis as proof that high-pressure responsibility is always bad.",
+      "claim_refs": ["C3"],
+      "v0_source_support": "weak",
+      "v1_cross_context": "fail",
+      "v2_predictive_or_actionable": "fail",
+      "v3_distinctiveness": "weak",
+      "risk_check": "fail",
+      "decision": "reject",
+      "decision_reason": "The text critiques a failed productivity diagnosis, not responsibility itself."
+    },
+    {
+      "candidate_id": "K6",
+      "type": "principle",
+      "candidate": "Rest and calibration are system maintenance.",
+      "claim_refs": ["C6"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "weak",
+      "risk_check": "pass",
+      "decision": "keep",
+      "decision_reason": "Useful but familiar; keep as support rather than headline."
+    },
+    {
+      "candidate_id": "K7",
+      "type": "hazard",
+      "candidate": "Happy-productivity absolutism: if it feels good, it must be productive.",
+      "claim_refs": ["C7"],
+      "v0_source_support": "fail",
+      "v1_cross_context": "fail",
+      "v2_predictive_or_actionable": "fail",
+      "v3_distinctiveness": "weak",
+      "risk_check": "fail",
+      "decision": "reject",
+      "decision_reason": "This overclaims and would mislead readers."
+    }
+  ],
+  "decision_summary": {
+    "promoted": 3,
+    "kept": 2,
+    "downgraded": 0,
+    "rejected": 2
+  }
+}
