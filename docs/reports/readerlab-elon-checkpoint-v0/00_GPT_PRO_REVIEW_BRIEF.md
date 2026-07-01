@@ -1,10 +1,12 @@
-# ReaderLab Two-Demo Checkpoint - GPT Pro Review Brief
+# ReaderLab Private Checkpoint - GPT Pro Review Brief
 
 ## 审查目的
 
 这次不是请你重写《埃隆之书》总结，也不是请你直接写 ReaderLab Skill。
 
-这次请审查：ReaderLab 在 GPT Pro 上轮纠偏后，是否已经用两个内部 demo 证明了最小方法核能产出真实阅读包雏形，而不只是补了字段或写了漂亮讲解。
+这次请审查：ReaderLab 在 GPT Pro 上轮纠偏后，是否已经从“内部 two-demo 通过”推进到“私有材料验证也通过”，从而足以进入正式 ReaderLab Skill 交付设计。
+
+仓库当前已由 GitHub app 核验为 `visibility: private`。因此本次 review packet 包含一个私有版权长文完整正文轨。请不要把它当作 public-domain / publicly redistributable source；它只用于 private repository review。
 
 ## 这轮两个 demo 是什么
 
@@ -31,13 +33,14 @@ GPT Pro two-demo review 后已补一个 review hardening patch：
 - `reader_package_not_verified`
 - `transferable_method_kernel_probe_pass`: `2/2`
 - `two_demo_internal_pass`: `2/2`
+- `private_material_validation_local_pass`: `2/2`
 - `transferable_method_kernel_pass`: `not_verified`
 - `skill_draft_not_started`
-- `external_material_validation_not_started`
+- `public_external_material_validation_not_started`
 
-## 本轮新增证据
+## 证据 1：two-demo internal checkpoint
 
-本轮按 `docs/reports/readerlab-two-demo-run-v0/README.md` 跑了两个内部 demo。
+已按 `docs/reports/readerlab-two-demo-run-v0/README.md` 跑完两个内部 demo。
 
 Demo A：书籍 / 长文完整正文轨 demo
 
@@ -45,6 +48,27 @@ Demo A：书籍 / 长文完整正文轨 demo
 - 类型：repo-owned longform，不是外部书籍泛化验证。
 - 产物：`docs/reports/readerlab-two-demo-run-v0/demos/A_longform_body_track/`
 - 目的：证明完整一手正文轨存在时，AI 陪读页不能替代正文，Body Track Gate 能阻止解释页冒充阅读包。
+- reader evaluation：`pass`，`11/12`，P0/P1 为空。
+
+## 证据 2：private material validation
+
+在仓库改为 private 后，新增一轮私有材料验证：
+
+Demo A2：私有长文 / 书籍完整正文轨
+
+- 源：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_Feel-Good Productivity 全书完整中译.pdf`
+- 类型：private/copyrighted longform PDF；不是 public external source。
+- 产物：`docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/`
+- 正文轨：`10_一手正文/001_正文.md`，由 99 页 PDF 用 `pdftotext -layout` 抽取，约 4,705 行 / 360KB。
+- 目的：验证 ReaderLab 在私有完整书籍/长文材料上，能保留完整正文轨，并让 AI 陪读从属于正文。
+- reader evaluation：`pass`，`10/12`，P0/P1 为空。
+
+Demo B2：外部本地 Skill / 工程材料
+
+- 源：`/Users/tianqiang/wechatFile/01_Skills/Agent技能合集包/planning-with-files/SKILL.md`
+- 类型：Skill / engineering reading material；只作为阅读材料，未安装、同步或启用。
+- 产物：`docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/`
+- 目的：验证 ReaderLab 能从另一份本地 Skill 材料中生成净化正文、设计资产、source-cleaning-map、location-map、trace-to-reader 和 contracts，并区分可迁移方法与宿主插件运行外壳。
 - reader evaluation：`pass`，`11/12`，P0/P1 为空。
 
 Demo B：Skill / 工程材料 demo
@@ -77,12 +101,15 @@ Demo B：Skill / 工程材料 demo
 7. Annotation Trigger 是否真的给出 body-adjacent questions，而不是泛泛讨论题？
 8. 新增的 location-map / trace-to-reader 是否足够连接 Obsidian 批注和 ReaderLab 证据链？
 9. Demo B 的 source-cleaning-map 是否足够缓解“净化正文不可复核”的风险？
-10. 这两个 demo 内部通过后，下一步是否应该准备更广泛材料验证，还是仍需补一个更小的内部缺口？
+10. 私有材料验证是否足以缓解上一轮 Pro 提出的“只用 repo-owned longform / gstack 单源”的证明力不足？
+11. 目前是否可以进入正式 ReaderLab Skill 交付设计？如果可以，启动前还应保留哪些 stop conditions？
 
 ## 已知边界
 
 - Demo A 是 repo-owned longform，不证明外部书籍泛化。
 - Demo B 使用 `gstack/spec` 作为阅读材料，不代表 ReaderLab 已经写成正式 Skill。
+- private material Demo A2 使用 copyrighted/private longform，只证明 private repository / local material validation，不证明 public-source redistribution。
+- private material Demo B2 使用本地 Skill 材料，不代表安装、启用或迁移该 Skill。
 - 当前仍不得称为 `transferable_method_kernel_pass`。
 - 当前仍不得称为正式 ReaderLab Skill 已启动或完成。
 - 当前不得把 15 章高阶讲解通过称为完整 ReaderLab 阅读包通过。
@@ -97,5 +124,6 @@ Demo B：Skill / 工程材料 demo
 4. `P0/P1 risks`
 5. `Assessment of Demo A`
 6. `Assessment of Demo B`
-7. `Smallest next action`
-8. `Stop conditions before Skill draft`
+7. `Assessment of Private Material Validation`
+8. `Smallest next action toward usable ReaderLab Skill`
+9. `Stop conditions before Skill draft`

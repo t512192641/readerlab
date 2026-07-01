@@ -1,0 +1,15 @@
+{
+  "material_id": "B_planning_with_files_skill_engineering",
+  "title": "planning-with-files",
+  "source_type": "local_skill_engineering_material",
+  "source_path": "/Users/tianqiang/wechatFile/01_Skills/Agent技能合集包/planning-with-files/SKILL.md",
+  "body_path": "10_一手正文/001_净化正文.md",
+  "source_handling": {
+    "read_only": true,
+    "installed": false,
+    "enabled": false,
+    "executed": false,
+    "cleaning_policy": "preserve purpose, trigger, workflow, constraints, failure handling, and output expectations; move runtime shell/protocol details out of reader body"
+  },
+  "checked_at": "2026-07-01"
+}

@@ -1,0 +1,83 @@
+{
+  "material_id": "B_planning_with_files_skill_engineering",
+  "body_path": "10_一手正文/001_净化正文.md",
+  "anchors": [
+    {
+      "anchor_id": "B-BODY-001",
+      "body_ref": "cleaned body: problem statement",
+      "source_ref": "SKILL.md metadata and Core Pattern section",
+      "reader_refs": ["B-READER-001"],
+      "claim_refs": ["C1", "C2"],
+      "candidate_refs": ["K1"],
+      "annotation_refs": ["BT1"]
+    },
+    {
+      "anchor_id": "B-BODY-002",
+      "body_ref": "cleaned body: trigger conditions",
+      "source_ref": "SKILL.md When to Use This Pattern and skip list",
+      "reader_refs": ["B-READER-006"],
+      "claim_refs": ["C3"],
+      "candidate_refs": ["K2", "K6"],
+      "annotation_refs": ["BT2"]
+    },
+    {
+      "anchor_id": "B-BODY-003",
+      "body_ref": "cleaned body: core workflow",
+      "source_ref": "SKILL.md Quick Start and Critical Rules",
+      "reader_refs": ["B-READER-002", "B-READER-003"],
+      "claim_refs": ["C4", "C5"],
+      "candidate_refs": ["K3"],
+      "annotation_refs": ["BT3"]
+    },
+    {
+      "anchor_id": "B-BODY-004",
+      "body_ref": "cleaned body: error handling",
+      "source_ref": "SKILL.md 3-Strike Error Protocol",
+      "reader_refs": ["B-READER-003"],
+      "claim_refs": ["C6"],
+      "candidate_refs": ["K4"],
+      "annotation_refs": ["BT4"]
+    },
+    {
+      "anchor_id": "B-BODY-005",
+      "body_ref": "cleaned body: boundary",
+      "source_ref": "SKILL.md hooks, command snippets, plugin directory conventions",
+      "reader_refs": ["B-READER-005"],
+      "claim_refs": ["C7"],
+      "candidate_refs": ["K5", "K7"],
+      "annotation_refs": ["BT5"]
+    }
+  ],
+  "reader_paragraphs": [
+    {
+      "reader_ref": "B-READER-001",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "central design interpretation"
+    },
+    {
+      "reader_ref": "B-READER-002",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "workflow summary"
+    },
+    {
+      "reader_ref": "B-READER-003",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "failure and recovery mechanism"
+    },
+    {
+      "reader_ref": "B-READER-004",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "ReaderLab transfer"
+    },
+    {
+      "reader_ref": "B-READER-005",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "boundary and rejection"
+    },
+    {
+      "reader_ref": "B-READER-006",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "annotation-facing judgment"
+    }
+  ]
+}

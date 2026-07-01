@@ -17,7 +17,9 @@ GPT Pro review 第八部分行动已执行
 -> 两章最小方法核探针
 -> 两个内部产品 demo 已通过 writer/reader 双门槛
 -> GPT Pro two-demo review 已回收并补 review hardening patch
--> 等用户明确决定是否准备 GPT Pro 审核
+-> GitHub app 已确认仓库 visibility: private
+-> 私有材料验证产物允许纳入 private GitHub checkpoint
+-> 等用户决定是否继续正式 ReaderLab Skill 交付设计
 ```
 
 不要进入正式 ReaderLab Skill 草案、外部书验证、更大范围扩章或 GPT Pro 审核包，除非两个新 demo 已内部通过且用户明确启动审核。
@@ -33,9 +35,10 @@ GPT Pro review 第八部分行动已执行
 - `transferable_method_kernel_probe_pass`: `2/2`，仅限 `组织设计 / v101-16` 和 `打造特斯拉 / v101-21` 的最小探针
 - `two_demo_internal_pass`: `2/2`，仅限 `readerlab-two-demo-run-v0` 的 Demo A / Demo B 内部 writer-reader 验证
 - `two_demo_review_hardening_patch`: `done`，补充 location map、source cleaning map、trace-to-reader 和 Skill / 工程材料 cleaned-body 状态语义
+- `private_material_validation_local_pass`: `2/2`，仅限 `readerlab-private-material-validation-v0` 私有材料验证；GitHub app 已确认仓库 visibility 为 `private`，允许纳入 private checkpoint
 - `transferable_method_kernel_pass`: `not_verified`
 - `skill_draft_not_started`
-- `external_material_validation_not_started`
+- `public_external_material_validation_not_started`
 
 禁止使用的旧口径：
 
@@ -111,6 +114,38 @@ GPT Pro 结论：
 - Obsidian 批注插件本身不是当前主要风险；当前风险是批注回读时能否稳定定位正文段落、claim、candidate 和 gate 决策。
 - 本轮 hardening patch 只补“批注位置到 ReaderLab 证据链”的桥，不重新验证 Obsidian 插件 UI。
 
+## 私有材料本地验证
+
+用户选择下一轮本地材料：
+
+1. 长文 Demo：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_Feel-Good Productivity 全书完整中译.pdf`
+2. Skill / 工程 Demo：`/Users/tianqiang/wechatFile/01_Skills/Agent技能合集包/planning-with-files/SKILL.md`
+
+本轮输出：
+
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/`
+
+边界：
+
+- 这是 private/local validation，不是 public external validation。
+- Demo A 包含 copyrighted/private full body text，只能保留在 private repository / local 环境中。
+- GitHub app 已确认 `t512192641/readerlab` 的 `visibility` 为 `private`，因此本轮允许纳入 private checkpoint。
+- 若未来仓库重新改为 public，必须先移除或替换 Demo A 的完整正文轨。
+
+结果：
+
+- Demo A：private longform body-track validation `pass`，reader evaluation `10/12`，P0/P1 为空。
+- Demo B：Skill / engineering cleaned-body validation `pass`，reader evaluation `11/12`，P0/P1 为空。
+- 两个 demo 都有 3-7 个 body-adjacent annotation questions，且 candidate tournament 都有真实 reject / downgrade。
+
+主控验证：
+
+- `python3 -m json.tool`：全部 private demo JSON 通过。
+- reader-facing 禁用内部字段扫描：无命中。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS。
+
 ## 默认读取与动作触发
 
 启动时只读 `AGENTS.md` 和本文件。不要因为本文件列出路径，就在启动阶段展开读取。
@@ -137,7 +172,7 @@ GPT Pro 结论：
 
 ## 下一步
 
-当前最小下一步不是写 Skill，也不是外部书验证，也不是自动提交 GPT Pro 审核。两个内部 demo 已通过，下一步只能由用户决定是否准备 GPT Pro review packet。
+当前最小下一步不是自动写 Skill。两个内部 demo 和私有材料验证均已通过，且 private validation 已允许纳入 private GitHub checkpoint；下一步可以让 GPT Pro 审查“是否足以进入正式 ReaderLab Skill 交付设计”。
 
 若用户明确启动 GPT Pro review packet，审查重点应围绕：
 

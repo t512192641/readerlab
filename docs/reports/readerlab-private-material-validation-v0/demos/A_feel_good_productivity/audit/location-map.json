@@ -1,0 +1,88 @@
+{
+  "material_id": "A_feel_good_productivity_private_longform",
+  "body_path": "10_一手正文/001_正文.md",
+  "anchors": [
+    {
+      "anchor_id": "A-BODY-001",
+      "body_ref": "lines 1-24",
+      "body_role": "title, source note, table of contents",
+      "reader_refs": ["A-READER-001"],
+      "claim_refs": ["C1"],
+      "candidate_refs": ["K1"],
+      "annotation_refs": ["AT1"]
+    },
+    {
+      "anchor_id": "A-BODY-002",
+      "body_ref": "lines 26-92",
+      "body_role": "hospital crisis and failed hard-work diagnosis",
+      "reader_refs": ["A-READER-002", "A-READER-003"],
+      "claim_refs": ["C2", "C3"],
+      "candidate_refs": ["K2", "K5"],
+      "annotation_refs": ["AT2"]
+    },
+    {
+      "anchor_id": "A-BODY-003",
+      "body_ref": "around lines 293-773",
+      "body_role": "play as first energy source and experiments",
+      "reader_refs": ["A-READER-004"],
+      "claim_refs": ["C4"],
+      "candidate_refs": ["K3"],
+      "annotation_refs": ["AT3"]
+    },
+    {
+      "anchor_id": "A-BODY-004",
+      "body_ref": "around lines 1846-3205",
+      "body_role": "clarity, courage, and starting action",
+      "reader_refs": ["A-READER-005"],
+      "claim_refs": ["C5"],
+      "candidate_refs": ["K4"],
+      "annotation_refs": ["AT4"]
+    },
+    {
+      "anchor_id": "A-BODY-005",
+      "body_ref": "around lines 3277-4681",
+      "body_role": "energy preservation, rest, recharge, alignment, conclusion",
+      "reader_refs": ["A-READER-006", "A-READER-007"],
+      "claim_refs": ["C6", "C7"],
+      "candidate_refs": ["K6", "K7"],
+      "annotation_refs": ["AT5", "AT6"]
+    }
+  ],
+  "reader_paragraphs": [
+    {
+      "reader_ref": "A-READER-001",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "body-first instruction"
+    },
+    {
+      "reader_ref": "A-READER-002",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "overall high-order framing"
+    },
+    {
+      "reader_ref": "A-READER-003",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "opening diagnosis"
+    },
+    {
+      "reader_ref": "A-READER-004",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "energy source interpretation"
+    },
+    {
+      "reader_ref": "A-READER-005",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "action design interpretation"
+    },
+    {
+      "reader_ref": "A-READER-006",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "rest and alignment interpretation"
+    },
+    {
+      "reader_ref": "A-READER-007",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "absorb downgrade reject"
+    }
+  ]
+}

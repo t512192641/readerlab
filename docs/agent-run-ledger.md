@@ -1,3 +1,32 @@
+# 2026-07-01 私有材料本地验证通过
+
+## 摘要
+
+- 用户从本地扫描候选中选择 B2：`Feel-Good Productivity 全书完整中译.pdf`，并明确这是本地验证材料，后续会把 GitHub 项目改为 private。
+- 用户选择 C1：`planning-with-files/SKILL.md` 作为 Skill / 工程材料验证源。
+- 本轮新建 `docs/reports/readerlab-private-material-validation-v0/`，作为 private validation，不覆盖已有 two-demo 产物。
+- 后续用户确认 GitHub visibility 已改为 private；主控通过 GitHub app 核验 `t512192641/readerlab` 的 `visibility: private`，允许纳入 private checkpoint。
+
+## 结果
+
+- Demo A：`A_feel_good_productivity`，由 99 页 PDF 用 `pdftotext -layout` 抽取完整正文到 `10_一手正文/001_正文.md`，本地正文规模约 4,705 行 / 360KB。reader evaluation：`pass`，`10/12`，P0/P1 为空。
+- Demo B：`B_planning_with_files`，从 local Skill 源生成净化正文、设计资产、source-cleaning-map、location-map、trace-to-reader 和 contracts。reader evaluation：`pass`，`11/12`，P0/P1 为空。
+- Demo A 批注触发 6 个，candidate decisions 包含 2 个 reject。
+- Demo B 批注触发 5 个，candidate decisions 包含 2 个 downgrade 和 1 个 reject。
+
+## 边界
+
+- 这是 `private_material_validation_local_pass: 2/2`，不是 public external validation。
+- Demo A 包含 copyrighted/private full body text，只能保留在 private repository / local 环境中。
+- 不启动正式 ReaderLab Skill 草案；`planning-with-files` 只作为阅读材料，不安装、不同步、不启用。
+
+## 验证
+
+- `find docs/reports/readerlab-private-material-validation-v0/demos -name '*.json' -print -exec python3 -m json.tool {} /tmp/readerlab-private-json.out \;`：PASS。
+- `rg -n "source refs|claim trace|lens score|machine_status|human_status|Body Track Gate|Claim Ledger|Candidate Tournament|Skillization Gate|Annotation Trigger" docs/reports/readerlab-private-material-validation-v0/demos/*/20_AI陪读`：PASS，无命中。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS。
+
 # 2026-07-01 two-demo review hardening patch
 
 ## 摘要

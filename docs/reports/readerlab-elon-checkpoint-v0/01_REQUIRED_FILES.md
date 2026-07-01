@@ -62,3 +62,34 @@
 - `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/audit/trace-to-reader.md`
 
 目的：判断 Pro 指出的可复核性问题是否被补上：批注回读是否能接回正文证据链，Demo B 的清理过程是否可审。
+
+## 必读 8：private material validation 入口
+
+- `docs/reports/readerlab-private-material-validation-v0/README.md`
+
+目的：确认这轮新增验证的 private boundary、两个材料源，以及为什么它不是 public redistribution proof。
+
+## 必读 9：Private Demo A2 长文验证
+
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/README.md`
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/source-registry.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/audit/eval.md`
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/20_AI陪读/001_reader-facing.md`
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/audit/location-map.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/audit/trace-to-reader.md`
+
+目的：判断 private longform 是否真正形成完整正文轨 + reader-facing + audit trace。
+
+## 必读 10：Private Demo B2 Skill / 工程验证
+
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/README.md`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/source-registry.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/audit/eval.md`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/10_一手正文/001_净化正文.md`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/20_AI陪读/001_reader-facing.md`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/20_AI陪读/design-asset-notes.md`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/audit/source-cleaning-map.md`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/audit/location-map.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/audit/trace-to-reader.md`
+
+目的：判断第二个 Skill / 工程源是否缓解 gstack 单源风险，并验证净化正文不是摘要。

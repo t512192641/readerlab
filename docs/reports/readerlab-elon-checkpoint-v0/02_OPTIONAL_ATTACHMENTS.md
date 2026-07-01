@@ -9,6 +9,31 @@
 
 用途：确认 Demo A 的正文轨确实完整保留 repo-owned longform 源，而不是 AI 摘要或改写。
 
+## Private Demo A2 完整正文轨
+
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/10_一手正文/001_正文.md`
+
+用途：确认 private longform 的完整正文轨存在。注意：这是 private/copyrighted material，只能在 private repository review 中使用。
+
+## Private demo 完整 contracts
+
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/audit/contracts/body-track-gate.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/audit/contracts/material-profile.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/audit/contracts/claim-ledger.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/audit/contracts/candidate-tournament.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/audit/contracts/skillization-gate.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/audit/contracts/annotation-trigger.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/audit/contracts/high-order-explanation.v1.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/audit/contracts/body-track-gate.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/audit/contracts/material-profile.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/audit/contracts/claim-ledger.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/audit/contracts/candidate-tournament.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/audit/contracts/skillization-gate.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/audit/contracts/annotation-trigger.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/audit/contracts/high-order-explanation.v1.json`
+
+用途：需要复核 private material validation 的 claim tier、candidate decisions、Skillization、annotation triggers 和 high-order explanation contract 时读取。
+
 ## 两个 demo 的完整 contract
 
 - `docs/reports/readerlab-two-demo-run-v0/demos/A_longform_body_track/audit/location-map.json`
