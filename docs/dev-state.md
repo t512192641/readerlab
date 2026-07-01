@@ -13,17 +13,26 @@
 - 单元测试：`tests/test_readerlab.py`
 - 当前 EPUB：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub`
 - 当前章节循环包：`docs/reports/readerlab-elon-chapter-loop-v0/`
+- 当前方法核探针包：`docs/reports/readerlab-method-kernel-v0/`
 - 高阶讲解方法：`docs/high-order-explanation-method.md`
 - 高阶讲解 contract 文档：`docs/contracts/high-order-explanation-v1.md`
+- Body Track Gate contract：`docs/contracts/body-track-gate-v1.md`
+- Material Profile contract：`docs/contracts/material-profile-v1.md`
+- Claim Ledger contract：`docs/contracts/claim-ledger-v1.md`
+- Candidate Tournament contract：`docs/contracts/candidate-tournament-v1.md`
+- Skillization Gate contract：`docs/contracts/skillization-gate-v1.md`
+- Annotation Trigger contract：`docs/contracts/annotation-trigger-v1.md`
 - 验收 gate：`docs/eval-gates.md`
 - 运行账本：`docs/agent-run-ledger.md`
 
 ## Tool State
 
 - `scripts/readerlab.py` 主要支持 Skill 包导入、阅读包 validate、contract validate、proof renderer、eval runner、批注读取和回复。
-- 图书/长文正式导入生成器尚未完成；当前《埃隆之书》章节循环仍主要依赖 repo 内报告和手工/agent 循环。
+- 图书/长文正式导入生成器尚未完成；当前《埃隆之书》章节循环和方法核探针仍主要依赖 repo 内报告和手工/agent 循环。
 - renderer / eval runner 是 proof 级工具，不能代表完整生成器能力或人工阅读验收。
 - Markdown 是展示层；source registry、location map、contracts、eval 和人工状态才是事实层。
+- 15 个章节的现有通过状态只代表 `chapter_high_order_explanation_pass`，不代表 `reader_package_pass`。
+- `readerlab-method-kernel-v0` 只代表两章方法核探针通过，不代表可迁移方法核、正式 Skill 或外部材料验证。
 
 ## Baseline Locations
 
@@ -50,6 +59,13 @@ python3 -m json.tool <contract-json>
 rg -n "source refs|claim trace|lens score|machine_status|human_status|Source Anchor|Lens Auction" <reader-md>
 ```
 
+方法核探针落地时还要检查：
+
+```bash
+python3 -m json.tool <method-kernel-json>
+rg -n "source refs|claim trace|lens score|machine_status|human_status|Source Anchor|Lens Auction|Body Track Gate|Claim Ledger|Candidate Tournament|Skillization Gate" <reader-facing-md>
+```
+
 ## Known Boundaries
 
 - `validate` 通过只表示机器规则通过，不表示读者体验通过。
@@ -57,3 +73,5 @@ rg -n "source refs|claim trace|lens score|machine_status|human_status|Source Anc
 - 旧 bakeoff、full-product、source-aligned demo 是证据或历史样本，不是当前章节写作输入。
 - `docs/progress.md` 是历史进度快照，不是当前状态权威。
 - `docs/next-session-prompt.md` 是从 `docs/current-task.md` 派生的启动提示，不是事实源。
+- 无完整一手正文轨的书籍/长文解释页不能标为 `reader_package_pass`。
+- candidate pool、claim tiers、Skillization 字段必须影响真实决策；只补字段不算方法核成立。

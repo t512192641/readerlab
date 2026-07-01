@@ -1,6 +1,8 @@
 # High-Order Explanation Method
 
 > Authority boundary: 本文件是高阶讲解方法说明，不是当前任务源。当前要处理哪一章、是否进入全书总结或 final boss，以 `docs/current-task.md` 为准。
+>
+> 2026-07-01 GPT Pro review 后补充：`high-order-explanation.v1` 只证明 reader-facing 高阶讲解层，不证明完整 ReaderLab 阅读包，也不证明可迁移方法核。完整方法核还必须经过 Body Track Gate、Material Profile、Claim Ledger、Candidate Tournament、Skillization Gate 和 Annotation Trigger。
 
 ## 目的
 

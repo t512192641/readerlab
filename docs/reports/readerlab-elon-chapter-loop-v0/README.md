@@ -1,23 +1,25 @@
 # ReaderLab Elon Chapter Loop v0
 
+> Authority boundary: 本文件是章节循环历史报告，不是当前任务源。GPT Pro review 后，章节 `pass` 只能理解为 `chapter_high_order_explanation_pass`。当前事实和下一步以 `docs/current-task.md` 为准。
+
 ## Current Phase
 
-当前执行《埃隆之书》完整闭环的章节阶段。
+历史阶段：当时执行《埃隆之书》完整闭环的章节高阶讲解阶段。
 
-本阶段不进入全书总结，不调用或吸收 final boss baseline，不做外部书验证，不开发生成器，不写 LifeAtlas 正式沉淀区。章节阶段全部 pass 之后还必须继续全书总结、基线横向对比和方法论 / Skill 草案。
+本阶段当时不进入全书总结，不调用或吸收 final boss baseline，不做外部书验证，不开发生成器，不写 LifeAtlas 正式沉淀区。后续已完成 15 章高阶讲解、全书总结和 baseline 横评；但完整 ReaderLab 阅读包仍未验证，正式方法论 / Skill 草案仍未启动。
 
 ## Why This Exists
 
-上一轮计划把 final boss baseline 写进了整体方案，但阶段边界表达不够清楚，导致它看起来像马上要执行。正确顺序是：
+上一轮计划把 final boss baseline 写进了整体方案，但阶段边界表达不够清楚，导致它看起来像马上要执行。当时的正确顺序是：
 
 ```text
-章节循环全部通过
+章节高阶讲解循环全部通过
 -> ReaderLab 自己的全书总结通过
 -> final boss baseline 对抗
--> 方法论 / Skill 草案
+-> 方法核探针 / 用户明确启动后的方法论或 Skill 草案
 ```
 
-目前只有《成功之道》和《打造卓越团队》通过章节级循环。因此当前执行必须继续章节循环，下一章是 `组织设计 / v101-16`。
+当前最新事实不再由本文件维护，见 `docs/current-task.md`。
 
 ## Baseline Shield
 
@@ -99,13 +101,16 @@
 
 完整章节队列见 `chapter-queue.md`。
 
-当前不是“全书跑过后只有两章通过”，而是“只真正跑了两章”：
+历史上这里记录的是章节循环早期状态。GPT Pro review 后的最新 scoped 状态为：
 
-- `成功之道`：pass。
-- `打造卓越团队`：pass。
-- 其他正文级章节：not_started。
+- `chapter_high_order_explanation_pass`: `15/15`。
+- `full_book_reader_synthesis_pass`: `1/1`。
+- `baseline_capability_audit_pass`: `1/1`。
+- `reader_package_not_verified`。
+- `transferable_method_kernel_probe_pass`: `2/2`，仅限 `readerlab-method-kernel-v0`。
+- `skill_draft_not_started`。
 
-当前章节阶段的通过门槛是所有正文级章节 `pass`，不是“都有结果”。所有章节 pass 之后也不是任务结束，只是进入 ReaderLab 全书总结阶段。
+章节高阶讲解全部 pass 之后也不是任务结束；它不等于完整阅读包通过。
 
 ## Final Boss Gate
 
@@ -121,14 +126,16 @@ final boss 之后还需要主控回收横向对比，提炼可迁移的 ReaderLa
 
 ## Correct Completion
 
-只有同时满足以下条件，才可以说本轮初步交付：
+旧完整交付清单已被 D-052 细化。只有同时满足以下条件，才可以说更高层级交付成立：
 
-1. 15 个正文级章节全部 `pass`。
+1. 15 个章节高阶讲解全部 `pass`。
 2. ReaderLab 自己的全书总结 `pass`。
 3. 仓颉 / 李继刚 / book-to-skill / 乔木等基线总结完成或已有可用基线被正式纳入。
 4. 读者评价 agent 完成横向对比。
-5. 主控输出可迁移方法论 / Skill 草案。
-6. 验证通过，并明确这只是《埃隆之书》单书闭环，不等于外部书泛化已验证。
+5. Body Track Gate 证明完整一手正文轨存在，才能声称阅读包通过。
+6. 方法核通过受限探针和后续可迁移性验证。
+7. 用户明确启动后，主控才输出正式方法论 / Skill 草案。
+8. 验证通过，并明确这只是《埃隆之书》单书闭环，不等于外部书泛化已验证。
 
 ## Error Exit
 

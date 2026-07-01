@@ -1,0 +1,72 @@
+{
+  "contract": "skillization-gate.v1",
+  "material_id": "elon-v101-21-building-tesla",
+  "items": [
+    {
+      "candidate_ref": "K7",
+      "candidate": "把宏大使命拆成约束链和最小可承受入口。",
+      "trigger": "一个愿景很大但执行路线模糊的产品、业务或项目。",
+      "input": "使命陈述、目标用户、当前技术成熟度、成本约束、资金/组织约束、最早可承受场景。",
+      "steps": [
+        "把使命改写成必须被现实检验的问题。",
+        "列出技术、制造、资金、市场、服务和认知约束。",
+        "找到能承受早期成本和不稳定性的入口场景。",
+        "区分原型证明、产品证明和量产证明。",
+        "标出哪些危机动作不能转成常态方法。"
+      ],
+      "output": "一张使命到约束链卡，包含入口场景、关键约束、证明阶段、不可复制危机动作和下一步验证。",
+      "boundary": "不能把高端入口泛化为所有市场策略；不能把危机求生动作美化成健康管理模板。",
+      "evidence": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ],
+      "decision": "skill_candidate",
+      "decision_reason": "六项条件完整，且能把章节机制转成可复用诊断动作。"
+    },
+    {
+      "candidate_ref": "K2",
+      "candidate": "Roadster 作为高价低量入口，承担早期技术成熟成本。",
+      "trigger": null,
+      "input": null,
+      "steps": [],
+      "output": null,
+      "boundary": "作为案例有价值，但不能泛化为普遍市场进入策略。",
+      "evidence": [
+        "C2",
+        "C7"
+      ],
+      "decision": "case",
+      "decision_reason": "锦标赛已 downgrade；保留为案例，不 Skill 化。"
+    },
+    {
+      "candidate_ref": "K4",
+      "candidate": "把 Model 3 生产地狱和睡工厂读成长期管理模板。",
+      "trigger": null,
+      "input": null,
+      "steps": [],
+      "output": null,
+      "boundary": "危险误读。",
+      "evidence": [
+        "C6"
+      ],
+      "decision": "reject",
+      "decision_reason": "危机状态不能作为日常组织方法，且有美化过劳风险。"
+    },
+    {
+      "candidate_ref": "K5",
+      "candidate": "垂直整合只有在关键环节高度咬合、外包会切断反馈时才成立。",
+      "trigger": null,
+      "input": null,
+      "steps": [],
+      "output": null,
+      "boundary": "需要具体业务链路复核。",
+      "evidence": [
+        "C5"
+      ],
+      "decision": "insight_only",
+      "decision_reason": "有迁移价值，但本轮没有形成完整操作步骤和验证输出。"
+    }
+  ]
+}

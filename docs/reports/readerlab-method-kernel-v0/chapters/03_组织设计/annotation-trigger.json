@@ -1,0 +1,34 @@
+{
+  "contract": "annotation-trigger.v1",
+  "material_id": "elon-v101-16-organization-design",
+  "triggers": [
+    {
+      "trigger_id": "A1",
+      "anchor_ref": "v101-16: direct communication and seven-step command-chain relay",
+      "reader_question": "这里反对的是层级本身，还是反对问题绕远路后失真？",
+      "likely_misread": "把直接沟通理解成取消所有管理责任。",
+      "reply_mode": "boundary"
+    },
+    {
+      "trigger_id": "A2",
+      "anchor_ref": "v101-16: box-within-box and battery-pack cover",
+      "reader_question": "这个冗余部件背后可能对应哪条组织边界？",
+      "likely_misread": "只把案例当成设计师没想清楚，而忽略团队边界如何制造局部正确。",
+      "reply_mode": "connect"
+    },
+    {
+      "trigger_id": "A3",
+      "anchor_ref": "v101-16: line workers challenging designers and the hand-on-stove analogy",
+      "reader_question": "谁最早感到痛，谁最有权把问题推回设计端？",
+      "likely_misread": "把现场反馈当成粗鲁抱怨，而不是高密度现实信号。",
+      "reply_mode": "explain"
+    },
+    {
+      "trigger_id": "A4",
+      "anchor_ref": "v101-16: algorithm order and glass-fiber mat deletion",
+      "reader_question": "这里真正的改进动作是优化、加速，还是删除一个不该存在的要求？",
+      "likely_misread": "把算法读成效率工具，而不是防止优化错误问题的顺序。",
+      "reply_mode": "challenge"
+    }
+  ]
+}

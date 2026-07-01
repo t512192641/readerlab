@@ -1,0 +1,73 @@
+{
+  "contract": "skillization-gate.v1",
+  "material_id": "elon-v101-16-organization-design",
+  "items": [
+    {
+      "candidate_ref": "K6",
+      "candidate": "用产品冗余倒查组织边界和反馈路径。",
+      "trigger": "产品、流程或协作里出现重复外壳、重复审批、接口过多、现场问题迟迟回不到设计端。",
+      "input": "一个具体冗余现象、涉及团队、当前沟通路径、谁承受问题、谁能修正问题。",
+      "steps": [
+        "指出冗余或摩擦在产品/流程中的实体表现。",
+        "标出参与团队和责任边界。",
+        "追踪问题从发现者到修正者的实际路径。",
+        "判断是否先质疑要求和删除，而不是直接优化。",
+        "给出一个可试的边界调整或反馈路径缩短方案。"
+      ],
+      "output": "一张组织边界诊断卡，包含冗余现象、阻断路径、可删除项、责任边界和下一步验证。",
+      "boundary": "不能绕过安全、合规、专业审核或最终责任人；不能把直接沟通变成无责任拍板。",
+      "evidence": [
+        "C1",
+        "C2",
+        "C3"
+      ],
+      "decision": "skill_candidate",
+      "decision_reason": "六项条件完整，且候选在锦标赛中被 promote。"
+    },
+    {
+      "candidate_ref": "K1",
+      "candidate": "组织不是汇报线，而是现实反馈路线。",
+      "trigger": null,
+      "input": null,
+      "steps": [],
+      "output": null,
+      "boundary": "作为理解框架有价值，但自身还不是可执行流程。",
+      "evidence": [
+        "C1",
+        "C2",
+        "C5"
+      ],
+      "decision": "insight_only",
+      "decision_reason": "它是章节主镜头，不直接满足可复用 Skill 的输入和步骤要求。"
+    },
+    {
+      "candidate_ref": "K5",
+      "candidate": "把直接沟通读成取消层级、取消流程、个人任性拍板。",
+      "trigger": null,
+      "input": null,
+      "steps": [],
+      "output": null,
+      "boundary": "危险误读。",
+      "evidence": [
+        "C6"
+      ],
+      "decision": "reject",
+      "decision_reason": "与责任边界相冲突，不能 Skill 化。"
+    },
+    {
+      "candidate_ref": "K7",
+      "candidate": "把失败容忍泛化成所有团队都要高压快试错。",
+      "trigger": null,
+      "input": null,
+      "steps": [],
+      "output": null,
+      "boundary": "危险误读。",
+      "evidence": [
+        "C4",
+        "C7"
+      ],
+      "decision": "reject",
+      "decision_reason": "没有安全、行业和成本边界，必须拒绝。"
+    }
+  ]
+}

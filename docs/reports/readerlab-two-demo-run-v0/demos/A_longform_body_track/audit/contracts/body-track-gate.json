@@ -1,0 +1,15 @@
+{
+  "contract": "body-track-gate.v1",
+  "material_id": "readerlab-product-spec",
+  "material_type": "book_longform",
+  "body_track": {
+    "status": "present_full_body",
+    "body_path": "10_一手正文/001_正文.md",
+    "link_target": "10_一手正文/001_正文.md",
+    "coverage": "full_chapter",
+    "notes": "The complete repo-owned longform source docs/product-spec.md is retained as the first-hand body artifact. The reader-facing page explicitly points to it and does not replace it."
+  },
+  "allowed_status": "reader_package_pass",
+  "blocking_reasons": [],
+  "checked_at": "2026-07-01"
+}

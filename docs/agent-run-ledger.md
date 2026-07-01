@@ -1,3 +1,80 @@
+# 2026-07-01 双 demo 内部方法核验证通过
+
+## 摘要
+
+- 按 `docs/reports/readerlab-two-demo-run-v0/README.md` 执行两个内部 demo，没有准备 GPT Pro 审核 prompt。
+- Demo A 使用 `docs/product-spec.md` 作为 repo-owned longform，完整正文轨落地到 `docs/reports/readerlab-two-demo-run-v0/demos/A_longform_body_track/10_一手正文/001_正文.md`。
+- Demo B 使用 `/Users/tianqiang/技能项目/skills-canonical/packages/gstack/spec/SKILL.md` 作为 Skill / 工程阅读源，只阅读，不安装、不同步、不启用。
+- 两个 demo 均由 writer agent 产出、reader evaluation agent 独立评价、主控回收验证。
+
+## 结果
+
+- Demo A：reader evaluation `pass`，`11/12`，P0/P1 为空。边界：证明 repo-owned longform reader package 最小形态，不证明外部书泛化。
+- Demo B：reader evaluation `pass`，`11/12`，P0/P1 为空。边界：净化正文相对 2359 行源材料压缩较强，未来做 canonical benchmark 时可补 runtime 剥离类别 audit map。
+- 本轮状态口径：`two_demo_internal_pass: 2/2`。
+- 下一步不能自动进入正式 Skill 草案、外部书验证或 GPT Pro 审核；是否准备 GPT Pro review packet 需用户明确启动。
+
+## 验证
+
+- `find docs/reports/readerlab-two-demo-run-v0/demos -name '*.json' -print -exec python3 -m json.tool {} /tmp/readerlab-demo-json.out \;`：PASS。
+- `rg -n "source refs|claim trace|lens score|machine_status|human_status|Body Track Gate|Claim Ledger|Candidate Tournament|Skillization Gate|Annotation Trigger" docs/reports/readerlab-two-demo-run-v0/demos/*/20_AI陪读`：PASS，无命中。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS。
+
+# 2026-07-01 双 demo 内部执行合同准备
+
+## 摘要
+
+- 用户纠正：现在不是写 GPT Pro 审核 prompt，而是先安排下一会话跑两个新 demo；只有 demo 内部 writer/reader 双门槛通过后，才值得提交 GPT Pro 审核。
+- 新增 `docs/reports/readerlab-two-demo-run-v0/README.md`，作为下一会话双 demo 执行合同。
+- 新增 `docs/reports/readerlab-two-demo-run-v0/01_NEXT_SESSION_PROMPT.md`，作为可直接复制的下一会话执行 prompt。
+- 已同步 `docs/current-task.md` 和 `docs/next-session-prompt.md`，把下一步从“复核 method-kernel-v0 / GPT Pro 审核”改为“先跑两个内部 demo”。
+
+## 关键约束
+
+- Demo A 必须有合规完整正文轨；没有可提交的公版、用户自有或 repo-owned 长文源就停止。
+- Demo B 默认使用 `/Users/tianqiang/技能项目/skills-canonical/packages/gstack/spec/SKILL.md` 作为 Skill/工程材料源；如果下一会话判断 `spec` 过重或机器协议噪音过多，可改用 `gstack/design-review`。DB Skills 备选为 `dbs-suite/dbs-xhs-title` 或 `dbs-suite/dbs-diagnosis`。只阅读，不安装、不同步、不启用。
+- 每个 demo 必须由 writer agent 产出、reader evaluation agent 独立评价、主控回收；主控不能自写自评后标 pass。
+- 两个 demo 都内部通过后，才允许准备 GPT Pro review packet。
+
+## 当前状态
+
+- 双 demo 尚未执行。
+- 尚未新增 `demos/` 产物。
+- 尚未准备 GPT Pro 审核包。
+
+## 验证
+
+- 当前入口 / prompt 扫描：`docs/current-task.md`、`docs/next-session-prompt.md` 和 `readerlab-two-demo-run-v0` 均指向双 demo 内部执行，不再把下一步写成 GPT Pro 审核 prompt。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS。
+
+# 2026-07-01 GPT Pro 方法核纠偏与 mem-clean 状态压缩
+
+## 摘要
+
+- 用户要求读取 GPT Pro 方案 `~/Downloads/chatgpt-selected-2026-07-01T02-41-22.md`，严格执行第八部分行动，并调用 `mem-clean` 处理状态文档。
+- 本轮按 GPT Pro 纠偏：15 章产物只能称为 `chapter_high_order_explanation_pass`，不能称为完整 ReaderLab 阅读包通过。
+- 新增六个方法核 contract：Body Track Gate、Material Profile、Claim Ledger、Candidate Tournament、Skillization Gate、Annotation Trigger。
+- 新增 `docs/reports/readerlab-method-kernel-v0/`，用 `组织设计 / v101-16` 和 `打造特斯拉 / v101-21` 做两章最小方法核探针。
+- 探针结论：`method_kernel_probe_pass`；完整阅读包仍为 `reader_package_not_verified`，正式 Skill 和外部材料验证仍未启动。
+- 已同步 `docs/current-task.md`、`docs/product-spec.md`、`docs/readerlab-package-spec.md`、`docs/eval-gates.md`、`docs/dev-state.md`、`docs/progress.md`、`docs/decisions.md`、`docs/next-session-prompt.md`。
+
+## 关键纠偏
+
+- 高阶讲解通过不等于阅读包通过。
+- “讲解贴合正文锚点”不能替代“一手正文存在”。
+- 候选池必须产生真实 `promote / keep / downgrade / reject`，否则只是字段吸收。
+- Skill 化必须满足 trigger / input / steps / output / boundary / evidence 六项；危机、过劳、强控制和英雄化不能升格为 Skill。
+- 下一步只能复核 `readerlab-method-kernel-v0`，不能自动进入正式 Skill 草案或外部书验证。
+
+## 验证
+
+- `python3 -m json.tool` 检查新增 14 个方法核 JSON：PASS。
+- reader-facing 内部字段残留检查：PASS，无 `source refs`、`claim trace`、`lens score`、`machine_status`、`human_status` 或 gate 名称残留。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS。
+
 # 2026-07-01 根层文档权威边界清理
 
 ## 摘要

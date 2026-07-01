@@ -1,0 +1,29 @@
+{
+  "contract": "material-profile.v1",
+  "material_id": "elon-v101-16-organization-design",
+  "title": "组织设计",
+  "material_type": "book_longform",
+  "source_basis": [
+    "EPUB spine v101-16",
+    "existing chapter high-order explanation artifact",
+    "existing chapter audit contract anchors"
+  ],
+  "coverage": "chapter",
+  "body_track_status": "missing",
+  "risks": {
+    "translation_or_editing": "medium",
+    "context_loss": "medium",
+    "external_verification_needed": true,
+    "ai_reconstruction_risk": "medium"
+  },
+  "reader_gap_filled": [
+    "把组织结构问题升级为现实反馈路径问题",
+    "把沟通、部门边界、现场反馈、删除、简化、失败容忍串成机制链",
+    "把可吸收、需降级、必须拒绝的读法分开"
+  ],
+  "reader_gap_not_filled": [
+    "未提供完整一手正文轨",
+    "未验证外部组织学或制造案例",
+    "未证明 Obsidian 批注闭环"
+  ]
+}

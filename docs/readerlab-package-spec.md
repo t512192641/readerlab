@@ -37,6 +37,12 @@ ReaderLab Package/
     source-registry.json
     location-map.json
     contracts/
+      body-track-gate.v1.json
+      material-profile.v1.json
+      claim-ledger.v1.json
+      candidate-tournament.v1.json
+      skillization-gate.v1.json
+      annotation-trigger.v1.json
       catalog-map.json
       grounded-global-map.json
       high-order-explanation.v1.json
@@ -52,9 +58,11 @@ ReaderLab Package/
 ReaderLab 包必须先满足正文主体，再提供 AI 陪读和 audit。不同材料类型的主体不同：
 
 - 书籍 / 长文：`10_一手正文/` 保留原样正文和章节顺序。默认不压缩、不改写、不重述；除非用户明确要求整理原文，否则只做空格、空行、断行等轻量排版清理。AI 讲解放在正文之后或 `20_AI陪读/`，不能替代正文。
+- 书籍 / 长文的状态前置门：只有页面包含完整章节正文，或显式链接到 `10_一手正文/` 下的完整正文文件，才可以进入 `reader_package_pass` 判断。只有高阶讲解、摘要、导读、锚点清单或正文贴合证明时，最多只能标为 `high_order_explanation_pass`。
 - Skill / 工程材料：`10_一手正文/` 放净化正文。净化正文剥离安装命令、重复模板、执行外壳、机器状态、路径、hash、调试信息，但保留用途、触发条件、用户意图、核心流程、约束、失败条件、输出要求和设计亮点。
 - 高阶讲解：用成段语言讲清材料，不把内容拆成导读、旁批、误读提醒等固定栏目。它不是小总结，而是用更大的知识结构给读者提供认知增量：可以引入跨学科思维模型、历史观、产品经验、组织管理、工程系统、商业案例和用户既往经历中的相似结构，但必须解释底层逻辑如何相通，并区分原文依据、AI 解释、外部类比和待验证判断。
 - 高阶讲解内部契约：`audit/contracts/high-order-explanation.v1.json` 记录 Source Anchor、Baseline Summary Trap、Upgrade Question、Mechanism Graph、Lens Auction、Judgment Gate、Natural Explanation 和 Delta Eval。该契约只在 audit 层保存，不作为 reader-facing 栏目。
+- 方法核内部契约：`audit/contracts/body-track-gate.v1.json`、`material-profile.v1.json`、`claim-ledger.v1.json`、`candidate-tournament.v1.json`、`skillization-gate.v1.json` 和 `annotation-trigger.v1.json` 共同决定正文轨、材料画像、主张分级、候选筛选、Skill 化和批注触发。它们必须影响输出决策，不能只是补字段。
 - 设计资产卡：只对 Skill、工程材料、Agent 工作流和类似材料强制出现，必须面向产品负责人说明适用场景、解决问题、原材料依据、可复用做法、使用前提、失败风险和什么时候不要用。
 - audit：source refs、location map、claim trace、machine/human 状态、降级/拒绝记录进入 `audit/`。reader-facing 页不把这些内部结构当主内容。
 
@@ -154,6 +162,10 @@ ReaderLab 包必须先满足正文主体，再提供 AI 陪读和 audit。不同
 - source registry
 - location map
 - contracts
+- body track gate
+- claim ledger
+- candidate tournament
+- skillization / annotation split
 - rejected / downgraded 清单
 - eval
 - machine_status / human_status

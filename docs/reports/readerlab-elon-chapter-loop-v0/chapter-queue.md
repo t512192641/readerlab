@@ -4,23 +4,24 @@
 
 本文件只定义章节循环阶段的队列和进入下一阶段的门槛，不定义整个任务的停止标准。
 
-章节阶段的进入下一阶段门槛是：所有正文级章节都达到 `pass`。仅仅“有评价结果”不够；`partial` 和 `fail` 都不能进入全书总结阶段。
+章节阶段的进入下一阶段门槛是：所有正文级章节都达到 `pass`。这里的 `pass` 指 `chapter_high_order_explanation_pass`，不是 `reader_package_pass`。仅仅“有评价结果”不够；`partial` 和 `fail` 都不能进入全书总结阶段。
 
 整个任务的真实完成顺序是：
 
 ```text
-所有正文级章节 pass
+所有章节高阶讲解 pass
 -> ReaderLab 自己的全书总结 pass
 -> 其他 Skills / 方法基线产出全书总结
 -> 读者评价 agent 做横向对比
--> 主控提炼可迁移方法论 / Skill 草案
+-> 方法核探针 / 用户明确启动后的方法论或 Skill 草案
 ```
 
 当前不能因为某一章 `pass` 停止，也不能因为所有章节“有结果”停止。
+当前也不能把 15 章 `pass` 称为完整 ReaderLab 阅读包通过；完整阅读包另需 Body Track Gate 和包级验收。
 
 ## Status Vocabulary
 
-- `pass`：读者评价 agent 给出 `pass`，读者 12 分至少 10/12，且无 P0/P1。
+- `pass`：章节高阶讲解 reader-facing 通过；读者评价 agent 给出 `pass`，读者 12 分至少 10/12，且无 P0/P1。它不代表完整阅读包通过。
 - `partial`：有价值但未通过，必须进入下一轮或方法调整。
 - `fail`：当前方法在该章失败，保留报告；它会阻断进入全书总结阶段，不能被当作阶段完成。
 - `not_started`：尚未进入章节循环。

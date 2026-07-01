@@ -703,28 +703,31 @@ Source Anchor
 
 ## D-050 多阶段闭环必须以完整链路定义完成
 
-2026-07-01 复盘确认：ReaderLab《埃隆之书》任务不是单章样张任务，也不是“章节都有结果”任务。它是多阶段闭环任务，必须用完整链路定义完成：
+2026-07-01 复盘确认：ReaderLab《埃隆之书》任务不是单章样张任务，也不是“章节都有结果”任务。它是多阶段闭环任务，必须用完整链路定义阶段进展。
+
+2026-07-01 GPT Pro review 后进一步修正：这里的章节 `pass` 只代表 `chapter_high_order_explanation_pass`，不能再被理解为完整 ReaderLab 阅读包通过。完整阅读包必须另过 Body Track Gate 和包级验收，见 D-052。
 
 ```text
-15 个正文级章节全部 pass
+15 个章节高阶讲解全部 pass
 -> ReaderLab 自己的全书总结 pass
 -> 仓颉 / 李继刚 / book-to-skill / 乔木等基线总结完成或纳入
 -> 读者评价 agent 横向对比
--> 主控提炼可迁移 ReaderLab 方法论 / Skill 草案
--> 验证通过
+-> 方法核探针 / 可迁移性验证
+-> 用户明确启动后，才进入正式方法论 / Skill 草案
 ```
 
 执行含义：
 
-- 当前章节阶段的进入下一阶段条件是所有正文级章节 `pass`；`partial`、`fail`、`not_started` 都不能进入全书总结。
-- 章节阶段完成也不是整项任务完成，只是允许进入 ReaderLab 自己的全书总结循环。
-- final boss baseline 只能在章节全部 `pass` 且 ReaderLab 自己全书总结 `pass` 后启用。
-- 主控每次汇报必须说明当前处于链路哪一段、该段分母是多少、已通过多少、下一项是什么。
+- 当前章节阶段的进入下一阶段条件是所有章节高阶讲解 `pass`；`partial`、`fail`、`not_started` 都不能进入全书总结。
+- 章节高阶讲解完成也不是整项任务完成，只是允许进入 ReaderLab 自己的全书总结循环。
+- final boss baseline 只能在章节高阶讲解全部 `pass` 且 ReaderLab 自己全书总结 `pass` 后启用。
+- 主控每次汇报必须说明当前处于链路哪一段、该段分母是多少、已通过多少、下一项是什么，并明确该段是不是阅读包、方法核或 Skill。
 - 任何只证明单章、局部阶段、机器校验或候选方法的结果，都不能表述成全书能力、产品能力或方法论成立。
 
 防错规则：
 
-- 不得把“所有章节有评价结果”当作章节阶段完成；只有所有正文级章节 `pass` 才完成章节阶段。
+- 不得把“所有章节有评价结果”当作章节阶段完成；只有所有章节高阶讲解 `pass` 才完成章节讲解阶段。
+- 不得把 `chapter_high_order_explanation_pass` 表述为 `reader_package_pass`。
 - 不得把 baseline shield、防污染规则或启动文件清单当成主任务完成解释。
 - 不得把旧 `/goal`、旧 handoff 或旧报告的范围覆盖最新用户指令；旧目标与当前显式指令冲突时，必须在状态文档中标明旧目标已过期。
 
@@ -753,3 +756,33 @@ docs/current-task.md
 - 阶段结束或方向变化时，必须把旧“下一步”降级为历史语境。
 - 如果某个文件只是工具、方法、规格或报告，必须明确它不能覆盖 `docs/current-task.md`。
 - 不得把“为了安全多读几个文档”当作默认策略；需要哪个文件，应由当前动作触发。
+
+## D-052 高阶讲解通过、阅读包通过和方法核通过必须分开
+
+2026-07-01 GPT Pro review 指出：当前《埃隆之书》checkpoint 的方向有效，但状态口径过宽。15 个章节和全书总结证明的是 reader-facing 高阶表达能力；它们没有证明完整 ReaderLab 阅读包，也没有证明可迁移方法核或正式 Skill 已成立。
+
+新的状态语义：
+
+- `chapter_high_order_explanation_pass`：章节 reader-facing 高阶讲解通过。
+- `full_book_reader_synthesis_pass`：ReaderLab 自己的全书综合讲解通过。
+- `baseline_capability_audit_pass`：baseline 横向能力审计通过。
+- `reader_package_pass`：完整阅读包通过，必须另过正文轨和包级验收。
+- `method_kernel_probe_pass`：受限样本上的方法核探针通过，不等于可迁移方法核完成。
+- `skill_draft_not_started`：没有正式 Skill 草案时必须保留。
+
+执行含义：
+
+- 书籍 / 长文必须先过 Body Track Gate。页面包含完整章节正文，或显式链接到 `10_一手正文/` 下的完整正文文件，才可进入 `reader_package_pass` 判断。
+- 高阶讲解、导读、摘要、锚点清单和“讲解贴合正文”都不能替代一手正文存在。
+- 方法核最小链路采用：Body Track Gate -> Material Profile -> Claim Ledger -> Candidate Tournament -> Skillization / Annotation split -> ReaderLab Narrative。
+- Claim Ledger 必须区分 `direct_source_claim`、`composite_interpretation`、`external_analogy` 和 `needs_verification`。
+- Candidate Tournament 必须让候选真实进入 `promote`、`keep`、`downgrade` 或 `reject`；没有降级/拒绝时不能声称完成筛选。
+- Skillization 只能发生在候选满足 trigger / input / steps / output / boundary / evidence 六项条件后；其他只能是 insight、case、reading note 或 reject。
+- Annotation trigger 必须有 body-adjacent anchor，不能是脱离正文的泛泛讨论题。
+- Reader-facing narrative 最后生成，不能暴露内部字段，也不能脱离前面 gates 自由发挥。
+
+当前证据：
+
+- 新增 contracts：`docs/contracts/body-track-gate-v1.md`、`material-profile-v1.md`、`claim-ledger-v1.md`、`candidate-tournament-v1.md`、`skillization-gate-v1.md`、`annotation-trigger-v1.md`。
+- 两章最小探针：`docs/reports/readerlab-method-kernel-v0/`。
+- 结论：方法核探针通过；完整 ReaderLab 阅读包仍为 `reader_package_not_verified`；正式 Skill 和外部材料验证仍未启动。

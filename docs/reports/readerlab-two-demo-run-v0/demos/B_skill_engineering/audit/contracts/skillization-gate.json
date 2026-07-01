@@ -1,0 +1,100 @@
+{
+  "contract": "skillization-gate.v1",
+  "material_id": "gstack_spec_skill",
+  "items": [
+    {
+      "candidate_ref": "K1",
+      "candidate": "Decision-brief generation for scope-changing choices.",
+      "trigger": "A user choice would change scope, data ownership, output shape, destructive behavior, public behavior, or long-lived state.",
+      "input": "The pending decision, available options, current task context, stakes, and known constraints.",
+      "steps": [
+        "Name what is being decided in plain language.",
+        "State the consequence of a wrong choice.",
+        "Recommend one option with a reason.",
+        "Compare options by completeness, benefit, cost, and risk.",
+        "Stop for user choice unless the role is an execution-only child agent with an explicit default."
+      ],
+      "output": "A concise decision brief or a blocked status when no human can answer.",
+      "boundary": "Do not use for trivial formatting choices or already explicit instructions.",
+      "evidence": [
+        "AskUserQuestion Format section",
+        "Failure fallback section",
+        "One-way / destructive confirmations section"
+      ],
+      "decision": "skill_candidate",
+      "decision_reason": "All six fields are present and the workflow is repeatable across high-impact decisions."
+    },
+    {
+      "candidate_ref": "K3",
+      "candidate": "Cleaned-body extraction for engineering Skill materials.",
+      "trigger": "A source mixes reader-relevant workflow content with install commands, environment checks, sync, telemetry, or debug protocol.",
+      "input": "Full selected Skill or engineering source plus material-type contract.",
+      "steps": [
+        "Identify purpose, triggers, user intent, workflow, constraints, failure conditions, output requirements, and design highlights.",
+        "Move commands, paths, machine state, repeated templates, and runtime protocol out of the body.",
+        "Record removed categories in audit or package README.",
+        "Write body prose that preserves the material's operational logic without turning it into a summary."
+      ],
+      "output": "A cleaned body page plus audit notes for removed categories.",
+      "boundary": "Do not use when the reader's primary goal is executing the command reference itself.",
+      "evidence": [
+        "ReaderLab demo contract for Skill / engineering material",
+        "Preamble and runtime shell sections in source",
+        "Cleaned body produced in this demo"
+      ],
+      "decision": "skill_candidate",
+      "decision_reason": "Meets trigger, input, steps, output, boundary, and evidence requirements."
+    },
+    {
+      "candidate_ref": "K5",
+      "candidate": "Create a formal reusable Skill for all decision prompts.",
+      "trigger": "High-impact user decision appears.",
+      "input": null,
+      "steps": [],
+      "output": "Reusable Skill package",
+      "boundary": null,
+      "evidence": [
+        "Candidate was downgraded in tournament because independent scope is not yet proven."
+      ],
+      "decision": "insight_only",
+      "decision_reason": "The idea is useful, but it lacks a complete standalone input contract, boundaries, and independent evidence for formal Skill creation."
+    },
+    {
+      "candidate_ref": "K7",
+      "candidate": "Evidence-first technical interrogation for spec writing.",
+      "trigger": "A spec or issue request touches an existing codebase, API, data model, UI, infrastructure, or tests.",
+      "input": "User request plus at least one verified project artifact such as file path, package manifest, directory structure, existing doc, or search result.",
+      "steps": [
+        "Identify the likely project area from the request.",
+        "Read or search the smallest relevant evidence before asking technical questions.",
+        "Cite the evidence when asking unresolved questions.",
+        "Skip questions already answered by the evidence.",
+        "Record remaining uncertainty in the draft spec."
+      ],
+      "output": "A technical interrogation section grounded in current project evidence.",
+      "boundary": "Do not use this to justify broad repo scans or reading old unrelated reports.",
+      "evidence": [
+        "Phase 3 Technical Interrogation section",
+        "Issue Quality Standards: Verified Current State",
+        "Rules: verify before asserting"
+      ],
+      "decision": "skill_candidate",
+      "decision_reason": "All six fields are present and the operation is repeatable for spec workflows touching existing systems."
+    },
+    {
+      "candidate_ref": "K4",
+      "candidate": "Adopt gstack runtime shell as ReaderLab default.",
+      "trigger": null,
+      "input": null,
+      "steps": [],
+      "output": null,
+      "boundary": "Rejected because it would install or normalize foreign runtime behavior outside this demo scope.",
+      "evidence": [
+        "Candidate rejected in tournament.",
+        "User explicitly prohibited installing, syncing, enabling, or writing formal Skill assets."
+      ],
+      "decision": "reject",
+      "decision_reason": "Missing required Skill fields and conflicts with the demo boundary."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "readerlab.source_registry.v0",
+  "demo_id": "B_skill_engineering",
+  "material_id": "gstack_spec_skill",
+  "material_type": "skill_engineering",
+  "sources": [
+    {
+      "source_id": "S1",
+      "title": "gstack spec SKILL.md",
+      "path": "/Users/tianqiang/技能项目/skills-canonical/packages/gstack/spec/SKILL.md",
+      "role": "primary_body_source",
+      "coverage": "full",
+      "read_only": true,
+      "executed": false,
+      "notes": "Used only as reading material. Commands and runtime instructions were not executed."
+    },
+    {
+      "source_id": "S2",
+      "title": "ReaderLab contract files",
+      "path": "docs/contracts/*-v1.md",
+      "role": "audit_contract_basis",
+      "coverage": "selected_contracts",
+      "read_only": true,
+      "executed": false,
+      "notes": "Used to shape audit JSON and writer self-check."
+    }
+  ],
+  "excluded_inputs": [
+    "old fullbook artifacts",
+    "old bakeoff artifacts",
+    "GPT Pro review prompts",
+    "old long reports",
+    "long ledger history"
+  ],
+  "created_at": "2026-07-01"
+}
+

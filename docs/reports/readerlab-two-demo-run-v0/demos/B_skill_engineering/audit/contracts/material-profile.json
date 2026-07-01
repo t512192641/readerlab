@@ -1,0 +1,28 @@
+{
+  "contract": "material-profile.v1",
+  "material_id": "gstack_spec_skill",
+  "title": "gstack spec SKILL.md",
+  "material_type": "skill_engineering",
+  "source_basis": [
+    "/Users/tianqiang/技能项目/skills-canonical/packages/gstack/spec/SKILL.md"
+  ],
+  "coverage": "full",
+  "body_track_status": "present_full_body",
+  "risks": {
+    "translation_or_editing": "medium",
+    "context_loss": "medium",
+    "external_verification_needed": false,
+    "ai_reconstruction_risk": "medium"
+  },
+  "reader_gap_filled": [
+    "Cleaned body separates core spec workflow from runtime shell.",
+    "Reader-facing narrative explains why the Skill protects product decisions.",
+    "Design asset notes identify reusable patterns and non-transferable parts."
+  ],
+  "reader_gap_not_filled": [
+    "No live execution or verification of gstack behavior was performed.",
+    "No reader evaluation agent has judged this writer output yet.",
+    "Source-adjacent annotation workflow is proposed but not exercised in Obsidian."
+  ]
+}
+

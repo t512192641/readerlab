@@ -2,35 +2,39 @@
 
 ## 阶段结论
 
-这次问题不是“章节循环方法已经失败”，而是主控 agent 把多阶段任务错误压缩成局部阶段判断，提前讨论 final boss 和交付条件，导致任务边界混乱。
+这次问题不是“章节循环方法已经失败”，而是主控 agent 多次把局部阶段结果误报成更高层能力：先把少量章节进度误当成整本推进，后又把 15 章高阶讲解通过误当成 ReaderLab 阅读包和方法层接近完成。
 
 当前真实进度：
 
 - 《埃隆之书》正文级章节总数：15。
-- 已按新方法通过章节循环：2 章，`成功之道`、`打造卓越团队`。
-- 未开始：13 章。
-- 全书总结：未启动。
-- 仓颉 / 李继刚 / book-to-skill / 乔木 baseline 横向对比：未启动。
-- 可迁移方法论 / Skill 草案：未启动。
+- `chapter_high_order_explanation_pass`: `15/15`。
+- `full_book_reader_synthesis_pass`: `1/1`。
+- `baseline_capability_audit_pass`: `1/1`。
+- `reader_package_not_verified`。
+- `transferable_method_kernel_probe_pass`: `2/2`，仅限 `docs/reports/readerlab-method-kernel-v0/` 的两章探针。
+- `transferable_method_kernel_pass`: `not_verified`。
+- `skill_draft_not_started`。
+- `external_material_validation_not_started`。
 
-正确初步交付不是“章节都有评价结果”，也不是“两个章节通过”，而是：
+正确状态口径不是“章节都有评价结果”，不是“两个章节通过”，也不是“15 章就等于阅读包通过”，而是：
 
 ```text
-15 个正文级章节全部 pass
+15 个章节高阶讲解全部 pass
 -> ReaderLab 自己的全书总结 pass
 -> 其他 Skills / 方法基线总结完成或纳入
 -> 读者评价 agent 横向对比
--> 主控提炼可迁移方法论 / Skill 草案
--> 验证通过
+-> Body Track Gate / 方法核探针
+-> 用户明确启动后，才进入正式方法论 / Skill 草案
 ```
 
 ## 真正解决了什么
 
-- 明确了章节阶段的唯一队列：`docs/reports/readerlab-elon-chapter-loop-v0/chapter-queue.md`。
-- 把当前覆盖事实固定为 `2 pass / 13 not_started`，避免说成“全书跑完后只有两章通过”。
+- 明确了当前执行事实的唯一入口：`docs/current-task.md`。
+- 把当前状态固定为 `chapter_high_order_explanation_pass 15/15`、`reader_package_not_verified`、`method_kernel_probe_pass 2/2`。
+- 新增 `docs/reports/readerlab-method-kernel-v0/`，把方法核从字段吸收推进到两章最小探针。
 - 把 final boss baseline 的名称、对照输出和本地/研究来源写清楚，避免只写“几个 Skills”却不给路径。
 - 把下一会话启动入口压到 2 个文件：`AGENTS.md` 和 `docs/current-task.md`；其余只按 `current-task.md` 指令在执行时读取。
-- 明确 baseline 只在章节全部 pass 且 ReaderLab 自己全书总结 pass 后启用，不能污染章节写作 agent。
+- 明确 baseline 横评不等于可迁移方法核或正式 Skill。
 
 ## 项目开发问题
 
@@ -133,6 +137,8 @@
 - baseline / Skill 名称必须绑定路径和可调用状态。
 - 启动入口默认只有 `AGENTS.md` 和 `docs/current-task.md`；更多文件必须由 `current-task.md` 明确说明何时读取。
 - 新增方法规则必须标注 `method rule`、`book observation` 或 `rejected one-off fix`，防止过拟合。
+- 所有 pass 状态必须带对象：高阶讲解、阅读包、方法核、Skill、外部验证不能混用。
+- 方法吸收必须表现为决策变硬：claim 分层、候选降级/拒绝、Skill 化阻断和批注锚点，而不是只新增字段。
 
 ## 可升维到全局错题本的候选
 
@@ -174,13 +180,31 @@
 - 防重检查点：用户问“你完成了什么 / 为什么停”时，第一段必须是进度事实和停止标准。
 - 来源：ReaderLab / 2026-07-01 / baseline shield 误答。
 
+### 候选 G-008：字段吸收不等于方法吸收
+
+- 域：Agent 流程 / 方法迁移 / Skill 设计
+- 现象：从其他方案中搬来 V1/V2/V3、trigger/input/output、批注触发等字段，但这些字段没有改变 promote / downgrade / reject 决策。
+- 根本原因：把字段结构当成方法逻辑；没有实现执行顺序、淘汰机制和失败条件。
+- 正确做法：任何外来方法元素必须进入决策链，能导致候选被保留、降级、拒绝或禁止 Skill 化。
+- 防重检查点：如果新增字段后所有候选仍被通过，说明只是字段拼贴。
+- 来源：ReaderLab / 2026-07-01 / GPT Pro method-kernel review。
+
+### 候选 G-009：通过状态必须声明验证对象
+
+- 域：Agent 流程 / 状态管理 / 报告
+- 现象：某层产物通过后，报告中直接写 `pass`，让读者误以为更高层产品也通过。
+- 根本原因：状态词没有绑定对象，导致高阶讲解、阅读包、方法核、Skill 和外部泛化混用。
+- 正确做法：用 `chapter_high_order_explanation_pass`、`reader_package_not_verified`、`method_kernel_probe_pass` 等 scoped 状态。
+- 防重检查点：看到裸 `pass` 时，必须追问“是什么对象通过，不能证明什么”。
+- 来源：ReaderLab / 2026-07-01 / GPT Pro checkpoint 纠偏。
+
 ## 后续风险
 
-- 当前只完成两个章节，`high-order-explanation.v1` 还没有证明能覆盖所有章节。
-- 防过拟合仍需在每章记录中执行，不能只写在总规则里。
-- baseline 对照输出目前部分来自既有报告，部分本地包不可直接调用；final boss 阶段必须先确认使用已有报告还是重新生成。
-- 章节循环如果没有外部化脚本或清单辅助，仍可能出现主控漏更新队列状态的问题。
+- 完整一手正文轨尚未补齐，不能把任何解释页标成 `reader_package_pass`。
+- 两章方法核探针通过不等于可迁移方法核成立；仍需用户或 GPT Pro 复核 gate 是否真的变硬。
+- 旧报告中仍可能出现历史 `pass` 口径；新会话必须以 `docs/current-task.md` 为准。
+- 不得因为已有 method-kernel probe 就自动进入正式 ReaderLab Skill 草案或外部书验证。
 
 ## 下一步
 
-从 `组织设计 / v101-16` 继续章节循环。主控必须先准备正文输入，再调用写作 agent 和读者评价 agent；只有该章满足硬门槛、`>=10/12`、评价 `pass` 且无 P0/P1，才更新 reader/audit 和章节队列。
+复核 `docs/reports/readerlab-method-kernel-v0/`。确认 Body Track Gate、Claim Ledger、Candidate Tournament、Skillization Gate 和 Annotation Trigger 是否真正阻止旧问题；复核通过后，用户再决定补一手正文轨、扩大探针，或另行启动正式方法文档。当前不自动进入 Skill 草案或外部书验证。

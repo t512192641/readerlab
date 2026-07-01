@@ -1,0 +1,103 @@
+{
+  "contract": "candidate-tournament.v1",
+  "material_id": "gstack_spec_skill",
+  "candidates": [
+    {
+      "candidate_id": "K1",
+      "type": "mechanism",
+      "candidate": "Decision questions and draft review must protect user choices before filing or execution.",
+      "claim_refs": ["C2", "C5", "C6"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "pass",
+      "risk_check": "pass",
+      "decision": "promote",
+      "decision_reason": "Strong source support and clear transfer value for scope-changing workflows."
+    },
+    {
+      "candidate_id": "K2",
+      "type": "principle",
+      "candidate": "Define trigger boundaries before a workflow can claim ownership of a task.",
+      "claim_refs": ["C1"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "weak",
+      "risk_check": "pass",
+      "decision": "keep",
+      "decision_reason": "Useful and supported, but less distinctive than the decision-brief mechanism."
+    },
+    {
+      "candidate_id": "K3",
+      "type": "transfer_insight",
+      "candidate": "Separate method body from runtime shell when reading engineering Skill materials.",
+      "claim_refs": ["C3"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "pass",
+      "risk_check": "caution",
+      "decision": "promote",
+      "decision_reason": "Central to ReaderLab's cleaned-body requirement, but must preserve safety constraints in audit."
+    },
+    {
+      "candidate_id": "K4",
+      "type": "hazard",
+      "candidate": "Adopt gstack's telemetry, routing injection, vendored migration, and artifact sync prompts as ReaderLab defaults.",
+      "claim_refs": ["C8"],
+      "v0_source_support": "weak",
+      "v1_cross_context": "fail",
+      "v2_predictive_or_actionable": "weak",
+      "v3_distinctiveness": "weak",
+      "risk_check": "fail",
+      "decision": "reject",
+      "decision_reason": "Foreign runtime shell is not transferable under this demo's boundaries and would add state-changing behavior."
+    },
+    {
+      "candidate_id": "K5",
+      "type": "skill_candidate",
+      "candidate": "Create a reusable decision-brief Skill from the AskUserQuestion pattern.",
+      "claim_refs": ["C2", "C5"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "weak",
+      "v3_distinctiveness": "pass",
+      "risk_check": "caution",
+      "decision": "downgrade",
+      "decision_reason": "Promising pattern, but this demo has not defined independent trigger/input/output/evidence tightly enough for a formal Skill."
+    },
+    {
+      "candidate_id": "K6",
+      "type": "annotation_trigger",
+      "candidate": "Ask readers where they would draw the line between body method and execution shell.",
+      "claim_refs": ["C3"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "weak",
+      "risk_check": "pass",
+      "decision": "keep",
+      "decision_reason": "Useful for reader discussion, but not a standalone method card."
+    },
+    {
+      "candidate_id": "K7",
+      "type": "mechanism",
+      "candidate": "Require verified code or project evidence before technical questions in a spec workflow.",
+      "claim_refs": ["C6"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "pass",
+      "risk_check": "pass",
+      "decision": "promote",
+      "decision_reason": "Strong source support and directly improves executability of specs."
+    }
+  ],
+  "decision_summary": {
+    "promoted": 3,
+    "kept": 2,
+    "downgraded": 1,
+    "rejected": 1
+  }
+}
