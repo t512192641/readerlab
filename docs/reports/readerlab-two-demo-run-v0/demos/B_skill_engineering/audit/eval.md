@@ -16,7 +16,8 @@ reader_score: 11/12
 P0: []
 P1: []
 P2:
-  - The cleaned body is acceptable as a cleaned Skill/engineering body, but it is still highly compressed relative to the full source; if this demo later becomes a canonical benchmark, consider adding a short appendix or map for stripped runtime categories so future readers can audit what was removed without rereading the original source.
+  - The cleaned body is acceptable as a cleaned Skill/engineering body. 2026-07-01 review hardening added `source-cleaning-map.md` to make removed runtime categories auditable without turning command protocol into reader body.
+  - 2026-07-01 review hardening added `location-map.json` and `trace-to-reader.md` so body-adjacent annotations can be traced back to stable body anchors, claims, candidate decisions, and Skillization results.
 must_fix_before_landing: []
 
 Reader Evaluation Agent B conclusion:
@@ -25,4 +26,4 @@ Demo B passes internal reader evaluation. The package correctly separates a clea
 
 The main quality reason for passing is that the cleaned body keeps the operational spine: trigger boundary, why-first interrogation, scope lock, evidence-before-technical-questions, draft review, quality/redaction gates, issue/archive/handoff output, automation boundaries, and failure risks. The reader-facing page adds a higher-order frame rather than replacing the body with a summary. Design assets extract transferable patterns and explicitly name when not to reuse them.
 
-The remaining risk is not landing-blocking: compression is substantial, so this demo should not be used as proof that every long Skill source can be safely reduced to this length without an audit map. For this run's Demo B criteria, however, no P0/P1 issue remains.
+The remaining risk is not landing-blocking: compression is substantial, so this demo should not be used as proof that every long Skill source can be safely reduced to this length without external-source verification. The added cleaning map covers the internal audit decision, but it still does not make the local original source itself publicly reviewable. For this run's Demo B criteria, however, no P0/P1 issue remains.

@@ -4,39 +4,38 @@
   "triggers": [
     {
       "trigger_id": "A1",
-      "anchor_ref": "10_一手正文/001_净化正文.md: trigger paragraph describing issue/ticket/backlog invocation",
+      "anchor_ref": "B-BODY-001",
       "reader_question": "这里的触发条件是否足够防止 spec 流程吞掉测试、发布或代码审查任务？",
       "likely_misread": "把 spec 理解成所有工程工作的通用入口。",
       "reply_mode": "boundary"
     },
     {
       "trigger_id": "A2",
-      "anchor_ref": "10_一手正文/001_净化正文.md: paragraph on decision question requirements",
+      "anchor_ref": "B-BODY-003",
       "reader_question": "这个问题格式是在帮助用户决策，还是会让低风险选择变得过重？你会在哪里降级？",
       "likely_misread": "所有选择都应该套完整决策说明。",
       "reply_mode": "challenge"
     },
     {
       "trigger_id": "A3",
-      "anchor_ref": "10_一手正文/001_净化正文.md: paragraph on interactive/headless/spawned handling",
+      "anchor_ref": "B-BODY-003",
       "reader_question": "不同会话环境下的推进规则，解决的是安全问题还是体验问题？哪一部分最能迁移到 ReaderLab？",
       "likely_misread": "把宿主兼容细节当作核心方法。",
       "reply_mode": "connect"
     },
     {
       "trigger_id": "A4",
-      "anchor_ref": "10_一手正文/001_净化正文.md: paragraph on removed runtime shell categories",
+      "anchor_ref": "B-BODY-003",
       "reader_question": "如果你是读者，哪些命令或状态信息必须保留在正文，哪些放进审计就够了？",
       "likely_misread": "净化正文等于删掉所有工程约束。",
       "reply_mode": "verify"
     },
     {
       "trigger_id": "A5",
-      "anchor_ref": "10_一手正文/001_净化正文.md: design highlight on automation boundaries",
+      "anchor_ref": "B-BODY-005",
       "reader_question": "这里对自动化的边界判断，能否直接用于 LifeAtlas 或 ReaderLab，还是需要更严格的人类确认？",
       "likely_misread": "有推荐选项就可以自动继续。",
       "reply_mode": "boundary"
     }
   ]
 }
-

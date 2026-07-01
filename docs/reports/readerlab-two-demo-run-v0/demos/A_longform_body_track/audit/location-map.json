@@ -1,0 +1,93 @@
+{
+  "contract": "location-map.v1",
+  "material_id": "readerlab-product-spec",
+  "scope": "Demo A repo-owned longform body track",
+  "body_path": "10_一手正文/001_正文.md",
+  "reader_path": "20_AI陪读/001_reader-facing.md",
+  "anchors": [
+    {
+      "anchor_id": "A-BODY-001",
+      "path": "10_一手正文/001_正文.md",
+      "line_start": 5,
+      "line_end": 15,
+      "heading": "一句话定义 / 不是什么",
+      "body_role": "definition_and_negative_boundary",
+      "claim_refs": ["C1"],
+      "annotation_trigger_refs": ["A1", "A2"]
+    },
+    {
+      "anchor_id": "A-BODY-002",
+      "path": "10_一手正文/001_正文.md",
+      "line_start": 17,
+      "line_end": 30,
+      "heading": "产品原则",
+      "body_role": "body_first_rules_and_status_boundary",
+      "claim_refs": ["C1", "C2"],
+      "annotation_trigger_refs": ["A3"]
+    },
+    {
+      "anchor_id": "A-BODY-003",
+      "path": "10_一手正文/001_正文.md",
+      "line_start": 36,
+      "line_end": 50,
+      "heading": "输出契约",
+      "body_role": "book_longform_and_skill_engineering_body_contract",
+      "claim_refs": ["C1", "C3"],
+      "annotation_trigger_refs": ["A4"]
+    },
+    {
+      "anchor_id": "A-BODY-004",
+      "path": "10_一手正文/001_正文.md",
+      "line_start": 67,
+      "line_end": 77,
+      "heading": "Audit 分离 / 状态口径",
+      "body_role": "audit_reader_split_and_status_language",
+      "claim_refs": ["C2", "C4", "C5"],
+      "annotation_trigger_refs": ["A5"]
+    },
+    {
+      "anchor_id": "A-BODY-005",
+      "path": "10_一手正文/001_正文.md",
+      "line_start": 135,
+      "line_end": 145,
+      "heading": "批注与讨论层 / 候选沉淀层",
+      "body_role": "annotation_and_candidate_capture_boundary",
+      "claim_refs": ["C2", "C3"],
+      "annotation_trigger_refs": ["A6"]
+    }
+  ],
+  "reader_segments": [
+    {
+      "segment_id": "A-READ-001",
+      "path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_index": 1,
+      "uses_anchor_ids": ["A-BODY-001", "A-BODY-002"],
+      "claim_refs": ["C1"],
+      "candidate_refs": ["K1", "K5"]
+    },
+    {
+      "segment_id": "A-READ-002",
+      "path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_index": 2,
+      "uses_anchor_ids": ["A-BODY-002", "A-BODY-004"],
+      "claim_refs": ["C2", "C4"],
+      "candidate_refs": ["K2"]
+    },
+    {
+      "segment_id": "A-READ-003",
+      "path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_index": 3,
+      "uses_anchor_ids": ["A-BODY-003", "A-BODY-005"],
+      "claim_refs": ["C3"],
+      "candidate_refs": ["K3"]
+    },
+    {
+      "segment_id": "A-READ-004",
+      "path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_index": 4,
+      "uses_anchor_ids": ["A-BODY-004"],
+      "claim_refs": ["C5"],
+      "candidate_refs": ["K4"]
+    }
+  ]
+}

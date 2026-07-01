@@ -16,6 +16,7 @@ GPT Pro review 第八部分行动已执行
 -> 新增方法核 contracts
 -> 两章最小方法核探针
 -> 两个内部产品 demo 已通过 writer/reader 双门槛
+-> GPT Pro two-demo review 已回收并补 review hardening patch
 -> 等用户明确决定是否准备 GPT Pro 审核
 ```
 
@@ -31,6 +32,7 @@ GPT Pro review 第八部分行动已执行
 - `reader_package_not_verified`
 - `transferable_method_kernel_probe_pass`: `2/2`，仅限 `组织设计 / v101-16` 和 `打造特斯拉 / v101-21` 的最小探针
 - `two_demo_internal_pass`: `2/2`，仅限 `readerlab-two-demo-run-v0` 的 Demo A / Demo B 内部 writer-reader 验证
+- `two_demo_review_hardening_patch`: `done`，补充 location map、source cleaning map、trace-to-reader 和 Skill / 工程材料 cleaned-body 状态语义
 - `transferable_method_kernel_pass`: `not_verified`
 - `skill_draft_not_started`
 - `external_material_validation_not_started`
@@ -87,6 +89,27 @@ GPT Pro 第八部分要求的六个 contract 已新增：
 - reader-facing 禁用内部字段扫描：无命中。
 - `python3 tests/test_readerlab.py`：PASS，30 tests OK。
 - `git diff --check`：PASS。
+
+## GPT Pro two-demo review 回收
+
+GPT Pro 结论：
+
+- 两个 demo 可以保留为 `two_demo_internal_pass: 2/2`。
+- 这轮证明了受限最小方法核雏形，不只是写作能力。
+- 仍不能升级为 `transferable_method_kernel_pass`。
+- 仍不能启动正式 ReaderLab Skill 草案。
+
+已按 review 做最小 hardening patch：
+
+1. Demo A / B 均补 `audit/location-map.json`，把正文段落、读者页段落、claim、candidate 和 annotation trigger 接到稳定 anchor。
+2. Demo B 补 `audit/source-cleaning-map.md`，说明 `gstack/spec` 中哪些内容保留、压缩、移入设计资产、移入 audit 或拒绝进入 reader-facing。
+3. Demo A / B 均补 `audit/trace-to-reader.md`，说明 reader-facing 每段如何消费 claim ledger、candidate tournament 和 gate 决策。
+4. `body-track-gate.v1` 增加 `skill_engineering_cleaned_body_pass`，Demo B 不再用 `audit_only` 表示 cleaned-body 通过。
+
+批注层口径：
+
+- Obsidian 批注插件本身不是当前主要风险；当前风险是批注回读时能否稳定定位正文段落、claim、candidate 和 gate 决策。
+- 本轮 hardening patch 只补“批注位置到 ReaderLab 证据链”的桥，不重新验证 Obsidian 插件 UI。
 
 ## 默认读取与动作触发
 

@@ -9,8 +9,7 @@
     "coverage": "full_chapter",
     "notes": "For skill_engineering, the body track is a cleaned body derived from the full selected Skill source. It preserves purpose, trigger, user intent, workflow, constraints, failure conditions, output requirements, and design highlights while removing runtime shell and machine noise."
   },
-  "allowed_status": "audit_only",
+  "allowed_status": "skill_engineering_cleaned_body_pass",
   "blocking_reasons": [],
   "checked_at": "2026-07-01"
 }
-

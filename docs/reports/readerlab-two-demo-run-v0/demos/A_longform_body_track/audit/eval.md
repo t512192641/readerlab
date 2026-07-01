@@ -14,4 +14,5 @@ P0: []
 P1: []
 P2:
   - Demo A proves a complete body-track pattern for repo-owned longform material, not external copyrighted or public-domain book validation. Landing language must keep this scope explicit.
+  - 2026-07-01 review hardening added `location-map.json` and `trace-to-reader.md` so body-adjacent annotations can be traced back to stable body anchors, claims, and candidate decisions.
 must_fix_before_landing: []

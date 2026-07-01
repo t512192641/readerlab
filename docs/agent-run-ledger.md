@@ -1,3 +1,26 @@
+# 2026-07-01 two-demo review hardening patch
+
+## 摘要
+
+- 用户提交 GPT Pro 对 two-demo checkpoint 的审核结果；结论是 `two_demo_internal_pass: 2/2` 可以成立，但不能升级为 `transferable_method_kernel_pass`，也不能启动正式 ReaderLab Skill 草案。
+- 本轮按 Pro 指出的最小缺口补 review hardening，不扩大到外部材料验证，不重跑 demo，不写正式 Skill。
+- 明确批注层口径：Obsidian 批注插件本身不是主要风险；当前要补的是批注回读时从评论位置稳定回到正文 anchor、claim、candidate 和 gate 决策的证据链。
+
+## 改动
+
+- Demo A / B 均新增 `audit/location-map.json`，把正文段落、reader-facing 段落、claim、candidate 和 annotation trigger 接到稳定 anchor。
+- Demo A / B 均新增 `audit/trace-to-reader.md`，说明 reader-facing 每段如何消费正文、claim ledger、candidate tournament 和 gate 决策。
+- Demo B 新增 `audit/source-cleaning-map.md`，说明 `gstack/spec` 内容如何被保留、压缩、移入设计资产、移入 audit 或拒绝进入 reader-facing。
+- `body-track-gate.v1` 新增 `skill_engineering_cleaned_body_pass`，Demo B 的 body-track gate 不再使用容易误解的 `audit_only`。
+- GPT Pro review brief、copy prompt、required / optional attachments 已指向新增 hardening 证据。
+
+## 验证
+
+- `python3 -m json.tool` 检查 two-demo 所有 JSON：PASS。
+- reader-facing 内部字段残留检查：PASS，无命中。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS。
+
 # 2026-07-01 双 demo 内部方法核验证通过
 
 ## 摘要

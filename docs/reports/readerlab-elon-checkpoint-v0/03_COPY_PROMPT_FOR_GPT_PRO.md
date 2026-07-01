@@ -9,6 +9,8 @@
 
 请判断这两个 demo 是否真的证明了 ReaderLab 最小方法核，而不是只证明写作能力或补齐审计字段。
 
+注意：GPT Pro 已指出批注插件本身不是主要风险；风险是批注回读时能否从评论位置稳定回到正文 anchor、claim、candidate 和 gate 决策。本轮已补 `location-map.json` 和 `trace-to-reader.md`，请重点审这条证据链是否够用。
+
 你应先读：
 
 1. `docs/current-task.md`
@@ -22,6 +24,11 @@
 9. `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/10_一手正文/001_净化正文.md`
 10. `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/20_AI陪读/001_reader-facing.md`
 11. `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/20_AI陪读/design-asset-notes.md`
+12. `docs/reports/readerlab-two-demo-run-v0/demos/A_longform_body_track/audit/location-map.json`
+13. `docs/reports/readerlab-two-demo-run-v0/demos/A_longform_body_track/audit/trace-to-reader.md`
+14. `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/audit/location-map.json`
+15. `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/audit/source-cleaning-map.md`
+16. `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/audit/trace-to-reader.md`
 
 然后读两个 demo 的核心 contracts：
 
@@ -54,7 +61,9 @@
 5. Candidate Tournament 是否真实产生 promote / downgrade / reject，而不是装饰字段？
 6. Skillization Gate 是否阻止了不满足 trigger / input / steps / output / boundary / evidence 的 insight 被过早 Skill 化？
 7. Annotation Trigger 是否真的给出 body-adjacent questions，而不是泛泛讨论题？
-8. 两个 demo 内部通过后，下一步是否应进入外部 GPT Pro 审核后的更广泛材料验证，还是仍需补一个更小的内部缺口？
+8. location-map / trace-to-reader 是否足够把 Obsidian 批注接回 ReaderLab 证据链？
+9. Demo B 的 source-cleaning-map 是否足够说明 `gstack/spec` 的净化过程？
+10. 两个 demo 内部通过后，下一步是否应进入更广泛材料验证，还是仍需补一个更小的内部缺口？
 
 请输出：
 

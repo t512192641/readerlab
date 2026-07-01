@@ -52,3 +52,13 @@
 - `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/audit/contracts/annotation-trigger.json`
 
 目的：判断 gates 是否真实改变输出决策，而不是只作为审计字段。
+
+## 必读 7：review hardening 证据
+
+- `docs/reports/readerlab-two-demo-run-v0/demos/A_longform_body_track/audit/location-map.json`
+- `docs/reports/readerlab-two-demo-run-v0/demos/A_longform_body_track/audit/trace-to-reader.md`
+- `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/audit/location-map.json`
+- `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/audit/source-cleaning-map.md`
+- `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/audit/trace-to-reader.md`
+
+目的：判断 Pro 指出的可复核性问题是否被补上：批注回读是否能接回正文证据链，Demo B 的清理过程是否可审。

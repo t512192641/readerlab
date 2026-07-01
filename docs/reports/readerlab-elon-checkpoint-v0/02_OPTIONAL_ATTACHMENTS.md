@@ -11,14 +11,19 @@
 
 ## 两个 demo 的完整 contract
 
+- `docs/reports/readerlab-two-demo-run-v0/demos/A_longform_body_track/audit/location-map.json`
+- `docs/reports/readerlab-two-demo-run-v0/demos/A_longform_body_track/audit/trace-to-reader.md`
 - `docs/reports/readerlab-two-demo-run-v0/demos/A_longform_body_track/audit/contracts/material-profile.json`
 - `docs/reports/readerlab-two-demo-run-v0/demos/A_longform_body_track/audit/contracts/high-order-explanation.v1.json`
+- `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/audit/location-map.json`
+- `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/audit/source-cleaning-map.md`
+- `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/audit/trace-to-reader.md`
 - `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/audit/contracts/material-profile.json`
 - `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/audit/contracts/high-order-explanation.v1.json`
 - `docs/reports/readerlab-two-demo-run-v0/demos/A_longform_body_track/source-registry.json`
 - `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/source-registry.json`
 
-用途：需要追踪来源、材料类型、AI 解释边界和高阶讲解内部证据时读取。
+用途：需要追踪来源、材料类型、AI 解释边界、高阶讲解内部证据、清理过程、reader-facing trace 和批注回读锚点时读取。
 
 ## 方法核 contract 定义
 

@@ -15,6 +15,14 @@
 
 这两个 demo 的共同审查点：正文轨 / 净化正文是否成立，AI 陪读是否不冒充原文，contracts 是否真实影响 promote / downgrade / reject、Skillization 和批注触发，而不是只补字段。
 
+GPT Pro two-demo review 后已补一个 review hardening patch：
+
+- Demo A / B 增加 `audit/location-map.json`，把正文段落、读者页段落、claim、candidate 和 annotation trigger 接到稳定 anchor。
+- Demo A / B 增加 `audit/trace-to-reader.md`，说明 reader-facing 每段如何消费 claim ledger、candidate tournament 和 gate 决策。
+- Demo B 增加 `audit/source-cleaning-map.md`，说明 `gstack/spec` 的源内容如何被保留、压缩、移入设计资产、移入 audit 或拒绝进入 reader-facing。
+- `body-track-gate.v1` 增加 `skill_engineering_cleaned_body_pass`，用于区分 Skill / 工程材料 cleaned-body 通过和书籍/长文完整 reader package 通过。
+- 批注层本轮不重新验证 Obsidian 插件 UI；补的是批注回读时从评论位置回到正文 anchor、claim、candidate 和 gate 的证据链。
+
 当前状态口径以 `docs/current-task.md` 为准：
 
 - `chapter_high_order_explanation_pass`: `15/15`
@@ -67,7 +75,9 @@ Demo B：Skill / 工程材料 demo
 5. Candidate Tournament 是否真实产生 promote / downgrade / reject，而不是装饰字段？
 6. Skillization Gate 是否阻止了不满足 trigger / input / steps / output / boundary / evidence 的 insight 被过早 Skill 化？
 7. Annotation Trigger 是否真的给出 body-adjacent questions，而不是泛泛讨论题？
-8. 这两个 demo 内部通过后，下一步是否应该准备外部 GPT Pro 审核 / 更广泛材料验证，还是仍需补一个更小的内部缺口？
+8. 新增的 location-map / trace-to-reader 是否足够连接 Obsidian 批注和 ReaderLab 证据链？
+9. Demo B 的 source-cleaning-map 是否足够缓解“净化正文不可复核”的风险？
+10. 这两个 demo 内部通过后，下一步是否应该准备更广泛材料验证，还是仍需补一个更小的内部缺口？
 
 ## 已知边界
 
