@@ -8,8 +8,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "scripts" / "readerlab_trace_validator.py"
-REPORT = ROOT / "docs/reports/readerlab-comment-replay-v0"
-PRIVATE_DEMOS = ROOT / "docs/reports/readerlab-private-material-validation-v0/demos"
+FIXTURES = ROOT / "tests/fixtures/readerlab"
+REPORT = FIXTURES / "comment-replay"
+PRIVATE_DEMOS = FIXTURES / "private-material-validation/demos"
 
 
 def run_validator(*args: str) -> subprocess.CompletedProcess:

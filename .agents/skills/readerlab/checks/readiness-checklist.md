@@ -5,7 +5,7 @@ Use this checklist before treating `.agents/skills/readerlab/SKILL.md` as repo-l
 ## Repo-Local Boundary
 
 - [ ] Active package remains under `.agents/skills/readerlab/`.
-- [ ] Draft record remains under `docs/drafts/readerlab-skill-v0/`.
+- [ ] Historical draft records are not required for normal use; durable state lives in `docs/current-task.md`, `docs/dev-state.md`, and `docs/decisions.md`.
 - [ ] Skill states that it is repo-local only.
 - [ ] Skill is not installed globally under `/Users/tianqiang/.codex/skills/`.
 - [ ] Skill does not claim production readiness.
@@ -48,7 +48,7 @@ python3 scripts/readerlab_trace_validator.py validate-demo <output_root>
 Run historical regression separately:
 
 ```bash
-python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures
+python3 scripts/readerlab_trace_validator.py validate-suite --demo tests/fixtures/readerlab/private-material-validation/demos/A_feel_good_productivity --demo tests/fixtures/readerlab/private-material-validation/demos/B_planning_with_files --cases-json tests/fixtures/readerlab/comment-replay/fixtures/comment-replay-cases.json --fixture-dir tests/fixtures/readerlab/comment-replay/fixtures
 python3 tests/test_readerlab_trace_validator.py
 python3 tests/test_readerlab.py
 git diff --check

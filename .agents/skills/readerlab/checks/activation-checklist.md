@@ -2,11 +2,7 @@
 
 Historical activation checklist. Repo-local activation has already been approved and completed; keep this file as an audit record, not as the current readiness gate.
 
-Current draft source:
-
-```text
-docs/drafts/readerlab-skill-v0/
-```
+Historical draft source was removed during MEM cleanup; current repo-local source is `.agents/skills/readerlab/`.
 
 Allowed activation target only after explicit user approval:
 
@@ -72,7 +68,7 @@ If activation causes wrong routing or unwanted behavior:
 remove .agents/skills/readerlab/
 ```
 
-Do not delete the draft source under `docs/drafts/readerlab-skill-v0/`; it is the review record.
+The historical draft source has been removed; use git history for old review records.
 
 ## Status Labels
 

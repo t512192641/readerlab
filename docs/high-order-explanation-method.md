@@ -225,7 +225,7 @@ boundary：它在哪些条件下不能迁移
 当时建议只做一个小实验，不扩样本，不改正文，不做生成器，输入为：
 
 ```text
-docs/reports/readerlab-real-source-demo-v1/elon-team/reader/01_打造卓越团队_阅读页.md
+历史样张已清理；需要查旧样张时使用 git 历史。
 ```
 
 Blind A/B 问题包括：

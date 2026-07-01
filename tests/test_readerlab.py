@@ -354,8 +354,8 @@ echo ok
 
     def test_validate_contract_cli_accepts_two_minimal_samples(self) -> None:
         samples = [
-            ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample",
-            ROOT / "docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample",
+            ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample",
+            ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample",
         ]
         for sample in samples:
             with self.subTest(sample=sample.name):
@@ -367,8 +367,8 @@ echo ok
                 self.assertIn("readerlab.output-eval.v1", payload["schemas"])
 
     def test_validate_contract_cli_rejects_core_failures(self) -> None:
-        book_sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
-        skill_sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample"
+        book_sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+        skill_sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample"
 
         with tempfile.TemporaryDirectory() as tmp:
             bad_claim = Path(tmp) / "bad-claim"
@@ -454,7 +454,7 @@ echo ok
             self.assertIn("loc-output-eval-status", result.stdout)
 
     def test_validate_contract_cli_rejects_hardened_false_passes(self) -> None:
-        book_sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+        book_sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
 
         with tempfile.TemporaryDirectory() as tmp:
             bad_eval = Path(tmp) / "bad-eval"
@@ -545,9 +545,9 @@ echo ok
     def test_reader_facing_first_hand_body_is_not_only_summary(self) -> None:
         pages = [
             ROOT
-            / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample/reader/01_局部长文阅读页.md",
+            / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample/reader/01_局部长文阅读页.md",
             ROOT
-            / "docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample/reader/01_工程材料阅读页.md",
+            / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample/reader/01_工程材料阅读页.md",
         ]
         for page in pages:
             with self.subTest(page=page.name):
@@ -562,11 +562,11 @@ echo ok
     def test_render_contract_package_generates_two_samples_and_validates(self) -> None:
         samples = [
             (
-                ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample",
+                ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample",
                 "reader/01_局部长文阅读页.md",
             ),
             (
-                ROOT / "docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample",
+                ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample",
                 "reader/01_工程材料阅读页.md",
             ),
         ]
@@ -590,8 +590,8 @@ echo ok
 
     def test_eval_rendered_package_accepts_two_rendered_outputs(self) -> None:
         samples = [
-            ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample",
-            ROOT / "docs/reports/readerlab-contract-validator-proof-v0/skill-engineering-sample",
+            ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample",
+            ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample",
         ]
         with tempfile.TemporaryDirectory() as tmp:
             for sample in samples:
@@ -614,7 +614,7 @@ echo ok
                     )
 
     def test_eval_rendered_package_writes_success_report_md(self) -> None:
-        sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
 
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "rendered"
@@ -638,7 +638,7 @@ echo ok
             self.assertIn("not human acceptance", text)
 
     def test_eval_rendered_package_writes_failure_report_md(self) -> None:
-        sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
 
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "rendered"
@@ -654,7 +654,7 @@ echo ok
             self.assertIn("## Failures", text)
 
     def test_eval_rendered_package_report_path_requires_explicit_overwrite(self) -> None:
-        sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
 
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "rendered"
@@ -677,7 +677,7 @@ echo ok
             self.assertIn("# ReaderLab Rendered Package Eval Report", report.read_text(encoding="utf-8"))
 
     def test_eval_rendered_package_report_path_rejects_lifeatlas(self) -> None:
-        sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
 
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "rendered"
@@ -692,7 +692,7 @@ echo ok
             self.assertIn("refusing to write eval report under LifeAtlas", result.stderr + result.stdout)
 
     def test_render_contract_package_rejects_missing_source_excerpts(self) -> None:
-        sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
 
         with tempfile.TemporaryDirectory() as tmp:
             bad_sample = Path(tmp) / "missing-source-excerpt"
@@ -703,7 +703,7 @@ echo ok
             self.assertIn("source excerpt not found", result.stderr + result.stdout)
 
     def test_eval_rendered_package_rejects_missing_reader_gate_and_human_acceptance(self) -> None:
-        sample = ROOT / "docs/reports/readerlab-contract-validator-proof-v0/book-longform-sample"
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
 
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "missing-reader"
