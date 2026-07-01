@@ -1,3 +1,38 @@
+# 2026-07-01 repo-local Skill trial activation
+
+## 摘要
+
+- 按用户明确授权完成 ReaderLab repo-local activation。
+- 从 `docs/drafts/readerlab-skill-v0/` 复制最小试运行包到 `.agents/skills/readerlab/`。
+- 新增 smoke test 和 Meta Skills acceptance 证据：
+  - `docs/drafts/readerlab-skill-v0/reports/repo-local-smoke-test.md`
+  - `docs/drafts/readerlab-skill-v0/reports/meta-skill-acceptance.md`
+- 更新 `docs/current-task.md`：当前状态为 `readerlab_skill_repo_local_trial: active`，`readerlab_skill_meta_acceptance: repo_local_trial_ready`。
+
+## 当前判断
+
+- Repo-local trial 可以开始真实小材料使用测试。
+- 不建议全局安装到 `/Users/tianqiang/.codex/skills/`。
+- 不声明 production ready、public external validation 或 `transferable_method_kernel_pass`。
+
+## 边界
+
+- 只创建 `.agents/skills/readerlab/`。
+- 未写入 LifeAtlas `300/600/800`。
+- 未新增依赖、脚本、网络行为或凭据。
+- `real_obsidian_ui_replay` 仍是 `pass_with_warning`。
+- `real_obsidian_ui_body_prose_selection` 仍是 `not_verified`。
+
+## 验证
+
+- `python3 /Users/tianqiang/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/readerlab`：PASS，`Skill is valid!`。
+- `find . -path './.git' -prune -o -name SKILL.md -print`：PASS，只发现 `.agents/skills/readerlab/SKILL.md` 和 `docs/drafts/readerlab-skill-v0/SKILL.md`。
+- `python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures`：PASS。
+- `python3 tests/test_readerlab_trace_validator.py`：PASS，2 tests OK。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- 禁用 reader-facing 内部标签扫描：PASS，无命中。
+- `git diff --check`：PASS。
+
 # 2026-07-01 安装前 hardening
 
 ## 摘要

@@ -13,9 +13,9 @@
 
 ## Active Slice
 
-ReaderLab 已完成 **正式 Skill draft 文档草案切片**。
+ReaderLab 已完成 **repo-local Skill trial activation 切片**。
 
-当前目标仍不是泛化宣称，也不是 public external validation。正式 ReaderLab Skill 草案实现合同已创建并通过独立 reviewer 审查（无 P0/P1）；用户已批准开发一版正式草案 `SKILL.md`，范围限定在 `docs/drafts/readerlab-skill-v0/`，不得安装、启用或创建 `.agents/skills/readerlab/`。当前 docs draft `SKILL.md` 已创建，真实 Obsidian UI replay 后续由用户配合补测，不阻塞当前草案开发。
+当前目标仍不是泛化宣称，也不是 public external validation。正式 ReaderLab Skill 草案已在 `docs/drafts/readerlab-skill-v0/` 创建；用户已于 2026-07-01 明确批准 repo-local activation、烟测、以及烟测后使用 Meta Skills 验收。当前允许的激活范围仅限 `.agents/skills/readerlab/`，不得全局安装到 `/Users/tianqiang/.codex/skills/`，不得宣称生产可用或 transferable method pass。
 
 ```text
 已完成：
@@ -27,9 +27,13 @@ ReaderLab 已完成 **正式 Skill draft 文档草案切片**。
 6. docs draft `SKILL.md`
 7. product-spec forward test + route tie-breaker patch
 8. 真实 Obsidian UI replay：插件存储通过，正文段落直接选择未验证
+9. repo-local activation：`.agents/skills/readerlab/`
+10. repo-local smoke test：pass
+11. Meta Skills acceptance：`repo_local_trial_ready`
 
 后补：
-9. 严格正文段落直接选择 replay
+12. 严格正文段落直接选择 replay
+13. 一次真实小材料 ReaderLab package 使用测试
 ```
 
 ## Current Status
@@ -53,6 +57,11 @@ ReaderLab 已完成 **正式 Skill draft 文档草案切片**。
 - `formal_skill_draft_allowed_path`: `docs/drafts/readerlab-skill-v0/SKILL.md`
 - `formal_skill_draft_started`: `docs_draft_only`
 - `formal_skill_draft_path`: `docs/drafts/readerlab-skill-v0/SKILL.md`
+- `readerlab_skill_repo_local_activation`: `approved`
+- `readerlab_skill_repo_local_trial`: `active`
+- `readerlab_skill_repo_local_path`: `.agents/skills/readerlab/`
+- `readerlab_skill_repo_local_smoke_test`: `pass`
+- `readerlab_skill_meta_acceptance`: `repo_local_trial_ready`
 - `trace_validator_implemented`: `minimal_pass`
 - `comment_replay_fixture_pass`: `1/1`
 - `comment_replay_verified`: `fixture_pass_real_obsidian_ui_pass_with_warning`
@@ -60,7 +69,7 @@ ReaderLab 已完成 **正式 Skill draft 文档草案切片**。
 - `real_obsidian_ui_storage_format`: `tandem-comments`
 - `real_obsidian_ui_body_prose_selection`: `not_verified`
 - `transferable_method_kernel_pass`: `not_verified`
-- `skill_draft_not_started`
+- `global_skill_install_not_started`
 - `public_external_material_validation_not_started`
 
 禁止使用的旧口径：
@@ -71,7 +80,7 @@ ReaderLab 已完成 **正式 Skill draft 文档草案切片**。
 - 不得把正式 Skill 草案实现合同称为正式可运行 Skill 草案。
 - 不得把 `formal_skill_draft_contract_ready` 称为 `formal_skill_draft_started`。
 - 不得把 `formal_skill_draft_implementation_plan_ready` 称为 `formal_skill_draft_started`。
-- 不得把 docs draft `SKILL.md` 称为已安装、已启用或可复用 Skill。
+- 不得把 repo-local trial 称为全局安装、生产可用或可复用发布版 Skill。
 - 不得把 private/local validation 称为 public external validation。
 
 ## Current Evidence
@@ -107,6 +116,15 @@ ReaderLab 已完成 **正式 Skill draft 文档草案切片**。
   - `docs/drafts/readerlab-skill-v0/checks/activation-checklist.md`
   - `docs/drafts/readerlab-skill-v0/forward-tests/product-spec-v0/`
   - `docs/drafts/readerlab-skill-v0/checks/readiness-checklist.md`
+- Repo-local Skill trial：
+  - `.agents/skills/readerlab/SKILL.md`
+  - `.agents/skills/readerlab/checks/`
+  - `.agents/skills/readerlab/evals/`
+  - `.agents/skills/readerlab/examples/`
+  - `.agents/skills/readerlab/reports/`
+- Repo-local smoke and Meta Skills acceptance：
+  - `docs/drafts/readerlab-skill-v0/reports/repo-local-smoke-test.md`
+  - `docs/drafts/readerlab-skill-v0/reports/meta-skill-acceptance.md`
 - minimal trace validator：
   - `scripts/readerlab_trace_validator.py`
   - `tests/test_readerlab_trace_validator.py`
@@ -125,15 +143,15 @@ GitHub state:
 - Repository `t512192641/readerlab` verified private by GitHub app.
 - Branch: `readerlab-elon-checkpoint`
 - PR: `https://github.com/t512192641/readerlab/pull/1`
-- Latest pushed commit: `a9fdaa5 Add ReaderLab formal skill draft contract`
+- Latest pushed commit before this slice: `6a87a40 Add ReaderLab activation hardening`
 
 ## Next Action
 
-用户已决定先跳过真实 Obsidian UI replay，稍后配合补测。下一步允许做：
+用户已批准并完成 repo-local activation、烟测和 Meta Skills 验收。下一步允许做：
 
-1. 提交并推送最小 validator / fixture / formal draft contract checkpoint。
-2. 可向用户请求是否允许 repo-local activation：把 draft package 复制到 `.agents/skills/readerlab/` 后做 smoke test；未获批准前仍不安装、不启用。
-3. 如需 activation readiness，再和用户补一次严格正文段落直接选择 replay；当前真实插件存储已经通过。
+1. 用 `.agents/skills/readerlab/` 做一次真实小材料 ReaderLab package 使用测试。
+2. 记录 Skill 在真实任务中是否减少路线误判、正文/audit 泄漏和批注入口歧义。
+3. 之后再与用户补一次严格正文段落直接选择 replay；当前真实插件存储已经通过但仍是 `pass_with_warning`。
 
 最小 trace validator 已检查：
 
@@ -198,10 +216,10 @@ GitHub state:
 
 立即停止并纠正状态，如果出现：
 
-- 在 `docs/drafts/readerlab-skill-v0/` 之外创建 `SKILL.md`。
-- 创建 `.agents/skills/readerlab/`。
-- 安装或启用 ReaderLab Skill。
+- 在 `.agents/skills/readerlab/` 和 `docs/drafts/readerlab-skill-v0/` 之外创建 ReaderLab `SKILL.md`。
+- 全局安装或启用 ReaderLab Skill 到 `/Users/tianqiang/.codex/skills/`。
 - 把 docs draft `SKILL.md` 说成已安装、已启用或生产可复用 Skill。
+- 把 repo-local trial 说成生产可用、全局安装、public validation pass 或 transferable method pass。
 - 标记 `transferable_method_kernel_pass`。
 - 把 fixture comment replay 说成真实 Obsidian UI replay。
 - 把 `real_obsidian_ui_replay: pass_with_warning` 说成 full pass 或 production ready。
