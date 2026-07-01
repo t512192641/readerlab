@@ -1,3 +1,26 @@
+# 2026-07-01 正式 Skill 草案实现合同通过审查
+
+## 摘要
+
+- 本轮按 goal objective 进入“正式 ReaderLab Skill 草案实现合同”阶段。
+- 新增 `docs/readerlab-formal-skill-draft-contract.md`，回答正式草案前必须明确的输入、路线、输出、workflow、agent/script boundary、gates、状态机、stop conditions 和验证命令。
+- 独立 reviewer 审查合同：PASS，无 P0/P1；两个 P2 已修复。
+- `docs/current-task.md` 已更新为：`formal_skill_draft_contract_ready: yes`、`formal_skill_draft_contract_review: pass_no_p0_p1`。
+
+## 边界
+
+- 本轮没有创建正式 `SKILL.md`。
+- 本轮没有创建 `.agents/skills/readerlab/`。
+- 仍然保持：`skill_draft_not_started`、`transferable_method_kernel_pass: not_verified`、`public_external_material_validation_not_started`。
+- `comment_replay_verified` 仍是 `fixture_pass_real_obsidian_ui_deferred`；真实 Obsidian UI replay 仍为后补验收项。
+
+## 验证
+
+- `python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures`：PASS。
+- `python3 tests/test_readerlab_trace_validator.py`：PASS，2 tests OK。
+- `python3 tests/test_readerlab.py`：PASS。
+- `git diff --check`：PASS。
+
 # 2026-07-01 最小 trace validator 与 comment replay fixture 通过
 
 ## 摘要

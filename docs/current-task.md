@@ -13,17 +13,18 @@
 
 ## Active Slice
 
-ReaderLab 已完成 **Skill 交付设计后的最小验证实现切片**。
+ReaderLab 已完成 **正式 Skill 草案前的实现合同切片**。
 
-当前目标仍不是泛化宣称，也不是 public external validation。最小 trace validator 和 comment replay fixture 已实现；用户选择暂时跳过真实 Obsidian UI replay，稍后配合补测。
+当前目标仍不是泛化宣称，也不是 public external validation。正式 ReaderLab Skill 草案实现合同已创建并通过独立 reviewer 审查（无 P0/P1）；用户仍未批准创建正式 `SKILL.md`，Skill draft 仍未开始。真实 Obsidian UI replay 仍是后补验收项。
 
 ```text
 已完成：
 1. 最小 trace validator
 2. 最小 comment replay fixture
+3. 正式 Skill 草案实现合同
 
 后补：
-3. 真实 Obsidian UI / plugin replay
+4. 真实 Obsidian UI / plugin replay
 ```
 
 ## Current Status
@@ -40,6 +41,8 @@ ReaderLab 已完成 **Skill 交付设计后的最小验证实现切片**。
 - `private_material_validation_local_pass`: `2/2`
 - `formal_skill_delivery_design_ready`: `yes`
 - `skill_delivery_design_docs`: `created`
+- `formal_skill_draft_contract_ready`: `yes`
+- `formal_skill_draft_contract_review`: `pass_no_p0_p1`
 - `trace_validator_implemented`: `minimal_pass`
 - `comment_replay_fixture_pass`: `1/1`
 - `comment_replay_verified`: `fixture_pass_real_obsidian_ui_deferred`
@@ -52,6 +55,8 @@ ReaderLab 已完成 **Skill 交付设计后的最小验证实现切片**。
 - 不得把 15 章高阶讲解通过称为 `reader_package_pass`。
 - 不得把 two-demo 或 private validation 称为 `transferable_method_kernel_pass`。
 - 不得把 Skill 交付设计文档称为正式可运行 Skill 草案。
+- 不得把正式 Skill 草案实现合同称为正式可运行 Skill 草案。
+- 不得把 `formal_skill_draft_contract_ready` 称为 `formal_skill_draft_started`。
 - 不得把 private/local validation 称为 public external validation。
 
 ## Current Evidence
@@ -67,6 +72,9 @@ ReaderLab 已完成 **Skill 交付设计后的最小验证实现切片**。
   - `docs/contracts/location-anchor-v1.md`
   - `docs/contracts/trace-validation-v1.md`
   - `docs/contracts/comment-replay-v1.md`
+- Formal Skill draft contract：
+  - `docs/readerlab-formal-skill-draft-contract.md`
+  - independent reviewer result: pass, no P0/P1, P2 addressed
 - minimal trace validator：
   - `scripts/readerlab_trace_validator.py`
   - `tests/test_readerlab_trace_validator.py`
@@ -86,8 +94,8 @@ GitHub state:
 
 用户已决定先跳过真实 Obsidian UI replay，稍后配合补测。下一步允许做：
 
-1. 提交并推送最小 validator / fixture checkpoint。
-2. 准备正式 ReaderLab Skill 草案的实现合同，但在用户明确批准前不创建正式 `SKILL.md`。
+1. 提交并推送最小 validator / fixture / formal draft contract checkpoint。
+2. 在用户明确批准后，准备正式 ReaderLab Skill draft 的最小实现计划；批准前不创建正式 `SKILL.md`。
 3. 稍后用户可配合补真实 Obsidian UI replay：从插件真实创建批注，再验证 Codex 能回到 body anchor、claim、candidate 和 gate decision。
 
 最小 trace validator 已检查：
@@ -124,6 +132,17 @@ GitHub state:
 - `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/10_一手正文/001_净化正文.md`
 - 对应 demo 的 `location-map.json`、`claim-ledger.json`、`candidate-tournament.json`、`annotation-trigger.json`
 
+实现正式 Skill 草案前合同或后续实现计划时可读：
+
+- `docs/readerlab-formal-skill-draft-contract.md`
+- `docs/readerlab-skill-delivery-spec.md`
+- `docs/readerlab-skill-ir-v1.md`
+- `docs/contracts/location-anchor-v1.md`
+- `docs/contracts/trace-validation-v1.md`
+- `docs/contracts/comment-replay-v1.md`
+- `scripts/readerlab_trace_validator.py`
+- `tests/test_readerlab_trace_validator.py`
+
 按需读取：
 
 - 产品边界：`docs/product-spec.md`
@@ -142,6 +161,7 @@ GitHub state:
 立即停止并纠正状态，如果出现：
 
 - 创建正式 `SKILL.md`。
+- 创建 `.agents/skills/readerlab/`。
 - 标记 `formal_skill_draft_started`。
 - 标记 `transferable_method_kernel_pass`。
 - 把 fixture comment replay 说成真实 Obsidian UI replay。
@@ -153,8 +173,10 @@ GitHub state:
 ## Verification Commands
 
 ```bash
+python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures
+python3 tests/test_readerlab_trace_validator.py
 python3 tests/test_readerlab.py
 git diff --check
 ```
 
-新增 validator 或 replay fixture 后还应运行对应新增测试或命令，并把结果写入 `docs/agent-run-ledger.md`。
+新增 validator、replay fixture 或 formal draft contract 后还应运行对应新增测试或命令，并把结果写入 `docs/agent-run-ledger.md`。
