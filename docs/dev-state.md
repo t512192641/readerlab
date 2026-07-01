@@ -14,7 +14,7 @@
 - LifeAtlas 270 目录：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料`
 - 《埃隆之书》当前阅读目录：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629`
 - 《埃隆之书》整书 ReaderLab 解读：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-demo_20260629/10_中文精读/03_ReaderLab整书章节解读/`
-- `gstack` 学习材料：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/gstack`
+- `gstack` 原始 Skills 学习材料：`/Users/tianqiang/技能项目/skills-canonical/packages/gstack`
 
 ## Core Docs
 
@@ -46,6 +46,6 @@ git diff --check
 ## Boundaries
 
 - `validate` 通过只表示机器规则通过，不表示人工阅读质量通过。
-- `gstack` 是用户要继续学习的 Skills 材料，不作为清理对象。
+- `gstack` 原始 Skills 源仓库是用户要继续学习的材料，不作为清理对象；LifeAtlas 270 下旧 `gstack` 生成解读包已删除。
 - 不自动写入 LifeAtlas `300/600/800` 正式沉淀区。
 - 不把 private/local validation 说成 public external validation。
