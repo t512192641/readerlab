@@ -5,12 +5,15 @@ description: Create Chinese, body-first, annotatable ReaderLab reading packages 
 
 # ReaderLab
 
-## Draft Boundary
+## Repo-Local Trial Boundary
 
-This is a review-only draft. Do not install, enable, or copy it into `.agents/skills/readerlab/` unless the user explicitly approves activation later.
+This Skill is active only inside this repository at `.agents/skills/readerlab/`.
+
+Do not install it globally or copy it to `/Users/tianqiang/.codex/skills/` without explicit user approval.
 
 Do not claim:
 
+- production readiness
 - `transferable_method_kernel_pass`
 - public external validation
 - real Obsidian UI replay full pass
@@ -176,6 +179,12 @@ Do not let scripts decide prose quality, author intent, design insight quality, 
 Before reporting a draft package as ready, run:
 
 ```bash
+python3 scripts/readerlab_trace_validator.py validate-demo <output_root>
+```
+
+Run the historical regression suite separately:
+
+```bash
 python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures
 python3 tests/test_readerlab_trace_validator.py
 python3 tests/test_readerlab.py
@@ -188,8 +197,7 @@ Also inspect reader-facing outputs so internal audit labels are not visible to t
 
 Stop and report if the task would require:
 
-- installing or enabling this Skill
-- creating `.agents/skills/readerlab/`
+- installing this Skill globally
 - writing outside the approved output root
 - writing to LifeAtlas permanent zones without approval
 - adding dependencies

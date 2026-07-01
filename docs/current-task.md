@@ -13,9 +13,9 @@
 
 ## Active Slice
 
-ReaderLab 已完成 **repo-local Skill trial activation 切片**。
+ReaderLab 已完成 **repo-local Skill trial pre-release trace hardening 切片**。
 
-当前目标仍不是泛化宣称，也不是 public external validation。正式 ReaderLab Skill 草案已在 `docs/drafts/readerlab-skill-v0/` 创建；用户已于 2026-07-01 明确批准 repo-local activation、烟测、以及烟测后使用 Meta Skills 验收。当前允许的激活范围仅限 `.agents/skills/readerlab/`，不得全局安装到 `/Users/tianqiang/.codex/skills/`，不得宣称生产可用或 transferable method pass。
+当前目标仍不是泛化宣称，也不是 public external validation。正式 ReaderLab Skill 草案已在 `docs/drafts/readerlab-skill-v0/` 创建；用户已于 2026-07-01 明确批准 repo-local activation、烟测、烟测后使用 Meta Skills 验收，以及封版前补丁。当前允许的激活范围仅限 `.agents/skills/readerlab/`，不得全局安装到 `/Users/tianqiang/.codex/skills/`，不得宣称生产可用或 transferable method pass。
 
 ```text
 已完成：
@@ -30,10 +30,13 @@ ReaderLab 已完成 **repo-local Skill trial activation 切片**。
 9. repo-local activation：`.agents/skills/readerlab/`
 10. repo-local smoke test：pass
 11. Meta Skills acceptance：`repo_local_trial_ready`
+12. active Skill 边界文案修正：repo-local trial only
+13. trace-validation.json 最小样本：A/B private demos 已补
+14. trace validator reader-facing paragraph trace 检查：implemented
 
 后补：
-12. 严格正文段落直接选择 replay
-13. 一次真实小材料 ReaderLab package 使用测试
+15. 严格正文段落直接选择 replay
+16. 一次真实小材料 ReaderLab package 使用测试
 ```
 
 ## Current Status
@@ -62,7 +65,10 @@ ReaderLab 已完成 **repo-local Skill trial activation 切片**。
 - `readerlab_skill_repo_local_path`: `.agents/skills/readerlab/`
 - `readerlab_skill_repo_local_smoke_test`: `pass`
 - `readerlab_skill_meta_acceptance`: `repo_local_trial_ready`
+- `readerlab_skill_pre_release_trace_hardening`: `done`
+- `trace_validation_json_private_demos`: `2/2`
 - `trace_validator_implemented`: `minimal_pass`
+- `trace_validator_reader_paragraph_trace`: `implemented`
 - `comment_replay_fixture_pass`: `1/1`
 - `comment_replay_verified`: `fixture_pass_real_obsidian_ui_pass_with_warning`
 - `real_obsidian_ui_replay`: `pass_with_warning`
@@ -125,6 +131,12 @@ ReaderLab 已完成 **repo-local Skill trial activation 切片**。
 - Repo-local smoke and Meta Skills acceptance：
   - `docs/drafts/readerlab-skill-v0/reports/repo-local-smoke-test.md`
   - `docs/drafts/readerlab-skill-v0/reports/meta-skill-acceptance.md`
+- Pre-release trace hardening：
+  - `docs/drafts/readerlab-skill-v0/reports/pre-release-trace-hardening.md`
+  - `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/audit/contracts/trace-validation.json`
+  - `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/audit/contracts/trace-validation.json`
+  - `scripts/readerlab_trace_validator.py`
+  - `tests/test_readerlab_trace_validator.py`
 - minimal trace validator：
   - `scripts/readerlab_trace_validator.py`
   - `tests/test_readerlab_trace_validator.py`
@@ -143,11 +155,11 @@ GitHub state:
 - Repository `t512192641/readerlab` verified private by GitHub app.
 - Branch: `readerlab-elon-checkpoint`
 - PR: `https://github.com/t512192641/readerlab/pull/1`
-- Latest pushed commit before this slice: `6a87a40 Add ReaderLab activation hardening`
+- Latest pushed commit before this slice: `d535eb3 Activate ReaderLab repo-local skill trial`
 
 ## Next Action
 
-用户已批准并完成 repo-local activation、烟测和 Meta Skills 验收。下一步允许做：
+用户已批准并完成 repo-local activation、烟测、Meta Skills 验收和封版前 trace hardening。下一步允许做：
 
 1. 用 `.agents/skills/readerlab/` 做一次真实小材料 ReaderLab package 使用测试。
 2. 记录 Skill 在真实任务中是否减少路线误判、正文/audit 泄漏和批注入口歧义。
@@ -159,6 +171,7 @@ GitHub state:
 - `annotation-trigger.json` 的每个 `anchor_ref` 存在。
 - replay case 能追溯到 body/source anchor、claim、candidate 或 gate decision。
 - skill candidates 满足 trigger / input / steps / output / boundary / evidence。
+- `trace-validation.json` 中 reader-facing core paragraphs 能追溯到 anchor、claim、candidate 或 gate。
 
 最小 comment replay fixture 已覆盖：
 
@@ -232,6 +245,7 @@ GitHub state:
 
 ```bash
 python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures
+python3 scripts/readerlab_trace_validator.py validate-demo <output_root>
 python3 tests/test_readerlab_trace_validator.py
 python3 tests/test_readerlab.py
 git diff --check

@@ -56,12 +56,130 @@ def load_demo_refs(demo_dir: Path) -> dict[str, Any]:
     candidate_tournament = load_json(demo_dir / "audit/contracts/candidate-tournament.json")
     annotation_trigger = load_json(demo_dir / "audit/contracts/annotation-trigger.json")
     skillization_gate = load_json(demo_dir / "audit/contracts/skillization-gate.json")
+    trace_validation_path = demo_dir / "audit/contracts/trace-validation.json"
+    trace_validation = load_json(trace_validation_path) if trace_validation_path.exists() else None
     return {
         "anchors": item_index(location_map, "anchors", "anchor_id", "id"),
         "claims": item_index(claim_ledger, "claims", "claim_id", "id"),
         "candidates": item_index(candidate_tournament, "candidates", "candidate_id", "id"),
         "annotation_trigger": annotation_trigger,
         "skillization_gate": skillization_gate,
+        "trace_validation": trace_validation,
+    }
+
+
+def validate_trace_validation_contract(refs: dict[str, Any], errors: list[str]) -> dict[str, int]:
+    trace_validation = refs.get("trace_validation")
+    anchors: dict[str, dict[str, Any]] = refs["anchors"]
+    claims: dict[str, dict[str, Any]] = refs["claims"]
+    candidates: dict[str, dict[str, Any]] = refs["candidates"]
+
+    if trace_validation is None:
+        errors.append("missing audit/contracts/trace-validation.json")
+        return {"reader_paragraphs_checked": 0, "candidate_uses_checked": 0, "skill_candidate_traces_checked": 0}
+    if not isinstance(trace_validation, dict):
+        errors.append("trace-validation.json must be an object")
+        return {"reader_paragraphs_checked": 0, "candidate_uses_checked": 0, "skill_candidate_traces_checked": 0}
+    if trace_validation.get("contract") != "trace-validation.v1":
+        errors.append("trace-validation contract must be trace-validation.v1")
+
+    reader_paragraphs = trace_validation.get("reader_paragraphs", [])
+    if not isinstance(reader_paragraphs, list) or not reader_paragraphs:
+        errors.append("trace-validation reader_paragraphs is empty")
+        reader_paragraphs = []
+
+    for paragraph in reader_paragraphs:
+        if not isinstance(paragraph, dict):
+            errors.append("trace-validation reader paragraph must be an object")
+            continue
+        reader_ref = paragraph.get("reader_ref")
+        if not reader_ref:
+            errors.append("trace-validation reader paragraph missing reader_ref")
+        anchor_refs = paragraph.get("anchor_refs", [])
+        claim_refs = paragraph.get("claim_refs", [])
+        candidate_refs = paragraph.get("candidate_refs", [])
+        gate_refs = paragraph.get("gate_refs", [])
+        if not isinstance(anchor_refs, list) or not anchor_refs:
+            errors.append(f"{reader_ref} has no anchor_refs")
+            anchor_refs = []
+        if not isinstance(claim_refs, list) or not claim_refs:
+            errors.append(f"{reader_ref} has no claim_refs")
+            claim_refs = []
+        if not isinstance(candidate_refs, list):
+            errors.append(f"{reader_ref} candidate_refs must be a list")
+            candidate_refs = []
+        if not isinstance(gate_refs, list):
+            errors.append(f"{reader_ref} gate_refs must be a list")
+            gate_refs = []
+        if not candidate_refs and not gate_refs:
+            errors.append(f"{reader_ref} has no candidate_refs or gate_refs")
+        if paragraph.get("trace_status") != "complete":
+            errors.append(f"{reader_ref} trace_status must be complete")
+
+        for anchor_ref in anchor_refs:
+            if anchor_ref not in anchors:
+                errors.append(f"{reader_ref} references missing anchor {anchor_ref}")
+        for claim_ref in claim_refs:
+            if claim_ref not in claims:
+                errors.append(f"{reader_ref} references missing claim {claim_ref}")
+        for candidate_ref in candidate_refs:
+            if candidate_ref not in candidates:
+                errors.append(f"{reader_ref} references missing candidate {candidate_ref}")
+
+    candidate_uses = trace_validation.get("candidate_uses", [])
+    if not isinstance(candidate_uses, list):
+        errors.append("trace-validation candidate_uses must be a list")
+        candidate_uses = []
+    for candidate_use in candidate_uses:
+        if not isinstance(candidate_use, dict):
+            errors.append("trace-validation candidate_use must be an object")
+            continue
+        candidate_ref = candidate_use.get("candidate_ref")
+        if candidate_ref not in candidates:
+            errors.append(f"candidate_use references missing candidate {candidate_ref}")
+            continue
+        if candidate_use.get("decision") != candidates[candidate_ref].get("decision"):
+            errors.append(f"candidate_use {candidate_ref} decision does not match candidate-tournament")
+        final_use = candidate_use.get("final_use", [])
+        if not isinstance(final_use, list) or not final_use:
+            errors.append(f"candidate_use {candidate_ref} has no final_use")
+
+    skill_candidate_traces = trace_validation.get("skill_candidate_traces", [])
+    if not isinstance(skill_candidate_traces, list):
+        errors.append("trace-validation skill_candidate_traces must be a list")
+        skill_candidate_traces = []
+    for skill_trace in skill_candidate_traces:
+        if not isinstance(skill_trace, dict):
+            errors.append("trace-validation skill_candidate_trace must be an object")
+            continue
+        candidate_ref = skill_trace.get("candidate_ref")
+        if candidate_ref not in candidates:
+            errors.append(f"skill_candidate_trace references missing candidate {candidate_ref}")
+        for key in ["has_trigger", "has_input", "has_steps", "has_output", "has_boundary", "has_evidence"]:
+            if skill_trace.get(key) is not True:
+                errors.append(f"skill_candidate_trace {candidate_ref} {key} must be true")
+        evidence_refs = skill_trace.get("evidence_refs", [])
+        if not isinstance(evidence_refs, list) or not evidence_refs:
+            errors.append(f"skill_candidate_trace {candidate_ref} has no evidence_refs")
+            evidence_refs = []
+        for evidence_ref in evidence_refs:
+            if evidence_ref not in claims and evidence_ref not in anchors:
+                errors.append(f"skill_candidate_trace {candidate_ref} references missing evidence {evidence_ref}")
+        if skill_trace.get("trace_status") != "complete":
+            errors.append(f"skill_candidate_trace {candidate_ref} trace_status must be complete")
+
+    if trace_validation.get("result") != "pass":
+        errors.append("trace-validation result must be pass")
+    blocking_reasons = trace_validation.get("blocking_reasons", [])
+    if not isinstance(blocking_reasons, list):
+        errors.append("trace-validation blocking_reasons must be a list")
+    elif blocking_reasons:
+        errors.append("trace-validation blocking_reasons must be empty for pass")
+
+    return {
+        "reader_paragraphs_checked": len(reader_paragraphs),
+        "candidate_uses_checked": len(candidate_uses),
+        "skill_candidate_traces_checked": len(skill_candidate_traces),
     }
 
 
@@ -81,6 +199,8 @@ def validate_demo(demo_dir: Path) -> dict[str, Any]:
         errors.append("claim-ledger claims is empty")
     if not candidates:
         errors.append("candidate-tournament candidates is empty")
+
+    trace_counts = validate_trace_validation_contract(refs, errors)
 
     for anchor_id, anchor in anchors.items():
         for claim_ref in anchor.get("claim_refs", []):
@@ -134,6 +254,7 @@ def validate_demo(demo_dir: Path) -> dict[str, Any]:
         "anchors_checked": len(anchors),
         "claims_checked": len(claims),
         "candidates_checked": len(candidates),
+        **trace_counts,
         "annotation_triggers_checked": len(triggers),
         "skill_candidates_checked": skill_candidates,
         "rejected_or_downgraded_candidates": rejected_or_downgraded,

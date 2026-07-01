@@ -1,4 +1,5 @@
 import json
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -36,8 +37,23 @@ class ReaderLabTraceValidatorTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         payload = json.loads(result.stdout)
         self.assertTrue(payload["pass"])
+        for demo_result in payload["trace_validation"]:
+            self.assertGreater(demo_result["reader_paragraphs_checked"], 0)
         self.assertTrue(payload["comment_replay"]["pass"])
         self.assertEqual(payload["comment_replay"]["plugin_format"], "tandem-comments")
+
+    def test_validate_demo_rejects_broken_reader_paragraph_trace(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            demo_copy = Path(tmp) / "A_feel_good_productivity"
+            shutil.copytree(PRIVATE_DEMOS / "A_feel_good_productivity", demo_copy)
+            trace_path = demo_copy / "audit/contracts/trace-validation.json"
+            payload = json.loads(trace_path.read_text(encoding="utf-8"))
+            payload["reader_paragraphs"][0]["claim_refs"] = ["C-DOES-NOT-EXIST"]
+            trace_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            result = run_validator("validate-demo", str(demo_copy))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("references missing claim C-DOES-NOT-EXIST", result.stdout)
 
     def test_validate_replay_rejects_missing_anchor_reference(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

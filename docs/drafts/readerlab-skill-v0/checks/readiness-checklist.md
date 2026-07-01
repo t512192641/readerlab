@@ -1,15 +1,17 @@
-# ReaderLab Skill Draft Readiness Checklist
+# ReaderLab Skill Repo-Local Readiness Checklist
 
-Use this checklist before treating `docs/drafts/readerlab-skill-v0/SKILL.md` as review-ready.
+Use this checklist before treating `.agents/skills/readerlab/SKILL.md` as repo-local trial ready.
 
-## Draft Boundary
+## Repo-Local Boundary
 
-- [ ] Draft remains under `docs/drafts/readerlab-skill-v0/`.
-- [ ] No `.agents/skills/readerlab/` directory exists.
-- [ ] Draft states that it is not installed and not activated.
+- [ ] Active package remains under `.agents/skills/readerlab/`.
+- [ ] Draft record remains under `docs/drafts/readerlab-skill-v0/`.
+- [ ] Skill states that it is repo-local only.
+- [ ] Skill is not installed globally under `/Users/tianqiang/.codex/skills/`.
+- [ ] Skill does not claim production readiness.
 - [ ] Draft does not claim transferable method pass.
 - [ ] Draft does not claim public external validation.
-- [ ] Draft says real Obsidian UI replay is deferred.
+- [ ] Skill says real Obsidian UI replay is `pass_with_warning`.
 
 ## Skill Metadata
 
@@ -30,12 +32,20 @@ Use this checklist before treating `docs/drafts/readerlab-skill-v0/SKILL.md` as 
 - [ ] Skill and engineering route preserves cleaned body essentials.
 - [ ] Mixed package route classifies each meaningful unit before writing body.
 - [ ] Output checklist matches `docs/readerlab-formal-skill-draft-contract.md`.
+- [ ] Required package shape includes `audit/contracts/trace-validation.json`.
+- [ ] `trace-validation.json` maps reader-facing core paragraphs to anchors, claims, and candidates or gates.
 - [ ] Agent/script boundary is explicit.
 - [ ] Human review remains required.
 
 ## Validation Commands
 
 Run:
+
+```bash
+python3 scripts/readerlab_trace_validator.py validate-demo <output_root>
+```
+
+Run historical regression separately:
 
 ```bash
 python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures

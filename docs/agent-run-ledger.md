@@ -1,3 +1,38 @@
+# 2026-07-01 pre-release trace hardening
+
+## 摘要
+
+- 按外部审查建议完成封版前小补丁。
+- 修正 active `.agents/skills/readerlab/SKILL.md` 的旧草案口径：从 review-only draft 改为 repo-local trial boundary。
+- 将 validation 指引拆成当前包验证 `validate-demo <output_root>` 和历史 A/B regression suite。
+- 为 A/B private validation demos 新增 `audit/contracts/trace-validation.json`。
+- 升级 `scripts/readerlab_trace_validator.py`：现在会检查 reader-facing paragraph trace。
+- 新增负向测试：损坏 reader paragraph claim 引用时 validator 必须失败。
+- 同步更新 repo-local 和 draft readiness checklist。
+
+## 当前判断
+
+- 这不是产品方向变更，也不是大功能重构。
+- 这是状态口径修正 + 验证闭环补强。
+- Repo-local trial 仍可用；正式 v0 前还建议做一次真实小材料 package 使用测试。
+
+## 边界
+
+- 未全局安装 ReaderLab Skill。
+- 未声明 production ready。
+- 未声明 public external validation。
+- 未声明 `transferable_method_kernel_pass`。
+- `real_obsidian_ui_replay` 仍是 `pass_with_warning`。
+
+## 验证
+
+- `python3 /Users/tianqiang/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/readerlab`：PASS，`Skill is valid!`。
+- `python3 scripts/readerlab_trace_validator.py validate-demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity`：PASS，7 reader paragraphs checked。
+- `python3 scripts/readerlab_trace_validator.py validate-demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files`：PASS，6 reader paragraphs checked。
+- `python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures`：PASS。
+- `python3 tests/test_readerlab_trace_validator.py`：PASS，3 tests OK。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+
 # 2026-07-01 repo-local Skill trial activation
 
 ## 摘要

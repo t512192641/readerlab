@@ -1,6 +1,6 @@
 # ReaderLab Skill Activation Checklist
 
-Use this checklist before copying the draft package into a live project Skill path.
+Historical activation checklist. Repo-local activation has already been approved and completed; keep this file as an audit record, not as the current readiness gate.
 
 Current draft source:
 
@@ -20,21 +20,21 @@ Do not install to:
 /Users/tianqiang/.codex/skills/
 ```
 
-## Required Approval
+## Historical Approval
 
-- [ ] User explicitly approves creating `.agents/skills/readerlab/`.
-- [ ] User confirms activation is repo-local only.
-- [ ] User accepts current `real_obsidian_ui_replay: pass_with_warning` boundary, or requests a body-prose replay retest before activation.
+- [x] User approved repo-local activation.
+- [x] User confirmed activation is repo-local only.
+- [x] User accepted current `real_obsidian_ui_replay: pass_with_warning` boundary for this stage.
 
-## Pre-Activation Checks
+## Completed Activation Checks
 
-- [ ] `SKILL.md` remains under 250 lines.
-- [ ] `SKILL.md` has only `name` and `description` in frontmatter.
-- [ ] `description` includes should-trigger and should-not-trigger boundaries.
-- [ ] No bundled script is required for v0 activation.
-- [ ] No dependency install is required.
-- [ ] No LifeAtlas `300/600/800` write is required.
-- [ ] `reports/review-studio.md` has no blocker for docs-only use.
+- [x] `SKILL.md` remains under 250 lines.
+- [x] `SKILL.md` has only `name` and `description` in frontmatter.
+- [x] `description` includes should-trigger and should-not-trigger boundaries.
+- [x] No bundled script is required for v0 activation.
+- [x] No dependency install is required.
+- [x] No LifeAtlas `300/600/800` write is required.
+- [x] `reports/review-studio.md` has no blocker for repo-local trial use.
 
 ## Smoke Tests After Activation
 
