@@ -3,7 +3,7 @@
 更新时间：2026-06-29  
 定位：本地 Markdown 优先的 Obsidian 陪读工具  
 第一使用场景：Agent Skills / Markdown 材料陪读
-状态：从 Downloads 原始构想归档到项目内；本文保留 v0.1 轻量原型边界，当前实现细节以 `AGENTS.md`、`docs/current-task.md`、`docs/dev-state.md` 和 `docs/decisions.md` 为准。
+状态：从 Downloads 原始构想归档到项目内；本文保留 v0.1 轻量原型边界，不是当前任务源。当前执行事实以 `docs/current-task.md` 为唯一入口；稳定路径和工具状态按需看 `docs/dev-state.md`。
 
 ---
 

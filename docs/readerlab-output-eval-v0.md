@@ -1,5 +1,7 @@
 # ReaderLab Output Eval v0
 
+> Authority boundary: 本文件是 output eval 草案，不是当前任务源。文中的“下一轮 / 当前执行形态”按草案语境理解；当前执行以 `docs/current-task.md` 为准。
+
 ## 状态
 
 - Eval 状态：`draft-v0`

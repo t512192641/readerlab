@@ -1,0 +1,55 @@
+{
+  "unit": {
+    "order": 17,
+    "title": "baseline横向对比",
+    "type": "baseline_comparison",
+    "compared_inputs": [
+      {
+        "name": "ReaderLab",
+        "path": "docs/reports/readerlab-elon-chapter-loop-v0/reader/16_ReaderLab全书总结_阅读页.md",
+        "role": "reader-facing full-book summary"
+      },
+      {
+        "name": "Cangjie",
+        "path": "docs/reports/readerlab-elon-method-bakeoff-v0/cangjie-only.md",
+        "role": "method candidate pool and verification chain"
+      },
+      {
+        "name": "Li Jigang",
+        "path": "docs/reports/readerlab-elon-method-bakeoff-v0/ljg-deepread-only.md",
+        "role": "deep-read gap, mechanism, and critique"
+      },
+      {
+        "name": "book-to-skill",
+        "path": "docs/reports/readerlab-elon-method-bakeoff-v0/book-to-skill-only.md",
+        "role": "executable capability extraction"
+      },
+      {
+        "name": "Qiaomu",
+        "path": "docs/reports/readerlab-elon-method-bakeoff-v0/qiaomu-coread-only.md",
+        "role": "chapter co-reading and annotation companion design"
+      }
+    ]
+  },
+  "status": "pass",
+  "evaluation_page": "docs/reports/readerlab-elon-chapter-loop-v0/audit/evals/17_baseline横向对比.eval.md",
+  "comparison_scope": "Compare ReaderLab's own full-book summary against four enabled baseline artifacts. The comparison is not a rewrite of the reader-facing summary and not a methodology / Skill draft.",
+  "hard_gates": {
+    "readerlab_summary_already_passed_before_baseline": "pass",
+    "baselines_read_only_after_authorization": "pass",
+    "no_external_validation": "pass",
+    "no_methodology_or_skill_draft_started": "pass",
+    "baseline_outputs_not_misrepresented_as_same_product_type": "pass"
+  },
+  "criteria": [
+    "reader-facing full-book understanding",
+    "source and material-form awareness",
+    "mechanism-chain clarity",
+    "method candidate verification",
+    "executable skill extraction",
+    "annotation and co-reading usefulness",
+    "boundary and misuse resistance",
+    "transferability for ReaderLab method drafting"
+  ],
+  "controller_decision": "Land. Baselines are enabled and compared. ReaderLab remains the strongest reader-facing full-book summary; each baseline contributes a different method asset for later ReaderLab methodology drafting. Methodology / Skill drafting remains not_started."
+}

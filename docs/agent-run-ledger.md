@@ -1,4 +1,156 @@
+# 2026-07-01 根层文档权威边界清理
+
+## 摘要
+
+- 用户要求现在执行一次文档清理，解决 docs 下历史文档积压导致新会话误读多事实源的问题。
+- 本轮不删除历史报告、不移动目录，只给容易被误读的根层规格/方法/研究/草案/报告文件补权威边界。
+- 新增 `docs/reports/README.md`，声明 `docs/reports/**` 是证据库和历史实验区，不是当前任务源。
+- `docs/decisions.md` 新增 D-051：当前事实唯一入口与动作触发读取。
+- 收窄 D-036：`docs/progress.md` 已降级为历史进度快照，当前事实只能回到 `docs/current-task.md`。
+- 已补边界的根层文件包括：`product-spec`、`readerlab-package-spec`、`high-order-explanation-method`、`research-log`、`readerlab-v0.1-light-prototype`、`agent-workflow`、`readerlab-output-eval-v0`、`readerlab-skill-ir-v0`、`dbskill-readerlab-test-report`、`adversarial-review`、`complex-material-reading-sop`、`readerlab-future-roadmap-and-references`。
+
+## 验证
+
+- `rg` 高风险启动/事实源污染搜索：仅剩 D-051 自身的清理验收规则，未发现旧启动层污染。
+- `git diff --check`：PASS。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+
+# 2026-07-01 文档真相层单独清理
+
+## 摘要
+
+- 用户指出本地十几个文档已经严重影响信息源真实唯一性，要求作为单独清理任务执行。
+- 本轮将启动入口从 7 个文件进一步压缩为 2 个文件：`AGENTS.md` 和 `docs/current-task.md`。
+- `docs/current-task.md` 被设为当前执行事实唯一入口；如与 `dev-state`、`progress`、`next-session-prompt`、旧报告或旧 handoff 冲突，以 `current-task.md` 为准。
+- `docs/dev-state.md` 降级为稳定路径、工具状态和验证命令索引。
+- `docs/progress.md` 降级为历史进度快照。
+- `docs/next-session-prompt.md` 降级为从 `current-task.md` 派生的短启动提示。
+- `README.md` 和 `docs/project-retrospective.md` 已同步新的文档权威边界。
+
+## 验证
+
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS。
+
+# 2026-07-01 MEMCLN 复盘与状态压缩
+
+## 摘要
+
+- 用户要求调用 MEMCLN 工具包，整理当前遇到的全部问题，包括项目开发问题和使用侧问题。
+- 已按 `mem-clean` 规则把 `docs/dev-state.md` 压回当前事实层，移除阶段流水账和历史细节。
+- 已重写 `docs/project-retrospective.md`，把本次问题拆成项目开发问题、使用侧问题、项目内规则候选、全局错题本候选和后续风险。
+- 已在 `docs/decisions.md` 新增 D-050：多阶段闭环必须以完整链路定义完成。
+- 未写入全局错题本；只提出候选 G-004 到 G-007，等待用户批准后才能升维。
+
+## 关键纠偏
+
+- 当前不是“全书跑过后只有两章通过”，而是“只真正跑了两章，且两章通过”。
+- 当前覆盖事实是 `2 pass / 13 not_started`。
+- 正确初步交付必须包含章节全部 pass、ReaderLab 全书总结 pass、baseline 横向对比和可迁移方法论 / Skill 草案。
+- 本轮当时先把 15 个启动文件压到 7 个；随后 2026-07-01 文档真相层单独清理已进一步压成 2 个启动入口，见本账本顶部记录。
+- baseline 已补具体路径和可用状态，不能再只写“几个 Skills”。
+
+## 验证
+
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS。
+
+# 2026-07-01 ReaderLab 《埃隆之书》完整闭环标准修正
+
+## 摘要
+
+- 用户再次纠正：本任务不能以“所有章节有结果”或“章节阶段完成”为结束标准。
+- 正确初步交付标准是：15 个正文级章节全部 pass，ReaderLab 自己的全书总结 pass，仓颉 / 李继刚 / book-to-skill / 乔木等基线总结完成或纳入，读者评价 agent 完成横向对比，主控输出可迁移方法论 / Skill 草案，并通过验证。
+- 本轮已重写 `docs/next-session-prompt.md`，将下一会话 prompt 改成完整执行合同，而不是旧的小样章 prompt。
+- 已同步 `docs/current-task.md`、`docs/reports/readerlab-elon-chapter-loop-v0/README.md`、`docs/dev-state.md`、`docs/progress.md`。
+
+## 关键约束
+
+- 每章必须由两个 agent 分工：写作 agent 写，读者评价 agent 按 12 分 rubric 和硬门槛评。
+- 主控 agent 回收结果并验收；通过才进入下一章。
+- 每章最多五轮；五轮仍未 pass 时停止向后推进并记录 failure report，不能进入全书总结。
+- 所有方法调整必须防过拟合：通用 method rule、book observation、rejected one-off fix 必须分开。
+- final boss 只能在章节全部 pass 且 ReaderLab 全书总结 pass 后启动。
+
+## 验证
+
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS。
+
+# 2026-07-01 ReaderLab 《埃隆之书》章节循环重启
+
+## 摘要
+
+- 用户打断指出：新方法只循环通过了一个章节，不能进入最终挑战池。
+- 本轮收回阶段边界：当前只做《埃隆之书》章节级高阶讲解循环；全书总结和 final boss baseline 暂不启动。
+- 旧 `readerlab-elon-method-bakeoff-v0/*` 和 `readerlab-elon-full-product-v1/*` 保留为未来证据库，但已在章节循环阶段被明确屏蔽，不能作为写作 agent 输入。
+
+## 改动
+
+- 新增 `docs/reports/readerlab-elon-chapter-loop-v0/README.md`
+  - 定义章节循环当前阶段、baseline shield、章节循环契约、12 分读者 rubric、分数分层和 final boss gate。
+- 新增 `docs/reports/readerlab-elon-chapter-loop-v0/rounds.md`
+  - 记录《成功之道》和《打造卓越团队》的章节循环状态。
+- 更新 `docs/eval-gates.md`
+  - 补齐读者 12 分验收：重新理解、正文贴合、机制清晰、镜头有效、边界锋利、表达穿透。
+  - 明确 Lens Auction 的 `>=7` 是内部镜头筛选分，读者 12 分是最终阅读验收分。
+- 更新 `docs/current-task.md`
+  - 明确当前只做章节循环，不提前进入全书总结或 baseline final boss。
+- 更新 `docs/dev-state.md`、`docs/progress.md`
+  - 记录阶段校正和当前两章通过事实。
+- 更新《打造卓越团队》：
+  - `docs/reports/readerlab-real-source-demo-v1/elon-team/reader/01_打造卓越团队_阅读页.md`
+  - `docs/reports/readerlab-real-source-demo-v1/elon-team/audit/contracts/high-order-explanation.v1.json`
+  - `docs/reports/readerlab-real-source-demo-v1/elon-team/audit/high-order-explanation.eval.md`
+
+## 子 agent 结果
+
+- 写作 agent 只允许读取本章正文和通用方法文档，不允许读取 final boss baseline。
+- 写作候选标题：`团队不是人才名单，而是现实校正系统`。
+- 读者评价 agent 结果：`pass`，`11/12`。
+- P0/P1：none。
+- P2：现实校正系统镜头有效，但未来可更具体反照原型、坏消息、总工程师思维和特种部队式团队之间的关系。
+
+## 验证
+
+- `rg` 检查《成功之道》《打造卓越团队》reader 页内部字段残留：PASS，无命中。
+- `python3 -m json.tool docs/reports/readerlab-real-source-demo-v1/elon-team/audit/contracts/high-order-explanation.v1.json`：PASS。
+- `python3 -m json.tool docs/reports/readerlab-real-source-demo-v1/elon-success/audit/contracts/high-order-explanation.v1.json`：PASS。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS。
+
+## 当前结论
+
+- 章节级方法探针：2 章通过，13 个正文级章节尚未开始。
+- 新增 `docs/reports/readerlab-elon-chapter-loop-v0/chapter-queue.md` 作为后续唯一章节队列。
+- 停在两章后是错误的阶段停止；正确下一步是 `组织设计 / v101-16`。
+- 章节全部 pass 也不是任务结束，只是进入 ReaderLab 全书总结阶段。
+- ReaderLab 全书总结 pass 后，还要进入其他 Skills / 方法基线全书总结、横向对比，以及最终方法论 / Skill 草案提炼。
+- 全书总结：未启动。
+- final boss baseline：未启动。
+- 方法论 / Skill 草案：未启动。
+- 生成器能力：未证明。
+- product ready：未证明。
+
 # 2026-06-30 ReaderLab 高阶讲解口径校准
+
+## ChatGPT Pro 方案固化为 high-order-explanation.v1
+
+- 用户要求先把 ChatGPT 导出方案整理进现有文档，避免上下文压缩丢失，再调整 PRD、方案和计划。
+- 已读取 `~/Downloads/chatgpt-selected-2026-06-30T16-10-45.md` 并提炼为 ReaderLab 高阶讲解方法。
+- 新增 `docs/high-order-explanation-method.md`：定义“认知升级讲解”的内部生产协议，包含 Source Anchor、Baseline Summary Trap、Upgrade Question、Mechanism Graph、Lens Auction、Judgment Gate、Natural Explanation 和 Delta Eval。
+- 新增 `docs/contracts/high-order-explanation-v1.md`：定义高阶讲解 audit contract，记录正文锚点、普通总结陷阱、升维问题、机制图、镜头候选、吸收/降级/拒绝、reader-facing 自然讲解和 delta eval。
+- 已同步 `AGENTS.md`、`README.md`、`docs/product-spec.md`、`docs/readerlab-package-spec.md`、`docs/ai-reading-method.md`、`docs/eval-gates.md`、`docs/current-task.md`、`docs/dev-state.md`、`docs/progress.md`、`docs/decisions.md` 和 `docs/next-session-prompt.md`。
+- 新增决策 D-049：`high-order-explanation.v1` 是下一轮样章执行协议，但尚未样章验证，不能视为产品能力成立。
+- 范围控制：未改 reader 样张，未开发生成器，未写 LifeAtlas，未新增依赖。
+- 追加修正：用户指出 `docs/next-session-prompt.md` 只写了框架名称和链路，不足以从 prompt 本身看出 GPT Pro 新框架；已将 Source Anchor、Baseline Summary Trap、Upgrade Question、Mechanism Graph、Lens Auction、Judgment Gate、Natural Explanation 和 Delta Eval 的操作细节、评分、镜头触发和失败条件直接补入 next-session prompt。
+
+## 验证
+
+- `rg -n "high-order-explanation|认知升级讲解|Source Anchor|Baseline Summary Trap|Upgrade Question|Mechanism Graph|Lens Auction|Judgment Gate|Delta Eval|吸收 / 降级 / 拒绝" ...`：PASS，活跃规格、方法、contract、状态和下一会话提示均已覆盖。
+- `rg -n "尽量保留|正文选读导读|READY FOR HUMAN REVIEW|技术合伙人层|阅读路线|主题线索|处理过的一手正文" ...`：REVIEWED，命中均为历史账本、旧决策背景或当前失败条件，不作为活跃规格中的当前结论。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS，无输出。
 
 ## 摘要
 
@@ -567,7 +719,7 @@
 ## 当前进度结论
 
 - 当前项目不是马上 product ready。更准确状态是：基础工程闭环可用，样张探索产生证据，但核心阅读智能仍处在 working-low。
-- `docs/progress.md` 将成为后续大迭代后的进度事实层；validator 通过、样张存在、子 Agent PASS 不自动加分。
+- 历史判断：当时曾把 `docs/progress.md` 设为后续大迭代进度层；该口径已被 2026-07-01 D-051 收窄，`docs/progress.md` 现在只保留历史快照，不是当前事实源。
 
 ## 下一步
 

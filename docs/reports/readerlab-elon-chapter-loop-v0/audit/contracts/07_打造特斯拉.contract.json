@@ -1,0 +1,64 @@
+{
+  "chapter": {
+    "order": 7,
+    "title": "打造特斯拉",
+    "spine": "v101-21",
+    "source": "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-21.xhtml"
+  },
+  "status": "pass",
+  "reader_page": "docs/reports/readerlab-elon-chapter-loop-v0/reader/07_打造特斯拉_阅读页.md",
+  "baseline_summary_trap": "Do not reduce this chapter to a celebratory Tesla summary about electric cars, saving the company, working hard, vertical integration, and solar. The core issue is how a large sustainable-energy mission becomes concrete through vehicle sequencing, prototype-to-product discipline, funding survival, manufacturing scale, vertical integration, cost reduction, user experience, and public perception.",
+  "previous_hard_issue": "Carry forward the last P2: avoid piling up nonessential numeric details. Keep the reader-facing explanation concrete, but use numbers only when they change the mechanism.",
+  "allowed_lenses": [
+    "mission folded into constraint chains",
+    "prototype versus industrialized product",
+    "early high-price low-volume market as a technology maturation path",
+    "survival line reshaping priorities without becoming a normal management template",
+    "vertical integration as system continuity across vehicle, energy, data, service, and cost",
+    "public perception as a second-order product and safety battlefield"
+  ],
+  "source_anchors": [
+    "Sustainable energy is framed as a civilizational and economic energy-output problem, not only a conservation or lifestyle preference.",
+    "Climate uncertainty is treated as risk management: inability to prove humans are not causing warming means society cannot safely ignore the risk.",
+    "Major technological change often comes from new entrants because oligopolies and mature companies have weak incentives to innovate.",
+    "Early Tesla learned that AC Propulsion's impressive prototype and the Lotus Elise path did not translate cleanly into an industrialized Roadster product.",
+    "The Roadster was a deliberate high-price, low-volume entry point because early electric vehicle technology could not start as an inexpensive mass-market car.",
+    "Tesla's staged plan ran from sports car to more affordable cars and zero-emission power generation.",
+    "Tesla and SpaceX survival crises forced severe funding and priority choices, including outside investment and near-failure supplier/payment constraints.",
+    "Model 3 production problems forced a crisis mode because low cost required high volume and high volume required a working manufacturing system.",
+    "Traditional car companies rely heavily on suppliers and dealers; Tesla chose direct sales/service and vertical integration across key hardware and software systems.",
+    "Design and detail are treated as real product value, because aesthetics and unconscious impressions affect adoption.",
+    "Cost reduction comes from multi-generation iteration, scale, R&D, manufacturing, and design rather than advertising or celebrity endorsement.",
+    "Tesla's accident and safety narratives show that media incentives, incumbents, advertisers, regulators, and public risk perception become part of the operating environment.",
+    "SolarCity is framed as deployment, grid interconnection, distributed system management, and integrated solar-roof-battery user experience, not merely panel production."
+  ],
+  "reader_evaluation": {
+    "result": "pass",
+    "total_score": 12,
+    "max_score": 12,
+    "hard_gates": {
+      "first_hand_source_not_replaced": "pass",
+      "no_internal_fields": "pass",
+      "clear_higher_order_question": "pass",
+      "internal_mechanism_chain": "pass",
+      "lens_illuminates_source": "pass",
+      "absorb_downgrade_reject": "pass",
+      "no_romanticizing_overwork_trauma_control_or_hero_worship": "pass",
+      "no_local_to_whole_book_overclaim": "pass"
+    },
+    "scores": {
+      "重新理解": 2,
+      "正文贴合": 2,
+      "机制清晰": 2,
+      "镜头有效": 2,
+      "边界锋利": 2,
+      "表达穿透": 2
+    },
+    "issues": {
+      "P0": [],
+      "P1": [],
+      "P2": []
+    }
+  },
+  "controller_decision": "Land. Hard gates all passed, reader score is 12/12, and there are no P0/P1/P2 issues. The chapter remains chapter-level progress only and does not authorize full-book summary, final boss baseline comparison, or methodology drafting."
+}

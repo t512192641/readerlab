@@ -1,5 +1,7 @@
 # ReaderLab Agent Workflow
 
+> Authority boundary: 本文件是半自动工作流设计说明，不是当前任务源。文中的“当前阶段 / 下一步”按设计语境理解；当前执行以 `docs/current-task.md` 为准。
+
 ## 目的
 
 本文件定义 ReaderLab 半自动生成器前的工作流边界：哪些事情必须由脚本确定性完成，哪些事情允许 Agent 判断，哪些事情必须由 human / product owner 决定。

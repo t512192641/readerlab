@@ -1,5 +1,7 @@
 # ReaderLab Package Spec
 
+> Authority boundary: 本文件是阅读包结构规格，不是当前任务源。当前执行事实、下一步和读取范围以 `docs/current-task.md` 为准。
+
 ## 目标
 
 定义 ReaderLab 阅读包的目标结构。该结构是正式开发前规格，不代表当前脚本已经完整支持。
@@ -37,6 +39,7 @@ ReaderLab Package/
     contracts/
       catalog-map.json
       grounded-global-map.json
+      high-order-explanation.v1.json
       local-deepread/
       capability-map.json
       distillation-candidates.json
@@ -51,6 +54,7 @@ ReaderLab 包必须先满足正文主体，再提供 AI 陪读和 audit。不同
 - 书籍 / 长文：`10_一手正文/` 保留原样正文和章节顺序。默认不压缩、不改写、不重述；除非用户明确要求整理原文，否则只做空格、空行、断行等轻量排版清理。AI 讲解放在正文之后或 `20_AI陪读/`，不能替代正文。
 - Skill / 工程材料：`10_一手正文/` 放净化正文。净化正文剥离安装命令、重复模板、执行外壳、机器状态、路径、hash、调试信息，但保留用途、触发条件、用户意图、核心流程、约束、失败条件、输出要求和设计亮点。
 - 高阶讲解：用成段语言讲清材料，不把内容拆成导读、旁批、误读提醒等固定栏目。它不是小总结，而是用更大的知识结构给读者提供认知增量：可以引入跨学科思维模型、历史观、产品经验、组织管理、工程系统、商业案例和用户既往经历中的相似结构，但必须解释底层逻辑如何相通，并区分原文依据、AI 解释、外部类比和待验证判断。
+- 高阶讲解内部契约：`audit/contracts/high-order-explanation.v1.json` 记录 Source Anchor、Baseline Summary Trap、Upgrade Question、Mechanism Graph、Lens Auction、Judgment Gate、Natural Explanation 和 Delta Eval。该契约只在 audit 层保存，不作为 reader-facing 栏目。
 - 设计资产卡：只对 Skill、工程材料、Agent 工作流和类似材料强制出现，必须面向产品负责人说明适用场景、解决问题、原材料依据、可复用做法、使用前提、失败风险和什么时候不要用。
 - audit：source refs、location map、claim trace、machine/human 状态、降级/拒绝记录进入 `audit/`。reader-facing 页不把这些内部结构当主内容。
 
@@ -118,7 +122,7 @@ ReaderLab 包必须先满足正文主体，再提供 AI 陪读和 audit。不同
 - `catalog-map.md`：基于目录/文件结构/标题的路线假设。
 - `grounded-global-map.md`：覆盖足够时的全局地图。
 - `local-deepread/`：局部深读卡。
-- 高阶讲解：应让读者获得“我原来没这样看过”的理解，而不是只得到章节摘要。优秀讲解可以旁征博引，但不能脱离材料；如果跨学科类比不能反过来照亮正文，就不要放进读者页。
+- 高阶讲解：应让读者获得“我原来没这样看过”的理解，而不是只得到章节摘要。优秀讲解可以旁征博引，但不能脱离材料；如果跨学科类比不能反过来照亮正文，就不要放进读者页。内部按 `high-order-explanation.v1` 先完成正文锚定、普通总结对照、升维问题、机制图、镜头选择、吸收 / 降级 / 拒绝和 delta eval。
 - `capability-map.md`：Skill/工程材料的能力地图。
 - `design-asset-notes.md`：技术负责人视角下的设计资产提炼。
 - `misread-guards.md`：误读防护。

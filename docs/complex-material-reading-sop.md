@@ -1,5 +1,7 @@
 # 复杂材料阅读化 SOP
 
+> Authority boundary: 本文件是通用 SOP，不是当前任务源。当前执行切片和下一步以 `docs/current-task.md` 为准。
+
 ## 目标
 
 ReaderLab 的目标不是把源文件机械搬进 Markdown，而是把复杂材料转成可以阅读、批注、讨论和沉淀的 LifeAtlas 阅读包。

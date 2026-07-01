@@ -1,0 +1,80 @@
+{
+  "chapter": {
+    "order": 15,
+    "title": "工程学的价值",
+    "spine": "v101-12",
+    "source": "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-12.xhtml"
+  },
+  "status": "pass",
+  "reader_page": "docs/reports/readerlab-elon-chapter-loop-v0/reader/15_工程学的价值_阅读页.md",
+  "baseline_summary_trap": "Do not reduce this chapter to slogan lists about engineering as magic, engineering being better than science, technology winning wars, execution mattering more than ideas, and prototypes being easier than production. The core issue is that engineering is the transformation system that turns possibility into a working reality under constraints: it gives science new data, changes strategic results through technology gaps, and turns ideas into company value through manufacturing, supply chain, software, powertrain systems, quality, cost, scale, and cash flow. The war examples must not romanticize violence; technical advantage does not imply moral legitimacy; engineering does not demean science; all-in execution must not become overwork ethics; hard manufacturing must not erase safety, labor, environmental, or governance boundaries.",
+  "previous_hard_issue": "The previous chapter passed with no P0/P1. Optional P2 guidance was to control length, avoid dense case clusters, and keep the ending chapter-scoped. Carry forward: use the war and manufacturing examples as mechanism evidence, not as case pileups.",
+  "allowed_lenses": [
+    "engineering as transformation from idea and possibility into working reality under constraints",
+    "science and engineering as complementary: science explains existing truth and engineering creates new tools and data",
+    "advanced technology as magic because it expands action capacity, not because it escapes physics or cost",
+    "war technology examples as a risk lens for technology gaps changing system outcomes, not a celebration of violence",
+    "innovation speed as sometimes more important than static technical advantage",
+    "execution as prototype, production, positive cash flow, manufacturing, supply chain, software, powertrain, quality, and delivery",
+    "Tesla's external validation through Toyota, Daimler, and Mercedes purchasing electric powertrain systems",
+    "Mars as the difference between an idea of landing and the engineering reality of getting there"
+  ],
+  "source_anchors": [
+    "Musk says he spends 80 percent of his time on engineering.",
+    "Engineering is compared to magic.",
+    "Musk grew up with an electrical and mechanical engineer father, building model planes, circuit boards, and model rockets.",
+    "In South Africa he lacked ready rocket parts and bought chemicals to make fuel and put it into pipes.",
+    "He received real explanations of how things worked, including overcoming fear of darkness by understanding absence of visible photons.",
+    "He was fascinated by technology, computers, programming, games, reading, computers, and comics.",
+    "Arthur C. Clarke's line about sufficiently advanced technology being indistinguishable from magic is used to frame modern flight, communication, remote observation, and global information access.",
+    "Musk considered physics, but says physics progress now needs new data and is therefore governed by engineering progress.",
+    "He says engineering is more valuable because without engineering one cannot get new data.",
+    "Galileo's telescope and the discovery of Jupiter's moons show engineering unlocking scientific observation.",
+    "Science explores existing truth; engineering creates things that have never existed.",
+    "The chapter says Sun Tzu lacks a technology chapter and that decisive technical advantage can reduce casualties.",
+    "Roman metallurgy and road engineering are used as military advantages.",
+    "Scythian horse archery is used as a counter-technology that defeated Romans in some conditions.",
+    "When technology innovation accelerates or there is a technology gap, engineering can dominate strategy.",
+    "World War II fighter and bomber competition is framed as technical rock-paper-scissors where innovation speed matters.",
+    "Modern war is described as a technology race, with nuclear weapons and the Manhattan Project as an extreme case.",
+    "The Manhattan Project is framed as a physics community achievement supported by government, driven by the need to prevent Hitler from getting nuclear weapons first.",
+    "The chapter includes strong all-in language that must not be generalized as an ethics of extreme work.",
+    "Musk says ideas are abundant and execution is hard.",
+    "Prototype is easy; mass production and positive cash flow are painful.",
+    "Company value comes from solving difficult problems.",
+    "Tesla is described as a hard-core technology and manufacturing company where aluminum coils and plastic pellets enter one end and cars exit the other.",
+    "Tesla performed vehicle engineering, powertrain engineering, software engineering, and hard manufacturing.",
+    "Toyota, Daimler, and Mercedes purchasing electric powertrain systems is used as evidence that Tesla solved hard engineering problems.",
+    "The idea of landing on Mars is not hard; actually getting to Mars is hard."
+  ],
+  "reader_evaluation": {
+    "result": "pass",
+    "total_score": 11.5,
+    "max_score": 12,
+    "hard_gates": {
+      "first_hand_source_not_replaced": "pass",
+      "no_internal_fields": "pass",
+      "clear_higher_order_question": "pass",
+      "internal_mechanism_chain": "pass",
+      "lens_illuminates_source": "pass",
+      "absorb_downgrade_reject": "pass",
+      "no_romanticizing_overwork_trauma_control_or_hero_worship": "pass",
+      "no_local_to_whole_book_overclaim": "pass"
+    },
+    "scores": {
+      "一手正文覆盖与准确性": 3,
+      "章节机制解释": 3,
+      "误读防护与边界感": 2,
+      "reader-facing 可读性与自然度": 2,
+      "与上一轮硬问题的吸收": 1.5
+    },
+    "issues": {
+      "P0": [],
+      "P1": [],
+      "P2": [
+        "Optional: the war technology section was slightly dense; controller compressed the ancient technology list before landing."
+      ]
+    }
+  },
+  "controller_decision": "Land. Hard gates all passed, reader score is 11.5/12, and there are no P0/P1 issues. Optional P2 feedback was addressed by compressing the ancient war-technology list before landing. This completes the body-chapter phase only and does not start full-book summary, final boss baseline comparison, or methodology drafting."
+}

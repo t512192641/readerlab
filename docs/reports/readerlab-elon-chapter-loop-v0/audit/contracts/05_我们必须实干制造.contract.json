@@ -1,0 +1,67 @@
+{
+  "chapter": {
+    "title": "我们必须实干制造",
+    "spine": "v101-18",
+    "source_path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub#/OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-18.xhtml"
+  },
+  "status": "pass",
+  "round": 1,
+  "reader_page": "docs/reports/readerlab-elon-chapter-loop-v0/reader/05_我们必须实干制造_阅读页.md",
+  "reader_eval": "docs/reports/readerlab-elon-chapter-loop-v0/audit/evals/05_我们必须实干制造.eval.md",
+  "controller_inputs": {
+    "baseline_summary_trap": "Do not reduce this chapter to a generic praise of manufacturing or a summary that says factories matter, mass production is harder than design, and manufacturing is a moat. The core issue is how value moves from abstract capital, law, finance, and design inspiration into a physically verified production system that can make high-quality products at scale and at affordable cost.",
+    "previous_round_hard_issue": "The previous chapter passed with no P0/P1/P2. Carry forward the requirement that lenses concretely illuminate the text and boundaries stay sharp. Do not turn this chapter into manufacturing romanticism, anti-finance or anti-law sentiment, or a crude conclusion that merely making things is always right.",
+    "allowed_lenses": [
+      "Manufacturing is not the execution tail; it joins idea, physics, supply chain, cost, quality, and scale into one reality system.",
+      "Factory as product: when the production system decides whether a product can appear affordably and reliably, the factory itself becomes a core product to design and iterate.",
+      "Bottlenecks govern systems: mass-production speed is set by the slowest, least stable, or least lucky component, not the average team or best subsystem.",
+      "Manufacturing as moat: scale economies plus manufacturing technology create a production system harder to copy than a design or prototype."
+    ]
+  },
+  "source_anchors": [
+    "Manufacturing is underrated and hard.",
+    "The economy does not magically create material goods; without manufacturing there are no products.",
+    "Food, medical care, and dental care depend on real-world production, processing, logistics, and services.",
+    "Checks or appropriations cannot solve real supply if products are not made.",
+    "Technological progress is not inevitable; technology is created by people and requires action.",
+    "Doers are indispensable; talent overconcentration in law and finance creates a real-economy imbalance.",
+    "The factory is the machine that builds the machine and becomes the ultimate product.",
+    "Manufacturing technology may contain more innovation potential than vehicle design.",
+    "Success depends on producing high-quality products at affordable prices.",
+    "A giant factory is a cybernetic collective with thousands of failure points; delays stop production and burn money.",
+    "Rocket design and car prototypes are easier than manufacturing and orbital launch or mass production.",
+    "The epiphany-story view mistakes design for the main challenge and production for simple copying.",
+    "Production-line speed is governed by the slowest and least stable link.",
+    "Progress may depend on unlucky or incompetent suppliers facing disasters or disruptions.",
+    "Manufacturing-system design can require 10 to 100 times the effort of engine design, and production systems can demand 100 to 1000 times the product work.",
+    "Manufacturing competitiveness comes from maximizing both scale economies and technology.",
+    "The Texas factory integrates raw materials, battery cells, packs, motors, and cast parts.",
+    "Single-piece front and rear castings came from asking whether toy-car-style casting violates physics.",
+    "Reliable mass production at reasonable price is extremely difficult."
+  ],
+  "hard_gates": {
+    "firsthand_text_not_replaced": true,
+    "no_internal_fields_in_reader": true,
+    "has_level_up_question": true,
+    "has_internal_mechanism_chain": true,
+    "lens_illuminates_text_without_taking_over": true,
+    "has_absorb_downgrade_reject": true,
+    "does_not_glorify_overwork_trauma_control_or_hero_worship": true,
+    "does_not_turn_chapter_into_full_book_conclusion": true
+  },
+  "scores": {
+    "re_understanding": 2,
+    "text_fit": 2,
+    "mechanism_clarity": 2,
+    "lens_effectiveness": 2,
+    "boundary_sharpness": 2,
+    "expression_force": 2,
+    "total": 12
+  },
+  "issues": {
+    "p0": [],
+    "p1": [],
+    "p2": []
+  },
+  "controller_decision": "land"
+}

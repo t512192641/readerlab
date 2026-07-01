@@ -1,0 +1,77 @@
+{
+  "chapter": {
+    "order": 12,
+    "title": "成为多行星物种",
+    "spine": "v101-27",
+    "source": "OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-27.xhtml"
+  },
+  "status": "pass",
+  "reader_page": "docs/reports/readerlab-elon-chapter-loop-v0/reader/12_成为多行星物种_阅读页.md",
+  "baseline_summary_trap": "Do not reduce this chapter to a space vision manifesto saying humanity should go to Mars, Starship can ship cargo, Mars is dangerous but glorious, and civilization will eventually expand across the galaxy. The core issue is how multi-planetary life as civilization insurance is compressed into transport cost, manufacturing scale, launch windows, material tonnage, self-sufficiency thresholds, and a new-world industrial ecosystem. The reader must see why romanticized risk, escape-hatch narratives, and single-answer Mars thinking must be downgraded.",
+  "previous_hard_issue": "The previous chapter passed with no P0/P1. Optional P2 guidance was to control length, avoid over-strong unifying metaphors, and avoid totalizing endings. Carry forward: keep the ending chapter-scoped and bind it to concrete mechanisms rather than whole-book significance.",
+  "allowed_lenses": [
+    "multi-planetary life as an evolutionary-scale event that still has to pass engineering and industrial constraints",
+    "civilization insurance as single-point-failure reduction rather than Earth abandonment",
+    "cost per ton to orbit and Mars surface as the gateway metric",
+    "two-year launch windows as industrial cadence rather than open-ended aspiration",
+    "Starship manufacturing scale, orbital propellant transfer, and million-ton material transfer as the execution chain",
+    "Mars selection as relative feasibility compared with Venus and the Moon, not as a second Earth or paradise",
+    "self-sustaining city threshold as survival after Earth resupply stops",
+    "new-world industrial ecosystem as full social and production functions, not lifestyle fantasy",
+    "solar-system and galaxy expansion as long-term horizon that cannot steal the chapter's execution constraints"
+  ],
+  "source_anchors": [
+    "The chapter opens by saying the present window may be the key period for making life multi-planetary, and the window cannot be assumed to stay open.",
+    "Multi-planetary life is placed beside evolutionary leaps such as single-celled to multicellular life, plants and animals, ocean to land, and consciousness.",
+    "Earth risks include solar expansion, repeated extinction events, asteroids or comets, supervolcanoes, nuclear war, and super-viruses.",
+    "Even a small century-level risk to consciousness is treated as too high at civilizational scale.",
+    "Multi-planetary life is framed as insurance for life and the light of consciousness, not as abandoning Earth.",
+    "Resource allocation is framed as continued major investment in Earth problems plus a small share for a self-sustaining Mars city.",
+    "Mars is chosen over Venus and the Moon because it is relatively more plausible for an independent self-sustaining civilization, not because it is comfortable.",
+    "The Moon is allowed value for scientific bases and telescopes but is not the main civilization-backup target.",
+    "The progress metric is not first landing but the timetable for a self-sustaining Mars civilization.",
+    "The text warns against a flags-and-footprints outcome where landing does not produce sustained transport, production, and settlement.",
+    "Starship is treated as an industrial transport system involving production scale, two-year windows, thousands of ships, orbital propellant transfer, and million-ton transfer needs.",
+    "Cost per ton to orbit and to the Mars surface is the key threshold for turning a Mars city from paper into possible scale.",
+    "Starlink is connected to funding Mars rather than treated as unrelated business success.",
+    "Mars settlement is dangerous, voluntary, crowded, materially simple, hard work, and may include death or one-way trips; it is not a luxury escape hatch.",
+    "The self-sufficiency test asks whether the Mars city can survive if Earth ships stop.",
+    "Self-sufficiency requires every element, a population around one million, and no missing critical input such as the vitamin C example.",
+    "Required infrastructure includes power, ice mining, mining, propellant production, long-term life support, communications, crops, oxygen plants, and other production systems.",
+    "Mars carbon dioxide atmosphere and water ice make methane and oxygen propellant production possible in principle.",
+    "Terraforming and heating ideas such as orbital mirrors or thermonuclear explosions appear as speculative routes that must not be romanticized as certainty.",
+    "Reusable rockets are compared to ocean-going ships because repeatable low-cost transport enables settlement and economic networks.",
+    "A new world would need everything from steel mills to restaurants, which signals full social and industrial function rather than consumption fantasy.",
+    "Starship is framed as a solar-system transport solution, with Mars propellant base enabling farther destinations as a long-term horizon."
+  ],
+  "reader_evaluation": {
+    "result": "pass",
+    "total_score": 11,
+    "max_score": 12,
+    "hard_gates": {
+      "first_hand_source_not_replaced": "pass",
+      "no_internal_fields": "pass",
+      "clear_higher_order_question": "pass",
+      "internal_mechanism_chain": "pass",
+      "lens_illuminates_source": "pass",
+      "absorb_downgrade_reject": "pass",
+      "no_romanticizing_overwork_trauma_control_or_hero_worship": "pass",
+      "no_local_to_whole_book_overclaim": "pass"
+    },
+    "scores": {
+      "一手正文覆盖与准确性": 3,
+      "章节机制解释": 3,
+      "误读防护与边界感": 2,
+      "reader-facing 可读性与自然度": 2,
+      "与上一轮硬问题的吸收": 1
+    },
+    "issues": {
+      "P0": [],
+      "P1": [],
+      "P2": [
+        "Optional: the ending was slightly long and repeated boundary language around not being a slogan, romance, or universal answer; controller compressed the final section before landing."
+      ]
+    }
+  },
+  "controller_decision": "Land. Hard gates all passed, reader score is 11/12, and there are no P0/P1 issues. Optional P2 feedback was addressed by compressing the ending before landing. This remains chapter-level progress only and does not authorize full-book summary, final boss baseline comparison, or methodology drafting."
+}

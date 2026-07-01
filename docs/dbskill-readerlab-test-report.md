@@ -1,5 +1,7 @@
 # DB Skill 阅读化测试报告
 
+> Authority boundary: 本文件是历史测试报告，不是当前任务源。文中的“当前 / 下一步”只代表该测试阶段语境；当前执行以 `docs/current-task.md` 为准。
+
 ## 测试目的
 
 用本地已有的 `dbs-suite` 作为非 gstack 压力样本，验证 ReaderLab 的复杂材料阅读化 SOP 是否能迁移到另一套复杂 Skill 包。

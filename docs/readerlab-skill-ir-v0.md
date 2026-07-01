@@ -1,5 +1,7 @@
 # ReaderLab Skill IR v0
 
+> Authority boundary: 本文件是 Skill IR 草案，不是当前任务源，也不表示已包装、安装或发布。当前执行以 `docs/current-task.md` 为准。
+
 ## 状态
 
 - IR 状态：`draft-v0`

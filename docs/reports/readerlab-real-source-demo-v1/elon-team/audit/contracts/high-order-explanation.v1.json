@@ -1,0 +1,246 @@
+{
+  "contract_type": "high-order-explanation.v1",
+  "unit_id": "elon-team-v101-15",
+  "material_type": "book_longform",
+  "source_scope": "Full selected chapter '打造卓越团队' from The Book of Elon Chinese EPUB entry OEBPS/Eric-Jorgenson_The-Book-of-Elon_PRODUCTION_v101-15.xhtml, as rendered in reader/01_打造卓越团队_阅读页.md.",
+  "source_anchors": [
+    {
+      "anchor_id": "a01",
+      "source_ref": "reader section: 打造卓越团队, note 239",
+      "what_text_says": "The chapter opens by saying the most important task is to attract excellent talent and join or build a team worthy of respect.",
+      "supports": ["Talent attraction is a central chapter theme."],
+      "does_not_support": ["Talent alone guarantees organizational success."]
+    },
+    {
+      "anchor_id": "a02",
+      "source_ref": "reader section: 目标导向的团队, notes 240-245",
+      "what_text_says": "A company is described as people jointly creating products or services around a shared goal, and as a cybernetic collective of people, machines, tools, and computers.",
+      "supports": ["The chapter treats organizations as goal-directed production systems."],
+      "does_not_support": ["The company is only a legal shell or only a group of individuals."]
+    },
+    {
+      "anchor_id": "a03",
+      "source_ref": "reader section: 目标导向的团队, notes 246-250",
+      "what_text_says": "Startup work should quickly produce a demo, mockup, or prototype because people do not fully understand until they see a usable artifact.",
+      "supports": ["Prototype demonstration converts vision into reality feedback and persuasion."],
+      "does_not_support": ["Slides and calculations are useless in all contexts."]
+    },
+    {
+      "anchor_id": "a04",
+      "source_ref": "reader section: 创建建设者文化, notes 251-253",
+      "what_text_says": "The CEO should create an environment where excellent engineers thrive, align them on the goal, and rarely force specific implementation except in limited cases.",
+      "supports": ["The management model emphasizes environment, goal alignment, and selective intervention."],
+      "does_not_support": ["The leader should micromanage smart people."]
+    },
+    {
+      "anchor_id": "a05",
+      "source_ref": "reader section: 创建建设者文化, note 254",
+      "what_text_says": "Everyone should have a chief engineer mindset and understand the system well enough to recognize bad optimization.",
+      "supports": ["System-level understanding is a core organizational capability."],
+      "does_not_support": ["Everyone has equal authority over every decision."]
+    },
+    {
+      "anchor_id": "a06",
+      "source_ref": "reader section: 创建建设者文化, notes 255-262",
+      "what_text_says": "The chapter links talented, hardworking employees, shared direction, excellence, and product quality, and says only excellent performance counts.",
+      "supports": ["High standards are framed as connected to product output."],
+      "does_not_support": ["High pressure is sufficient without goal clarity, product feedback, or capable people."]
+    },
+    {
+      "anchor_id": "a07",
+      "source_ref": "reader section: 招募卓越才能, notes 263-267",
+      "what_text_says": "Hiring should seek proof of exceptional ability or ambition, including detailed accounts of hard problems actually solved.",
+      "supports": ["The chapter values evidence from hard execution over credentials alone."],
+      "does_not_support": ["Credentials never matter or interviews can perfectly detect talent."]
+    },
+    {
+      "anchor_id": "a08",
+      "source_ref": "reader section: 只保留特种部队, notes 268-274",
+      "what_text_says": "The chapter presents a special-forces philosophy for early-stage companies and says top engineers are scarce, not simply purchasable with money.",
+      "supports": ["Scarcity of exceptional engineering talent is a major constraint."],
+      "does_not_support": ["All organizations should copy special-forces management."]
+    },
+    {
+      "anchor_id": "a09",
+      "source_ref": "reader section: 只保留特种部队, notes 275-276",
+      "what_text_says": "The chapter admits overvaluing intelligence over character was a mistake and says integrity matters.",
+      "supports": ["The chapter itself limits pure talent worship with character judgment."],
+      "does_not_support": ["Raw intelligence overrides character concerns."]
+    },
+    {
+      "anchor_id": "a10",
+      "source_ref": "reader section: 反馈高于感受, notes 277-281",
+      "what_text_says": "The chapter says physics does not care about hurt feelings, bad news should be communicated loudly, criticism should focus on substance and behavior, and wanting to be liked is a weakness.",
+      "supports": ["Reality feedback and problem-focused criticism are treated as central."],
+      "does_not_support": ["Hurting people, ignoring ethics, or bypassing safety is justified."]
+    }
+  ],
+  "baseline_summary_trap": "A normal summary would say this chapter teaches that great companies need top talent, clear goals, strong prototypes, builder culture, rigorous hiring, elite teams, and direct feedback. That summary is accurate but shallow because it treats the chapter as a list of management preferences instead of explaining the mechanism that connects talent, prototype, system view, feedback, and product reality.",
+  "upgrade_question": "在目标极难、优秀人才极稀缺、纸面承诺很容易自我欺骗的约束下，一个建设型组织怎样把人的判断、机器工具、原型、反馈和共同目标转化成真实产品，同时避免团队变成只会讲愿景、照顾情绪或局部优化的松散群体？",
+  "mechanism_graph": {
+    "input": [
+      "Shared mission and goal",
+      "Scarce exceptional builders",
+      "Computers, tools, machines, and prototype artifacts",
+      "Hard problems and product reality signals"
+    ],
+    "constraint": [
+      "Top engineering talent is rare and cannot simply be bought",
+      "Paper plans and slides can disguise weak reality contact",
+      "Local optimization can harm the whole system",
+      "Social comfort can block bad news"
+    ],
+    "action": [
+      "Build a visible prototype early",
+      "Recruit for demonstrated hard-problem execution and ambition",
+      "Create an environment where strong engineers can work toward a clear goal",
+      "Push everyone toward chief-engineer system thinking",
+      "Make bad news and substantive criticism travel quickly"
+    ],
+    "feedback": [
+      "Prototype and demo expose whether vision is credible",
+      "Product performance and physical constraints return non-negotiable signals",
+      "Detailed interview follow-up distinguishes real execution from surface claims",
+      "Bad news and criticism correct organizational error"
+    ],
+    "output": [
+      "A team whose vector sum points toward product outcomes",
+      "Better conversion of talent into high-quality products",
+      "Less organizational self-deception",
+      "Higher ability to iterate toward reality"
+    ],
+    "failure_mode": [
+      "Talent worship without character or system fit",
+      "High standards becoming slogan or pressure culture",
+      "Leader toughness becoming personal cruelty",
+      "Prototypes replaced by pitch theater",
+      "Local optimization hidden by narrow roles"
+    ],
+    "boundary": [
+      "Special-forces culture is context dependent and risky outside high-clarity, high-feedback, high-talent environments",
+      "The chapter supports problem-focused feedback, not humiliation or ethics-free management",
+      "Claims about Musk's own ability or style are self-reported or biographical and need separate validation before generalization"
+    ]
+  },
+  "lens_candidates": [
+    {
+      "lens": "Systems and cybernetics",
+      "text_trigger": "The chapter explicitly calls a company a cybernetic collective of people, machines, tools, computers, and goals; it repeatedly stresses prototype feedback, chief-engineer thinking, and bad-news loops.",
+      "clarifies": "It explains why talent, prototype, system view, and hard feedback belong to one mechanism: the organization must sense reality, correct error, and convert correction into product output.",
+      "boundary_power": "It prevents reading the chapter as personality worship or generic hiring advice, and shows why feedback without system clarity becomes noise.",
+      "reader_gain": "Readers can inspect their own organization as a feedback system rather than asking only whether they have enough smart people.",
+      "overreach_risk": "May over-formalize a chapter that is partly a collection of Musk quotations.",
+      "scores": {
+        "text_trigger_strength": 3,
+        "explanatory_power": 3,
+        "boundary_power": 2,
+        "reader_gain": 2,
+        "overreach_risk": -1,
+        "total": 9
+      },
+      "decision": "promote"
+    },
+    {
+      "lens": "Organization theory and talent density",
+      "text_trigger": "The chapter repeatedly discusses recruiting top talent, special-forces standards, goal alignment, environment design, and the scarcity of excellent engineers.",
+      "clarifies": "It explains how talent density interacts with mission clarity, autonomy, and standards to affect product output.",
+      "boundary_power": "It reveals that elite-team logic is dangerous when copied without mission clarity, strong feedback, and ethical guardrails.",
+      "reader_gain": "Readers can separate transferable talent-density design from non-transferable high-pressure culture.",
+      "overreach_risk": "May turn Musk-specific early-stage conditions into a general organization doctrine.",
+      "scores": {
+        "text_trigger_strength": 3,
+        "explanatory_power": 3,
+        "boundary_power": 2,
+        "reader_gain": 2,
+        "overreach_risk": -1,
+        "total": 9
+      },
+      "decision": "promote"
+    },
+    {
+      "lens": "Ethics and power boundary",
+      "text_trigger": "The feedback section says physics does not care about hurt feelings, bad news should be loud, and wanting to be liked is weakness.",
+      "clarifies": "It distinguishes reality-oriented feedback from manager cruelty or coercive culture.",
+      "boundary_power": "It blocks overgeneralizing the chapter into permission to harm people for results.",
+      "reader_gain": "Readers learn what to reject even when the chapter contains useful feedback principles.",
+      "overreach_risk": "May import modern workplace ethics beyond the chapter's explicit frame, but this is needed as a boundary lens.",
+      "scores": {
+        "text_trigger_strength": 3,
+        "explanatory_power": 2,
+        "boundary_power": 2,
+        "reader_gain": 2,
+        "overreach_risk": -1,
+        "total": 8
+      },
+      "decision": "promote"
+    },
+    {
+      "lens": "Economic scarcity and resource allocation",
+      "text_trigger": "The chapter says money is not the core constraint because there is no factory for mass-producing excellent engineers.",
+      "clarifies": "It explains why recruiting effort and mission quality matter when the scarce resource is exceptional judgment.",
+      "boundary_power": "It helps avoid assuming more funding automatically creates better teams.",
+      "reader_gain": "Useful, but overlaps with the organization lens and is less central to the final explanation.",
+      "overreach_risk": "Could reduce character, feedback, and prototype mechanisms to labor-market scarcity.",
+      "scores": {
+        "text_trigger_strength": 2,
+        "explanatory_power": 2,
+        "boundary_power": 1,
+        "reader_gain": 1,
+        "overreach_risk": -1,
+        "total": 5
+      },
+      "decision": "downgrade"
+    },
+    {
+      "lens": "Hero-founder psychology",
+      "text_trigger": "The chapter includes first-person claims about identifying engineers, taking responsibility, and lacking the need to be liked.",
+      "clarifies": "It could explain Musk's self-image as a builder-leader.",
+      "boundary_power": "Weak, because it pulls attention toward personality rather than the chapter's organization mechanism.",
+      "reader_gain": "Low for ReaderLab's product goal.",
+      "overreach_risk": "High risk of turning biography into a model to imitate.",
+      "scores": {
+        "text_trigger_strength": 2,
+        "explanatory_power": 1,
+        "boundary_power": 1,
+        "reader_gain": 0,
+        "overreach_risk": -3,
+        "total": 1
+      },
+      "decision": "reject"
+    }
+  ],
+  "judgments": {
+    "absorb": [
+      "Use visible prototypes and product reality as feedback loops that test vision.",
+      "Treat team capability as a system-level vector of goal, talent, tools, feedback, and standards.",
+      "Encourage chief-engineer thinking so local work is judged against whole-system outcomes.",
+      "Make problem-focused bad news travel quickly enough to correct errors."
+    ],
+    "downgrade": [
+      "Special-forces team culture is only suitable when mission clarity, talent density, feedback quality, and risk management are unusually strong.",
+      "Talent scarcity explains why recruiting is hard, but it does not remove the need for character, ethics, or organizational learning.",
+      "Musk's self-reported hiring intuition and extreme management expressions should be treated as biographical evidence, not universal method."
+    ],
+    "reject": [
+      "Do not convert 'feedback over feelings' into permission for humiliation or disregard for human boundaries.",
+      "Do not treat desire to be liked as inherently bad in every leadership context.",
+      "Do not generalize crisis-stage elite-team logic to ordinary organizations without proof that the same constraints exist."
+    ]
+  },
+  "reader_facing_explanation": {
+    "title": "团队不是人才名单，而是现实校正系统",
+    "body": "这一章表面上在讲“怎样打造卓越团队”，但更深的问题是：当目标很难、人才很稀缺、愿景又很容易停留在口号和幻灯片里时，一个组织怎样把人的能力真正变成产品结果？马斯克反复强调顶尖人才、原型、共同目标、总工程师思维和硬反馈，并不是几条分散的管理建议，而是在描述一个建设型组织如何不被自我感觉欺骗。\n\n普通读法容易把这一章读成“招最好的人，然后对他们高要求”。但正文里的逻辑比这更紧。公司首先不是一个抽象品牌，而是一群人为共同目标制造产品或服务的组织。目标必须足够清楚，才能吸引人投入；产品愿景必须尽快落到原型、演示模型或可见草图上，才能让别人真正理解并质疑；人才也不是单独发光的个体，而要和工具、计算机、设备、流程组成一个协作系统。只有当这些人朝同一方向用力，组织的集体智慧才会超过个人能力。\n\n这一章最值得注意的机制，是“现实信号”如何进入团队。PPT可以粉饰一切，原型却会暴露问题；情面可以让人回避冲突，坏消息却必须被频繁听见；局部岗位可以把自己的指标做漂亮，总工程师思维却要求人看到系统整体，判断自己是不是在做错误优化。换句话说，卓越团队不是一群简历漂亮的人坐在一起，而是一套能把目标、原型、反馈、工具和判断不断对齐的系统。管理者的工作也不是替聪明人规定每一步，而是创造环境，让真正会建设的人看见全局、接触问题、修正错误，并把能力落到产品上。\n\n因此，“高标准”在这里不能被理解成单纯的强硬。它只有在目标真实、反馈真实、产品真实时才有意义。一个组织如果没有清楚目标，只会喊卓越；没有可检验原型，只会讲愿景；没有诚实反馈，只会维护气氛；没有系统视角，只会奖励局部优化，那么再多聪明人也可能互相抵消。正文里对顶尖工程师、特种部队式团队、严苛文化的推崇，真正可迁移的部分是人才密度、建设动机、系统判断和现实校正，而不是外在的高压姿态。\n\n也必须看到边界。可以吸收的是：重要任务需要高人才密度，需要让愿景尽快接受实物检验，需要让坏消息穿过层级和面子回到问题本身。需要降级的是“只保留特种部队”的组织想象，它更适合目标极清楚、反馈极硬、任务高度工程化、候选人才足够强的环境，不能直接搬到所有团队。必须拒绝的是把“不在乎感受”误读成羞辱、冷酷或无视人的基本尊严。正文能支持的是反馈聚焦事实和行为，不能支持用结果为粗暴管理开脱。\n\n读完这一章，最有价值的不是记住“要招天才”，而是拿到一组判断问题：你的团队是否有一个足够清楚、足够值得投入的目标？愿景是否已经变成可以被看见、被质疑、被迭代的东西？最聪明的人是否真的在解决关键问题，而不是被流程和气氛消耗？坏消息能不能快速抵达该听见的人？每个人是否理解整体系统，而不只是优化自己手上的一小块？这些问题比任何管理口号都更接近本章的核心。"
+  },
+  "delta_eval": {
+    "beyond_summary": true,
+    "upgrade_question_present": true,
+    "mechanism_present": true,
+    "lens_illuminates_text": true,
+    "source_boundaries_clear": true,
+    "overreach_controlled": true,
+    "verdicts_clear": true,
+    "reader_gain": "The revised explanation reframes the chapter from a list of hiring and management preferences into a reality-correction mechanism: shared goal, prototype signal, system-level engineers, talent density, and hard feedback. It gives readers a transferable diagnostic frame while downgrading special-forces culture and rejecting cruelty or ethics-free imitation."
+  },
+  "machine_status": "draft",
+  "human_status": "pending"
+}

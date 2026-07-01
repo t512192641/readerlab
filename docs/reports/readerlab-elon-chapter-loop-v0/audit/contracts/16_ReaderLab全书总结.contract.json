@@ -1,0 +1,97 @@
+{
+  "unit": {
+    "order": 16,
+    "title": "ReaderLab全书总结",
+    "type": "full_book_summary",
+    "source_units": [
+      "成功之道",
+      "打造卓越团队",
+      "组织设计",
+      "极致紧迫感",
+      "我们必须实干制造",
+      "成为创始人",
+      "打造特斯拉",
+      "创建太空探索技术公司",
+      "建设我们的未来",
+      "丰饶时代",
+      "我们的生存风险",
+      "成为多行星物种",
+      "活出目标人生",
+      "物理学家式思考",
+      "工程学的价值"
+    ]
+  },
+  "status": "pass",
+  "reader_page": "docs/reports/readerlab-elon-chapter-loop-v0/reader/16_ReaderLab全书总结_阅读页.md",
+  "baseline_shield": {
+    "blocked_for_writer_and_evaluator": [
+      "final boss baseline",
+      "old full-book summary",
+      "old bakeoff",
+      "methodology / Skill draft",
+      "external book validation",
+      "network sources"
+    ],
+    "controller_note": "The full-book summary was generated and evaluated from the 15 passed chapter reader facts only. Baselines remain not_started and were not used."
+  },
+  "full_book_summary_trap": "Do not reduce the book to a Musk success biography, a list of 15 chapter takeaways, a founder/CEO management doctrine, a space manifesto, an AI/abundance prophecy, or a heroic overwork story. The core issue is how ambitious goals become real only when they are translated into constraints, exposed to reality feedback, and converted into systems that can be delivered, reproduced, governed, and bounded by cost, quality, safety, scale, and long-term consequences.",
+  "allowed_lenses": [
+    "letting reality win before identity, wish, prestige, industry inertia, or narrative",
+    "goal to constraint to field feedback to design, organization, manufacturing, and resource allocation",
+    "responsibility as proximity to unsolved reality rather than personal heroism",
+    "team and organization as reality-correction systems",
+    "urgency as compression of waiting and dependency, not compression of people",
+    "manufacturing and engineering as the transformation from possibility into working reality",
+    "founder work as continuous opportunity, feedback, control, survival, and re-betting judgment",
+    "civilizational visions compressed into cost, production, safety, governance, and continuity constraints",
+    "future, abundance, risk, multi-planetary life, and life purpose as conditional systems rather than inevitable promises"
+  ],
+  "source_anchors": [
+    "CEO as the entrance to the hardest unsolved problems, with factory-floor proximity shortening feedback loops.",
+    "Team as a reality-correction system made from shared goals, prototypes, bad-news feedback, tools, and chief-engineer judgment.",
+    "Organization design as shortening the path between field reality and the people who can correct it; products carry traces of organization boundaries.",
+    "Urgency as removing waiting, useless meetings, serial dependencies, and fuzzy impossibility while preserving direction correction and boundaries.",
+    "Manufacturing as the system where ideas become reliable, affordable, scalable physical reality; factory as product and bottlenecks governing throughput.",
+    "Founder mode as opportunity selection, low-resource entry, direct user feedback, control tradeoffs, survival, platform risk, and repeated re-betting.",
+    "Tesla mission compressed into entry market, cost curve, manufacturing scale, survival priority, vertical integration, and public trust.",
+    "SpaceX mission compressed into launch cost, commercial survival, reusable transport, testing boundaries, and cost per ton.",
+    "Future-building as delivery mechanism: products, rule design, value creation, capital allocation, innovation maintenance, and responsibility-bounded risk.",
+    "Abundance as layered relaxation of labor, intelligence, bandwidth, traffic safety, energy, and time constraints.",
+    "Civilizational risk as threats to continuity, recovery capacity, energy base, institutional adaptability, AI control, population renewal, and single-planet fragility.",
+    "Multi-planetary life as an insurance problem expressed through cost per ton, launch windows, fleet scale, orbital refueling, million-ton transfer, and self-sufficiency thresholds.",
+    "Life purpose as net utility, future probability improvement, value above cost, positive-sum creation, and evidence-backed pursuit before the world is ready.",
+    "Physicist-style thinking as error reduction through physical boundaries, material cost floors, extreme-case reasoning, evidence-calibrated belief, and learning.",
+    "Engineering as the transformation system that connects vision to reality through physics, manufacturing, supply chain, software, cost, quality, cash flow, and delivery."
+  ],
+  "reader_evaluation": {
+    "result": "pass",
+    "total_score": 11,
+    "max_score": 12,
+    "hard_gates": {
+      "not_generic_biography_or_success_formula": "pass",
+      "no_internal_fields": "pass",
+      "clear_full_book_higher_order_question": "pass",
+      "full_book_mechanism_chain": "pass",
+      "lens_illuminates_multiple_chapters": "pass",
+      "absorb_downgrade_reject": "pass",
+      "no_romanticizing_overwork_trauma_control_hero_mars_ai_abundance_wealth_or_war": "pass",
+      "no_baseline_or_external_contamination": "pass"
+    },
+    "scores": {
+      "重新理解": 2,
+      "正文贴合": 1,
+      "机制清晰": 2,
+      "镜头有效": 2,
+      "边界锋利": 2,
+      "表达穿透": 2
+    },
+    "issues": {
+      "P0": [],
+      "P1": [],
+      "P2": [
+        "正文贴合可再增强一点。主控落地前补入 Zip2/PayPal、Roadster/Model 3、Dragon/载人安全、脑机接口近端目标、火星自给条件等少量具体锚点。"
+      ]
+    }
+  },
+  "controller_decision": "Land. Hard gates all passed, reader score is 11/12, and there are no P0/P1 issues. The P2 suggestion was addressed by lightly increasing concrete chapter anchors before landing. ReaderLab's own full-book summary is now pass. This authorizes the next phase to start baseline summaries later, but no baseline was read or used in this phase."
+}
