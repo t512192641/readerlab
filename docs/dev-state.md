@@ -22,6 +22,13 @@
 - Candidate Tournament contract：`docs/contracts/candidate-tournament-v1.md`
 - Skillization Gate contract：`docs/contracts/skillization-gate-v1.md`
 - Annotation Trigger contract：`docs/contracts/annotation-trigger-v1.md`
+- Location Anchor contract：`docs/contracts/location-anchor-v1.md`
+- Trace Validation contract：`docs/contracts/trace-validation-v1.md`
+- Comment Replay contract：`docs/contracts/comment-replay-v1.md`
+- Skill delivery spec：`docs/readerlab-skill-delivery-spec.md`
+- Skill IR v1：`docs/readerlab-skill-ir-v1.md`
+- two-demo internal run：`docs/reports/readerlab-two-demo-run-v0/`
+- private material validation：`docs/reports/readerlab-private-material-validation-v0/`
 - 验收 gate：`docs/eval-gates.md`
 - 运行账本：`docs/agent-run-ledger.md`
 
@@ -33,6 +40,9 @@
 - Markdown 是展示层；source registry、location map、contracts、eval 和人工状态才是事实层。
 - 15 个章节的现有通过状态只代表 `chapter_high_order_explanation_pass`，不代表 `reader_package_pass`。
 - `readerlab-method-kernel-v0` 只代表两章方法核探针通过，不代表可迁移方法核、正式 Skill 或外部材料验证。
+- `readerlab-private-material-validation-v0` 只代表 private/local validation 通过，不代表 public external validation。
+- Skill delivery design docs 已创建，但正式 `SKILL.md` 未启动。
+- Trace validator 尚未实现；comment replay 尚未验证。
 
 ## Baseline Locations
 
@@ -50,6 +60,12 @@
 ```bash
 python3 tests/test_readerlab.py
 git diff --check
+```
+
+Skill 交付设计后下一步还需要新增并运行：
+
+```bash
+# 待实现：trace validator / comment replay fixture 检查命令
 ```
 
 章节 reader/audit 落地时还要按需运行：
@@ -75,3 +91,5 @@ rg -n "source refs|claim trace|lens score|machine_status|human_status|Source Anc
 - `docs/next-session-prompt.md` 是从 `docs/current-task.md` 派生的启动提示，不是事实源。
 - 无完整一手正文轨的书籍/长文解释页不能标为 `reader_package_pass`。
 - candidate pool、claim tiers、Skillization 字段必须影响真实决策；只补字段不算方法核成立。
+- `formal_skill_delivery_design_ready` 不能等同于 `formal_skill_draft_started`。
+- `transferable_method_kernel_pass` 仍为 `not_verified`。

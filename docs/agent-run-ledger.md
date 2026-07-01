@@ -1,3 +1,26 @@
+# 2026-07-01 MEM Clean 文档状态治理
+
+## 摘要
+
+- 用户要求用 MEM Clean 治理文档，确保信息统一、无冲突且是最新版，并解释当前进度和下一步计划。
+- 本轮按 MEM layer contract 清理：`docs/current-task.md` 重新压缩为一个当前活跃切片，旧阶段细节保留在 ledger。
+- `docs/next-session-prompt.md` 从旧“跑两个 demo”改为当前“trace validator + comment replay fixture”启动提示。
+- `docs/dev-state.md` 补充 Skill delivery design、location-anchor、trace-validation、comment-replay 的稳定路径和当前技术缺口。
+- `docs/progress.md` 更新历史快照状态，移除旧 `external_material_validation_not_started` 口径。
+- `docs/decisions.md` 追加 D-053，明确 `formal_skill_delivery_design_ready` 不等于正式 `SKILL.md` 草案启动。
+
+## 验证
+
+- 冲突扫描：`current-task` / `next-session-prompt` / `progress` / `dev-state` 已对齐最新状态；`decisions` 中旧“下一步”仅作为历史决策语境保留。
+- `find . -name CLAUDE.md -print`：无结果。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `git diff --check`：PASS。
+
+## Reusable lesson / rule candidate
+
+- Project-scope：阶段边界变化后必须同步压缩 `current-task.md` 和 `next-session-prompt.md`，否则新会话会按旧 demo 合同启动。
+- Global-book candidate：长期项目中“派生 prompt”容易比当前任务滞后；防重检查点是阶段切换后搜索旧 `下一步` / `当前目标` / 旧状态枚举，并明确当前事实唯一入口。尚未写入全局 mistakes book，等待用户批准。
+
 # 2026-07-01 ReaderLab Skill 交付设计文档
 
 ## 摘要

@@ -2,45 +2,42 @@
 
 ## Authority
 
-本文件是当前执行事实的唯一入口。若 `docs/dev-state.md`、`docs/progress.md`、`docs/next-session-prompt.md`、旧报告或旧 handoff 与本文件冲突，以本文件为准。
+本文件是当前执行事实的唯一入口。若 `docs/dev-state.md`、`docs/progress.md`、`docs/next-session-prompt.md`、旧报告、旧 handoff 或 PR 描述与本文件冲突，以本文件为准。
 
-## 当前切片
+启动时只读：
 
-继续 ReaderLab《埃隆之书》单书闭环，但当前阶段已被 GPT Pro review 纠偏：已有产物只能证明 reader-facing 高阶讲解能力，不能证明完整 ReaderLab 阅读包，也不能证明可迁移方法核或 Skill 已成立。
+1. `AGENTS.md`
+2. `docs/current-task.md`
 
-当前阶段是：
+其他文件只能按本文件的动作触发读取。
+
+## Active Slice
+
+ReaderLab 已从 demo 验证进入 **Skill 交付设计后的验证实现切片**。
+
+当前目标不是写正式 `SKILL.md`，而是补齐正式 Skill 草案前的两个硬缺口：
 
 ```text
-GPT Pro review 第八部分行动已执行
--> 状态口径重命名
--> 新增方法核 contracts
--> 两章最小方法核探针
--> 两个内部产品 demo 已通过 writer/reader 双门槛
--> GPT Pro two-demo review 已回收并补 review hardening patch
--> GitHub app 已确认仓库 visibility: private
--> 私有材料验证产物允许纳入 private GitHub checkpoint
--> GPT Pro 确认可以进入 ReaderLab Skill 交付设计阶段
--> Skill 交付设计文档已新增；正式 Skill 草案仍未启动
+1. 最小 trace validator
+2. 最小 comment replay fixture
 ```
 
-不要进入正式 ReaderLab Skill 草案、外部书验证、更大范围扩章或 GPT Pro 审核包，除非两个新 demo 已内部通过且用户明确启动审核。
+## Current Status
 
-## 当前状态口径
-
-必须使用以下口径：
+必须使用以下状态口径：
 
 - `chapter_high_order_explanation_pass`: `15/15`
 - `full_book_reader_synthesis_pass`: `1/1`
 - `baseline_capability_audit_pass`: `1/1`
 - `reader_package_not_verified`
-- `transferable_method_kernel_probe_pass`: `2/2`，仅限 `组织设计 / v101-16` 和 `打造特斯拉 / v101-21` 的最小探针
-- `two_demo_internal_pass`: `2/2`，仅限 `readerlab-two-demo-run-v0` 的 Demo A / Demo B 内部 writer-reader 验证
-- `two_demo_review_hardening_patch`: `done`，补充 location map、source cleaning map、trace-to-reader 和 Skill / 工程材料 cleaned-body 状态语义
-- `private_material_validation_local_pass`: `2/2`，仅限 `readerlab-private-material-validation-v0` 私有材料验证；GitHub app 已确认仓库 visibility 为 `private`，允许纳入 private checkpoint
+- `transferable_method_kernel_probe_pass`: `2/2`
+- `two_demo_internal_pass`: `2/2`
+- `two_demo_review_hardening_patch`: `done`
+- `private_material_validation_local_pass`: `2/2`
 - `formal_skill_delivery_design_ready`: `yes`
 - `skill_delivery_design_docs`: `created`
-- `comment_replay_verified`: `not_verified`
 - `trace_validator_implemented`: `not_started`
+- `comment_replay_verified`: `not_verified`
 - `transferable_method_kernel_pass`: `not_verified`
 - `skill_draft_not_started`
 - `public_external_material_validation_not_started`
@@ -48,149 +45,73 @@ GPT Pro review 第八部分行动已执行
 禁止使用的旧口径：
 
 - 不得把 15 章高阶讲解通过称为 `reader_package_pass`。
-- 不得把章节 reader 页称为完整 ReaderLab 阅读包。
-- 不得把 baseline 横评通过称为方法论或 Skill 草案完成。
-- 不得把两章方法核探针称为可迁移方法已经成立。
+- 不得把 two-demo 或 private validation 称为 `transferable_method_kernel_pass`。
+- 不得把 Skill 交付设计文档称为正式可运行 Skill 草案。
+- 不得把 private/local validation 称为 public external validation。
 
-## 新增方法核证据
+## Current Evidence
 
-GPT Pro 第八部分要求的六个 contract 已新增：
+已完成并纳入 private checkpoint：
 
-- `docs/contracts/body-track-gate-v1.md`
-- `docs/contracts/material-profile-v1.md`
-- `docs/contracts/claim-ledger-v1.md`
-- `docs/contracts/candidate-tournament-v1.md`
-- `docs/contracts/skillization-gate-v1.md`
-- `docs/contracts/annotation-trigger-v1.md`
+- two-demo internal run：`docs/reports/readerlab-two-demo-run-v0/`
+- two-demo review hardening patch：location map、source-cleaning map、trace-to-reader
+- private material validation：`docs/reports/readerlab-private-material-validation-v0/`
+- Skill delivery design docs：
+  - `docs/readerlab-skill-delivery-spec.md`
+  - `docs/readerlab-skill-ir-v1.md`
+  - `docs/contracts/location-anchor-v1.md`
+  - `docs/contracts/trace-validation-v1.md`
+  - `docs/contracts/comment-replay-v1.md`
 
-两章最小方法核探针：
+GitHub state:
 
-- `docs/reports/readerlab-method-kernel-v0/`
-- `docs/reports/readerlab-method-kernel-v0/chapters/03_组织设计/`
-- `docs/reports/readerlab-method-kernel-v0/chapters/07_打造特斯拉/`
-- `docs/reports/readerlab-method-kernel-v0/eval.md`
+- Repository `t512192641/readerlab` verified private by GitHub app.
+- Branch: `readerlab-elon-checkpoint`
+- PR: `https://github.com/t512192641/readerlab/pull/1`
+- Latest pushed commit for delivery design: `577ffb4 Add ReaderLab skill delivery design`
 
-探针结论：
+## Next Action
 
-- 方法核探针：`pass`。
-- 完整阅读包：`not_verified`。
-- 两章 reader-facing 页是高阶讲解产物，不是完整阅读包页。
-- Body Track Gate 明确阻止无完整一手正文轨的章节被标成 `reader_package_pass`。
+下一步只允许做：
 
-## 双 demo 内部结果
+1. 设计并实现最小 trace validator。
+2. 用现有 demo/private validation artifacts 做最小 comment replay fixture。
+3. 运行验证并更新状态。
 
-用户已明确：现在不要写 GPT Pro 审核 prompt。已按合同跑完两个新 demo，两个 demo 均内部通过；是否准备 GPT Pro review packet 仍需用户明确启动。
+最小 trace validator 应检查：
 
-执行合同：
+- `location-map.json` 中的 anchors 可被引用。
+- `annotation-trigger.json` 的每个 `anchor_ref` 存在。
+- reader-facing 核心段落能追溯到 body/source anchor、claim、candidate 或 gate decision。
+- promoted candidates 有最终用途或 audit-only 理由。
+- skill candidates 满足 trigger / input / steps / output / boundary / evidence。
 
-- `docs/reports/readerlab-two-demo-run-v0/README.md`
-- `docs/reports/readerlab-two-demo-run-v0/01_NEXT_SESSION_PROMPT.md`
+最小 comment replay fixture 应覆盖：
 
-两个 demo：
+- A2 private longform 正文位置 2 条 comment。
+- B2 Skill / engineering 净化正文位置 2 条 comment。
+- 每条 replay 必须能回到 anchor、nearby body、claim、candidate、gate decision 和 bounded AI reply。
 
-1. Demo A：`docs/product-spec.md` 作为 repo-owned longform，完整正文轨落在 `docs/reports/readerlab-two-demo-run-v0/demos/A_longform_body_track/10_一手正文/001_正文.md`；reader evaluation：`pass`，`11/12`，无 P0/P1。边界：这证明 repo-owned longform reader package 最小形态，不证明外部书泛化。
-2. Demo B：`/Users/tianqiang/技能项目/skills-canonical/packages/gstack/spec/SKILL.md` 作为 Skill / 工程材料阅读源；净化正文、设计资产、Skillization Gate 和批注触发落在 `docs/reports/readerlab-two-demo-run-v0/demos/B_skill_engineering/`；reader evaluation：`pass`，`11/12`，无 P0/P1。边界：只作为阅读材料，未安装、同步或启用 Skill。
+## Allowed Reads
 
-主控验证：
+实现 trace validator 时可读：
 
-- `python3 -m json.tool`：全部 demo JSON 通过。
-- reader-facing 禁用内部字段扫描：无命中。
-- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
-- `git diff --check`：PASS。
-
-## GPT Pro two-demo review 回收
-
-GPT Pro 结论：
-
-- 两个 demo 可以保留为 `two_demo_internal_pass: 2/2`。
-- 这轮证明了受限最小方法核雏形，不只是写作能力。
-- 仍不能升级为 `transferable_method_kernel_pass`。
-- 仍不能启动正式 ReaderLab Skill 草案。
-
-已按 review 做最小 hardening patch：
-
-1. Demo A / B 均补 `audit/location-map.json`，把正文段落、读者页段落、claim、candidate 和 annotation trigger 接到稳定 anchor。
-2. Demo B 补 `audit/source-cleaning-map.md`，说明 `gstack/spec` 中哪些内容保留、压缩、移入设计资产、移入 audit 或拒绝进入 reader-facing。
-3. Demo A / B 均补 `audit/trace-to-reader.md`，说明 reader-facing 每段如何消费 claim ledger、candidate tournament 和 gate 决策。
-4. `body-track-gate.v1` 增加 `skill_engineering_cleaned_body_pass`，Demo B 不再用 `audit_only` 表示 cleaned-body 通过。
-
-批注层口径：
-
-- Obsidian 批注插件本身不是当前主要风险；当前风险是批注回读时能否稳定定位正文段落、claim、candidate 和 gate 决策。
-- 本轮 hardening patch 只补“批注位置到 ReaderLab 证据链”的桥，不重新验证 Obsidian 插件 UI。
-
-## 私有材料本地验证
-
-用户选择下一轮本地材料：
-
-1. 长文 Demo：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_Feel-Good Productivity 全书完整中译.pdf`
-2. Skill / 工程 Demo：`/Users/tianqiang/wechatFile/01_Skills/Agent技能合集包/planning-with-files/SKILL.md`
-
-本轮输出：
-
-- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/`
-- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/`
-
-边界：
-
-- 这是 private/local validation，不是 public external validation。
-- Demo A 包含 copyrighted/private full body text，只能保留在 private repository / local 环境中。
-- GitHub app 已确认 `t512192641/readerlab` 的 `visibility` 为 `private`，因此本轮允许纳入 private checkpoint。
-- 若未来仓库重新改为 public，必须先移除或替换 Demo A 的完整正文轨。
-
-结果：
-
-- Demo A：private longform body-track validation `pass`，reader evaluation `10/12`，P0/P1 为空。
-- Demo B：Skill / engineering cleaned-body validation `pass`，reader evaluation `11/12`，P0/P1 为空。
-- 两个 demo 都有 3-7 个 body-adjacent annotation questions，且 candidate tournament 都有真实 reject / downgrade。
-
-主控验证：
-
-- `python3 -m json.tool`：全部 private demo JSON 通过。
-- reader-facing 禁用内部字段扫描：无命中。
-- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
-- `git diff --check`：PASS。
-
-## ReaderLab Skill 交付设计
-
-GPT Pro 对 private checkpoint 的结论：
-
-- 可以进入 `ReaderLab Skill 交付设计阶段`。
-- 不能进入正式可运行 `SKILL.md` 草案阶段。
-- 仍不能升级为 `transferable_method_kernel_pass`。
-- 关键缺口是 `trace validator` 和 `comment replay`。
-
-本轮新增交付设计文档：
-
-- `docs/readerlab-skill-delivery-spec.md`
-- `docs/readerlab-skill-ir-v1.md`
 - `docs/contracts/location-anchor-v1.md`
 - `docs/contracts/trace-validation-v1.md`
+- `docs/readerlab-skill-ir-v1.md`
+- `docs/reports/readerlab-two-demo-run-v0/demos/**/audit/location-map.json`
+- `docs/reports/readerlab-two-demo-run-v0/demos/**/audit/contracts/*.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/**/audit/location-map.json`
+- `docs/reports/readerlab-private-material-validation-v0/demos/**/audit/contracts/*.json`
+- `scripts/readerlab.py`
+- `tests/test_readerlab.py`
+
+实现 comment replay fixture 时可读：
+
 - `docs/contracts/comment-replay-v1.md`
-
-当前允许做：
-
-- 设计 ReaderLab Skill 的 material routes、body-track rules、workflow、agent/script boundary、trace validator 和 comment replay protocol。
-
-当前禁止做：
-
-- 不写正式 `SKILL.md`。
-- 不标记 `formal_skill_draft_started`。
-- 不标记 `transferable_method_kernel_pass`。
-- 不做 LifeAtlas 自动沉淀、Obsidian UI 改造或外部书籍全量泛化。
-
-## 默认读取与动作触发
-
-启动时只读 `AGENTS.md` 和本文件。不要因为本文件列出路径，就在启动阶段展开读取。
-
-执行中按动作触发读取：
-
-- 要复核 GPT Pro 第八部分方案时，读 `~/Downloads/chatgpt-selected-2026-07-01T02-41-22.md`。
-- 要复核两章方法核探针时，读 `docs/reports/readerlab-method-kernel-v0/README.md` 和 `docs/reports/readerlab-method-kernel-v0/eval.md`，再按需读具体章节 artifact。
-- 要跑下一轮两个 demo 时，先读 `docs/reports/readerlab-two-demo-run-v0/README.md`，再按该合同选择源、调用 writer/reader、落地产物。
-- 要更新方法核 contract 时，只读对应 `docs/contracts/*-v1.md`。
-- 要确认章节阶段历史结果时，读 `docs/reports/readerlab-elon-chapter-loop-v0/chapter-queue.md`。
-- 要追加运行历史时，只读 `docs/agent-run-ledger.md` 顶部最新两条。
+- `docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity/10_一手正文/001_正文.md`
+- `docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files/10_一手正文/001_净化正文.md`
+- 对应 demo 的 `location-map.json`、`claim-ledger.json`、`candidate-tournament.json`、`annotation-trigger.json`
 
 按需读取：
 
@@ -199,74 +120,29 @@ GPT Pro 对 private checkpoint 的结论：
 - 稳定路径和工具状态：`docs/dev-state.md`
 - 耐久决策：`docs/decisions.md`，优先 D-052 之后
 - 验收 gate：`docs/eval-gates.md`
-- baseline 研究线索：`docs/research-log.md`
 
-不要启动时通读旧 fullbook、bakeoff、long reports、原始聊天或历史账本。
+不要读取：
 
-## 下一步
+- 旧 fullbook、旧 bakeoff、旧 GPT Pro prompt、旧长报告、原始聊天。
+- 除非当前动作明确需要，不要展开 `docs/reports/**` 的历史目录。
 
-当前最小下一步不是自动写正式 Skill。两个内部 demo 和私有材料验证均已通过，GPT Pro 已允许进入 Skill 交付设计；下一步应实现或设计最小 trace validator 与 comment replay fixture，仍不能创建正式 `SKILL.md`。
+## Stop Conditions
 
-若用户明确启动 GPT Pro review packet，审查重点应围绕：
+立即停止并纠正状态，如果出现：
 
-1. Body Track Gate 是否用完整正文轨防止解释页冒充阅读包。
-2. Claim Ledger 是否真的约束 reader-facing 表述，而不是只补字段。
-3. Candidate Tournament 是否产生真实 promote / downgrade / reject 决策。
-4. Skillization / Annotation 分流是否阻止 insight 被过早 Skill 化。
-5. Reader-facing narrative 是否确实消费前面 gate 输出，而不是自由发挥。
-6. Skill / 工程 demo 是否产出净化正文和设计资产，而不是摘要和术语解释。
+- 创建正式 `SKILL.md`。
+- 标记 `formal_skill_draft_started`。
+- 标记 `transferable_method_kernel_pass`。
+- 把 private/local validation 写成 public external validation。
+- reader-facing 暴露 `source refs`、`claim trace`、`lens score`、`machine_status`、`human_status`、`Body Track Gate`、`Claim Ledger`、`Candidate Tournament`、`Skillization Gate`、`Annotation Trigger`。
+- trace validator 不能连接 reader paragraph、anchor、claim、candidate/gate。
+- comment replay 不能从 comment 回到 body anchor、claim、candidate 和 gate decision。
 
-不得自动进入正式 Skill 草案、外部书验证或 GitHub 发布。不得把 Demo A 的 repo-owned longform 结果表述成外部书籍泛化通过。
+## Verification Commands
 
-## 高阶讲解通过线
+```bash
+python3 tests/test_readerlab.py
+git diff --check
+```
 
-章节级高阶讲解硬门槛任一失败则不能 `chapter_high_order_explanation_pass`：
-
-- reader-facing 不暴露 `source refs`、`claim trace`、`lens score`、`machine/human status` 等内部字段。
-- 有明确升维问题，不是章节摘要。
-- 有正文内部机制链。
-- 至少一个镜头反向照亮正文，不抢正文。
-- 自然完成吸收 / 降级 / 拒绝。
-- 不美化长工时、创伤、强控制或英雄崇拜。
-- 不把局部章节升格成全书结论。
-
-读者评分六项，每项 0-2：重新理解、正文贴合、机制清晰、镜头有效、边界锋利、表达穿透。
-
-通过条件：硬门槛全过，读者分至少 `10/12`，读者评价 agent 给出 `pass`，且没有 P0/P1。
-
-## Reader Package Body Track Gate
-
-书籍 / 长文页要进入 `reader_package_pass`，必须先过 Body Track Gate：
-
-- 页面包含完整章节一手正文，或显式链接到 `10_一手正文/` 下的完整正文文件。
-- 高阶讲解页、导读页、摘要页不能替代一手正文。
-- “讲解贴合正文锚点”不能替代“一手正文存在”。
-- 如果没有完整一手正文轨，该页最多只能标为 `high_order_explanation_pass`。
-
-## 错误退出
-
-- 无完整一手正文轨却标成 `reader_package_pass`：立即停止并纠正状态。
-- candidate pool 只有字段、没有影响 promote / downgrade / reject：探针失败。
-- 没有 rejected / downgraded 项却声称完成筛选：探针失败。
-- 高层判断没有 claim tier：探针失败。
-- 把 AI composite interpretation 写成作者原意：探针失败。
-- insight 不满足 trigger / input / steps / output / boundary / evidence 却 Skill 化：探针失败。
-- annotation question 没有 body-adjacent anchor：探针失败。
-- reader-facing 暴露内部字段：该轮不能通过。
-- compliant longform body source 缺失：停止，不用假正文、摘要或《埃隆之书》版权章节硬凑 demo。
-- 只有一个 demo 通过：不能准备 GPT Pro 审核包。
-- 章节高阶讲解未完成前进入全书总结或 final boss：历史错误，不能重复。
-- 两个内部 demo 未通过前进入正式 Skill 草案、外部书验证或 GPT Pro 审核：停止并纠正计划。
-
-## Stable Paths
-
-- GPT Pro review 文件：`~/Downloads/chatgpt-selected-2026-07-01T02-41-22.md`
-- EPUB：`/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_埃隆之书_中文版.epub`
-- 章节队列：`docs/reports/readerlab-elon-chapter-loop-v0/chapter-queue.md`
-- 章节轮次：`docs/reports/readerlab-elon-chapter-loop-v0/rounds.md`
-- 方法核探针：`docs/reports/readerlab-method-kernel-v0/`
-- 双 demo 执行合同：`docs/reports/readerlab-two-demo-run-v0/README.md`
-- 双 demo 下一会话 prompt：`docs/reports/readerlab-two-demo-run-v0/01_NEXT_SESSION_PROMPT.md`
-- 高阶讲解方法：`docs/high-order-explanation-method.md`
-- 高阶讲解 contract：`docs/contracts/high-order-explanation-v1.md`
-- 验收 gate：`docs/eval-gates.md`
+新增 validator 或 replay fixture 后还应运行对应新增测试或命令，并把结果写入 `docs/agent-run-ledger.md`。

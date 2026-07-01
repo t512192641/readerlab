@@ -21,7 +21,11 @@ ReaderLab 当前方向已经从早期 Skill 包翻译 / 结构化提炼实验，
 - `transferable_method_kernel_probe_pass`: `2/2`，仅限 `readerlab-method-kernel-v0` 的 `组织设计` 和 `打造特斯拉` 两章探针。
 - `transferable_method_kernel_pass`: `not_verified`。
 - `skill_draft_not_started`。
-- `external_material_validation_not_started`。
+- `private_material_validation_local_pass`: `2/2`。
+- `formal_skill_delivery_design_ready`: `yes`。
+- `trace_validator_implemented`: `not_started`。
+- `comment_replay_verified`: `not_verified`。
+- `public_external_material_validation_not_started`。
 
 这个快照不证明 `reader_package_pass`、product ready、生成器能力、正式 Skill 或外部书泛化能力。
 
