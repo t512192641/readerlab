@@ -13,9 +13,9 @@ Do not claim:
 
 - `transferable_method_kernel_pass`
 - public external validation
-- real Obsidian UI replay pass
+- real Obsidian UI replay full pass
 
-Real Obsidian UI replay is deferred. The current approved evidence is fixture replay with the `tandem-comments` storage format.
+Real Obsidian UI replay is `pass_with_warning`: real `tandem-comments` plugin storage is readable, but the first UI test selected visible anchor-list entries rather than body prose sentences.
 
 ## Startup
 

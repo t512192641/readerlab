@@ -1,3 +1,40 @@
+# 2026-07-01 安装前 hardening
+
+## 摘要
+
+- 完成 ReaderLab Skill draft 的安装前 hardening。
+- 新增：
+  - `docs/drafts/readerlab-skill-v0/checks/activation-checklist.md`
+  - `docs/drafts/readerlab-skill-v0/reports/activation-hardening.md`
+- 更新 `docs/drafts/readerlab-skill-v0/SKILL.md`：把真实 Obsidian UI replay 口径从 deferred 改为 `pass_with_warning`。
+- 更新 `docs/drafts/readerlab-skill-v0/reports/review-studio.md`：当前可请求用户决定是否 repo-local activation，但仍不是 platform readiness pass。
+
+## 当前判断
+
+- Draft 可进入用户 activation 决策。
+- 只建议 repo-local target：`.agents/skills/readerlab/`。
+- 不建议全局安装到 `/Users/tianqiang/.codex/skills/`。
+
+## 边界
+
+- 本轮没有创建 `.agents/skills/readerlab/`。
+- 本轮没有安装或启用 ReaderLab Skill。
+- `real_obsidian_ui_replay` 仍是 `pass_with_warning`。
+- `transferable_method_kernel_pass` 仍是 `not_verified`。
+- `public_external_material_validation_not_started` 仍保持。
+
+## 验证
+
+- `python3 /Users/tianqiang/.codex/skills/.system/skill-creator/scripts/quick_validate.py docs/drafts/readerlab-skill-v0`：PASS，`Skill is valid!`。
+- `python3 -m json.tool docs/drafts/readerlab-skill-v0/evals/trigger-cases.json`：PASS。
+- `python3 -m json.tool docs/reports/readerlab-real-obsidian-replay-v0/results/comment-replay-real-ui.json`：PASS。
+- `find . -path './.git' -prune -o -path './.agents/skills/readerlab' -print`：PASS，无结果。
+- `python3 scripts/readerlab_trace_validator.py validate-suite --demo docs/reports/readerlab-private-material-validation-v0/demos/A_feel_good_productivity --demo docs/reports/readerlab-private-material-validation-v0/demos/B_planning_with_files --cases-json docs/reports/readerlab-comment-replay-v0/fixtures/comment-replay-cases.json --fixture-dir docs/reports/readerlab-comment-replay-v0/fixtures`：PASS。
+- `python3 tests/test_readerlab_trace_validator.py`：PASS，2 tests OK。
+- `python3 tests/test_readerlab.py`：PASS，30 tests OK。
+- `rg -n "source refs|claim trace|lens score|machine_status|human_status|Body Track Gate|Claim Ledger|Candidate Tournament|Skillization Gate|Annotation Trigger" docs/drafts/readerlab-skill-v0 docs/reports/readerlab-real-obsidian-replay-v0`：PASS，无命中。
+- `git diff --check`：PASS。
+
 # 2026-07-01 真实 Obsidian UI replay 初测
 
 ## 摘要

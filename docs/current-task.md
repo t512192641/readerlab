@@ -103,6 +103,8 @@ ReaderLab 已完成 **正式 Skill draft 文档草案切片**。
   - `docs/drafts/readerlab-skill-v0/reports/skill-ir.md`
   - `docs/drafts/readerlab-skill-v0/reports/output-quality-scorecard.md`
   - `docs/drafts/readerlab-skill-v0/reports/review-studio.md`
+  - `docs/drafts/readerlab-skill-v0/reports/activation-hardening.md`
+  - `docs/drafts/readerlab-skill-v0/checks/activation-checklist.md`
   - `docs/drafts/readerlab-skill-v0/forward-tests/product-spec-v0/`
   - `docs/drafts/readerlab-skill-v0/checks/readiness-checklist.md`
 - minimal trace validator：
@@ -130,7 +132,7 @@ GitHub state:
 用户已决定先跳过真实 Obsidian UI replay，稍后配合补测。下一步允许做：
 
 1. 提交并推送最小 validator / fixture / formal draft contract checkpoint。
-2. 可选再做一次 Skill/engineering source forward test；仍不安装、不启用。
+2. 可向用户请求是否允许 repo-local activation：把 draft package 复制到 `.agents/skills/readerlab/` 后做 smoke test；未获批准前仍不安装、不启用。
 3. 如需 activation readiness，再和用户补一次严格正文段落直接选择 replay；当前真实插件存储已经通过。
 
 最小 trace validator 已检查：

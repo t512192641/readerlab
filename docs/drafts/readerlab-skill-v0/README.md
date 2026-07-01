@@ -15,12 +15,13 @@ Files:
 - `reports/output-quality-scorecard.md`: output eval scorecard.
 - `reports/review-studio.md`: compact review gate summary.
 - `forward-tests/product-spec-v0/`: local forward test on a repo-owned product spec.
+- `checks/activation-checklist.md`: install-before-activation checklist.
 - `checks/readiness-checklist.md`: pre-review checklist and validation commands.
 
 Current boundary:
 
 ```text
-real Obsidian UI replay: deferred
+real Obsidian UI replay: pass_with_warning
 transferable_method_kernel_pass: not_verified
 public_external_material_validation_not_started
 ```
