@@ -9,17 +9,14 @@
 
 按需再读：
 
-- V2 工作流：`experiments/readerlab-v2/workflow-contract-v2.md`
-- V2 runner：`experiments/readerlab-v2/runner-contract-v2.md`
-- V2 路线模块：`experiments/readerlab-v2/route-modules/technical-material-route.md`
-- V2 step contracts：`experiments/readerlab-v2/step-contracts/`
-- V2 quality gate adapter：`scripts/readerlab_v2_quality_gate_adapter.py`
-- V2 runner：`scripts/readerlab_v2_runner.py`
+- 当前 PRD：`docs/readerlab-v2-shareable-skill-prd.md`
+- 当前包边界：`docs/readerlab-v2-package-boundary.md`
+- 当前 RFC：`docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`
 - 历史运行摘要：`docs/agent-run-ledger.md` 顶部最新两条
 - 稳定路径和验证命令：`docs/dev-state.md`
 - 耐久决策：`docs/decisions.md`
 
-旧 prompt、旧样章、旧报告、旧聊天摘要和单纯 `git diff` 不是当前事实源。当前 repo 有大量 untracked V2 文件，新会话不能只靠 `git diff` 判断状态。
+旧 prompt、旧样章、旧报告、旧聊天摘要和单纯 `git diff` 不是当前事实源。当前 PR #10 只落发布边界和调度 RFC；V2 runner、builder、`experiments/readerlab-v2/` 等原型文件如果尚未提交，只能作为本机工作区历史线索，不能当成 fresh checkout 的当前事实。
 
 ## Active Slice
 
@@ -46,7 +43,7 @@ ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
 
 生产约束 / 验收约束分层仍然有效：验收矩阵保留为评价语言，但不自动进入生产 runner。验收发现的问题必须先反推到最小上游 fault stage，再判断能否形成稳定、低误伤、可执行的生产条件。
 
-本阶段已经从一个 `gstack/spec` 窄 block，推进到两个完整单 Skill 样本：
+本阶段在本机未提交 V2 原型中，曾从一个 `gstack/spec` 窄 block 推进到两个完整单 Skill 样本：
 
 - `v2-real-skill-gstack-spec-complete-20260704`
   - `block_id`: `spec-complete-skill`
@@ -55,7 +52,7 @@ ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
   - `block_id`: `review-complete-skill`
   - source: `/Users/tianqiang/技能项目/skills-canonical/packages/gstack/review/SKILL.md`
 
-两个完整 case 当前都通过 `check-evaluation`，controller decision 是 `limited_accept`，不是 production ready。
+两个完整 case 在本机原型验证中通过过 `check-evaluation`，controller decision 是 `limited_accept`，不是 production ready。除非相应 runner、builder 和 reports 在后续 issue 中提交，否则下游 worker 不能把这些路径当成已提交事实源。
 
 ## Current Facts
 
@@ -76,7 +73,7 @@ ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
   - 人类读者体验
   - 产品预期
   - Skill / 工程材料路线额外有 Agent 读者可复用性
-- 已把这点落入代码：
+- 本机原型曾把这点落入代码；在这些文件提交前，下列路径只代表待落地的历史线索：
   - `scripts/readerlab_v2_quality_gate_adapter.py`
     - quality gate request 会写明 `check_class`、`Audience`、`isolation_rule` 和分开的 review dimensions。
     - `asset_cards` 的受众明确为 `background-free Agent reader`。
@@ -112,7 +109,7 @@ ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
 
 ## Current Verification
 
-最近一次已验证：
+最近一次本机原型验证：
 
 ```bash
 python3 tests/test_readerlab_v2_runner.py
@@ -125,7 +122,7 @@ python3 scripts/readerlab_v2_runner.py check-evaluation v2-real-skill-gstack-spe
 git diff --check
 ```
 
-结果全部通过。本轮生产 / 验收分层后，最新复跑重点是两个完整单 Skill case；`v2-real-skill-gstack-spec-20260703` 仍是窄样本，`controller_decision: revise`，`case_acceptance: false`，但 evaluation 命令本身通过，因为它能正确识别 protocol seed / revise 状态。
+结果曾全部通过。本轮生产 / 验收分层后，最新复跑重点是两个完整单 Skill case；`v2-real-skill-gstack-spec-20260703` 仍是窄样本，`controller_decision: revise`，`case_acceptance: false`，但 evaluation 命令本身通过，因为它能正确识别 protocol seed / revise 状态。这些验证在相关 V2 文件提交前不能作为 fresh checkout 的可复跑证据。
 
 ## Not Yet Claimed
 
@@ -159,7 +156,7 @@ git diff --check
 执行 GitHub issue 前必须先用 RFC 校准：
 
 - 质量核验必须覆盖合同履约、内容完整性、人类读者体验、产品预期、无上下文 Agent 复用。
-- 参数验证必须覆盖 source paths、output root、permission boundary、material family、requested scope、declared scope / units、full_book_required、dual_view_required、engineering_source_scope。
+- 参数验证必须覆盖 source paths、output root、permission boundary、material family、requested scope、human_review_required、declared scope / units、full_book_required、dual_view_required、engineering_source_scope。
 - 一个 issue 一个 worktree，一个 worker 一个 PR；主控只能报告 ready-to-merge candidate，不能自动 merge。
 
 ## Stop Conditions

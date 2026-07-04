@@ -20,15 +20,48 @@ ReaderLab V2 分三层：
 
 可分享 Skill 包至少应包含：
 
-- Skill 入口说明和触发边界。
-- ReaderLab 核心脚本或命令入口。
-- 运行配置模板。
-- 图书 / 长文路线的必要协议和模板。
-- Skill / 工程材料路线的必要协议和模板。
-- Quality Gate / Reader Evaluation / Controller 的最小协议说明。
-- 最小 fixtures 或 smoke 输入，用于验证安装和基本路线。
-- 验证命令说明。
-- 状态用语说明，避免把局部通过扩大成 production ready。
+确定性输入清单：
+
+- Skill entry: `.agents/skills/readerlab/SKILL.md`
+- Skill checks: `.agents/skills/readerlab/checks/activation-checklist.md`、`.agents/skills/readerlab/checks/readiness-checklist.md`
+- Skill eval cases: `.agents/skills/readerlab/evals/trigger-cases.json`、`.agents/skills/readerlab/evals/output-cases.json`
+- Skill examples: `.agents/skills/readerlab/examples/input-request.json`、`.agents/skills/readerlab/examples/route-decision-example.json`
+- Core scripts: `scripts/readerlab.py`、`scripts/readerlab_trace_validator.py`
+- Supporting validators: `scripts/readerlab_fullbook_demo_validate.py`、`scripts/readerlab_review_pack_validate.py`
+- Product docs: `docs/product-spec.md`、`docs/readerlab-package-spec.md`、`docs/eval-gates.md`、`docs/decisions.md`
+- Method docs: `docs/ai-reading-method.md`、`docs/high-order-explanation-method.md`、`docs/technical-cofounder-method.md`
+- Contracts: `docs/contracts/`
+- Smoke fixtures: `tests/fixtures/readerlab/contract-validator-proof-v0/`、`tests/fixtures/readerlab/comment-replay/fixtures/`
+- Minimal tests: `tests/test_readerlab.py`、`tests/test_readerlab_trace_validator.py`、`tests/test_fullbook_demo_validate.py`、`tests/test_review_pack_validate.py`
+- Package boundary docs: `docs/readerlab-v2-package-boundary.md`、`docs/readerlab-v2-shareable-skill-prd.md`、`docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`
+
+可选但必须先提交后才能纳入的 V2 输入：
+
+- `scripts/readerlab_v2_runner.py`
+- `scripts/readerlab_v2_case_assembly.py`
+- `scripts/readerlab_v2_quality_gate_adapter.py`
+- `experiments/readerlab-v2/agent-prompts/`
+- `experiments/readerlab-v2/step-contracts/`
+- `experiments/readerlab-v2/route-modules/`
+- V2 smoke fixtures and tests introduced by #6/#7/#8
+
+如果某项仍是未提交本机文件，#3 包构建器不得把它当成当前包输入；必须等负责该项的 issue 提交后再加入 include inventory。
+
+目标包顶层建议：
+
+```text
+readerlab/
+  SKILL.md
+  checks/
+  evals/
+  examples/
+  scripts/
+  docs/
+  contracts/
+  fixtures/
+  tests/
+  PACKAGE_BOUNDARY.md
+```
 
 ## Must Exclude
 
