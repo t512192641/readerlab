@@ -1,4 +1,5 @@
 import json
+import os
 import shutil
 import subprocess
 import tempfile
@@ -113,6 +114,37 @@ class ReaderLabInstallSmokeTests(unittest.TestCase):
             self.assertEqual(payload["status"], "fail")
             self.assertEqual(payload["failed_phase"], "discovery")
             self.assertIn("expected skill name", payload["message"])
+
+    def test_blocks_codex_home_skill_root_by_default(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            package_root = build_package(tmp_path / "build")
+            codex_home = tmp_path / "codex-home"
+            env = os.environ.copy()
+            env["CODEX_HOME"] = str(codex_home)
+
+            result = subprocess.run(
+                [
+                    "python3",
+                    str(INSTALL_SMOKE),
+                    "--package-root",
+                    str(package_root),
+                    "--install-root",
+                    str(codex_home / "skills"),
+                    "--force",
+                ],
+                check=False,
+                text=True,
+                capture_output=True,
+                env=env,
+            )
+            payload = json.loads(result.stdout)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(payload["status"], "fail")
+            self.assertEqual(payload["failed_phase"], "install")
+            self.assertIn("global Codex Skill directory", payload["message"])
+            self.assertFalse((codex_home / "skills/readerlab").exists())
 
 
 if __name__ == "__main__":

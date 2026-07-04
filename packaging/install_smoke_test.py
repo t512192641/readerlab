@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -12,7 +13,6 @@ from typing import Any
 
 
 SKILL_NAME = "readerlab"
-GLOBAL_CODEX_SKILLS = (Path.home() / ".codex" / "skills").resolve()
 
 
 class SmokeFailure(Exception):
@@ -24,13 +24,24 @@ class SmokeFailure(Exception):
 
 def require_clean_install_root(path: Path, *, allow_global_codex_skills: bool) -> Path:
     resolved = path.resolve()
-    if not allow_global_codex_skills and (resolved == GLOBAL_CODEX_SKILLS or GLOBAL_CODEX_SKILLS in resolved.parents):
-        raise SmokeFailure(
-            "install",
-            "refusing to write to the global Codex Skill directory; use a clean temporary install root",
-        )
+    if not allow_global_codex_skills:
+        for blocked_root in global_skill_roots():
+            if resolved == blocked_root or blocked_root in resolved.parents:
+                raise SmokeFailure(
+                    "install",
+                    f"refusing to write to the global Codex Skill directory ({blocked_root}); "
+                    "use a clean temporary install root",
+                )
     resolved.mkdir(parents=True, exist_ok=True)
     return resolved
+
+
+def global_skill_roots() -> tuple[Path, ...]:
+    roots = {(Path.home() / ".codex" / "skills").resolve()}
+    codex_home = os.environ.get("CODEX_HOME")
+    if codex_home:
+        roots.add((Path(codex_home) / "skills").resolve())
+    return tuple(sorted(roots))
 
 
 def read_frontmatter(path: Path) -> dict[str, str]:
