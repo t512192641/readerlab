@@ -109,6 +109,32 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
         self.assertEqual(failure.exception.phase, "configuration_structure")
         self.assertIn("segmentation_logic", failure.exception.message)
 
+    def test_renderer_orders_direct_source_refs_by_catalog(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            output_root = Path(tmp) / "output"
+            shutil.copytree(FIXTURE, fixture)
+            catalog_path = fixture / "audit/contracts/catalog-map.v1.json"
+            catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+            catalog["catalog"]["reading_units"][0]["source_refs"] = ["src-longform-report-argument"]
+            catalog["catalog"]["reading_units"][1]["source_refs"] = ["src-longform-interview-turn"]
+            catalog["claims"][0]["source_refs"] = [
+                "src-longform-report-argument",
+                "src-longform-interview-turn",
+            ]
+            catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            subprocess.run(
+                ["python3", "scripts/readerlab.py", "render-contract-package", str(fixture), str(output_root)],
+                cwd=ROOT,
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            text = (output_root / "reader/01_局部长文阅读页.md").read_text(encoding="utf-8")
+
+        self.assertLess(text.index("报告开头不是先给结论"), text.index("访谈对象在这里先否认"))
+
     def test_shipped_fixture_reader_display_path_is_evaluable(self) -> None:
         result = subprocess.run(
             ["python3", "scripts/readerlab.py", "eval-rendered-package", str(FIXTURE)],

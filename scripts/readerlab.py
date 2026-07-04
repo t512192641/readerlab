@@ -4650,7 +4650,7 @@ def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: li
         if not isinstance(unit, dict):
             continue
         for ref in unit.get("source_refs") or []:
-            source_id = location_to_source.get(str(ref))
+            source_id = location_to_source.get(str(ref)) or str(ref)
             if source_id and source_id in source_by_id and source_id not in seen:
                 ordered.append(source_by_id[source_id])
                 seen.add(source_id)
