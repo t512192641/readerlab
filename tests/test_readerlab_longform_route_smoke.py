@@ -135,6 +135,55 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
 
         self.assertLess(text.index("报告开头不是先给结论"), text.index("访谈对象在这里先否认"))
 
+    def test_renderer_preserves_non_adjacent_repeated_source_positions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            output_root = Path(tmp) / "output"
+            shutil.copytree(FIXTURE, fixture)
+            catalog_path = fixture / "audit/contracts/catalog-map.v1.json"
+            catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+            catalog["catalog"]["reading_units"] = [
+                {
+                    "unit_id": "report-opening",
+                    "title": "报告开头",
+                    "status": "sample_argument_unit",
+                    "source_refs": ["loc-longform-report-tension"],
+                },
+                {
+                    "unit_id": "interview-turn",
+                    "title": "访谈转折",
+                    "status": "sample_interview_unit",
+                    "source_refs": ["loc-longform-interview-turn"],
+                },
+                {
+                    "unit_id": "report-evidence",
+                    "title": "报告证据组",
+                    "status": "sample_argument_unit",
+                    "source_refs": ["loc-longform-report-evidence-group"],
+                },
+            ]
+            catalog["claims"][0]["source_refs"] = [
+                "loc-longform-report-tension",
+                "loc-longform-interview-turn",
+                "loc-longform-report-evidence-group",
+            ]
+            catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            subprocess.run(
+                ["python3", "scripts/readerlab.py", "render-contract-package", str(fixture), str(output_root)],
+                cwd=ROOT,
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            text = (output_root / "reader/01_局部长文阅读页.md").read_text(encoding="utf-8")
+
+        first_report = text.index("报告开头不是先给结论")
+        interview = text.index("访谈对象在这里先否认")
+        second_report = text.index("报告开头不是先给结论", interview)
+        self.assertLess(first_report, interview)
+        self.assertLess(interview, second_report)
+
     def test_shipped_fixture_reader_display_path_is_evaluable(self) -> None:
         result = subprocess.run(
             ["python3", "scripts/readerlab.py", "eval-rendered-package", str(FIXTURE)],

@@ -4644,19 +4644,21 @@ def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: li
             location_to_source[str(location_id)] = str(source_id)
 
     ordered: list[dict[str, str]] = []
-    seen: set[str] = set()
+    emitted_source_ids: set[str] = set()
+    last_source_id = ""
     reading_units = ((catalog.get("catalog") or {}).get("reading_units") or []) if isinstance(catalog, dict) else []
     for unit in reading_units:
         if not isinstance(unit, dict):
             continue
         for ref in unit.get("source_refs") or []:
             source_id = location_to_source.get(str(ref)) or str(ref)
-            if source_id and source_id in source_by_id and source_id not in seen:
+            if source_id and source_id in source_by_id and source_id != last_source_id:
                 ordered.append(source_by_id[source_id])
-                seen.add(source_id)
+                emitted_source_ids.add(source_id)
+                last_source_id = source_id
     for excerpt in excerpts:
         source_id = excerpt.get("source_id")
-        if source_id not in seen:
+        if source_id not in emitted_source_ids:
             ordered.append(excerpt)
     return ordered
 
