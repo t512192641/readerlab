@@ -1,0 +1,49 @@
+{
+  "schema": "readerlab.source-registry.v1",
+  "material": {
+    "id": "longform-route-smoke-v0",
+    "title": "长文 / 报告 / 访谈稿路线烟测样本",
+    "type": "longform_report_interview"
+  },
+  "sources": [
+    {
+      "source_id": "src-longform-interview-turn",
+      "source_path": "audit/source-excerpts/interview-turn.md",
+      "source_type": "markdown_interview_excerpt",
+      "source_role": "primary_text",
+      "coverage_role": "interview_turning_point",
+      "extraction_status": "repo_local_fixture"
+    },
+    {
+      "source_id": "src-longform-report-argument",
+      "source_path": "audit/source-excerpts/report-argument.md",
+      "source_type": "markdown_report_excerpt",
+      "source_role": "primary_text",
+      "coverage_role": "argument_and_evidence_group",
+      "extraction_status": "repo_local_fixture"
+    }
+  ],
+  "source_scope": {
+    "coverage_status": "sample",
+    "coverage_note": "Two local excerpts are available for longform/report/interview route smoke only."
+  },
+  "context_gaps": [
+    "The complete report and complete interview transcript are outside this fixture.",
+    "Human reader acceptance has not been run."
+  ],
+  "location_refs": [
+    "loc-longform-report-tension",
+    "loc-longform-report-evidence-group",
+    "loc-longform-interview-denial",
+    "loc-longform-interview-turn"
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/source-registry.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}
