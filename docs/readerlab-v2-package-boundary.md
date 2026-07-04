@@ -28,7 +28,7 @@ ReaderLab V2 分三层：
 - Skill examples: `.agents/skills/readerlab/examples/input-request.json`、`.agents/skills/readerlab/examples/route-decision-example.json`
 - Core scripts: `scripts/readerlab_trace_validator.py`
 - Conditional runtime script: `scripts/readerlab.py` can enter the shareable package only after #4 removes hardcoded current-user local path defaults and the package audit confirms no LifeAtlas fixed path remains.
-- Supporting validators: `scripts/readerlab_fullbook_demo_validate.py`、`scripts/readerlab_review_pack_validate.py`
+- Conditional supporting validators: `scripts/readerlab_fullbook_demo_validate.py` and `scripts/readerlab_review_pack_validate.py` can enter the shareable package only after their report-backed defaults are externalized or removed; no package script may require excluded `docs/reports/` content by default.
 - Product docs: `docs/product-spec.md`、`docs/readerlab-package-spec.md`、`docs/eval-gates.md`、`docs/decisions.md`
 - Method docs: `docs/ai-reading-method.md`、`docs/high-order-explanation-method.md`、`docs/technical-cofounder-method.md`
 - Contracts: `docs/contracts/`
@@ -43,6 +43,8 @@ ReaderLab V2 分三层：
 - 移除或改写指向包外 fixture、private-material-validation demos、comment-replay 包外 demo 或研发仓库 reports 的命令。
 - 将示例命令改成只依赖包内 docs、fixtures、tests 和用户显式提供的配置参数。
 - sanitization 结果必须由 package audit 检查，不能只靠人工约定。
+
+#3 不得把仍依赖研发仓库 reports、包外 demos 或本机默认路径的脚本列为可运行包资产；这些脚本只能作为条件输入，等 #4 或对应后续 issue 去耦合后再纳入。
 
 不得作为可分享包最小测试直接纳入：
 

@@ -196,10 +196,14 @@ Scheduling note: #4 is a prerequisite for any #3 package output that includes ru
 Owned files:
 
 - `scripts/readerlab.py`
-- `scripts/readerlab_v2_runner.py`
-- `scripts/readerlab_v2_case_assembly.py`
+- existing committed scripts with local/report-backed defaults that block package inclusion
 - related tests
 - configuration docs / examples introduced by the worker
+
+Optional if present in the committed tree when #4 starts:
+
+- `scripts/readerlab_v2_runner.py`
+- `scripts/readerlab_v2_case_assembly.py`
 
 Forbidden:
 
