@@ -6,17 +6,7 @@
   ],
   "output_root": "/absolute/path/to/readerlab-package",
   "permission_boundary": "private_only",
-  "material_family": "skill_engineering",
   "intended_reader": "Chinese reader who wants to read, annotate, discuss, and absorb the material",
   "requested_scope": "selected_unit",
-  "declared_scope": "example selected unit",
-  "declared_units": [
-    "example-unit"
-  ],
-  "full_book_required": false,
-  "dual_view_required": true,
-  "engineering_source_scope": [
-    "/absolute/path/to/source/SKILL.md"
-  ],
   "human_review_required": true
 }

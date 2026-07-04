@@ -38,21 +38,16 @@ Use this checklist before treating `.agents/skills/readerlab/SKILL.md` as repo-l
 
 ## Validation Commands
 
-Validate explicit runtime configuration before any shareable Skill package run:
-
-```bash
-python3 scripts/readerlab.py validate-run-config .agents/skills/readerlab/examples/run-config-example.json --no-source-exists-check
-```
-
 Run:
 
 ```bash
 python3 scripts/readerlab_trace_validator.py validate-demo <output_root>
 ```
 
-Run repository-only historical regression separately:
+Run historical regression separately:
 
 ```bash
+python3 scripts/readerlab_trace_validator.py validate-suite --demo tests/fixtures/readerlab/private-material-validation/demos/A_feel_good_productivity --demo tests/fixtures/readerlab/private-material-validation/demos/B_planning_with_files --cases-json tests/fixtures/readerlab/comment-replay/fixtures/comment-replay-cases.json --fixture-dir tests/fixtures/readerlab/comment-replay/fixtures
 python3 tests/test_readerlab_trace_validator.py
 python3 tests/test_readerlab.py
 git diff --check

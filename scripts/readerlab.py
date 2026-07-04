@@ -298,6 +298,8 @@ def validate_run_config_payload(payload: dict[str, Any], *, require_source_exist
     for field in ("human_review_required", "full_book_required", "dual_view_required"):
         if field in payload and not isinstance(payload.get(field), bool):
             errors.append(f"{field} must be a boolean")
+    if payload.get("human_review_required") is False:
+        errors.append("human_review_required must be true; ReaderLab config checks cannot waive human review")
 
     family = payload.get("material_family")
     if isinstance(family, str) and family not in RUN_CONFIG_SUPPORTED_MATERIAL_FAMILIES:

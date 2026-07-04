@@ -155,6 +155,23 @@ description: {description}
             payload = json.loads(result.stdout)
             self.assertTrue(any("permission_boundary" in error for error in payload["errors"]))
 
+    def test_validate_run_config_requires_human_review(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            source, _readings_dir, dest = self.write_comment_fixture(Path(tmp))
+            config = Path(tmp) / "run-config.json"
+            self.write_run_config(config, source=source, output_root=dest)
+            payload = json.loads(config.read_text(encoding="utf-8"))
+            payload["human_review_required"] = False
+            config.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            result = run_readerlab_unchecked("validate-run-config", str(config))
+            self.assertNotEqual(result.returncode, 0)
+            payload = json.loads(result.stdout)
+            self.assertIn(
+                "human_review_required must be true; ReaderLab config checks cannot waive human review",
+                payload["errors"],
+            )
+
     def test_validate_run_config_requires_engineering_source_scope_for_skill_materials(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             source, _readings_dir, dest = self.write_comment_fixture(Path(tmp))
