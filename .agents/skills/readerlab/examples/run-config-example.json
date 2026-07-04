@@ -1,0 +1,19 @@
+{
+  "source_paths": [
+    "/path/to/your/source-material"
+  ],
+  "output_root": "/path/to/your/readerlab-output",
+  "permission_boundary": "local_private_user_approved_only",
+  "material_family": "skill_engineering",
+  "requested_scope": "one skill or one declared source set",
+  "human_review_required": true,
+  "declared_scope": "demo-scope",
+  "declared_units": [
+    "demo-unit"
+  ],
+  "full_book_required": false,
+  "dual_view_required": true,
+  "engineering_source_scope": [
+    "relative/path/to/SKILL.md"
+  ]
+}

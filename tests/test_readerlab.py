@@ -93,6 +93,118 @@ description: {description}
             *extra,
         )
 
+    def write_run_config(
+        self,
+        path: Path,
+        *,
+        source: Path,
+        output_root: Path,
+        permission_boundary: str = "local_private_user_approved_only",
+        material_family: str = "skill_engineering",
+        include_engineering_scope: bool = True,
+    ) -> None:
+        payload = {
+            "source_paths": [str(source)],
+            "output_root": str(output_root),
+            "permission_boundary": permission_boundary,
+            "material_family": material_family,
+            "requested_scope": "single local fixture",
+            "human_review_required": True,
+            "declared_scope": "demo",
+            "declared_units": ["demo-unit"],
+            "full_book_required": False,
+            "dual_view_required": True,
+        }
+        if include_engineering_scope:
+            payload["engineering_source_scope"] = ["demo/SKILL.md"]
+        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    def test_validate_run_config_accepts_explicit_local_paths_without_reader_acceptance_claim(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            source, _readings_dir, dest = self.write_comment_fixture(Path(tmp))
+            config = Path(tmp) / "run-config.json"
+            self.write_run_config(config, source=source, output_root=dest)
+
+            result = run_readerlab("validate-run-config", str(config))
+            payload = json.loads(result.stdout)
+            self.assertTrue(payload["passed"])
+            self.assertEqual(payload["check_class"], "configuration_structure")
+            self.assertTrue(payload["not_reader_acceptance"])
+            self.assertTrue(payload["not_production_ready"])
+
+    def test_validate_run_config_rejects_missing_required_fields_with_remedy(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            config = Path(tmp) / "run-config.json"
+            config.write_text('{"source_paths": []}\n', encoding="utf-8")
+
+            result = run_readerlab_unchecked("validate-run-config", str(config))
+            self.assertNotEqual(result.returncode, 0)
+            payload = json.loads(result.stdout)
+            self.assertFalse(payload["passed"])
+            self.assertIn("missing required config field: output_root", payload["errors"])
+            self.assertIn("remedy", payload)
+
+    def test_validate_run_config_rejects_public_or_production_boundary(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            source, _readings_dir, dest = self.write_comment_fixture(Path(tmp))
+            config = Path(tmp) / "run-config.json"
+            self.write_run_config(config, source=source, output_root=dest, permission_boundary="public production ready")
+
+            result = run_readerlab_unchecked("validate-run-config", str(config))
+            self.assertNotEqual(result.returncode, 0)
+            payload = json.loads(result.stdout)
+            self.assertTrue(any("permission_boundary" in error for error in payload["errors"]))
+
+    def test_validate_run_config_requires_human_review(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            source, _readings_dir, dest = self.write_comment_fixture(Path(tmp))
+            config = Path(tmp) / "run-config.json"
+            self.write_run_config(config, source=source, output_root=dest)
+            payload = json.loads(config.read_text(encoding="utf-8"))
+            payload["human_review_required"] = False
+            config.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            result = run_readerlab_unchecked("validate-run-config", str(config))
+            self.assertNotEqual(result.returncode, 0)
+            payload = json.loads(result.stdout)
+            self.assertIn(
+                "human_review_required must be true; ReaderLab config checks cannot waive human review",
+                payload["errors"],
+            )
+
+    def test_validate_run_config_requires_engineering_source_scope_for_skill_materials(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            source, _readings_dir, dest = self.write_comment_fixture(Path(tmp))
+            config = Path(tmp) / "run-config.json"
+            self.write_run_config(config, source=source, output_root=dest, include_engineering_scope=False)
+
+            result = run_readerlab_unchecked("validate-run-config", str(config))
+            self.assertNotEqual(result.returncode, 0)
+            payload = json.loads(result.stdout)
+            self.assertIn(
+                "engineering_source_scope is required for material_family=skill_engineering",
+                payload["errors"],
+            )
+
+    def test_import_skills_can_consume_run_config(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            source, readings_dir, dest = self.write_comment_fixture(Path(tmp))
+            config = Path(tmp) / "run-config.json"
+            self.write_run_config(config, source=source, output_root=dest)
+
+            run_readerlab(
+                "import-skills",
+                "--run-config",
+                str(config),
+                "--book-id",
+                "demo",
+                "--title",
+                "demo",
+                "--readings-dir",
+                str(readings_dir),
+            )
+            self.assertTrue((dest / "demo" / "manifest.json").is_file())
+
     def reading_page_for_skill(self, book_dir: Path, skill: str) -> Path:
         manifest = json.loads((book_dir / "manifest.json").read_text(encoding="utf-8"))
         record = next(item for item in manifest["skills"] if item["name"] == skill)

@@ -54,10 +54,32 @@ TRIAL_UNIT_ID = "01_核心入口与总览"
 TERMS_PAGE_BASENAME = "02_Skill阅读术语表"
 TERMS_PAGE_FILENAME = f"{TERMS_PAGE_BASENAME}.md"
 DEFAULT_AGENT_READINGS_DIR = Path("data/skill-readings")
-LIFEATLAS_ROOT = Path("/Users/tianqiang/LifeAtlas")
 CONTRACT_SCHEMA_DIR = Path(__file__).resolve().parents[1] / "docs" / "contracts"
 REQUIRED_CONTRACT_SCHEMAS = ("readerlab.global-map.v1", "readerlab.distillation.v1")
 HUMAN_CLEARED_STATUSES = {"accepted", "not_required"}
+RUN_CONFIG_REQUIRED_FIELDS = (
+    "source_paths",
+    "output_root",
+    "permission_boundary",
+    "material_family",
+    "requested_scope",
+    "human_review_required",
+    "declared_scope",
+    "declared_units",
+    "full_book_required",
+    "dual_view_required",
+)
+RUN_CONFIG_SUPPORTED_MATERIAL_FAMILIES = {
+    "book_longform",
+    "longform_report_interview",
+    "skill_engineering",
+}
+RUN_CONFIG_FORBIDDEN_BOUNDARY_TERMS = {
+    "public",
+    "production",
+    "production_ready",
+    "reader_accepted",
+}
 CONTRACT_PACKAGE_REQUIRED_SCHEMAS = {
     "readerlab.source-registry.v1",
     "readerlab.location-map.v1",
@@ -113,6 +135,21 @@ TRIAL_SKILL_NAMES = {
     "plan-devex-review",
     "plan-tune",
 }
+
+
+@dataclass(frozen=True)
+class ReaderLabRunConfig:
+    source_paths: tuple[Path, ...]
+    output_root: Path
+    permission_boundary: str
+    material_family: str
+    requested_scope: str
+    human_review_required: bool
+    declared_scope: str
+    declared_units: tuple[str, ...]
+    full_book_required: bool
+    dual_view_required: bool
+    engineering_source_scope: tuple[str, ...]
 
 READING_UNIT_CLASSIFIERS: list[tuple[str, tuple[str, ...], tuple[str, ...]]] = [
     (
@@ -221,6 +258,138 @@ HUMAN_REVIEW_REGISTRY: dict[tuple[str, str], dict[str, str]] = {
         "note": "用户已人工阅读并基本认可该 DB Skill 核心页；机器 validate 仍只代表结构和覆盖验收。",
     },
 }
+
+
+def _is_non_empty_string(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
+def _is_non_empty_string_list(value: Any) -> bool:
+    return isinstance(value, list) and bool(value) and all(_is_non_empty_string(item) for item in value)
+
+
+def load_json_object(path: Path) -> dict[str, Any]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"invalid JSON config at line {exc.lineno}, column {exc.colno}: {exc.msg}") from exc
+    except OSError as exc:
+        raise SystemExit(f"cannot read config: {path}: {exc}") from exc
+    if not isinstance(payload, dict):
+        raise SystemExit("run config must be a JSON object")
+    return payload
+
+
+def validate_run_config_payload(payload: dict[str, Any], *, require_source_exists: bool = True) -> list[str]:
+    errors: list[str] = []
+    for field in RUN_CONFIG_REQUIRED_FIELDS:
+        if field not in payload:
+            errors.append(f"missing required config field: {field}")
+
+    if "source_paths" in payload and not _is_non_empty_string_list(payload.get("source_paths")):
+        errors.append("source_paths must be a non-empty list of paths")
+    if "declared_units" in payload and not _is_non_empty_string_list(payload.get("declared_units")):
+        errors.append("declared_units must be a non-empty list of unit ids")
+
+    for field in ("output_root", "permission_boundary", "material_family", "requested_scope", "declared_scope"):
+        if field in payload and not _is_non_empty_string(payload.get(field)):
+            errors.append(f"{field} must be a non-empty string")
+
+    for field in ("human_review_required", "full_book_required", "dual_view_required"):
+        if field in payload and not isinstance(payload.get(field), bool):
+            errors.append(f"{field} must be a boolean")
+    if payload.get("human_review_required") is False:
+        errors.append("human_review_required must be true; ReaderLab config checks cannot waive human review")
+
+    family = payload.get("material_family")
+    if isinstance(family, str) and family not in RUN_CONFIG_SUPPORTED_MATERIAL_FAMILIES:
+        supported = ", ".join(sorted(RUN_CONFIG_SUPPORTED_MATERIAL_FAMILIES))
+        errors.append(f"material_family must be one of: {supported}")
+
+    boundary = str(payload.get("permission_boundary", "")).lower()
+    forbidden_terms = sorted(term for term in RUN_CONFIG_FORBIDDEN_BOUNDARY_TERMS if term in boundary)
+    if forbidden_terms:
+        errors.append(
+            "permission_boundary must describe local/user-approved limits, not public validation or production readiness: "
+            + ", ".join(forbidden_terms)
+        )
+
+    engineering_scope = payload.get("engineering_source_scope")
+    if family == "skill_engineering" and not _is_non_empty_string_list(engineering_scope):
+        errors.append("engineering_source_scope is required for material_family=skill_engineering")
+    elif engineering_scope is not None and not _is_non_empty_string_list(engineering_scope):
+        errors.append("engineering_source_scope must be a non-empty list of source ids or paths when present")
+
+    if require_source_exists and _is_non_empty_string_list(payload.get("source_paths")):
+        for raw_path in payload["source_paths"]:
+            source_path = Path(raw_path).expanduser()
+            if not source_path.exists():
+                errors.append(f"source_path does not exist: {source_path}")
+
+    output_root = payload.get("output_root")
+    if require_source_exists and isinstance(output_root, str) and output_root.strip():
+        parent = Path(output_root).expanduser().parent
+        if parent != Path(".") and not parent.exists():
+            errors.append(f"output_root parent does not exist: {parent}")
+
+    return errors
+
+
+def run_config_from_payload(payload: dict[str, Any]) -> ReaderLabRunConfig:
+    errors = validate_run_config_payload(payload)
+    if errors:
+        remedy = (
+            "Provide a complete run config with source_paths, output_root, permission_boundary, "
+            "material_family, requested_scope, human_review_required, declared_scope, declared_units, "
+            "full_book_required, and dual_view_required. Add engineering_source_scope for skill_engineering."
+        )
+        raise SystemExit("invalid ReaderLab run config:\n- " + "\n- ".join(errors) + f"\nremedy: {remedy}")
+    engineering_scope = tuple(str(item) for item in payload.get("engineering_source_scope", []))
+    return ReaderLabRunConfig(
+        source_paths=tuple(Path(item).expanduser() for item in payload["source_paths"]),
+        output_root=Path(payload["output_root"]).expanduser(),
+        permission_boundary=str(payload["permission_boundary"]),
+        material_family=str(payload["material_family"]),
+        requested_scope=str(payload["requested_scope"]),
+        human_review_required=bool(payload["human_review_required"]),
+        declared_scope=str(payload["declared_scope"]),
+        declared_units=tuple(str(item) for item in payload["declared_units"]),
+        full_book_required=bool(payload["full_book_required"]),
+        dual_view_required=bool(payload["dual_view_required"]),
+        engineering_source_scope=engineering_scope,
+    )
+
+
+def load_run_config(path: str | None) -> ReaderLabRunConfig | None:
+    if not path:
+        return None
+    return run_config_from_payload(load_json_object(Path(path).expanduser()))
+
+
+def validate_run_config_cmd(args: argparse.Namespace) -> None:
+    config_path = Path(args.config).expanduser()
+    payload = load_json_object(config_path)
+    errors = validate_run_config_payload(payload, require_source_exists=not args.no_source_exists_check)
+    result = {
+        "check_class": "configuration_structure",
+        "passed": not errors,
+        "config": str(config_path),
+        "material_family": payload.get("material_family"),
+        "declared_scope": payload.get("declared_scope"),
+        "declared_units": payload.get("declared_units"),
+        "permission_boundary": payload.get("permission_boundary"),
+        "source_paths": payload.get("source_paths"),
+        "output_root": payload.get("output_root"),
+        "remedy": None
+        if not errors
+        else "Fill missing fields and pass user-owned source_paths/output_root explicitly; do not rely on LifeAtlas, GSTACK, or report-backed defaults.",
+        "not_reader_acceptance": True,
+        "not_production_ready": True,
+        "errors": errors,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    if errors:
+        raise SystemExit(1)
 
 TRIAL_SKILL_DESCRIPTIONS_ZH = {
     "spec": "把模糊意图整理成五阶段的可执行规格，核心是先澄清目标、边界和验收方式，再进入实施计划。",
@@ -3508,10 +3677,23 @@ def build_manifest(
 
 def import_skills(args: argparse.Namespace) -> None:
     global AGENT_SKILL_READINGS
-    source = Path(args.source).expanduser().resolve()
+    run_config = load_run_config(args.run_config)
+    if run_config:
+        if len(run_config.source_paths) != 1:
+            raise SystemExit("import-skills currently requires exactly one source path in run config")
+        source = run_config.source_paths[0].resolve()
+        dest_root = run_config.output_root
+        if run_config.material_family != "skill_engineering":
+            raise SystemExit("import-skills requires material_family=skill_engineering in run config")
+    else:
+        if not args.source:
+            raise SystemExit("source is required unless --run-config is provided")
+        if not args.dest:
+            raise SystemExit("--dest is required unless --run-config is provided")
+        source = Path(args.source).expanduser().resolve()
+        dest_root = Path(args.dest).expanduser()
     if not source.exists() or not source.is_dir():
         raise SystemExit(f"source is not a directory: {source}")
-    dest_root = Path(args.dest).expanduser()
     book_id = args.book_id or slugify(source.name)
     title = args.title or source.name
     book_dir = dest_root / book_id
@@ -4760,11 +4942,7 @@ def render_eval_markdown_report(result: dict[str, Any]) -> str:
 def prepare_report_path(raw_path: str, *, overwrite: bool = False) -> Path:
     report_path = Path(raw_path).expanduser()
     resolved = report_path.resolve()
-    try:
-        resolved.relative_to(LIFEATLAS_ROOT)
-    except ValueError:
-        pass
-    else:
+    if "LifeAtlas" in resolved.parts:
         raise SystemExit("refusing to write eval report under LifeAtlas; use /private/tmp or repo-local path")
     if resolved.exists() and not overwrite:
         raise SystemExit(f"report path already exists; use --overwrite-report to replace: {resolved}")
@@ -5223,8 +5401,9 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p_import = sub.add_parser("import-skills")
-    p_import.add_argument("source")
-    p_import.add_argument("--dest", required=True)
+    p_import.add_argument("source", nargs="?")
+    p_import.add_argument("--dest")
+    p_import.add_argument("--run-config", help="JSON runtime config with explicit source_paths and output_root")
     p_import.add_argument("--book-id")
     p_import.add_argument("--title")
     p_import.add_argument("--goal", default="学习这份材料的结构、方法和可复用经验。")
@@ -5232,6 +5411,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_import.add_argument("--force", action="store_true")
     p_import.add_argument("--preserve-comments", action="store_true")
     p_import.set_defaults(func=import_skills)
+
+    p_run_config = sub.add_parser("validate-run-config")
+    p_run_config.add_argument("config")
+    p_run_config.add_argument(
+        "--no-source-exists-check",
+        action="store_true",
+        help="Only validate config shape; do not require source_paths to exist on this machine.",
+    )
+    p_run_config.set_defaults(func=validate_run_config_cmd)
 
     p_validate = sub.add_parser("validate")
     p_validate.add_argument("book_dir")

@@ -11,7 +11,6 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_PACK_DIR = ROOT / "docs" / "reports" / "readerlab-fullbook-demo-v0"
 
 REQUIRED_FILES = (
     "README.md",
@@ -307,7 +306,10 @@ def validate_pack(pack_dir: Path) -> list[str]:
 
 
 def main(argv: list[str]) -> int:
-    pack_dir = Path(argv[1]) if len(argv) > 1 else DEFAULT_PACK_DIR
+    if len(argv) != 2 or argv[1] in {"-h", "--help"}:
+        print("Usage: python3 scripts/readerlab_fullbook_demo_validate.py PACK_DIR")
+        return 0 if len(argv) == 2 and argv[1] in {"-h", "--help"} else 2
+    pack_dir = Path(argv[1])
     errors = validate_pack(pack_dir)
     if errors:
         print("FAIL ReaderLab fullbook demo validation")
