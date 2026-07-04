@@ -2,76 +2,180 @@
 
 ## Authority
 
-本文件是当前执行事实的唯一入口。新会话启动只读：
+本文件是当前执行事实的唯一入口。新会话默认只读：
 
 1. `AGENTS.md`
 2. `docs/current-task.md`
 
-旧报告、旧 prompt、旧 handoff、旧聊天和已删除过程文档都不是当前事实源。
+按需再读：
+
+- V2 工作流：`experiments/readerlab-v2/workflow-contract-v2.md`
+- V2 runner：`experiments/readerlab-v2/runner-contract-v2.md`
+- V2 路线模块：`experiments/readerlab-v2/route-modules/technical-material-route.md`
+- V2 step contracts：`experiments/readerlab-v2/step-contracts/`
+- V2 quality gate adapter：`scripts/readerlab_v2_quality_gate_adapter.py`
+- V2 runner：`scripts/readerlab_v2_runner.py`
+- 历史运行摘要：`docs/agent-run-ledger.md` 顶部最新两条
+- 稳定路径和验证命令：`docs/dev-state.md`
+- 耐久决策：`docs/decisions.md`
+
+旧 prompt、旧样章、旧报告、旧聊天摘要和单纯 `git diff` 不是当前事实源。当前 repo 有大量 untracked V2 文件，新会话不能只靠 `git diff` 判断状态。
 
 ## Active Slice
 
-ReaderLab 已进入 **repo-local Skill trial 后的收尾清理与真实小材料试用前**。
+ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
 
-当前已完成：
+当前目标已经从“继续打磨单个工程材料 prototype”调整为 **ReaderLab V2 可安装、可分享的干净 Skill 包候选**。这不是正式发布阶段，也不能声明 production ready；它要求先把发布边界、历史防回归、包构建、安装 smoke 和三类材料路线验收重新组织清楚，再继续开发和 debug。
 
-- ReaderLab 产品主线重设为：一手正文轨 + AI 陪读轨 + audit/contracts/eval 事实层。
-- repo-local Skill 已激活：`.agents/skills/readerlab/SKILL.md`。
-- trace validator 已能检查 `trace-validation.json` 中 reader-facing paragraph 到 anchor / claim / candidate 或 gate 的连接。
-- 最小机器 fixtures 已移到 `tests/fixtures/readerlab/`。
-- 《埃隆之书》ReaderLab v1 本地包已重新生成到 LifeAtlas：
-  `/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/elon-book__readerlab-v1_20260701/`
-- LifeAtlas 270 目录已清理旧 ReaderLab 生成包：`dbs-suite`、`dbs-suite__v2.15.1_096f726`、`gstack`、Elon 旧 `02/20/40` 过程目录已删除。
-- 新的 Obsidian 阅读面决定：正文、陪读和用户批注必须在同一个可批注 Markdown 阅读页发生；不再默认拆成正文文件、AI 陪读文件和预设批注问题文件。
+当前 PRD：`docs/readerlab-v2-shareable-skill-prd.md`。
 
-当前仍不能声明：
+当前包边界：`docs/readerlab-v2-package-boundary.md`。
 
-- production ready
-- global Skill installed
-- public external validation pass
-- `transferable_method_kernel_pass`
-- real Obsidian body-prose annotation full pass
+当前 RFC：`docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`。后续 GitHub issue 开发按 Controller-Agent GitHub Workflow SOP 执行：RFC -> Issues -> worktrees -> worker agents -> PRs -> Codex review -> ready-to-merge candidates -> human approval -> merge。
 
-## Current Status
+当前 GitHub issue 队列：
 
-- `readerlab_skill_repo_local_trial`: `active`
-- `readerlab_skill_repo_local_path`: `.agents/skills/readerlab/`
-- `trace_validator_reader_paragraph_trace`: `implemented`
-- `trace_validation_fixtures`: `tests/fixtures/readerlab/`
-- `real_obsidian_ui_replay`: `pass_with_warning`
-- `real_obsidian_ui_body_prose_selection`: `not_verified`
-- `reader_package_not_verified`
-- `transferable_method_kernel_pass`: `not_verified`
-- `public_external_material_validation_not_started`
+- #2 固定 ReaderLab V2 可分享 Skill 包边界
+- #3 构建最小 ReaderLab V2 Skill 发布包
+- #4 外置 ReaderLab V2 运行配置并去除本机路径耦合
+- #5 验证 ReaderLab V2 Skill 安装与发现 smoke
+- #6 建立 ReaderLab V2 图书路线 smoke
+- #7 建立 ReaderLab V2 长文 / 报告 / 访谈稿路线 smoke
+- #8 建立 ReaderLab V2 Skill / 工程材料路线 smoke
+- #9 ReaderLab V2 installable release candidate 复核
 
-## Open Skill Work Items
+生产约束 / 验收约束分层仍然有效：验收矩阵保留为评价语言，但不自动进入生产 runner。验收发现的问题必须先反推到最小上游 fault stage，再判断能否形成稳定、低误伤、可执行的生产条件。
 
-- `RL-SKILL-001`: Elon 试生成暴露出旧 Skill/规格仍偏向“正文轨/AI 陪读轨/批注问题文件”分离结构。已改为默认单页阅读面：每个阅读单元一个可批注 Markdown，正文和陪读同页；不得生成预设批注问题文件。后续需要用真实小材料再跑一次，确认 Skill 不再产出三文件结构。
+本阶段已经从一个 `gstack/spec` 窄 block，推进到两个完整单 Skill 样本：
 
-## Next Action
+- `v2-real-skill-gstack-spec-complete-20260704`
+  - `block_id`: `spec-complete-skill`
+  - source: `/Users/tianqiang/技能项目/skills-canonical/packages/gstack/spec/SKILL.md`
+- `v2-real-skill-gstack-review-complete-20260704`
+  - `block_id`: `review-complete-skill`
+  - source: `/Users/tianqiang/技能项目/skills-canonical/packages/gstack/review/SKILL.md`
 
-下一步只做两件事：
+两个完整 case 当前都通过 `check-evaluation`，controller decision 是 `limited_accept`，不是 production ready。
 
-1. 用 `.agents/skills/readerlab/` 做一次真实小材料 ReaderLab package 使用测试。
-2. 之后再补一次严格正文段落直接选择 Obsidian replay。
+## Current Facts
 
-`gstack` 原始 Skills 源仓库是用户要继续学习的材料，不删除、不移动。LifeAtlas 270 下旧 `gstack` ReaderLab 生成解读包不是原始 Skills，已清理。
+- 工程材料路线硬边界已经落入 runner：
+  - `engineering_source_scope` 中声明的原始 source 必须先完整读过一次。
+  - `full-source-track.md` 是 evidence packet / seam，不是摘要替身。
+  - `technical-cofounder-notes.md` / `technical-asset-cards.md` 必须站在 evidence layer 上，不能只依赖 `body.md`。
+  - `technical-cofounder-notes.md` 必须保留至少一个可精确回原始 source 的入口。
+- 正式包结构也已收紧：
+  - 正式包顶层白名单已落地。
+  - `audit/` 和 reader-facing 目录拆开。
+  - `manifest.json` 仍允许留顶层作为兼容例外，但额外 JSON 不能随便留顶层。
+- `gstack/spec` 完整单 Skill case 已通过。
+- `gstack/review` 完整单 Skill case 已通过。
+- 用户指出并确认：验收不能混成一句“读者视角 OK”。ReaderLab 应拆成多类检查：
+  - 合同履约 / 结构合规
+  - 内容完整性
+  - 人类读者体验
+  - 产品预期
+  - Skill / 工程材料路线额外有 Agent 读者可复用性
+- 已把这点落入代码：
+  - `scripts/readerlab_v2_quality_gate_adapter.py`
+    - quality gate request 会写明 `check_class`、`Audience`、`isolation_rule` 和分开的 review dimensions。
+    - `asset_cards` 的受众明确为 `background-free Agent reader`。
+  - `scripts/readerlab_v2_runner.py`
+    - `asset_cards` reader page 必须提供 `purpose`、`reader`、`use_boundary`、`selection_rule` 四个冷启动字段。
+  - `tests/test_readerlab_v2_runner.py`
+    - 新增资产卡缺冷启动上下文的红灯测试。
+  - `tests/test_readerlab_v2_quality_gate_adapter.py`
+    - 新增 quality gate request 必须区分人类读者和无背景 Agent 读者的检查。
+- `review-complete-skill.assets.md` 和 `spec` 相关资产页已补冷启动元信息。
+- 已完成第一轮 runner 约束分层审计：
+  - 继续保留为生产硬 gate：来源范围、证据层、净化正文、最小追责字段、页面存在和中文 H1、audit 不污染读者页、资产页四个冷启动入口字段、quality gate packet / blocking controller 协议。
+  - 已从 runner 下沉到 Quality Gate / Reader Evaluation：工程页是否真正让产品负责人看懂、术语解释是否自然、资产卡是否真的可复用、逐卡技术材料是否足够深、state handoff 是否解释到位、高价值陪读是否被低干扰策略误删。
 
-## Verification Commands
+## Important Distinction
+
+以后说“验收通过”必须说明是哪类检查通过，不能混说。
+
+| 检查类型 | 图书 / 长文线 | Skill / 工程材料线 |
+|---|---|---|
+| 合同履约 | 保留正文、source registry、location map、audit 不污染阅读面 | source scope、evidence packet、技术页/资产卡不站在 body 上二次转述 |
+| 内容完整性 | 覆盖章节主线、关键论证、上下文 | 覆盖完整 Skill 的关键机制、流程、边界、失败条件 |
+| 人类读者体验 | 普通读者能不能读懂正文和陪读 | 不懂技术的人能不能看懂 Skill 在干什么、为什么这样设计 |
+| 产品预期 | 是否像陪读包，不是摘要包或笔记包 | 是否像工程材料陪读包，不是 prompt 摘要或 audit dump |
+| 复用 / 沉淀 | 支持后续批注、讨论、沉淀候选 | 资产卡支持未来无背景 Agent 冷启动复用 |
+
+同时必须区分：
+
+- 生产时约束：来源范围、正文 / 净化正文、证据层、产物结构、顺序依赖、失败回指、controller 阻断关系。
+- 验收时约束：内容完整性、人类读者体验、产品预期、Agent 冷启动复用、高阶讲解是否有认知增量。
+
+验收时约束不应直接放进生产流程。只有当验收问题反复出现，并且能反推成可观察、可复跑、低误伤的前置条件时，才升级为 runner 或生产 prompt 约束。
+
+## Current Verification
+
+最近一次已验证：
 
 ```bash
-python3 scripts/readerlab_trace_validator.py validate-suite --demo tests/fixtures/readerlab/private-material-validation/demos/A_feel_good_productivity --demo tests/fixtures/readerlab/private-material-validation/demos/B_planning_with_files --cases-json tests/fixtures/readerlab/comment-replay/fixtures/comment-replay-cases.json --fixture-dir tests/fixtures/readerlab/comment-replay/fixtures
-python3 tests/test_readerlab_trace_validator.py
+python3 tests/test_readerlab_v2_runner.py
+python3 tests/test_readerlab_v2_quality_gate_adapter.py
+python3 tests/test_readerlab_v2_gstack_spec_builder.py
 python3 tests/test_readerlab.py
+python3 scripts/readerlab_v2_runner.py check-evaluation v2-real-skill-gstack-review-complete-20260704
+python3 scripts/readerlab_v2_runner.py check-evaluation v2-real-skill-gstack-spec-complete-20260704
+python3 scripts/readerlab_v2_runner.py check-evaluation v2-real-skill-gstack-spec-20260703
 git diff --check
 ```
 
+结果全部通过。本轮生产 / 验收分层后，最新复跑重点是两个完整单 Skill case；`v2-real-skill-gstack-spec-20260703` 仍是窄样本，`controller_decision: revise`，`case_acceptance: false`，但 evaluation 命令本身通过，因为它能正确识别 protocol seed / revise 状态。
+
+## Not Yet Claimed
+
+当前仍然不能声称：
+
+- ReaderLab V2 production ready。
+- 图书路线最终阅读质量已经合格。
+- 完整 GSTACK 包已通过。
+- AI 质量评估已完全智能化。
+- 两个 Skill case 是强样本基线，只能说是 `limited_accept` 的完整单 Skill prototype candidate。
+
+当前可以声称：
+
+- 工程材料路线已有两个完整单 Skill case 通过：`gstack/spec` 和 `gstack/review`。
+- runner 的合同 / 结构检查能拦住关键工程路线违规。
+- quality gate request 已开始按多视角验收矩阵组织，不再把不同检查混成一句“读者视角”。
+- assets page 有最低冷启动结构底线，防止无背景 Agent 拿到卡片时完全不知道用途和边界。
+
+## Next Work Queue
+
+下一步不要先扩第三个 GSTACK Skill，也不要继续堆 runner 字符串检查。建议顺序：
+
+1. 从 #2 开始执行：先固定可分享 Skill 包边界、包含 / 排除清单、状态口径和历史防回归。
+2. #2 完成后做 #3：建立包构建器或等价发布目录，确保不带入实验 reports、私有 source、LifeAtlas 固定路径、GSTACK 原始仓库和旧 handoff。
+3. #3 完成后做 #4：配置外置，去掉本机路径耦合。
+4. #3/#4 完成后做 #5：安装 smoke。
+5. #4 完成后并行推进 #6/#7/#8：图书、长文 / 报告 / 访谈稿、Skill / 工程材料三类 smoke。
+6. #5/#6/#7/#8 全部完成后做 #9：installable release candidate 复核。
+7. 只在发现“验收问题已经能反推成稳定生产条件”时，才用 `/tdd` 写红灯测试。
+
+执行 GitHub issue 前必须先用 RFC 校准：
+
+- 质量核验必须覆盖合同履约、内容完整性、人类读者体验、产品预期、无上下文 Agent 复用。
+- 参数验证必须覆盖 source paths、output root、permission boundary、material family、requested scope、declared scope / units、full_book_required、dual_view_required、engineering_source_scope。
+- 一个 issue 一个 worktree，一个 worker 一个 PR；主控只能报告 ready-to-merge candidate，不能自动 merge。
+
 ## Stop Conditions
 
-立即停止并纠正状态，如果出现：
+- 把 `limited_accept` 说成 production ready。
+- 把 runner 结构通过说成读者质量通过。
+- 把“内容完整性”“合同履约”“读者体验”“产品预期”“Agent 复用性”混成一个笼统验收。
+- 只修最终读者页，不修 builder / 中间 artifact / gate request。
+- 修改 `/Users/tianqiang/技能项目/skills-canonical/packages/gstack` 原始 source。
+- 新会话只看 `git diff`，忽略 untracked V2 文件和真实产物。
 
-- 删除或移动 `/Users/tianqiang/技能项目/skills-canonical/packages/gstack` 原始 Skills 源仓库。
-- 删除 270 目录下用户仍要阅读的电子书或正式阅读材料。
-- 全局安装 ReaderLab Skill 到 `/Users/tianqiang/.codex/skills/`。
-- 把 repo-local trial 说成生产可用、全局安装、public validation pass 或 transferable method pass。
-- 把 `real_obsidian_ui_replay: pass_with_warning` 说成 full pass。
+## Delivery Gates
+
+每次交付前必须用中文回答：
+
+1. 这次跑通的是合同、runner 测试，还是某个真实 Skill case。
+2. 如果是 Skill case，具体是哪个 `case_id`、哪个 `block_id`。
+3. 如果失败，失败是否能回到具体 artifact 和具体 fault stage。
+4. 当前结论是否建立在刚刚验证过的命令和真实产物上，而不是旧摘要或旧印象。
