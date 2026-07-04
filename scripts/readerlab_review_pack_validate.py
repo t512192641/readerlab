@@ -11,7 +11,6 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_PACK_DIR = ROOT / "docs" / "reports" / "readerlab-absorption-review-pack-v0"
 
 REQUIRED_TOP_LEVEL = {
     "schema",
@@ -576,7 +575,7 @@ def _check_assertions(pack_dir: Path) -> list[str]:
     return errors
 
 
-def validate_pack(pack_dir: Path | str = DEFAULT_PACK_DIR) -> list[str]:
+def validate_pack(pack_dir: Path | str) -> list[str]:
     pack_path = Path(pack_dir)
     errors: list[str] = []
     if not pack_path.exists():
@@ -600,11 +599,11 @@ def validate_pack(pack_dir: Path | str = DEFAULT_PACK_DIR) -> list[str]:
 
 def main(argv: list[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
-    if len(args) > 1 or (args and args[0] in {"-h", "--help"}):
-        print("Usage: python3 scripts/readerlab_review_pack_validate.py [PACK_DIR]")
+    if len(args) != 1 or args[0] in {"-h", "--help"}:
+        print("Usage: python3 scripts/readerlab_review_pack_validate.py PACK_DIR")
         return 0 if args and args[0] in {"-h", "--help"} else 2
 
-    pack_dir = Path(args[0]) if args else DEFAULT_PACK_DIR
+    pack_dir = Path(args[0])
     errors = validate_pack(pack_dir)
     if errors:
         print(f"FAIL ReaderLab review pack validation: {pack_dir}")

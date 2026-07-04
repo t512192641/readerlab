@@ -191,16 +191,23 @@ Do not let scripts decide prose quality, author intent, design insight quality, 
 
 ## Validation
 
+Before running ReaderLab from a shareable Skill package, validate explicit runtime configuration:
+
+```bash
+python3 scripts/readerlab.py validate-run-config .agents/skills/readerlab/examples/run-config-example.json --no-source-exists-check
+```
+
+For a real local run, copy the example config and replace `source_paths` and `output_root` with user-owned paths. This check is configuration / structure validation only; it is not reader acceptance and is not production readiness.
+
 Before reporting a draft package as ready, run:
 
 ```bash
 python3 scripts/readerlab_trace_validator.py validate-demo <output_root>
 ```
 
-Run the historical regression suite separately:
+Run repository-only historical regression separately from shareable package smoke:
 
 ```bash
-python3 scripts/readerlab_trace_validator.py validate-suite --demo tests/fixtures/readerlab/private-material-validation/demos/A_feel_good_productivity --demo tests/fixtures/readerlab/private-material-validation/demos/B_planning_with_files --cases-json tests/fixtures/readerlab/comment-replay/fixtures/comment-replay-cases.json --fixture-dir tests/fixtures/readerlab/comment-replay/fixtures
 python3 tests/test_readerlab_trace_validator.py
 python3 tests/test_readerlab.py
 git diff --check
