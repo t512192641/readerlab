@@ -4748,6 +4748,7 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
 def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dict[str, str]:
     source_registry = first_contract_payload(payloads, "readerlab.source-registry.v1")
     capability = first_contract_payload(payloads, "readerlab.capability-map.v1")
+    asset_cards = first_contract_payload(payloads, "readerlab.technical-asset-cards.v1")
     excerpts = source_excerpt_records(sample_dir, source_registry)
     domains = capability.get("capability_domains") if isinstance(capability.get("capability_domains"), list) else []
     title = str((capability.get("material") or {}).get("title") or "工程材料阅读页")
@@ -4766,7 +4767,7 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
             [
                 f"### 模块{index}：`{excerpt['source_path']}`",
                 "",
-                excerpt["text"],
+                markdown_quote(excerpt["text"]),
                 "",
             ]
         )
@@ -4785,9 +4786,9 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
         ]
     )
     side_lines = [
-        "# 技术合伙人旁批",
+        "# 技术合伙人解说",
         "",
-        "下面只记录可迁移的工程设计原子；它不是人工验收结论。",
+        "这页面向产品负责人解释工程材料为什么这样组织；它不是人工验收结论，也不是正文换皮摘要。",
         "",
     ]
     for domain in domains:
@@ -4798,6 +4799,10 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
                 f"## {domain.get('name') or domain.get('domain_id')}",
                 "",
                 f"- owned_job：{domain.get('owned_job') or '未声明'}",
+                f"- design_structure：{domain.get('design_structure') or '把触发、输入、输出、验证和不适用边界拆开，避免 Agent 直接自由发挥。'}",
+                f"- failure_protection：{domain.get('failure_protection') or '缺少证据、状态或边界时不能升级结论。'}",
+                f"- reuse_point：{domain.get('reuse_point') or '后续 Agent 可以按字段接手，而不是回读整份 source 后猜职责。'}",
+                f"- cost_and_boundary：{domain.get('cost_and_boundary') or '会增加前置整理成本，但换来可检查、可回放的交付边界。'}",
                 "- trigger_signals：",
                 *lines_to_markdown_list(domain.get("trigger_signals"), indent="  "),
                 "- required_inputs：",
@@ -4810,9 +4815,34 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
                 "",
             ]
         )
+    card_lines = [
+        "# 资产卡导出页",
+        "",
+        "这些卡片给未来无背景 Agent 冷启动使用；第一步动作不应要求回读原始 source。",
+        "",
+    ]
+    cards = asset_cards.get("cards") if isinstance(asset_cards.get("cards"), list) else []
+    for card in cards:
+        if not isinstance(card, dict):
+            continue
+        card_lines.extend(
+            [
+                f"## {card.get('name') or card.get('card_id')}",
+                "",
+                f"- purpose：{card.get('purpose') or '未声明'}",
+                f"- reader：{card.get('reader') or '未声明'}",
+                f"- use_boundary：{card.get('use_boundary') or '未声明'}",
+                f"- selection_rule：{card.get('selection_rule') or '未声明'}",
+                f"- first_action：{card.get('first_action') or '未声明'}",
+                "- source_refs：",
+                *lines_to_markdown_list(card.get("source_refs"), indent="  "),
+                "",
+            ]
+        )
     return {
         "reader/01_工程材料阅读页.md": "\n".join(reader_lines),
         "reader/02_技术合伙人旁批.md": "\n".join(side_lines),
+        "reader/03_资产卡导出页.md": "\n".join(card_lines),
     }
 
 

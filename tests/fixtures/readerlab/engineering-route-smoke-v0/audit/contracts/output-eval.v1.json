@@ -1,0 +1,97 @@
+{
+  "schema": "readerlab.output-eval.v1",
+  "material": {
+    "id": "engineering-route-smoke-v0",
+    "title": "Skill / 工程材料路线烟测样本",
+    "type": "skill_engineering"
+  },
+  "output_eval": {
+    "checks": [
+      {
+        "id": "reader_audit_separation",
+        "name": "reader-facing pages stay separate from audit contracts",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-engineering-body-output-boundary"
+        ]
+      },
+      {
+        "id": "audit_evidence_preserved",
+        "name": "full-source evidence packet, source registry, and location map are preserved",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-engineering-body-purpose",
+          "loc-engineering-guards-failure"
+        ]
+      },
+      {
+        "id": "first_hand_body_not_replaced",
+        "name": "cleaned body remains visible instead of being replaced by AI summary",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-engineering-body-purpose",
+          "loc-engineering-body-output-boundary"
+        ]
+      },
+      {
+        "id": "ai_reduces_understanding_cost",
+        "name": "technical explanation names structure, failure protection, reuse point, cost, and boundary",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-engineering-guards-failure"
+        ]
+      },
+      {
+        "id": "high_value_details_preserved",
+        "name": "engineering scope, full-source closure, and blocking-controller behavior are preserved",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-engineering-guards-failure",
+          "loc-engineering-guards-reuse"
+        ]
+      },
+      {
+        "id": "source_refs_specific",
+        "name": "claims and cards point to concrete location refs",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-engineering-body-purpose",
+          "loc-engineering-guards-reuse"
+        ]
+      },
+      {
+        "id": "technical_insights_non_generic",
+        "name": "technical notes include design structure, failure protection, reuse, cost, and boundary",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-engineering-guards-failure"
+        ]
+      },
+      {
+        "id": "overpromoted_claims_downgraded",
+        "name": "engineering smoke is not promoted to production ready or complete GSTACK validation",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-engineering-guards-failure"
+        ]
+      },
+      {
+        "id": "machine_not_human",
+        "name": "machine validation remains separate from human acceptance",
+        "status": "needs_human_review",
+        "evidence_refs": [
+          "loc-engineering-guards-failure"
+        ]
+      }
+    ]
+  },
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/contracts/output-eval.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}
