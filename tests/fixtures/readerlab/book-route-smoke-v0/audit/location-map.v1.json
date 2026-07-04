@@ -1,0 +1,51 @@
+{
+  "schema": "readerlab.location-map.v1",
+  "material": {
+    "id": "book-route-smoke-v0",
+    "title": "图书路线烟测样本",
+    "type": "book"
+  },
+  "locations": [
+    {
+      "location_id": "loc-book-ch1-problem",
+      "source_id": "src-book-chapter-01",
+      "path": "audit/source-excerpts/chapter-01.md",
+      "range": "第一节",
+      "role": "chapter_problem_setup",
+      "summary": "Chapter 1 establishes why readers must understand the problem before applying conclusions."
+    },
+    {
+      "location_id": "loc-book-ch1-position",
+      "source_id": "src-book-chapter-01",
+      "path": "audit/source-excerpts/chapter-01.md",
+      "range": "第二节",
+      "role": "chapter_position",
+      "summary": "Chapter 1 explains its role as the reading entry for later models."
+    },
+    {
+      "location_id": "loc-book-ch2-structure",
+      "source_id": "src-book-chapter-02",
+      "path": "audit/source-excerpts/chapter-02.md",
+      "range": "第一节",
+      "role": "chapter_relation",
+      "summary": "Chapter 2 carries the previous problem into chapter relationship and structure."
+    },
+    {
+      "location_id": "loc-book-ch2-boundary",
+      "source_id": "src-book-chapter-02",
+      "path": "audit/source-excerpts/chapter-02.md",
+      "range": "第二节",
+      "role": "reader_boundary",
+      "summary": "Chapter 2 separates source claims, AI interpretation, and claims needing verification."
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/location-map.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}
