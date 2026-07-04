@@ -39,6 +39,7 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
             self.assertTrue((package_root / "tests/package_smoke_test.py").is_file())
             self.assertTrue((package_root / "docs/product-spec.md").is_file())
             self.assertTrue((package_root / "docs/readerlab-v2-runtime-config.md").is_file())
+            self.assertTrue((package_root / "docs/readerlab-v2-install-smoke.md").is_file())
             self.assertTrue((package_root / "docs/contracts/trace-validation-v1.md").is_file())
             self.assertTrue((package_root / "fixtures/contract-validator-proof-v0/README.md").is_file())
             self.assertTrue((package_root / "PACKAGE_BOUNDARY.md").is_file())
