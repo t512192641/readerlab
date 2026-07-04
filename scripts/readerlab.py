@@ -4630,6 +4630,37 @@ def source_excerpt_records(sample_dir: Path, source_registry: dict[str, Any]) ->
     return records
 
 
+def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: list[dict[str, Any]]) -> list[dict[str, str]]:
+    catalog = first_contract_payload(payloads, "readerlab.catalog-map.v1")
+    location_map = first_contract_payload(payloads, "readerlab.location-map.v1")
+    source_by_id = {excerpt["source_id"]: excerpt for excerpt in excerpts if excerpt.get("source_id")}
+    location_to_source: dict[str, str] = {}
+    for location in location_map.get("locations") or []:
+        if not isinstance(location, dict):
+            continue
+        location_id = location.get("location_id") or location.get("id") or location.get("ref_id")
+        source_id = location.get("source_id")
+        if location_id and source_id:
+            location_to_source[str(location_id)] = str(source_id)
+
+    ordered: list[dict[str, str]] = []
+    seen: set[str] = set()
+    reading_units = ((catalog.get("catalog") or {}).get("reading_units") or []) if isinstance(catalog, dict) else []
+    for unit in reading_units:
+        if not isinstance(unit, dict):
+            continue
+        for ref in unit.get("source_refs") or []:
+            source_id = location_to_source.get(str(ref))
+            if source_id and source_id in source_by_id and source_id not in seen:
+                ordered.append(source_by_id[source_id])
+                seen.add(source_id)
+    for excerpt in excerpts:
+        source_id = excerpt.get("source_id")
+        if source_id not in seen:
+            ordered.append(excerpt)
+    return ordered
+
+
 def lines_to_markdown_list(items: Any, *, indent: str = "") -> list[str]:
     if not isinstance(items, list) or not items:
         return [f"{indent}- 未声明。"]
@@ -4660,7 +4691,7 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
     source_registry = first_contract_payload(payloads, "readerlab.source-registry.v1")
     catalog = first_contract_payload(payloads, "readerlab.catalog-map.v1")
     deepread = first_contract_payload(payloads, "readerlab.local-deepread.v1")
-    excerpts = source_excerpt_records(sample_dir, source_registry)
+    excerpts = order_excerpts_by_catalog_units(source_excerpt_records(sample_dir, source_registry), payloads)
     reading_units = ((catalog.get("catalog") or {}).get("reading_units") or []) if isinstance(catalog, dict) else []
     unit = reading_units[0] if reading_units and isinstance(reading_units[0], dict) else {}
     deepread_card = deepread.get("local_deepread") if isinstance(deepread.get("local_deepread"), dict) else {}

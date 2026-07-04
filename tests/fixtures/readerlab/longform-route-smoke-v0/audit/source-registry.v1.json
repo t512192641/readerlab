@@ -7,19 +7,19 @@
   },
   "sources": [
     {
-      "source_id": "src-longform-report-argument",
-      "source_path": "audit/source-excerpts/report-argument.md",
-      "source_type": "markdown_report_excerpt",
-      "source_role": "primary_text",
-      "coverage_role": "argument_and_evidence_group",
-      "extraction_status": "repo_local_fixture"
-    },
-    {
       "source_id": "src-longform-interview-turn",
       "source_path": "audit/source-excerpts/interview-turn.md",
       "source_type": "markdown_interview_excerpt",
       "source_role": "primary_text",
       "coverage_role": "interview_turning_point",
+      "extraction_status": "repo_local_fixture"
+    },
+    {
+      "source_id": "src-longform-report-argument",
+      "source_path": "audit/source-excerpts/report-argument.md",
+      "source_type": "markdown_report_excerpt",
+      "source_role": "primary_text",
+      "coverage_role": "argument_and_evidence_group",
       "extraction_status": "repo_local_fixture"
     }
   ],

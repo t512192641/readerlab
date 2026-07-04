@@ -39,6 +39,7 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
         self.assertTrue(payload["config_cross_check"]["source_paths_match_registry"])
         self.assertTrue(payload["config_cross_check"]["declared_units_match_catalog"])
         self.assertTrue(payload["config_cross_check"]["segmentation_logic_declared"])
+        self.assertTrue(payload["config_cross_check"]["catalog_order_differs_from_source_order"])
         self.assertEqual(payload["verification_layers"]["configuration_structure"], "pass")
         self.assertEqual(payload["verification_layers"]["runner_contract"], "pass")
         self.assertEqual(payload["verification_layers"]["quality_gate_request"], "pass")

@@ -55,8 +55,8 @@ def read_json(path: Path, *, phase: str) -> dict[str, Any]:
 def build_run_config_payload(fixture: Path, output_root: Path) -> dict[str, Any]:
     return {
         "source_paths": [
-            str(fixture / "audit/source-excerpts/report-argument.md"),
             str(fixture / "audit/source-excerpts/interview-turn.md"),
+            str(fixture / "audit/source-excerpts/report-argument.md"),
         ],
         "output_root": str(output_root),
         "permission_boundary": "local_private_user_approved_only",
@@ -101,6 +101,36 @@ def assert_config_matches_fixture(config_payload: dict[str, Any], fixture: Path)
             "run config declared_units must match catalog reading_units order",
         )
 
+    location_map = read_json(fixture / "audit" / "location-map.v1.json", phase="configuration_structure")
+    location_to_source = {
+        location["location_id"]: location["source_id"]
+        for location in location_map.get("locations", [])
+        if "location_id" in location and "source_id" in location
+    }
+    source_path_by_id = {
+        source["source_id"]: source["source_path"]
+        for source in registry.get("sources", [])
+        if "source_id" in source and "source_path" in source
+    }
+    catalog_source_paths: list[str] = []
+    seen_source_ids: set[str] = set()
+    for unit in catalog_map.get("catalog", {}).get("reading_units", []):
+        for ref in unit.get("source_refs", []):
+            source_id = location_to_source.get(ref)
+            if source_id and source_id not in seen_source_ids:
+                catalog_source_paths.append(source_path_by_id[source_id])
+                seen_source_ids.add(source_id)
+    registry_source_paths = [
+        source["source_path"]
+        for source in registry.get("sources", [])
+        if source.get("source_role") == "primary_text"
+    ]
+    if registry_source_paths == catalog_source_paths:
+        raise SmokeFailure(
+            "configuration_structure",
+            "longform smoke must exercise catalog order separately from registry/source order",
+        )
+
     segmentation_logic = catalog_map.get("catalog", {}).get("segmentation_logic")
     if not isinstance(segmentation_logic, list) or not segmentation_logic:
         raise SmokeFailure("configuration_structure", "catalog-map must declare segmentation_logic")
@@ -113,6 +143,7 @@ def assert_config_matches_fixture(config_payload: dict[str, Any], fixture: Path)
         "source_paths_match_registry": True,
         "declared_units_match_catalog": True,
         "segmentation_logic_declared": True,
+        "catalog_order_differs_from_source_order": True,
     }
 
 
