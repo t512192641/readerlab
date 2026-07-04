@@ -2,7 +2,7 @@
 
 ## Status
 
-本文定义 ReaderLab V2 从研发工作区生成可分享 Skill 包时的边界。当前目标状态是 `shareable_package_prepared`，后续经安装 smoke、三类材料 smoke 和 RC 复核后，才可能进入 `installable_release_candidate`。
+本文定义 ReaderLab V2 从研发工作区生成可分享 Skill 包时的边界。当前 #2 目标状态是 `shareable_package_boundary_defined`：只表示包边界、包含 / 排除清单、条件输入和状态口径已固定，不表示已经生成干净包候选。后续 #3 生成并审计干净包后，才可能进入 `shareable_package_prepared`；再经安装 smoke、三类材料 smoke 和 RC 复核后，才可能进入 `installable_release_candidate`。
 
 本文不声明 production ready、public validation pass、完整 GSTACK 包通过或三类材料最终读者验收通过。
 
