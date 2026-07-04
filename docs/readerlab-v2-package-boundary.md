@@ -26,12 +26,13 @@ ReaderLab V2 分三层：
 - Skill checks: `.agents/skills/readerlab/checks/activation-checklist.md`、`.agents/skills/readerlab/checks/readiness-checklist.md`
 - Skill eval cases: `.agents/skills/readerlab/evals/trigger-cases.json`、`.agents/skills/readerlab/evals/output-cases.json`
 - Skill examples: `.agents/skills/readerlab/examples/input-request.json`、`.agents/skills/readerlab/examples/route-decision-example.json`
-- Core scripts: `scripts/readerlab.py`、`scripts/readerlab_trace_validator.py`
+- Core scripts: `scripts/readerlab_trace_validator.py`
+- Conditional runtime script: `scripts/readerlab.py` can enter the shareable package only after #4 removes hardcoded current-user local path defaults and the package audit confirms no LifeAtlas fixed path remains.
 - Supporting validators: `scripts/readerlab_fullbook_demo_validate.py`、`scripts/readerlab_review_pack_validate.py`
 - Product docs: `docs/product-spec.md`、`docs/readerlab-package-spec.md`、`docs/eval-gates.md`、`docs/decisions.md`
 - Method docs: `docs/ai-reading-method.md`、`docs/high-order-explanation-method.md`、`docs/technical-cofounder-method.md`
 - Contracts: `docs/contracts/`
-- Smoke fixtures: `tests/fixtures/readerlab/contract-validator-proof-v0/`、`tests/fixtures/readerlab/comment-replay/fixtures/`
+- Smoke fixtures: `tests/fixtures/readerlab/contract-validator-proof-v0/`
 - Minimal package tests: only tests introduced or selected by #3 that depend exclusively on the included package fixtures.
 - Package boundary docs: `docs/readerlab-v2-package-boundary.md`、`docs/readerlab-v2-shareable-skill-prd.md`、`docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`
 
@@ -41,6 +42,10 @@ ReaderLab V2 分三层：
 - `tests/test_fullbook_demo_validate.py` 和 `tests/test_review_pack_validate.py`，当前仍依赖 `docs/reports/`，而 reports 明确排除在可分享包之外。
 
 这些测试可以继续作为研发仓库 regression；若 #3 要把它们纳入发布包，必须先改造成只依赖包内 fixtures 的 smoke tests。
+
+`tests/fixtures/readerlab/comment-replay/fixtures/` 目前仍依赖包外 demo material，不能作为可分享包 fixture 直接纳入。只有在后续 issue 提交自包含、去私有化、能独立运行的 comment replay demo 后，才允许把它加入包清单。
+
+Because `scripts/readerlab.py` is owned by #4 for configuration externalization, #3 may build the manifest, exclusion rules, and audit shell after #2, but it must not ship a runtime package that includes `scripts/readerlab.py` before #4 has removed current-user path coupling.
 
 可选但必须先提交后才能纳入的 V2 输入：
 

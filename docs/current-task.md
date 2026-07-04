@@ -157,8 +157,8 @@ git diff --check
 下一步不要先扩第三个 GSTACK Skill，也不要继续堆 runner 字符串检查。建议顺序：
 
 1. 从 #2 开始执行：先固定可分享 Skill 包边界、包含 / 排除清单、状态口径和历史防回归。
-2. #2 完成后做 #3：建立包构建器或等价发布目录，确保不带入实验 reports、私有 source、LifeAtlas 固定路径、GSTACK 原始仓库和旧 handoff。
-3. #3 完成后做 #4：配置外置，去掉本机路径耦合。
+2. #2 完成后先做 #4：配置外置，去掉 `scripts/readerlab.py` 的本机路径耦合；否则 #3 不能把 runtime script 打进可分享包。
+3. #4 完成后做 #3：建立包构建器或等价发布目录，确保不带入实验 reports、私有 source、LifeAtlas 固定路径、GSTACK 原始仓库和旧 handoff。#3 可以先做 manifest / 排除规则骨架，但包含 `scripts/readerlab.py` 的可运行包必须等 #4 完成。
 4. #3/#4 完成后做 #5：安装 smoke。
 5. #4 完成后并行推进 #6/#7/#8：图书、长文 / 报告 / 访谈稿、Skill / 工程材料三类 smoke。
 6. #5/#6/#7/#8 全部完成后做 #9：installable release candidate 复核。

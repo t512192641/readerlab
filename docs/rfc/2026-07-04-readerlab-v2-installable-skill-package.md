@@ -168,6 +168,11 @@ Forbidden:
 
 ### #3 构建最小 Skill 发布包
 
+Dependency note:
+
+- #3 may start manifest, exclusion-rule, and audit scaffolding after #2.
+- #3 must not ship a runnable package containing `scripts/readerlab.py` until #4 has removed current-user path coupling from that runtime script.
+
 Owned files:
 
 - packaging script / manifest files introduced by the worker
@@ -179,9 +184,13 @@ Forbidden:
 
 - Do not include real private source material.
 - Do not copy experiment reports into the shareable package.
+- Do not include package-external fixtures such as current comment replay demos unless a self-contained sanitized fixture is committed first.
+- Do not package `scripts/readerlab.py` before #4 removes hardcoded local path defaults.
 - Do not install globally.
 
 ### #4 外置运行配置
+
+Scheduling note: #4 is a prerequisite for any #3 package output that includes runtime entry scripts.
 
 Owned files:
 
