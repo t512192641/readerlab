@@ -215,7 +215,9 @@ def package_manifest_ref(manifest_path: Path) -> str:
 def ensure_safe_package_root(output_dir: Path, package_root: Path) -> Path:
     output_dir_resolved = output_dir.resolve()
     resolved = package_root.resolve()
-    if resolved != output_dir_resolved and output_dir_resolved not in resolved.parents:
+    if resolved == output_dir_resolved:
+        raise SystemExit(f"refusing to use --output-dir itself as package output: {package_root}")
+    if output_dir_resolved not in resolved.parents:
         raise SystemExit(f"refusing package output outside --output-dir: {package_root}")
     if resolved == ROOT_RESOLVED or ROOT_RESOLVED in resolved.parents or resolved in ROOT_RESOLVED.parents:
         raise SystemExit(f"refusing to use source checkout as package output: {package_root}")

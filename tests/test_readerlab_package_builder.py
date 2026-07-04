@@ -230,6 +230,46 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
                     self.assertIn("refusing package output outside --output-dir", result.stderr + result.stdout)
                     self.assertTrue((victim / "keep.txt").is_file())
 
+    def test_refuses_output_dir_itself_as_package_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "out"
+            output_dir.mkdir()
+            (output_dir / "keep.txt").write_text("do not delete", encoding="utf-8")
+            cases = [
+                ".",
+                str(output_dir),
+            ]
+            for package_root_name in cases:
+                with self.subTest(package_root_name=package_root_name):
+                    manifest_path = Path(tmp) / "dangerous-manifest.json"
+                    write_manifest(
+                        manifest_path,
+                        {
+                            "schema": "readerlab.package-manifest.v1",
+                            "package_root_name": package_root_name,
+                            "include_files": [],
+                            "include_dirs": [],
+                        },
+                    )
+                    result = subprocess.run(
+                        [
+                            "python3",
+                            str(SCRIPT),
+                            "--manifest",
+                            str(manifest_path),
+                            "--output-dir",
+                            str(output_dir),
+                            "--force",
+                        ],
+                        check=False,
+                        text=True,
+                        capture_output=True,
+                    )
+
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn("refusing to use --output-dir itself as package output", result.stderr + result.stdout)
+                    self.assertTrue((output_dir / "keep.txt").is_file())
+
     def test_refuses_manifest_sources_and_targets_outside_boundaries(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             outside_source = Path(tmp) / "outside.md"
