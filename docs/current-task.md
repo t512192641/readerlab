@@ -177,7 +177,7 @@ git diff --check
 - 把“内容完整性”“合同履约”“读者体验”“产品预期”“Agent 复用性”混成一个笼统验收。
 - 只修最终读者页，不修 builder / 中间 artifact / gate request。
 - 修改 `/Users/tianqiang/技能项目/skills-canonical/packages/gstack` 原始 source。
-- 新会话只看 `git diff`，忽略 untracked V2 文件和真实产物。
+- 新会话只看 `git diff`，忽略 `docs/current-task.md`、PRD、RFC 和包边界；未提交 V2 原型文件和真实产物只能作为历史线索，不能当成 fresh checkout 的当前事实。
 
 ## Delivery Gates
 
