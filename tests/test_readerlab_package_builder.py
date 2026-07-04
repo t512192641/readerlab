@@ -23,7 +23,7 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             result = run_builder("--output-dir", tmp)
             payload = json.loads(result.stdout)
-            package_root = Path(payload["package_root"])
+            package_root = Path(tmp) / payload["package_root"]
 
             self.assertEqual(payload["status"], "shareable_package_prepared")
             self.assertTrue((package_root / "SKILL.md").is_file())
@@ -45,6 +45,17 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
             self.assertTrue(audit["not_reader_acceptance"])
             self.assertTrue(audit["not_production_ready"])
             self.assertFalse(audit["failures"])
+            audit_paths = {file["path"] for file in audit["files"]}
+            self.assertIn("PACKAGE_MANIFEST.json", audit_paths)
+            self.assertEqual(audit["audit_file"], "PACKAGE_AUDIT.json")
+
+            package_manifest = json.loads((package_root / "PACKAGE_MANIFEST.json").read_text(encoding="utf-8"))
+            self.assertEqual(package_manifest["package_root"], "readerlab")
+            manifest_text = json.dumps(package_manifest, ensure_ascii=False)
+            self.assertNotIn("/Users/", manifest_text)
+            self.assertNotIn("/private/", manifest_text)
+            self.assertNotIn("/tmp/", manifest_text)
+            self.assertNotIn("/workspace/", manifest_text)
 
             smoke = subprocess.run(
                 ["python3", str(package_root / "tests/package_smoke_test.py")],

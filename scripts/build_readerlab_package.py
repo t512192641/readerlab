@@ -17,8 +17,13 @@ DEFAULT_MANIFEST = ROOT / "packaging" / "readerlab-package-manifest.json"
 TEXT_EXTS = {".md", ".json", ".py", ".txt", ".yaml", ".yml", ".toml"}
 FORBIDDEN_TEXT_MARKERS = (
     "/Users/",
+    "/private/",
+    "/tmp/",
+    "/workspace/",
     "技能项目/skills-canonical/packages/gstack",
     "python3 scripts/readerlab_trace_validator.py validate-suite --demo tests/fixtures/readerlab/private-material-validation",
+    "active only inside this repository",
+    "repo-local only",
 )
 FORBIDDEN_PATH_PARTS = {
     "reports",
@@ -29,8 +34,42 @@ FORBIDDEN_PATH_PARTS = {
 SANITIZE_REPLACEMENTS = {
     "/Users/tianqiang/.codex/skills/": "~/.codex/skills/",
     "/Users/tianqiang/技能项目/skills-canonical/packages/gstack": "<external-gstack-source-not-in-package>",
+    "This Skill is active only inside this repository at `.agents/skills/readerlab/`.": (
+        "This Skill is packaged as a shareable ReaderLab Skill candidate. Install it only into a user-approved Codex Skill location."
+    ),
+    "Do not install it globally or copy it to `~/.codex/skills/` without explicit user approval.": (
+        "Do not install it without explicit user approval."
+    ),
+    "- installing this Skill globally": "- installing this Skill without explicit user approval",
+    "Use this checklist before treating `.agents/skills/readerlab/SKILL.md` as repo-local trial ready.": (
+        "Use this checklist before treating a built ReaderLab package as shareable-package prepared."
+    ),
+    "- [ ] Active package remains under `.agents/skills/readerlab/`.": (
+        "- [ ] Active package remains inside the approved package or install target."
+    ),
+    "- [ ] Skill states that it is repo-local only.": "- [ ] Skill states its package and installation boundary.",
+    "- [ ] Skill is not installed globally under `~/.codex/skills/`.": (
+        "- [ ] Skill is installed only into a user-approved Codex Skill location."
+    ),
+    "Historical draft source was removed during MEM cleanup; current repo-local source is `.agents/skills/readerlab/`.": (
+        "Historical draft source was removed during MEM cleanup; built packages use the package root as their source."
+    ),
+    "Allowed activation target only after explicit user approval:\n\n```text\n.agents/skills/readerlab/\n```\n\nDo not install to:\n\n```text\n~/.codex/skills/\n```": (
+        "Install only into a user-approved Codex Skill location."
+    ),
+    "- [x] User approved repo-local activation.": "- [x] User approved bounded activation for the relevant stage.",
+    "- [x] User confirmed activation is repo-local only.": "- [x] User confirmed activation is bounded to the approved target.",
+    "- [x] `reports/review-studio.md` has no blocker for repo-local trial use.": (
+        "- [x] No package audit blocker is present for shareable package preparation."
+    ),
+    "Run these prompts after repo-local activation:": "Run these prompts after bounded activation:",
+    "remove .agents/skills/readerlab/": "remove the approved ReaderLab Skill install target",
+    "Allowed after repo-local activation:": "Allowed after bounded activation:",
     "python3 scripts/readerlab_trace_validator.py validate-suite --demo tests/fixtures/readerlab/private-material-validation/demos/A_feel_good_productivity --demo tests/fixtures/readerlab/private-material-validation/demos/B_planning_with_files --cases-json tests/fixtures/readerlab/comment-replay/fixtures/comment-replay-cases.json --fixture-dir tests/fixtures/readerlab/comment-replay/fixtures": (
         "python3 scripts/readerlab.py validate-run-config examples/run-config-example.json --no-source-exists-check"
+    ),
+    "refusing to write eval report under LifeAtlas; use /private/tmp or repo-local path": (
+        "refusing to write eval report under LifeAtlas; use an explicit temporary or repo-local path"
     ),
 }
 
@@ -56,7 +95,7 @@ def sanitize_text(text: str) -> str:
     return text
 
 
-def copy_file(source: Path, target: Path, *, sanitize: bool) -> dict[str, Any]:
+def copy_file(source: Path, target: Path, *, sanitize: bool, package_root: Path) -> dict[str, Any]:
     if not source.is_file():
         raise SystemExit(f"include source file not found: {source}")
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -67,14 +106,14 @@ def copy_file(source: Path, target: Path, *, sanitize: bool) -> dict[str, Any]:
     return {
         "kind": "file",
         "source": str(source.relative_to(ROOT)),
-        "target": str(target),
+        "target": package_rel(target, package_root),
         "sha256": file_sha256(target),
         "bytes": target.stat().st_size,
         "sanitized": sanitize,
     }
 
 
-def copy_dir(source: Path, target: Path, *, sanitize: bool) -> list[dict[str, Any]]:
+def copy_dir(source: Path, target: Path, *, sanitize: bool, package_root: Path) -> list[dict[str, Any]]:
     if not source.is_dir():
         raise SystemExit(f"include source directory not found: {source}")
     copied: list[dict[str, Any]] = []
@@ -82,7 +121,7 @@ def copy_dir(source: Path, target: Path, *, sanitize: bool) -> list[dict[str, An
         if not path.is_file():
             continue
         relative = path.relative_to(source)
-        copied.append(copy_file(path, target / relative, sanitize=sanitize))
+        copied.append(copy_file(path, target / relative, sanitize=sanitize, package_root=package_root))
     return copied
 
 
@@ -97,6 +136,8 @@ def audit_package(package_root: Path) -> tuple[list[str], dict[str, Any]]:
         if not path.is_file():
             continue
         rel = package_rel(path, package_root)
+        if rel == "PACKAGE_AUDIT.json":
+            continue
         files.append({"path": rel, "sha256": file_sha256(path), "bytes": path.stat().st_size})
         parts = set(Path(rel).parts)
         if parts & FORBIDDEN_PATH_PARTS:
@@ -112,6 +153,7 @@ def audit_package(package_root: Path) -> tuple[list[str], dict[str, Any]]:
         "check_class": "package_boundary_structure",
         "not_reader_acceptance": True,
         "not_production_ready": True,
+        "audit_file": "PACKAGE_AUDIT.json",
         "files": files,
         "failures": failures,
     }
@@ -120,6 +162,22 @@ def audit_package(package_root: Path) -> tuple[list[str], dict[str, Any]]:
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def copied_for_manifest(copied: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    entries: list[dict[str, Any]] = []
+    for item in copied:
+        entries.append(
+            {
+                "kind": item["kind"],
+                "source": item["source"],
+                "target": item["target"],
+                "sha256": item["sha256"],
+                "bytes": item["bytes"],
+                "sanitized": item["sanitized"],
+            }
+        )
+    return entries
 
 
 def build_package(manifest_path: Path, output_dir: Path, *, force: bool = False) -> dict[str, Any]:
@@ -138,6 +196,7 @@ def build_package(manifest_path: Path, output_dir: Path, *, force: bool = False)
                 ROOT / entry["source"],
                 package_root / entry["target"],
                 sanitize=bool(entry.get("sanitize")),
+                package_root=package_root,
             )
         )
     for entry in manifest.get("include_dirs") or []:
@@ -146,6 +205,7 @@ def build_package(manifest_path: Path, output_dir: Path, *, force: bool = False)
                 ROOT / entry["source"],
                 package_root / entry["target"],
                 sanitize=bool(entry.get("sanitize")),
+                package_root=package_root,
             )
         )
 
@@ -161,18 +221,22 @@ def build_package(manifest_path: Path, output_dir: Path, *, force: bool = False)
         }
     )
 
-    failures, audit = audit_package(package_root)
     result = {
         "schema": "readerlab.package-build-result.v1",
-        "status": "shareable_package_prepared" if not failures else "package_audit_failed",
+        "status": "shareable_package_prepared",
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
-        "package_root": str(package_root),
-        "manifest": str(manifest_path),
-        "copied": copied,
-        "audit": audit,
+        "package_root": "readerlab",
+        "manifest": manifest_path.relative_to(ROOT).as_posix(),
+        "copied": copied_for_manifest(copied),
+        "audit_file": "PACKAGE_AUDIT.json",
     }
-    write_json(package_root / "PACKAGE_AUDIT.json", audit)
     write_json(package_root / "PACKAGE_MANIFEST.json", result)
+    failures, audit = audit_package(package_root)
+    if failures:
+        result["status"] = "package_audit_failed"
+        write_json(package_root / "PACKAGE_MANIFEST.json", result)
+        failures, audit = audit_package(package_root)
+    write_json(package_root / "PACKAGE_AUDIT.json", audit)
     if failures:
         raise SystemExit("package audit failed:\n- " + "\n- ".join(failures))
     return result

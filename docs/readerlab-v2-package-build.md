@@ -7,7 +7,7 @@ This is the Issue #3 package build path. A passing build produces a `shareable_p
 ## Build
 
 ```bash
-python3 scripts/build_readerlab_package.py --output-dir /private/tmp/readerlab-package-smoke --force
+python3 scripts/build_readerlab_package.py --output-dir <output-dir> --force
 ```
 
 The command creates:
@@ -31,7 +31,7 @@ readerlab/
 ## Verify The Built Package
 
 ```bash
-python3 /private/tmp/readerlab-package-smoke/readerlab/tests/package_smoke_test.py
+python3 <output-dir>/readerlab/tests/package_smoke_test.py
 ```
 
 The package smoke checks only package boundary structure and audit status. It is not reader acceptance and not production readiness.

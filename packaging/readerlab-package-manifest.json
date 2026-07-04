@@ -46,7 +46,7 @@
     {
       "source": "scripts/readerlab.py",
       "target": "scripts/readerlab.py",
-      "sanitize": false
+      "sanitize": true
     },
     {
       "source": "scripts/readerlab_trace_validator.py",
