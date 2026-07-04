@@ -89,6 +89,18 @@ class ReaderLabBookRouteSmokeTests(unittest.TestCase):
         self.assertEqual(failure.exception.phase, "configuration_structure")
         self.assertIn("declared_units", failure.exception.message)
 
+    def test_shipped_fixture_reader_display_path_is_evaluable(self) -> None:
+        result = subprocess.run(
+            ["python3", "scripts/readerlab.py", "eval-rendered-package", str(FIXTURE)],
+            cwd=ROOT,
+            check=True,
+            text=True,
+            capture_output=True,
+        )
+        payload = json.loads(result.stdout)
+
+        self.assertTrue(payload["passed"])
+
 
 if __name__ == "__main__":
     unittest.main()
