@@ -13,6 +13,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
+ROOT_RESOLVED = ROOT.resolve()
 DEFAULT_MANIFEST = ROOT / "packaging" / "readerlab-package-manifest.json"
 TEXT_EXTS = {".md", ".json", ".py", ".txt", ".yaml", ".yml", ".toml"}
 FORBIDDEN_TEXT_MARKERS = (
@@ -184,9 +185,15 @@ def copied_for_manifest(copied: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return entries
 
 
+def ensure_safe_package_root(package_root: Path) -> None:
+    if package_root.resolve() == ROOT_RESOLVED:
+        raise SystemExit(f"refusing to use source checkout as package output: {package_root}")
+
+
 def build_package(manifest_path: Path, output_dir: Path, *, force: bool = False) -> dict[str, Any]:
     manifest = read_json(manifest_path)
     package_root = output_dir / str(manifest.get("package_root_name") or "readerlab")
+    ensure_safe_package_root(package_root)
     if package_root.exists():
         if not force:
             raise SystemExit(f"package output exists; pass --force to replace: {package_root}")

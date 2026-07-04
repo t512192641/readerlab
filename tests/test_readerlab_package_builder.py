@@ -119,6 +119,40 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("pass --force", result.stderr + result.stdout)
 
+    def test_refuses_to_delete_source_checkout_with_force(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest_path = Path(tmp) / "dangerous-manifest.json"
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "schema": "readerlab.package-manifest.v1",
+                        "package_root_name": ROOT.name,
+                        "include_files": [],
+                        "include_dirs": [],
+                    },
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                [
+                    "python3",
+                    str(SCRIPT),
+                    "--manifest",
+                    str(manifest_path),
+                    "--output-dir",
+                    str(ROOT.parent),
+                    "--force",
+                ],
+                check=False,
+                text=True,
+                capture_output=True,
+            )
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("refusing to use source checkout as package output", result.stderr + result.stdout)
+            self.assertTrue((ROOT / "scripts/build_readerlab_package.py").is_file())
+
 
 if __name__ == "__main__":
     unittest.main()
