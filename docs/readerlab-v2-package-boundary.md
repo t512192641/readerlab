@@ -36,9 +36,10 @@ ReaderLab V2 分三层：
 - Minimal package tests: only tests introduced or selected by #3 that depend exclusively on the included package fixtures.
 - Package boundary docs: `docs/readerlab-v2-package-boundary.md`、`docs/readerlab-v2-shareable-skill-prd.md`、`docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`
 
-#3 复制 Skill docs / checks / evals / examples 进可分享包前，必须先做 package-copy sanitization：
+#3 复制任何 repo-local 文件进可分享包前，必须先做 package-copy sanitization；范围包括 Skill docs / checks / evals / examples、product docs、method docs、contracts、boundary docs、scripts、tests 和 fixtures：
 
 - 去除当前用户安装路径、LifeAtlas 固定路径和其他机器绝对路径。
+- 去除 GSTACK 原始仓库路径、研发仓库本地路径和其他包外 source 路径。
 - 移除或改写指向包外 fixture、private-material-validation demos、comment-replay 包外 demo 或研发仓库 reports 的命令。
 - 将示例命令改成只依赖包内 docs、fixtures、tests 和用户显式提供的配置参数。
 - sanitization 结果必须由 package audit 检查，不能只靠人工约定。

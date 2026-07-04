@@ -30,7 +30,7 @@
   - #7 建立 ReaderLab V2 长文 / 报告 / 访谈稿路线 smoke
   - #8 建立 ReaderLab V2 Skill / 工程材料路线 smoke
   - #9 ReaderLab V2 installable release candidate 复核
-- 下一步执行顺序：#2 -> #3 -> #4；随后 #5 和三类路线 smoke；最后 #9。当前仍不能称 production ready。
+- 下一步执行顺序已被 PR #10 后续 review 修正为：#2 合并后先做 #4，去掉 `scripts/readerlab.py` 的本机路径耦合；再做 #3 的可运行包构建；随后 #5 和三类路线 smoke；最后 #9。当前仍不能称 production ready。
 - 用户追问现有 issue 是否已经覆盖产物质量核验、核验标准是否明确，以及后续 GitHub 开发是否可参考 Controller-Agent GitHub Workflow SOP。
 - 已读取 `/Users/tianqiang/LifeAtlas/800_Skills与流程/840_开发复盘Skills/2026-06-25_Controller-Agent-GitHub工作流SOP.md`。
 - 已新增 RFC：`docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`
