@@ -18,6 +18,10 @@ def run_builder(*args: str) -> subprocess.CompletedProcess:
     )
 
 
+def write_manifest(path: Path, payload: dict) -> None:
+    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
 class ReaderLabPackageBuilderTests(unittest.TestCase):
     def test_builds_shareable_package_with_audit(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -122,17 +126,14 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
     def test_refuses_to_delete_source_checkout_with_force(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             manifest_path = Path(tmp) / "dangerous-manifest.json"
-            manifest_path.write_text(
-                json.dumps(
-                    {
-                        "schema": "readerlab.package-manifest.v1",
-                        "package_root_name": ROOT.name,
-                        "include_files": [],
-                        "include_dirs": [],
-                    },
-                    indent=2,
-                ),
-                encoding="utf-8",
+            write_manifest(
+                manifest_path,
+                {
+                    "schema": "readerlab.package-manifest.v1",
+                    "package_root_name": ROOT.name,
+                    "include_files": [],
+                    "include_dirs": [],
+                },
             )
             result = subprocess.run(
                 [
@@ -155,23 +156,20 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
 
     def test_refuses_package_root_inside_or_above_source_checkout(self) -> None:
         cases = [
-            (ROOT, "docs"),
-            (ROOT, ".."),
+            (ROOT, "docs", "refusing to use source checkout as package output"),
+            (ROOT, "..", "refusing package output outside --output-dir"),
         ]
-        for output_dir, package_root_name in cases:
+        for output_dir, package_root_name, expected_error in cases:
             with self.subTest(package_root_name=package_root_name), tempfile.TemporaryDirectory() as tmp:
                 manifest_path = Path(tmp) / "dangerous-manifest.json"
-                manifest_path.write_text(
-                    json.dumps(
-                        {
-                            "schema": "readerlab.package-manifest.v1",
-                            "package_root_name": package_root_name,
-                            "include_files": [],
-                            "include_dirs": [],
-                        },
-                        indent=2,
-                    ),
-                    encoding="utf-8",
+                write_manifest(
+                    manifest_path,
+                    {
+                        "schema": "readerlab.package-manifest.v1",
+                        "package_root_name": package_root_name,
+                        "include_files": [],
+                        "include_dirs": [],
+                    },
                 )
                 result = subprocess.run(
                     [
@@ -189,7 +187,114 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
                 )
 
                 self.assertNotEqual(result.returncode, 0)
-                self.assertIn("refusing to use source checkout as package output", result.stderr + result.stdout)
+                self.assertIn(expected_error, result.stderr + result.stdout)
+
+    def test_refuses_package_root_outside_output_dir(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "out"
+            victim = Path(tmp) / "victim"
+            victim.mkdir()
+            (victim / "keep.txt").write_text("do not delete", encoding="utf-8")
+            cases = [
+                "../victim",
+                str(victim),
+            ]
+            for package_root_name in cases:
+                with self.subTest(package_root_name=package_root_name):
+                    manifest_path = Path(tmp) / "dangerous-manifest.json"
+                    write_manifest(
+                        manifest_path,
+                        {
+                            "schema": "readerlab.package-manifest.v1",
+                            "package_root_name": package_root_name,
+                            "include_files": [],
+                            "include_dirs": [],
+                        },
+                    )
+                    result = subprocess.run(
+                        [
+                            "python3",
+                            str(SCRIPT),
+                            "--manifest",
+                            str(manifest_path),
+                            "--output-dir",
+                            str(output_dir),
+                            "--force",
+                        ],
+                        check=False,
+                        text=True,
+                        capture_output=True,
+                    )
+
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn("refusing package output outside --output-dir", result.stderr + result.stdout)
+                    self.assertTrue((victim / "keep.txt").is_file())
+
+    def test_refuses_manifest_sources_and_targets_outside_boundaries(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            outside_source = Path(tmp) / "outside.md"
+            outside_source.write_text("outside", encoding="utf-8")
+            cases = [
+                (
+                    "source",
+                    {
+                        "include_files": [
+                            {"source": str(outside_source), "target": "outside.md", "sanitize": False},
+                        ],
+                        "include_dirs": [],
+                    },
+                    "include source escapes allowed boundary",
+                ),
+                (
+                    "target",
+                    {
+                        "include_files": [
+                            {"source": "README.md", "target": "../escaped.md", "sanitize": False},
+                        ],
+                        "include_dirs": [],
+                    },
+                    "package target escapes allowed boundary",
+                ),
+                (
+                    "dir-target",
+                    {
+                        "include_files": [],
+                        "include_dirs": [
+                            {"source": "docs/contracts", "target": "../escaped-dir", "sanitize": False},
+                        ],
+                    },
+                    "package target escapes allowed boundary",
+                ),
+            ]
+            for name, payload, expected_error in cases:
+                with self.subTest(name=name):
+                    manifest_path = Path(tmp) / f"{name}-manifest.json"
+                    write_manifest(
+                        manifest_path,
+                        {
+                            "schema": "readerlab.package-manifest.v1",
+                            "package_root_name": f"readerlab-{name}",
+                            **payload,
+                        },
+                    )
+                    result = subprocess.run(
+                        [
+                            "python3",
+                            str(SCRIPT),
+                            "--manifest",
+                            str(manifest_path),
+                            "--output-dir",
+                            tmp,
+                        ],
+                        check=False,
+                        text=True,
+                        capture_output=True,
+                    )
+
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn(expected_error, result.stderr + result.stdout)
+                    self.assertFalse((Path(tmp) / "escaped.md").exists())
+                    self.assertFalse((Path(tmp) / "escaped-dir").exists())
 
     def test_accepts_relative_manifest_path(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -100,7 +100,25 @@ def sanitize_text(text: str) -> str:
     return text
 
 
+def require_within(path: Path, boundary: Path, *, label: str) -> Path:
+    resolved = path.resolve()
+    boundary_resolved = boundary.resolve()
+    if resolved != boundary_resolved and boundary_resolved not in resolved.parents:
+        raise SystemExit(f"{label} escapes allowed boundary: {path}")
+    return resolved
+
+
+def source_path(value: str) -> Path:
+    return require_within(ROOT / value, ROOT_RESOLVED, label="include source")
+
+
+def package_path(package_root: Path, value: str) -> Path:
+    return require_within(package_root / value, package_root, label="package target")
+
+
 def copy_file(source: Path, target: Path, *, sanitize: bool, package_root: Path) -> dict[str, Any]:
+    source = require_within(source, ROOT_RESOLVED, label="include source")
+    target = require_within(target, package_root, label="package target")
     if not source.is_file():
         raise SystemExit(f"include source file not found: {source}")
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -110,7 +128,7 @@ def copy_file(source: Path, target: Path, *, sanitize: bool, package_root: Path)
         shutil.copy2(source, target)
     return {
         "kind": "file",
-        "source": str(source.relative_to(ROOT)),
+        "source": source.relative_to(ROOT_RESOLVED).as_posix(),
         "target": package_rel(target, package_root),
         "sha256": file_sha256(target),
         "bytes": target.stat().st_size,
@@ -119,6 +137,8 @@ def copy_file(source: Path, target: Path, *, sanitize: bool, package_root: Path)
 
 
 def copy_dir(source: Path, target: Path, *, sanitize: bool, package_root: Path) -> list[dict[str, Any]]:
+    source = require_within(source, ROOT_RESOLVED, label="include source")
+    target = require_within(target, package_root, label="package target")
     if not source.is_dir():
         raise SystemExit(f"include source directory not found: {source}")
     copied: list[dict[str, Any]] = []
@@ -131,7 +151,7 @@ def copy_dir(source: Path, target: Path, *, sanitize: bool, package_root: Path) 
 
 
 def package_rel(path: Path, package_root: Path) -> str:
-    return path.relative_to(package_root).as_posix()
+    return path.relative_to(package_root.resolve()).as_posix()
 
 
 def audit_package(package_root: Path) -> tuple[list[str], dict[str, Any]]:
@@ -192,17 +212,21 @@ def package_manifest_ref(manifest_path: Path) -> str:
         return manifest_path.name
 
 
-def ensure_safe_package_root(package_root: Path) -> None:
+def ensure_safe_package_root(output_dir: Path, package_root: Path) -> Path:
+    output_dir_resolved = output_dir.resolve()
     resolved = package_root.resolve()
+    if resolved != output_dir_resolved and output_dir_resolved not in resolved.parents:
+        raise SystemExit(f"refusing package output outside --output-dir: {package_root}")
     if resolved == ROOT_RESOLVED or ROOT_RESOLVED in resolved.parents or resolved in ROOT_RESOLVED.parents:
         raise SystemExit(f"refusing to use source checkout as package output: {package_root}")
+    return resolved
 
 
 def build_package(manifest_path: Path, output_dir: Path, *, force: bool = False) -> dict[str, Any]:
     manifest_path = manifest_path.resolve()
     manifest = read_json(manifest_path)
-    package_root = output_dir / str(manifest.get("package_root_name") or "readerlab")
-    ensure_safe_package_root(package_root)
+    output_dir = output_dir.resolve()
+    package_root = ensure_safe_package_root(output_dir, output_dir / str(manifest.get("package_root_name") or "readerlab"))
     if package_root.exists():
         if not force:
             raise SystemExit(f"package output exists; pass --force to replace: {package_root}")
@@ -213,8 +237,8 @@ def build_package(manifest_path: Path, output_dir: Path, *, force: bool = False)
     for entry in manifest.get("include_files") or []:
         copied.append(
             copy_file(
-                ROOT / entry["source"],
-                package_root / entry["target"],
+                source_path(entry["source"]),
+                package_path(package_root, entry["target"]),
                 sanitize=bool(entry.get("sanitize")),
                 package_root=package_root,
             )
@@ -222,8 +246,8 @@ def build_package(manifest_path: Path, output_dir: Path, *, force: bool = False)
     for entry in manifest.get("include_dirs") or []:
         copied.extend(
             copy_dir(
-                ROOT / entry["source"],
-                package_root / entry["target"],
+                source_path(entry["source"]),
+                package_path(package_root, entry["target"]),
                 sanitize=bool(entry.get("sanitize")),
                 package_root=package_root,
             )
