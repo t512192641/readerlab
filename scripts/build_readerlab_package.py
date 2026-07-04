@@ -185,12 +185,21 @@ def copied_for_manifest(copied: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return entries
 
 
+def package_manifest_ref(manifest_path: Path) -> str:
+    try:
+        return manifest_path.relative_to(ROOT_RESOLVED).as_posix()
+    except ValueError:
+        return manifest_path.name
+
+
 def ensure_safe_package_root(package_root: Path) -> None:
-    if package_root.resolve() == ROOT_RESOLVED:
+    resolved = package_root.resolve()
+    if resolved == ROOT_RESOLVED or ROOT_RESOLVED in resolved.parents or resolved in ROOT_RESOLVED.parents:
         raise SystemExit(f"refusing to use source checkout as package output: {package_root}")
 
 
 def build_package(manifest_path: Path, output_dir: Path, *, force: bool = False) -> dict[str, Any]:
+    manifest_path = manifest_path.resolve()
     manifest = read_json(manifest_path)
     package_root = output_dir / str(manifest.get("package_root_name") or "readerlab")
     ensure_safe_package_root(package_root)
@@ -237,7 +246,7 @@ def build_package(manifest_path: Path, output_dir: Path, *, force: bool = False)
         "status": "shareable_package_prepared",
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "package_root": "readerlab",
-        "manifest": manifest_path.relative_to(ROOT).as_posix(),
+        "manifest": package_manifest_ref(manifest_path),
         "copied": copied_for_manifest(copied),
         "audit_file": "PACKAGE_AUDIT.json",
     }

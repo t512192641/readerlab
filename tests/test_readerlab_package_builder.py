@@ -153,6 +153,67 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
             self.assertIn("refusing to use source checkout as package output", result.stderr + result.stdout)
             self.assertTrue((ROOT / "scripts/build_readerlab_package.py").is_file())
 
+    def test_refuses_package_root_inside_or_above_source_checkout(self) -> None:
+        cases = [
+            (ROOT, "docs"),
+            (ROOT, ".."),
+        ]
+        for output_dir, package_root_name in cases:
+            with self.subTest(package_root_name=package_root_name), tempfile.TemporaryDirectory() as tmp:
+                manifest_path = Path(tmp) / "dangerous-manifest.json"
+                manifest_path.write_text(
+                    json.dumps(
+                        {
+                            "schema": "readerlab.package-manifest.v1",
+                            "package_root_name": package_root_name,
+                            "include_files": [],
+                            "include_dirs": [],
+                        },
+                        indent=2,
+                    ),
+                    encoding="utf-8",
+                )
+                result = subprocess.run(
+                    [
+                        "python3",
+                        str(SCRIPT),
+                        "--manifest",
+                        str(manifest_path),
+                        "--output-dir",
+                        str(output_dir),
+                        "--force",
+                    ],
+                    check=False,
+                    text=True,
+                    capture_output=True,
+                )
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("refusing to use source checkout as package output", result.stderr + result.stdout)
+
+    def test_accepts_relative_manifest_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = subprocess.run(
+                [
+                    "python3",
+                    str(SCRIPT),
+                    "--manifest",
+                    "packaging/readerlab-package-manifest.json",
+                    "--output-dir",
+                    tmp,
+                ],
+                check=True,
+                text=True,
+                capture_output=True,
+                cwd=ROOT,
+            )
+            payload = json.loads(result.stdout)
+            package_root = Path(tmp) / payload["package_root"]
+            package_manifest = json.loads((package_root / "PACKAGE_MANIFEST.json").read_text(encoding="utf-8"))
+
+            self.assertEqual(package_manifest["manifest"], "packaging/readerlab-package-manifest.json")
+            self.assertEqual(package_manifest["status"], "shareable_package_prepared")
+
 
 if __name__ == "__main__":
     unittest.main()
