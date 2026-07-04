@@ -8,7 +8,13 @@ It is not full-book acceptance, not production readiness, and not human reader a
 
 ## Run
 
-From the repo or a built package root:
+From the repo root:
+
+```bash
+python3 packaging/book_route_smoke_test.py
+```
+
+From a built package root:
 
 ```bash
 python3 tests/book_route_smoke_test.py

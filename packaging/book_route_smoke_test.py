@@ -43,6 +43,70 @@ def run_readerlab(*args: str, phase: str) -> dict[str, Any]:
         raise SmokeFailure(phase, f"readerlab command did not return JSON: {exc}") from exc
 
 
+def read_json(path: Path, *, phase: str) -> dict[str, Any]:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise SmokeFailure(phase, f"required smoke contract missing: {path}") from exc
+    except json.JSONDecodeError as exc:
+        raise SmokeFailure(phase, f"required smoke contract is not valid JSON: {path}: {exc}") from exc
+
+
+def build_run_config_payload(fixture: Path, output_root: Path) -> dict[str, Any]:
+    return {
+        "source_paths": [
+            str(fixture / "audit/source-excerpts/chapter-01.md"),
+            str(fixture / "audit/source-excerpts/chapter-02.md"),
+        ],
+        "output_root": str(output_root),
+        "permission_boundary": "local_private_user_approved_only",
+        "material_family": "book_longform",
+        "requested_scope": "two ordered chapter fixture smoke",
+        "human_review_required": True,
+        "declared_scope": "book-route-smoke-v0",
+        "declared_units": ["chapter-01", "chapter-02"],
+        "full_book_required": True,
+        "dual_view_required": True,
+    }
+
+
+def assert_config_matches_fixture(config_payload: dict[str, Any], fixture: Path) -> dict[str, bool]:
+    registry = read_json(fixture / "audit" / "source-registry.v1.json", phase="configuration_structure")
+    catalog_map = read_json(
+        fixture / "audit" / "contracts" / "catalog-map.v1.json",
+        phase="configuration_structure",
+    )
+
+    config_sources = [Path(path).resolve() for path in config_payload.get("source_paths", [])]
+    registry_sources = [
+        (fixture / source["source_path"]).resolve()
+        for source in registry.get("sources", [])
+        if source.get("source_role") == "primary_text"
+    ]
+    if config_sources != registry_sources:
+        raise SmokeFailure(
+            "configuration_structure",
+            "run config source_paths must match source-registry primary_text paths and order",
+        )
+
+    declared_units = list(config_payload.get("declared_units") or [])
+    catalog_units = [
+        unit["unit_id"]
+        for unit in catalog_map.get("catalog", {}).get("reading_units", [])
+        if "unit_id" in unit
+    ]
+    if declared_units != catalog_units:
+        raise SmokeFailure(
+            "configuration_structure",
+            "run config declared_units must match catalog reading_units order",
+        )
+
+    return {
+        "source_paths_match_registry": True,
+        "declared_units_match_catalog": True,
+    }
+
+
 def assert_in_order(text: str, markers: list[str], *, phase: str) -> None:
     cursor = -1
     for marker in markers:
@@ -100,26 +164,13 @@ def run_smoke() -> dict[str, Any]:
         tmp_path = Path(tmp)
         output_root = tmp_path / "book-output"
         run_config = tmp_path / "book-run-config.json"
-        config_payload = {
-            "source_paths": [
-                str(fixture / "audit/source-excerpts/chapter-01.md"),
-                str(fixture / "audit/source-excerpts/chapter-02.md"),
-            ],
-            "output_root": str(output_root),
-            "permission_boundary": "local_private_user_approved_only",
-            "material_family": "book_longform",
-            "requested_scope": "two ordered chapter fixture smoke",
-            "human_review_required": True,
-            "declared_scope": "book-route-smoke-v0",
-            "declared_units": ["chapter-01", "chapter-02"],
-            "full_book_required": True,
-            "dual_view_required": True,
-        }
+        config_payload = build_run_config_payload(fixture, output_root)
         run_config.write_text(json.dumps(config_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
         config_result = run_readerlab("validate-run-config", str(run_config), phase="configuration_structure")
         if not config_result.get("passed"):
             raise SmokeFailure("configuration_structure", json.dumps(config_result, ensure_ascii=False))
+        config_cross_check = assert_config_matches_fixture(config_payload, fixture)
 
         render_result = run_readerlab(
             "render-contract-package",
@@ -140,6 +191,7 @@ def run_smoke() -> dict[str, Any]:
         "not_production_ready": True,
         "material_family": config_result.get("material_family"),
         "declared_units": config_result.get("declared_units"),
+        "config_cross_check": config_cross_check,
         "verification_layers": {
             "configuration_structure": "pass",
             "runner_contract": "pass" if render_result.get("rendered_pages") else "fail",
