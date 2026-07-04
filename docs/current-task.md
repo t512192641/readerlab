@@ -54,9 +54,26 @@ ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
 
 两个完整 case 在本机原型验证中通过过 `check-evaluation`，controller decision 是 `limited_accept`，不是 production ready。除非相应 runner、builder 和 reports 在后续 issue 中提交，否则下游 worker 不能把这些路径当成已提交事实源。
 
-## Current Facts
+## Current Facts In Submitted Tree
 
-- 工程材料路线硬边界已经落入 runner：
+- 当前已提交事实只包括发布边界和调度材料：
+  - `docs/readerlab-v2-shareable-skill-prd.md`
+  - `docs/readerlab-v2-package-boundary.md`
+  - `docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`
+- #2 的目标是固定可分享 Skill 包边界，不提交 runner、builder 或 V2 reports。
+- 下游 #3/#4 worker 不能假设 `scripts/readerlab_v2_runner.py`、`scripts/readerlab_v2_quality_gate_adapter.py` 或 `experiments/readerlab-v2/` 已存在于 fresh checkout。
+- 用户指出并确认：验收不能混成一句“读者视角 OK”。ReaderLab 应拆成多类检查：
+  - 合同履约 / 结构合规
+  - 内容完整性
+  - 人类读者体验
+  - 产品预期
+  - Skill / 工程材料路线额外有 Agent 读者可复用性
+
+## Local Prototype History
+
+以下内容是本机未提交 V2 原型中的历史线索。除非对应文件在后续 issue 中提交，否则不能作为 fresh checkout 的当前事实。
+
+- 工程材料路线硬边界曾在本机 runner 原型中落地：
   - `engineering_source_scope` 中声明的原始 source 必须先完整读过一次。
   - `full-source-track.md` 是 evidence packet / seam，不是摘要替身。
   - `technical-cofounder-notes.md` / `technical-asset-cards.md` 必须站在 evidence layer 上，不能只依赖 `body.md`。
@@ -67,12 +84,6 @@ ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
   - `manifest.json` 仍允许留顶层作为兼容例外，但额外 JSON 不能随便留顶层。
 - `gstack/spec` 完整单 Skill case 已通过。
 - `gstack/review` 完整单 Skill case 已通过。
-- 用户指出并确认：验收不能混成一句“读者视角 OK”。ReaderLab 应拆成多类检查：
-  - 合同履约 / 结构合规
-  - 内容完整性
-  - 人类读者体验
-  - 产品预期
-  - Skill / 工程材料路线额外有 Agent 读者可复用性
 - 本机原型曾把这点落入代码；在这些文件提交前，下列路径只代表待落地的历史线索：
   - `scripts/readerlab_v2_quality_gate_adapter.py`
     - quality gate request 会写明 `check_class`、`Audience`、`isolation_rule` 和分开的 review dimensions。
