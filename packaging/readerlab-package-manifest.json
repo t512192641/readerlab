@@ -106,7 +106,7 @@
     {
       "source": "docs/readerlab-v2-runtime-config.md",
       "target": "docs/readerlab-v2-runtime-config.md",
-      "sanitize": false
+      "sanitize": true
     },
     {
       "source": "docs/readerlab-v2-package-build.md",
@@ -132,7 +132,7 @@
   "include_dirs": [
     {
       "source": "docs/contracts",
-      "target": "contracts",
+      "target": "docs/contracts",
       "sanitize": false
     },
     {

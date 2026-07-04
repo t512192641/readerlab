@@ -20,7 +20,7 @@ readerlab/
   examples/
   scripts/
   docs/
-  contracts/
+  docs/contracts/
   fixtures/
   tests/
   PACKAGE_BOUNDARY.md

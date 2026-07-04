@@ -65,6 +65,10 @@ SANITIZE_REPLACEMENTS = {
     "Run these prompts after repo-local activation:": "Run these prompts after bounded activation:",
     "remove .agents/skills/readerlab/": "remove the approved ReaderLab Skill install target",
     "Allowed after repo-local activation:": "Allowed after bounded activation:",
+    ".agents/skills/readerlab/examples/run-config-example.json": "examples/run-config-example.json",
+    "python3 tests/test_readerlab_trace_validator.py\npython3 tests/test_readerlab.py": (
+        "python3 tests/package_smoke_test.py"
+    ),
     "python3 scripts/readerlab_trace_validator.py validate-suite --demo tests/fixtures/readerlab/private-material-validation/demos/A_feel_good_productivity --demo tests/fixtures/readerlab/private-material-validation/demos/B_planning_with_files --cases-json tests/fixtures/readerlab/comment-replay/fixtures/comment-replay-cases.json --fixture-dir tests/fixtures/readerlab/comment-replay/fixtures": (
         "python3 scripts/readerlab.py validate-run-config examples/run-config-example.json --no-source-exists-check"
     ),

@@ -35,7 +35,7 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
             self.assertTrue((package_root / "tests/package_smoke_test.py").is_file())
             self.assertTrue((package_root / "docs/product-spec.md").is_file())
             self.assertTrue((package_root / "docs/readerlab-v2-runtime-config.md").is_file())
-            self.assertTrue((package_root / "contracts/trace-validation-v1.md").is_file())
+            self.assertTrue((package_root / "docs/contracts/trace-validation-v1.md").is_file())
             self.assertTrue((package_root / "fixtures/contract-validator-proof-v0/README.md").is_file())
             self.assertTrue((package_root / "PACKAGE_BOUNDARY.md").is_file())
             self.assertTrue((package_root / "PACKAGE_AUDIT.json").is_file())
@@ -56,6 +56,7 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
             self.assertNotIn("/private/", manifest_text)
             self.assertNotIn("/tmp/", manifest_text)
             self.assertNotIn("/workspace/", manifest_text)
+            self.assertFalse((package_root / "contracts/trace-validation-v1.md").exists())
 
             smoke = subprocess.run(
                 ["python3", str(package_root / "tests/package_smoke_test.py")],
@@ -92,6 +93,18 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
                 "python3 scripts/readerlab_trace_validator.py validate-suite --demo tests/fixtures/readerlab/private-material-validation",
                 combined,
             )
+            package_instructions = "\n".join(
+                (package_root / path).read_text(encoding="utf-8")
+                for path in [
+                    "SKILL.md",
+                    "checks/readiness-checklist.md",
+                    "checks/activation-checklist.md",
+                    "docs/readerlab-v2-runtime-config.md",
+                ]
+            )
+            self.assertNotIn(".agents/skills/readerlab/examples/run-config-example.json", package_instructions)
+            self.assertNotIn("python3 tests/test_readerlab_trace_validator.py", package_instructions)
+            self.assertNotIn("python3 tests/test_readerlab.py", package_instructions)
             self.assertIn("shareable_package_prepared", combined)
 
     def test_refuses_to_overwrite_without_force(self) -> None:
