@@ -154,9 +154,9 @@ git diff --check
 
 ## Next Work Queue
 
-下一步不要先扩第三个 GSTACK Skill，也不要继续堆 runner 字符串检查。建议顺序：
+下一步不要先扩第三个 GSTACK Skill，也不要继续堆 runner 字符串检查。当前 PR #10 仍在完成 #2；PR #10 合并后，权威下一步应推进 #4，而不是重做 #2。建议顺序：
 
-1. 从 #2 开始执行：先固定可分享 Skill 包边界、包含 / 排除清单、状态口径和历史防回归。
+1. 完成并合并 #2：固定可分享 Skill 包边界、包含 / 排除清单、状态口径和历史防回归。
 2. #2 完成后先做 #4：配置外置，去掉 `scripts/readerlab.py` 的本机路径耦合；否则 #3 不能把 runtime script 打进可分享包。
 3. #4 完成后做 #3：建立包构建器或等价发布目录，确保不带入实验 reports、私有 source、LifeAtlas 固定路径、GSTACK 原始仓库和旧 handoff。#3 可以先做 manifest / 排除规则骨架，但包含 `scripts/readerlab.py` 的可运行包必须等 #4 完成。
 4. #3/#4 完成后做 #5：安装 smoke。

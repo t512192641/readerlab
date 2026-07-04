@@ -186,6 +186,7 @@ Forbidden:
 - Do not copy experiment reports into the shareable package.
 - Do not include package-external fixtures such as current comment replay demos unless a self-contained sanitized fixture is committed first.
 - Do not package `scripts/readerlab.py` before #4 removes hardcoded local path defaults.
+- Do not copy repo-local Skill docs/checklists verbatim if they still contain current-user paths or package-external fixture commands; #3 must generate or verify sanitized package copies.
 - Do not install globally.
 
 ### #4 外置运行配置
