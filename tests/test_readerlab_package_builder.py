@@ -359,6 +359,39 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
             self.assertEqual(package_manifest["manifest"], "packaging/readerlab-package-manifest.json")
             self.assertEqual(package_manifest["status"], "shareable_package_prepared")
 
+    def test_reports_custom_package_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest_path = Path(tmp) / "custom-manifest.json"
+            write_manifest(
+                manifest_path,
+                {
+                    "schema": "readerlab.package-manifest.v1",
+                    "package_root_name": "custom-readerlab",
+                    "include_files": [],
+                    "include_dirs": [],
+                },
+            )
+            result = subprocess.run(
+                [
+                    "python3",
+                    str(SCRIPT),
+                    "--manifest",
+                    str(manifest_path),
+                    "--output-dir",
+                    tmp,
+                ],
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            payload = json.loads(result.stdout)
+            package_root = Path(tmp) / payload["package_root"]
+            package_manifest = json.loads((package_root / "PACKAGE_MANIFEST.json").read_text(encoding="utf-8"))
+
+            self.assertEqual(payload["package_root"], "custom-readerlab")
+            self.assertTrue((package_root / "PACKAGE_BOUNDARY.md").is_file())
+            self.assertEqual(package_manifest["package_root"], "custom-readerlab")
+
 
 if __name__ == "__main__":
     unittest.main()

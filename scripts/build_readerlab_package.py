@@ -212,6 +212,10 @@ def package_manifest_ref(manifest_path: Path) -> str:
         return manifest_path.name
 
 
+def output_rel(path: Path, output_dir: Path) -> str:
+    return path.relative_to(output_dir.resolve()).as_posix()
+
+
 def ensure_safe_package_root(output_dir: Path, package_root: Path) -> Path:
     output_dir_resolved = output_dir.resolve()
     resolved = package_root.resolve()
@@ -271,7 +275,7 @@ def build_package(manifest_path: Path, output_dir: Path, *, force: bool = False)
         "schema": "readerlab.package-build-result.v1",
         "status": "shareable_package_prepared",
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
-        "package_root": "readerlab",
+        "package_root": output_rel(package_root, output_dir),
         "manifest": package_manifest_ref(manifest_path),
         "copied": copied_for_manifest(copied),
         "audit_file": "PACKAGE_AUDIT.json",
