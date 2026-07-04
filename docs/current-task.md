@@ -147,10 +147,11 @@ git diff --check
 
 当前可以声称：
 
-- 工程材料路线已有两个完整单 Skill case 通过：`gstack/spec` 和 `gstack/review`。
-- runner 的合同 / 结构检查能拦住关键工程路线违规。
-- quality gate request 已开始按多视角验收矩阵组织，不再把不同检查混成一句“读者视角”。
-- assets page 有最低冷启动结构底线，防止无背景 Agent 拿到卡片时完全不知道用途和边界。
+- 已提交文档固定了 ReaderLab V2 可分享 Skill 包边界、状态口径、发布顺序和历史防回归要求。
+- 已提交文档固定了验收矩阵必须拆成合同履约 / 结构合规、内容完整性、人类读者体验、产品预期、无上下文 Agent 复用。
+- 已提交文档固定了 `limited_accept` 只能表示有限 prototype 接受，不能说成 production ready。
+- 本机未提交原型中，工程材料路线曾有两个完整单 Skill case 通过：`gstack/spec` 和 `gstack/review`；这只能作为后续 issue 的历史线索，不能作为 fresh checkout 的已提交能力。
+- 本机未提交原型中，runner / quality gate / assets page 曾具备若干结构和冷启动约束；这些能力必须由后续 issue 正式提交并复验后，才能成为当前可运行事实。
 
 ## Next Work Queue
 
