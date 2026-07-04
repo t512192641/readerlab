@@ -47,7 +47,7 @@
   - 验收时约束：内容完整性、人类读者体验、产品预期、Agent 冷启动复用、高阶讲解是否有认知增量。
   - Runner 只承载生产硬约束；Quality Gate / Reader Evaluation / 分离读者 Agent 承载验收判断。
   - 验收问题只有在能反推成稳定、低误伤、可观察、可复跑的前置条件时，才升级为 runner 或生产 prompt 约束。
-- 已更新：
+- 已更新，其中 `experiments/readerlab-v2/`、`scripts/readerlab_v2_*` 和 `tests/test_readerlab_v2_*` 相关条目属于本机未提交 prototype 历史，不属于 PR #10 的 submitted tree，后续 worker 不能把它们当成 fresh checkout 当前事实：
   - `docs/decisions.md`：新增 D-035，固定生产约束和验收约束分层。
   - `docs/eval-gates.md`：新增约束分层和“验收问题反推生产条件”路径。
   - `experiments/readerlab-v2/workflow-contract-v2.md`：新增生产 / 验收约束边界和新增硬 gate 默认门槛。
@@ -57,13 +57,13 @@
   - 多视角验收矩阵保留，但它是评价语言，不自动等于生产流程约束。
   - 已完成第一轮 runner 约束分类：保留生产硬 gate，下沉读者质量 / 产品预期 / Agent 复用判断。
   - 暂不扩第三个 GSTACK Skill，除非分层稳定。
-- 第一轮 runner 下沉改动：
+- 第一轮 runner 下沉改动属于本机未提交 prototype 历史，必须由后续 issue 正式提交并复验后才算当前可运行事实：
   - 保留：来源范围、证据层、净化正文、最小追责字段、页面存在和中文 H1、audit 不污染读者页、资产页四个冷启动入口字段、quality gate packet / blocking controller 协议。
   - 下沉到 Quality Gate / Reader Evaluation：工程页是否真正让产品负责人看懂、术语解释是否自然、资产卡是否真的可复用、逐卡技术材料是否足够深、state handoff 是否解释到位、高价值陪读是否被低干扰策略误删。
   - `scripts/readerlab_v2_runner.py` 已移除这些质量判断的硬失败调用。
   - `tests/test_readerlab_v2_runner.py` 已改成验证 runner 不再把这些验收判断当生产硬 gate。
   - `scripts/readerlab_v2_quality_gate_adapter.py` 已把工程页 `product_owner_explanation` / `term_grounding`、资产页 `card_operability` 写入 review request，让下沉后的判断仍在验收层出现。
-- 最新验证命令均通过：
+- 本机 prototype 验证命令曾通过；这些结果依赖未提交 V2 runner / adapter / tests，不能作为 fresh checkout 可复跑证据：
   - `python3 tests/test_readerlab_v2_runner.py`：`Ran 47 tests ... OK`
   - `python3 tests/test_readerlab_v2_quality_gate_adapter.py`：`Ran 3 tests ... OK`
   - `python3 tests/test_readerlab_v2_gstack_spec_builder.py`：`Ran 3 tests ... OK`
