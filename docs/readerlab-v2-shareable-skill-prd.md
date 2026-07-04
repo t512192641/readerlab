@@ -68,7 +68,7 @@ ReaderLab V2 已经证明若干核心方向是对的：正文优先、正文旁�
 - Skill / 工程路线继续使用 full-source evidence packet、cleaned body、source-cleaning map、reader guidance、technical cofounder notes、asset cards、三份 reader-facing 页面。
 - Runner 只承载生产约束：来源范围、正文 / 净化正文、证据层、产物结构、顺序依赖、失败回指、blocking controller。
 - Quality Gate / Reader Evaluation 承载验收约束：内容完整性、人类读者体验、产品预期、高阶讲解增量、Agent 冷启动复用。
-- 发布状态不能使用 production ready。建议状态梯子为：`dev_worktree`、`shareable_package_prepared`、`installable_release_candidate`、`friend_smoke_passed`、`reader_accepted`。
+- 发布状态不能使用 production ready。建议状态梯子为：`dev_worktree`、`shareable_package_boundary_defined`、`shareable_package_prepared`、`installable_release_candidate`、`friend_smoke_passed`、`reader_accepted`。
 - 任何验收问题只有在能反推成稳定、低误伤、可观察、可复跑的前置条件后，才升级为 runner 或生产 prompt 约束。
 
 ## Testing Decisions

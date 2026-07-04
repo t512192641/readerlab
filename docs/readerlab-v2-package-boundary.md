@@ -169,6 +169,7 @@ Skill / 工程材料路线中：
 ## Status Ladder
 
 - `dev_worktree`：研发工作区状态，不能分享给普通使用者。
+- `shareable_package_boundary_defined`：#2 边界已固定，包含 / 排除清单、条件输入和状态口径已定义；还没有生成干净包候选。
 - `shareable_package_prepared`：已生成干净包候选，但未完成安装 smoke。
 - `installable_release_candidate`：安装 smoke 和三类路线 smoke 已完成，可作为候选给朋友试用。
 - `friend_smoke_passed`：朋友环境的有限 smoke 通过。
