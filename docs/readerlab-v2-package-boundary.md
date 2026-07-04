@@ -32,8 +32,15 @@ ReaderLab V2 分三层：
 - Method docs: `docs/ai-reading-method.md`、`docs/high-order-explanation-method.md`、`docs/technical-cofounder-method.md`
 - Contracts: `docs/contracts/`
 - Smoke fixtures: `tests/fixtures/readerlab/contract-validator-proof-v0/`、`tests/fixtures/readerlab/comment-replay/fixtures/`
-- Minimal tests: `tests/test_readerlab.py`、`tests/test_readerlab_trace_validator.py`、`tests/test_fullbook_demo_validate.py`、`tests/test_review_pack_validate.py`
+- Minimal package tests: only tests introduced or selected by #3 that depend exclusively on the included package fixtures.
 - Package boundary docs: `docs/readerlab-v2-package-boundary.md`、`docs/readerlab-v2-shareable-skill-prd.md`、`docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`
+
+不得作为可分享包最小测试直接纳入：
+
+- `tests/test_readerlab_trace_validator.py`，当前仍依赖未列入包内的 private-material-validation demos。
+- `tests/test_fullbook_demo_validate.py` 和 `tests/test_review_pack_validate.py`，当前仍依赖 `docs/reports/`，而 reports 明确排除在可分享包之外。
+
+这些测试可以继续作为研发仓库 regression；若 #3 要把它们纳入发布包，必须先改造成只依赖包内 fixtures 的 smoke tests。
 
 可选但必须先提交后才能纳入的 V2 输入：
 
