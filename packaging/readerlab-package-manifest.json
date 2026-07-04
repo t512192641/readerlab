@@ -114,6 +114,11 @@
       "sanitize": false
     },
     {
+      "source": "docs/readerlab-v2-install-smoke.md",
+      "target": "docs/readerlab-v2-install-smoke.md",
+      "sanitize": false
+    },
+    {
       "source": "docs/readerlab-v2-package-boundary.md",
       "target": "docs/readerlab-v2-package-boundary.md",
       "sanitize": false

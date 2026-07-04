@@ -16,6 +16,7 @@ REQUIRED_FILES = (
     "scripts/readerlab.py",
     "scripts/readerlab_trace_validator.py",
     "docs/readerlab-v2-runtime-config.md",
+    "docs/readerlab-v2-install-smoke.md",
     "docs/contracts/trace-validation-v1.md",
     "fixtures/contract-validator-proof-v0/README.md",
     "PACKAGE_BOUNDARY.md",
