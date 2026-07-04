@@ -20,6 +20,7 @@ REQUIRED_FILES = (
     "fixtures/contract-validator-proof-v0/README.md",
     "PACKAGE_BOUNDARY.md",
     "PACKAGE_AUDIT.json",
+    "PACKAGE_MANIFEST.json",
 )
 
 
