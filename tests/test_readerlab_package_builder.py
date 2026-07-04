@@ -97,6 +97,8 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
                 "python3 scripts/readerlab_trace_validator.py validate-suite --demo tests/fixtures/readerlab/private-material-validation",
                 combined,
             )
+            self.assertNotIn("只在本仓库 `.agents/skills/readerlab/` 激活", combined)
+            self.assertNotIn("不安装到 `~/.codex/skills/`", combined)
             package_instructions = "\n".join(
                 (package_root / path).read_text(encoding="utf-8")
                 for path in [
@@ -104,11 +106,13 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
                     "checks/readiness-checklist.md",
                     "checks/activation-checklist.md",
                     "docs/readerlab-v2-runtime-config.md",
+                    "docs/decisions.md",
                 ]
             )
             self.assertNotIn(".agents/skills/readerlab/examples/run-config-example.json", package_instructions)
             self.assertNotIn("python3 tests/test_readerlab_trace_validator.py", package_instructions)
             self.assertNotIn("python3 tests/test_readerlab.py", package_instructions)
+            self.assertIn("shareable Skill package 是候选包", package_instructions)
             self.assertIn("shareable_package_prepared", combined)
 
     def test_refuses_to_overwrite_without_force(self) -> None:

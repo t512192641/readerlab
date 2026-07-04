@@ -25,6 +25,8 @@ FORBIDDEN_TEXT_MARKERS = (
     "python3 scripts/readerlab_trace_validator.py validate-suite --demo tests/fixtures/readerlab/private-material-validation",
     "active only inside this repository",
     "repo-local only",
+    "只在本仓库 `.agents/skills/readerlab/` 激活",
+    "不安装到 `~/.codex/skills/`",
 )
 FORBIDDEN_PATH_PARTS = {
     "reports",
@@ -51,6 +53,12 @@ SANITIZE_REPLACEMENTS = {
     "- [ ] Skill states that it is repo-local only.": "- [ ] Skill states its package and installation boundary.",
     "- [ ] Skill is not installed globally under `~/.codex/skills/`.": (
         "- [ ] Skill is installed only into a user-approved Codex Skill location."
+    ),
+    "## D-006 repo-local Skill 是试运行，不是全局安装": (
+        "## D-006 shareable Skill package 是候选包，不是自动安装"
+    ),
+    "当前 ReaderLab Skill 只在本仓库 `.agents/skills/readerlab/` 激活。未经用户明确批准，不安装到 `~/.codex/skills/`，不宣称生产可用。": (
+        "当前 ReaderLab Skill 包是可分享候选包。未经用户明确批准，不安装到任何 Codex Skill 位置，不宣称生产可用。"
     ),
     "Historical draft source was removed during MEM cleanup; current repo-local source is `.agents/skills/readerlab/`.": (
         "Historical draft source was removed during MEM cleanup; built packages use the package root as their source."
