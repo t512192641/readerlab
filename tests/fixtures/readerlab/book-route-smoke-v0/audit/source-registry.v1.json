@@ -1,0 +1,45 @@
+{
+  "schema": "readerlab.source-registry.v1",
+  "material": {
+    "id": "book-route-smoke-v0",
+    "title": "图书路线烟测样本",
+    "type": "book"
+  },
+  "sources": [
+    {
+      "source_id": "src-book-chapter-01",
+      "source_path": "audit/source-excerpts/chapter-01.md",
+      "source_type": "markdown_chapter_excerpt",
+      "source_role": "primary_text",
+      "coverage_role": "chapter_1",
+      "extraction_status": "repo_local_fixture"
+    },
+    {
+      "source_id": "src-book-chapter-02",
+      "source_path": "audit/source-excerpts/chapter-02.md",
+      "source_type": "markdown_chapter_excerpt",
+      "source_role": "primary_text",
+      "coverage_role": "chapter_2",
+      "extraction_status": "repo_local_fixture"
+    }
+  ],
+  "source_scope": {
+    "coverage_status": "sample",
+    "coverage_note": "Two ordered chapter excerpts are available for book-route smoke only."
+  },
+  "location_refs": [
+    "loc-book-ch1-problem",
+    "loc-book-ch1-position",
+    "loc-book-ch2-structure",
+    "loc-book-ch2-boundary"
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/source-registry.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}
