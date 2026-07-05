@@ -33,11 +33,13 @@
 - `scripts/readerlab_trace_validator.py` 能验证 location-map、claim-ledger、candidate-tournament、annotation-trigger、skillization-gate、trace-validation 和 comment replay fixture 的引用完整性。
 - `scripts/readerlab.py` 仍是早期工具集合，不代表完整自动生成器已经完成。
 - repo-local Skill 可用于试运行，但不是全局安装版。
+- `packaging/release_candidate_review.py` 是 #9 RC 复核入口；它只证明 clean package audit、安装 / 发现 smoke 和三类路线 smoke，最多推进到 `installable_release_candidate`。
 
 ## Verification
 
 ```bash
 python3 scripts/readerlab_trace_validator.py validate-suite --demo tests/fixtures/readerlab/private-material-validation/demos/A_feel_good_productivity --demo tests/fixtures/readerlab/private-material-validation/demos/B_planning_with_files --cases-json tests/fixtures/readerlab/comment-replay/fixtures/comment-replay-cases.json --fixture-dir tests/fixtures/readerlab/comment-replay/fixtures
+python3 packaging/release_candidate_review.py
 python3 tests/test_readerlab_trace_validator.py
 python3 tests/test_readerlab.py
 git diff --check

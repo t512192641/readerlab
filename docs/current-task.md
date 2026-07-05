@@ -16,7 +16,21 @@
 - 稳定路径和验证命令：`docs/dev-state.md`
 - 耐久决策：`docs/decisions.md`
 
-旧 prompt、旧样章、旧报告、旧聊天摘要和单纯 `git diff` 不是当前事实源。当前 PR #10 只落发布边界和调度 RFC；V2 runner、builder、`experiments/readerlab-v2/` 等原型文件如果尚未提交，只能作为本机工作区历史线索，不能当成 fresh checkout 的当前事实。
+旧 prompt、旧样章、旧报告、旧聊天摘要和单纯 `git diff` 不是当前事实源。当前 #2-#8 已由 PR #10-#16 合并落地；#9 / PR #17 是当前唯一 GitHub issue slice。
+
+## 2026-07-05 当前执行更新
+
+PR #10/#11/#12/#13/#14/#15/#16 已合并到 `readerlab-elon-checkpoint`，对应 #2/#4/#3/#5/#6/#7/#8 的实现已经进入提交树。GitHub 上 #2/#3/#5/#6/#7/#8 曾因 auto-close 未触发而保持 open，已在本轮按对应 merged PR 手动关闭；#4 此前已关闭。当前 GitHub 队列只剩 #9：ReaderLab V2 installable release candidate 复核。
+
+当前 slice 是 #9。目标是增加一个可复跑的 RC 复核入口，证明当前最多可以进入 `installable_release_candidate`，同时明确不能声明 production ready、friend smoke passed 或 reader accepted。
+
+#9 的交付边界：
+
+- 增加 RC 复核脚本，重新构建干净包并复跑 clean package audit、package smoke、install / discovery smoke、三类材料路线 smoke。
+- 增加 RC 复核说明，固定复核层次和状态口径。
+- 包内应包含 install smoke 和 RC 复核入口，方便分享包候选自查。
+- 结论必须仍然区分配置结构、runner contract、Quality Gate request、机器 reader-page smoke、controller / blocking controller、人工验收。
+- 当前通过只能说明结构 / runner / smoke 通过，不代表人工读者验收通过。
 
 ## Active Slice
 
@@ -28,18 +42,18 @@ ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
 
 当前包边界：`docs/readerlab-v2-package-boundary.md`。
 
-当前 RFC：`docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`。后续 GitHub issue 开发按 Controller-Agent GitHub Workflow SOP 执行：RFC -> Issues -> worktrees -> worker agents -> PRs -> Codex review -> ready-to-merge candidates -> human approval -> merge。
+当前 RFC：`docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`。#2-#8 的 GitHub issue 开发链路已经完成；#9 / PR #17 仍按 PR -> Codex review -> feedback fixes -> ready-to-merge candidate -> merge 执行。
 
-当前 GitHub issue 队列：
+当前 GitHub issue 状态：
 
-- #2 固定 ReaderLab V2 可分享 Skill 包边界
-- #3 构建最小 ReaderLab V2 Skill 发布包
-- #4 外置 ReaderLab V2 运行配置并去除本机路径耦合
-- #5 验证 ReaderLab V2 Skill 安装与发现 smoke
-- #6 建立 ReaderLab V2 图书路线 smoke
-- #7 建立 ReaderLab V2 长文 / 报告 / 访谈稿路线 smoke
-- #8 建立 ReaderLab V2 Skill / 工程材料路线 smoke
-- #9 ReaderLab V2 installable release candidate 复核
+- #2 固定 ReaderLab V2 可分享 Skill 包边界：closed，PR #10 merged。
+- #3 构建最小 ReaderLab V2 Skill 发布包：closed，PR #12 merged。
+- #4 外置 ReaderLab V2 运行配置并去除本机路径耦合：closed，PR #11 merged。
+- #5 验证 ReaderLab V2 Skill 安装与发现 smoke：closed，PR #13 merged。
+- #6 建立 ReaderLab V2 图书路线 smoke：closed，PR #14 merged。
+- #7 建立 ReaderLab V2 长文 / 报告 / 访谈稿路线 smoke：closed，PR #15 merged。
+- #8 建立 ReaderLab V2 Skill / 工程材料路线 smoke：closed，PR #16 merged。
+- #9 ReaderLab V2 installable release candidate 复核：open，PR #17 active。
 
 生产约束 / 验收约束分层仍然有效：验收矩阵保留为评价语言，但不自动进入生产 runner。验收发现的问题必须先反推到最小上游 fault stage，再判断能否形成稳定、低误伤、可执行的生产条件。
 
@@ -56,12 +70,29 @@ ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
 
 ## Current Facts In Submitted Tree
 
-- 当前已提交事实只包括发布边界和调度材料：
+- 已提交发布边界和调度材料：
   - `docs/readerlab-v2-shareable-skill-prd.md`
   - `docs/readerlab-v2-package-boundary.md`
   - `docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`
-- #2 的目标是固定可分享 Skill 包边界，不提交 runner、builder 或 V2 reports。
-- 下游 #3/#4 worker 不能假设 `scripts/readerlab_v2_runner.py`、`scripts/readerlab_v2_quality_gate_adapter.py` 或 `experiments/readerlab-v2/` 已存在于 fresh checkout。
+- 已提交可运行包构建和配置外置：
+  - `scripts/build_readerlab_package.py`
+  - `packaging/readerlab-package-manifest.json`
+  - `packaging/package_smoke_test.py`
+  - `scripts/readerlab.py` 的外置 run config 校验和包相关入口。
+- 已提交安装 / 发现 smoke：
+  - `packaging/install_smoke_test.py`
+  - `tests/test_readerlab_install_smoke.py`
+- 已提交三类路线 smoke：
+  - `packaging/book_route_smoke_test.py`
+  - `packaging/longform_route_smoke_test.py`
+  - `packaging/engineering_route_smoke_test.py`
+  - `tests/fixtures/readerlab/book-route-smoke-v0/`
+  - `tests/fixtures/readerlab/longform-route-smoke-v0/`
+  - `tests/fixtures/readerlab/engineering-route-smoke-v0/`
+- #9 / PR #17 新增 RC 复核入口：
+  - `packaging/release_candidate_review.py`
+  - `tests/test_readerlab_release_candidate_review.py`
+  - `docs/readerlab-v2-release-candidate-review.md`
 - 用户指出并确认：验收不能混成一句“读者视角 OK”。ReaderLab 应拆成多类检查：
   - 合同履约 / 结构合规
   - 内容完整性
@@ -148,28 +179,26 @@ git diff --check
 当前可以声称：
 
 - 已提交文档固定了 ReaderLab V2 可分享 Skill 包边界、状态口径、发布顺序和历史防回归要求。
+- 已提交包构建器、运行配置外置、安装 / 发现 smoke 和三类材料路线 smoke。
+- PR #17 中已提交 RC 复核入口，用来复跑 clean package audit、package smoke、install / discovery smoke 和三类路线 smoke。
 - 已提交文档固定了验收矩阵必须拆成合同履约 / 结构合规、内容完整性、人类读者体验、产品预期、无上下文 Agent 复用。
 - 已提交文档固定了 `limited_accept` 只能表示有限 prototype 接受，不能说成 production ready。
 - 本机未提交原型中，工程材料路线曾有两个完整单 Skill case 通过：`gstack/spec` 和 `gstack/review`；这只能作为后续 issue 的历史线索，不能作为 fresh checkout 的已提交能力。
-- 本机未提交原型中，runner / quality gate / assets page 曾具备若干结构和冷启动约束；这些能力必须由后续 issue 正式提交并复验后，才能成为当前可运行事实。
+- 本机未提交原型中，runner / quality gate / assets page 曾具备的若干结构和冷启动约束，只有已进入 PR #10-#17 的部分才是当前可运行事实。
 
 ## Next Work Queue
 
-下一步不要先扩第三个 GSTACK Skill，也不要继续堆 runner 字符串检查。当前 PR #10 仍在完成 #2；PR #10 合并后，权威下一步应推进 #4，而不是重做 #2。建议顺序：
+当前不要再回到 #2-#8，也不要先扩第三个 GSTACK Skill。权威下一步是完成 #9 / PR #17：
 
-1. 完成并合并 #2：固定可分享 Skill 包边界、包含 / 排除清单、状态口径和历史防回归。
-2. #2 完成后先做 #4：配置外置，去掉 `scripts/readerlab.py` 的本机路径耦合；否则 #3 不能把 runtime script 打进可分享包。
-3. #4 完成后做 #3：建立包构建器或等价发布目录，确保不带入实验 reports、私有 source、LifeAtlas 固定路径、GSTACK 原始仓库和旧 handoff。#3 可以先做 manifest / 排除规则骨架，但包含 `scripts/readerlab.py` 的可运行包必须等 #4 完成。
-4. #3/#4 完成后做 #5：安装 smoke。
-5. #4 完成后并行推进 #6/#7/#8：图书、长文 / 报告 / 访谈稿、Skill / 工程材料三类 smoke。
-6. #5/#6/#7/#8 全部完成后做 #9：installable release candidate 复核。
-7. 只在发现“验收问题已经能反推成稳定生产条件”时，才用 `/tdd` 写红灯测试。
-
-执行 GitHub issue 前必须先用 RFC 校准：
-
-- 质量核验必须覆盖合同履约、内容完整性、人类读者体验、产品预期、无上下文 Agent 复用。
-- 参数验证必须覆盖 source paths、output root、permission boundary、material family、requested scope、human_review_required、declared scope / units、full_book_required、dual_view_required、engineering_source_scope。
-- 一个 issue 一个 worktree，一个 worker 一个 PR；主控只能报告 ready-to-merge candidate，不能自动 merge。
+1. 处理 PR #17 的 Codex Review 反馈，直到当前 head commit 被 review 覆盖且没有 actionable blocker。
+2. PR #17 `mergeStateStatus: CLEAN` 且 Review 无 major issues 后，按用户授权可直接 merge。
+3. Merge 后关闭 #9，并删除 PR #17 heartbeat。
+4. 合并后状态最多推进到 `installable_release_candidate`，不能说 production ready、friend smoke passed 或 reader accepted。
+5. 下一阶段应从工程链路转到真实使用验收：
+   - 在干净目标中安装合并后的 ReaderLab Skill 候选包。
+   - 选一个小而完整的真实材料做端到端输出。
+   - 按合同履约、内容完整性、人类读者体验、产品预期、无上下文 Agent 复用分别验收。
+   - 只有当真实验收问题能反推成稳定生产条件时，才开新 issue 写红灯测试或 runner 约束。
 
 ## Stop Conditions
 

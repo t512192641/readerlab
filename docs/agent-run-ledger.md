@@ -2,6 +2,44 @@
 
 本文件只保留阶段级摘要。旧过程报告和长日志已清理；需要查逐步细节时使用 git 历史或 Codex 会话。
 
+## 2026-07-05 ReaderLab V2 installable release candidate 复核
+
+- GitHub live state reconciled:
+  - PR #10/#11/#12/#13/#14/#15/#16 are merged into `readerlab-elon-checkpoint`.
+  - #2/#3/#5/#6/#7/#8 remained open because auto-close did not trigger; they were manually closed after confirming each corresponding merged PR body.
+  - #4 was already closed.
+  - #9 remains the active release candidate review issue.
+- Added `packaging/release_candidate_review.py`:
+  - builds a temporary shareable package;
+  - checks `PACKAGE_AUDIT.json`;
+  - runs package smoke;
+  - runs install / discovery smoke against a temporary Skill root;
+  - runs book, longform / report / interview, and Skill / engineering route smokes from the built package;
+  - emits scoped `installable_release_candidate` status only, with `not_production_ready` and `not_reader_acceptance`.
+- Added package-facing RC review entry:
+  - `tests/release_candidate_review.py`
+  - `tests/install_smoke_test.py`
+  - `docs/readerlab-v2-release-candidate-review.md`
+- Updated current state docs:
+  - `docs/current-task.md`
+  - `docs/dev-state.md`
+- Fresh verification passed:
+  - `python3 packaging/release_candidate_review.py`
+  - `python3 tests/test_readerlab_release_candidate_review.py`
+  - `python3 tests/test_readerlab_package_builder.py`
+  - `python3 tests/test_readerlab.py`
+  - `python3 tests/test_readerlab_trace_validator.py`
+  - `python3 tests/test_readerlab_install_smoke.py`
+  - `python3 tests/test_readerlab_engineering_route_smoke.py`
+  - `python3 tests/test_readerlab_book_route_smoke.py`
+  - `python3 tests/test_readerlab_longform_route_smoke.py`
+  - `python3 scripts/readerlab_trace_validator.py validate-suite --demo tests/fixtures/readerlab/private-material-validation/demos/A_feel_good_productivity --demo tests/fixtures/readerlab/private-material-validation/demos/B_planning_with_files --cases-json tests/fixtures/readerlab/comment-replay/fixtures/comment-replay-cases.json --fixture-dir tests/fixtures/readerlab/comment-replay/fixtures`
+  - `python3 -m py_compile packaging/release_candidate_review.py packaging/install_smoke_test.py packaging/package_smoke_test.py packaging/book_route_smoke_test.py packaging/longform_route_smoke_test.py packaging/engineering_route_smoke_test.py scripts/build_readerlab_package.py scripts/readerlab.py`
+  - `git diff --check`
+- Current conclusion:
+  - The current submitted tree can be treated as an `installable_release_candidate` candidate after PR review and merge.
+  - This is still not production ready, not friend smoke passed, and not reader accepted.
+
 ## 2026-07-04 ReaderLab V2 可分享 Skill 包 PRD
 
 - 用户确认：ReaderLab V2 的目标不是本机 demo，也不是脏运行目录，而是一套完整、独立、可安装、可分享给朋友的 Skills；必须支持图书长文和 Skill / 工程材料。
