@@ -4575,6 +4575,97 @@ def first_contract_payload(payloads: list[dict[str, Any]], schema: str) -> dict[
     return {}
 
 
+TECHNICAL_ASSET_CARD_REQUIRED_FIELDS = ("purpose", "reader", "use_boundary", "selection_rule", "first_action")
+
+
+def technical_asset_card_failures(asset_cards: dict[str, Any]) -> list[str]:
+    cards = asset_cards.get("cards")
+    if not isinstance(cards, list) or not cards:
+        return ["technical-asset-cards must declare at least one card"]
+    failures: list[str] = []
+    for index, card in enumerate(cards, start=1):
+        if not isinstance(card, dict):
+            failures.append(f"technical asset card {index} must be an object")
+            continue
+        missing = [field for field in TECHNICAL_ASSET_CARD_REQUIRED_FIELDS if not str(card.get(field) or "").strip()]
+        source_refs = card.get("source_refs")
+        if not isinstance(source_refs, list) or not any(str(ref or "").strip() for ref in source_refs):
+            missing.append("source_refs")
+        if missing:
+            label = card.get("card_id") or card.get("name") or index
+            failures.append(f"technical asset card {label} missing cold-start fields: {', '.join(missing)}")
+    return failures
+
+
+def blocking_controller_failures(controller: dict[str, Any], output_eval: dict[str, Any]) -> list[str]:
+    if not controller:
+        return ["controller-decision contract is required for capability-map packages"]
+    blocking_gates = controller.get("blocking_gates")
+    if not isinstance(blocking_gates, list) or not blocking_gates:
+        return ["controller-decision must declare blocking_gates"]
+    decision = str(controller.get("controller_decision") or "")
+    if decision not in {"accept", "limited_accept"}:
+        return []
+    if any(isinstance(gate, dict) and gate.get("status") == "blocking" for gate in blocking_gates):
+        return ["blocking gate cannot produce accept or limited_accept"]
+    checks = ((output_eval.get("output_eval") or {}).get("checks") or []) if isinstance(output_eval, dict) else []
+    needs_review = [
+        str(check.get("id") or check.get("name") or "unknown")
+        for check in checks
+        if isinstance(check, dict) and str(check.get("status") or "").lower() == "needs_human_review"
+    ]
+    if needs_review:
+        return ["controller cannot accept while output-eval needs human review: " + ", ".join(needs_review)]
+    failed_checks = [
+        str(check.get("id") or check.get("name") or "unknown")
+        for check in checks
+        if isinstance(check, dict) and str(check.get("status") or "").lower() == "fail"
+    ]
+    if failed_checks:
+        return ["controller cannot accept while output-eval has failed checks: " + ", ".join(failed_checks)]
+    if str(controller.get("human_status") or "").lower() == "pending":
+        return ["controller cannot accept while human_status is pending"]
+    return []
+
+
+def full_source_evidence_failures(target: Path, source_registry: dict[str, Any]) -> list[str]:
+    evidence_path = target / "audit/full-source-track.md"
+    if not evidence_path.is_file():
+        return ["full-source evidence packet missing: audit/full-source-track.md"]
+    text = read_text(evidence_path)
+    sources = source_registry.get("sources") if isinstance(source_registry.get("sources"), list) else []
+    source_by_id = {
+        str(source.get("source_id")): str(source.get("source_path") or "")
+        for source in sources
+        if isinstance(source, dict) and source.get("source_id")
+    }
+    engineering_scope = source_registry.get("engineering_source_scope")
+    if not isinstance(engineering_scope, list) or not engineering_scope:
+        return ["source-registry must declare engineering_source_scope for capability-map packages"]
+    failures: list[str] = []
+    primary_source_ids = [
+        str(source.get("source_id"))
+        for source in sources
+        if isinstance(source, dict) and source.get("source_role") == "primary_module" and source.get("source_id")
+    ]
+    scope_ids = [str(source_id) for source_id in engineering_scope]
+    missing_primary_ids = [source_id for source_id in primary_source_ids if source_id not in scope_ids]
+    if missing_primary_ids:
+        failures.append(
+            "engineering_source_scope must cover every primary_module source id: "
+            + ", ".join(missing_primary_ids)
+        )
+    for source_id in engineering_scope:
+        source_id_text = str(source_id)
+        source_path = source_by_id.get(source_id_text)
+        if not source_path:
+            failures.append(f"engineering_source_scope references unknown source: {source_id_text}")
+            continue
+        if source_id_text not in text or source_path not in text:
+            failures.append(f"full-source evidence packet does not cover source: {source_id_text}")
+    return failures
+
+
 def load_contract_payloads(target: Path) -> tuple[list[Path], list[dict[str, Any]]]:
     paths: list[Path] = []
     payloads: list[dict[str, Any]] = []
@@ -4748,8 +4839,12 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
 def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dict[str, str]:
     source_registry = first_contract_payload(payloads, "readerlab.source-registry.v1")
     capability = first_contract_payload(payloads, "readerlab.capability-map.v1")
+    asset_cards = first_contract_payload(payloads, "readerlab.technical-asset-cards.v1")
     excerpts = source_excerpt_records(sample_dir, source_registry)
     domains = capability.get("capability_domains") if isinstance(capability.get("capability_domains"), list) else []
+    card_failures = technical_asset_card_failures(asset_cards)
+    if card_failures:
+        raise SystemExit("; ".join(card_failures))
     title = str((capability.get("material") or {}).get("title") or "工程材料阅读页")
     reader_lines = [
         f"# Skill/工程材料样本：{title}",
@@ -4766,7 +4861,7 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
             [
                 f"### 模块{index}：`{excerpt['source_path']}`",
                 "",
-                excerpt["text"],
+                markdown_quote(excerpt["text"]),
                 "",
             ]
         )
@@ -4785,9 +4880,9 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
         ]
     )
     side_lines = [
-        "# 技术合伙人旁批",
+        "# 技术合伙人解说",
         "",
-        "下面只记录可迁移的工程设计原子；它不是人工验收结论。",
+        "这页面向产品负责人解释工程材料为什么这样组织；它不是人工验收结论，也不是正文换皮摘要。",
         "",
     ]
     for domain in domains:
@@ -4798,6 +4893,10 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
                 f"## {domain.get('name') or domain.get('domain_id')}",
                 "",
                 f"- owned_job：{domain.get('owned_job') or '未声明'}",
+                f"- design_structure：{domain.get('design_structure') or '把触发、输入、输出、验证和不适用边界拆开，避免 Agent 直接自由发挥。'}",
+                f"- failure_protection：{domain.get('failure_protection') or '缺少证据、状态或边界时不能升级结论。'}",
+                f"- reuse_point：{domain.get('reuse_point') or '后续 Agent 可以按字段接手，而不是回读整份 source 后猜职责。'}",
+                f"- cost_and_boundary：{domain.get('cost_and_boundary') or '会增加前置整理成本，但换来可检查、可回放的交付边界。'}",
                 "- trigger_signals：",
                 *lines_to_markdown_list(domain.get("trigger_signals"), indent="  "),
                 "- required_inputs：",
@@ -4810,9 +4909,33 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
                 "",
             ]
         )
+    card_lines = [
+        "# 资产卡导出页",
+        "",
+        "这些卡片给未来无背景 Agent 冷启动使用；第一步动作不应要求回读原始 source。",
+        "",
+    ]
+    for card in asset_cards["cards"]:
+        if not isinstance(card, dict):
+            continue
+        card_lines.extend(
+            [
+                f"## {card.get('name') or card.get('card_id')}",
+                "",
+                f"- purpose：{card.get('purpose') or '未声明'}",
+                f"- reader：{card.get('reader') or '未声明'}",
+                f"- use_boundary：{card.get('use_boundary') or '未声明'}",
+                f"- selection_rule：{card.get('selection_rule') or '未声明'}",
+                f"- first_action：{card.get('first_action') or '未声明'}",
+                "- source_refs：",
+                *lines_to_markdown_list(card.get("source_refs"), indent="  "),
+                "",
+            ]
+        )
     return {
         "reader/01_工程材料阅读页.md": "\n".join(reader_lines),
         "reader/02_技术合伙人旁批.md": "\n".join(side_lines),
+        "reader/03_资产卡导出页.md": "\n".join(card_lines),
     }
 
 
@@ -5019,6 +5142,46 @@ def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
         }
     )
     failures.extend(first_hand_failures)
+
+    has_capability_map = "readerlab.capability-map.v1" in {contract_schema(payload) for payload in payloads}
+    if has_capability_map:
+        source_registry_payload = first_contract_payload(payloads, "readerlab.source-registry.v1")
+        full_source_failures = full_source_evidence_failures(target, source_registry_payload)
+        gates.append(
+            {
+                "id": "full_source_evidence_packet_present",
+                "status": "fail" if full_source_failures else "pass",
+                "failures": full_source_failures,
+            }
+        )
+        failures.extend(full_source_failures)
+
+        asset_card_failures = technical_asset_card_failures(
+            first_contract_payload(payloads, "readerlab.technical-asset-cards.v1")
+        )
+        gates.append(
+            {
+                "id": "technical_asset_cards_cold_start_present",
+                "status": "fail" if asset_card_failures else "pass",
+                "failures": asset_card_failures,
+            }
+        )
+        failures.extend(asset_card_failures)
+
+    if has_capability_map:
+        controller_payload = first_contract_payload(payloads, "readerlab.controller-decision.v1")
+        controller_failures = blocking_controller_failures(
+            controller_payload,
+            first_contract_payload(payloads, "readerlab.output-eval.v1"),
+        )
+        gates.append(
+            {
+                "id": "blocking_controller_decision",
+                "status": "fail" if controller_failures else "pass",
+                "failures": controller_failures,
+            }
+        )
+        failures.extend(controller_failures)
 
     missing_eval = sorted(OUTPUT_EVAL_REQUIRED_CATEGORIES - output_eval_categories(payloads))
     gates.append(

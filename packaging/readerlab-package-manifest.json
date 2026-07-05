@@ -79,6 +79,11 @@
       "sanitize": false
     },
     {
+      "source": "packaging/engineering_route_smoke_test.py",
+      "target": "tests/engineering_route_smoke_test.py",
+      "sanitize": false
+    },
+    {
       "source": "docs/product-spec.md",
       "target": "docs/product-spec.md",
       "sanitize": false
@@ -139,6 +144,11 @@
       "sanitize": false
     },
     {
+      "source": "docs/readerlab-v2-engineering-route-smoke.md",
+      "target": "docs/readerlab-v2-engineering-route-smoke.md",
+      "sanitize": false
+    },
+    {
       "source": "docs/readerlab-v2-package-boundary.md",
       "target": "docs/readerlab-v2-package-boundary.md",
       "sanitize": false
@@ -173,6 +183,11 @@
     {
       "source": "tests/fixtures/readerlab/longform-route-smoke-v0",
       "target": "fixtures/longform-route-smoke-v0",
+      "sanitize": false
+    },
+    {
+      "source": "tests/fixtures/readerlab/engineering-route-smoke-v0",
+      "target": "fixtures/engineering-route-smoke-v0",
       "sanitize": false
     }
   ],

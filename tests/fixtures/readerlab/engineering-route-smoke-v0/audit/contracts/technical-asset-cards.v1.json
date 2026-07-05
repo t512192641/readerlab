@@ -1,0 +1,47 @@
+{
+  "schema": "readerlab.technical-asset-cards.v1",
+  "material": {
+    "id": "engineering-route-smoke-v0",
+    "title": "Skill / 工程材料路线烟测样本",
+    "type": "skill_engineering"
+  },
+  "cards": [
+    {
+      "card_id": "asset-cleaned-body-first",
+      "name": "净化正文优先",
+      "purpose": "在工程材料阅读包里先保留材料主体，避免读者只读到 AI 摘要。",
+      "reader": "background-free Agent reader",
+      "use_boundary": "只用于工程材料路线；不能替代图书或长文的原文保留规则。",
+      "selection_rule": "当 source 是 SKILL.md、工程协议、Agent workflow 或运行手册时优先使用。",
+      "first_action": "读取 source-registry 和 full-source-track，确认净化正文覆盖主来源。",
+      "source_refs": [
+        "loc-engineering-body-purpose",
+        "loc-engineering-body-output-boundary"
+      ]
+    },
+    {
+      "card_id": "asset-blocking-controller",
+      "name": "阻断控制器",
+      "purpose": "把机器结构通过、内容质量判断和人工验收拆开，防止误报完成。",
+      "reader": "background-free Agent reader",
+      "use_boundary": "只处理可观察 gate；不替代人类读者体验判断。",
+      "selection_rule": "当 output-eval 出现 needs_human_review 或 blocking gate 时使用。",
+      "first_action": "检查 controller-decision 的 blocking_gates，并拒绝接受结论。",
+      "source_refs": [
+        "loc-engineering-guards-failure",
+        "loc-engineering-guards-reuse"
+      ]
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [
+      "reader/03_资产卡导出页.md"
+    ],
+    "internal_audit": [
+      "audit/contracts/technical-asset-cards.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

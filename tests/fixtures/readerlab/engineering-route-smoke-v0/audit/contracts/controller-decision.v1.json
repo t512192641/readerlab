@@ -1,0 +1,38 @@
+{
+  "schema": "readerlab.controller-decision.v1",
+  "material": {
+    "id": "engineering-route-smoke-v0",
+    "title": "Skill / 工程材料路线烟测样本",
+    "type": "skill_engineering"
+  },
+  "blocking_gates": [
+    {
+      "id": "human_review_pending",
+      "status": "blocking",
+      "reason": "Machine smoke cannot become human reader acceptance.",
+      "evidence_refs": [
+        "loc-engineering-guards-failure"
+      ]
+    }
+  ],
+  "controller_decision": "blocked_pending_human_review",
+  "not_production_ready": true,
+  "claims": [
+    {
+      "claim": "A blocking gate prevents the engineering smoke from producing accept or limited_accept.",
+      "source_refs": [
+        "loc-engineering-guards-failure"
+      ],
+      "confidence": "medium"
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/contracts/controller-decision.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

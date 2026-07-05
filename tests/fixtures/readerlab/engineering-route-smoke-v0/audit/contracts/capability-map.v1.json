@@ -1,0 +1,154 @@
+{
+  "schema": "readerlab.capability-map.v1",
+  "material": {
+    "id": "engineering-route-smoke-v0",
+    "title": "Skill / 工程材料路线烟测样本",
+    "type": "skill_engineering"
+  },
+  "source_scope": {
+    "coverage_status": "complete",
+    "coverage_note": "Complete for local smoke fixture excerpts only."
+  },
+  "capability_domains": [
+    {
+      "domain_id": "cleaned-body-first",
+      "name": "净化正文优先",
+      "owned_job": "让产品负责人先接触工程材料自己在说什么。",
+      "design_structure": "把用途、触发条件、输入输出和验收边界留在主读者页，剥离运行噪音。",
+      "failure_protection": "主读者页不能用 AI 解说、摘要或能力介绍替代净化正文。",
+      "reuse_point": "后续 Agent 可以直接定位材料主体，不必从解释页反推源意图。",
+      "cost_and_boundary": "需要先做正文清理，但不能改写成二手观点。",
+      "trigger_signals": [
+        "材料是 SKILL.md 或工程协议",
+        "读者需要理解设计意图而非运行细节"
+      ],
+      "near_neighbor_exclusions": [
+        "不生成纯摘要包",
+        "不把 audit dump 放进主读者页"
+      ],
+      "method_atoms": [
+        "保留用途",
+        "保留触发条件",
+        "保留输出边界"
+      ],
+      "required_inputs": [
+        "source-registry",
+        "full-source-track",
+        "净化正文片段"
+      ],
+      "output_contract": [
+        "reader/01_工程材料阅读页.md",
+        "正文先于 AI 旁批"
+      ],
+      "verification": [
+        "正文片段出现在 reader page",
+        "AI 旁批不在正文之前"
+      ],
+      "source_refs": [
+        "loc-engineering-body-purpose",
+        "loc-engineering-body-output-boundary"
+      ],
+      "route_decisions": [
+        {
+          "when_to_use": [
+            "工程材料需要转成 ReaderLab 阅读包"
+          ],
+          "when_not_to_use": [
+            "用户只要求普通代码审查"
+          ],
+          "handoff_to": [
+            "technical-explanation",
+            "asset-cards"
+          ],
+          "decision_evidence_refs": [
+            "loc-engineering-body-purpose"
+          ]
+        }
+      ],
+      "confidence": "medium",
+      "human_status": "pending"
+    },
+    {
+      "domain_id": "blocking-controller",
+      "name": "阻断控制器",
+      "owned_job": "阻止缺证据、缺资产字段或人工未验收的样本被接受。",
+      "design_structure": "runner 只看硬结构，Quality Gate / Reader Evaluation 承载内容和复用判断，controller 读取 blocking gate。",
+      "failure_protection": "任何 blocking gate 失败时不能给出接受结论。",
+      "reuse_point": "未来路线可以复用同一控制器协议处理不同材料家族。",
+      "cost_and_boundary": "会让部分机器通过的样本停在 pending，但避免误报为正式发布可用。",
+      "trigger_signals": [
+        "Quality Gate 标记 needs_human_review",
+        "资产卡冷启动字段缺失",
+        "full-source evidence packet 缺失"
+      ],
+      "near_neighbor_exclusions": [
+        "不替代人工验收",
+        "不判断最终阅读品味"
+      ],
+      "method_atoms": [
+        "读取 blocking_gates",
+        "区分 hard gate 和 reader evaluation",
+        "输出 controller_decision"
+      ],
+      "required_inputs": [
+        "output-eval",
+        "controller-decision",
+        "technical-asset-cards"
+      ],
+      "output_contract": [
+        "controller_decision 不能绕过 blocking gate",
+        "not_production_ready 必须为 true"
+      ],
+      "verification": [
+        "blocking gate 失败时 controller_decision 不是接受结论",
+        "验证报告分层"
+      ],
+      "source_refs": [
+        "loc-engineering-guards-failure",
+        "loc-engineering-guards-reuse"
+      ],
+      "route_decisions": [
+        {
+          "when_to_use": [
+            "工程材料 smoke 准备给出机器结论"
+          ],
+          "when_not_to_use": [
+            "人工读者已经明确验收并更新 human_status"
+          ],
+          "handoff_to": [
+            "human-review"
+          ],
+          "decision_evidence_refs": [
+            "loc-engineering-guards-failure"
+          ]
+        }
+      ],
+      "confidence": "medium",
+      "human_status": "pending"
+    }
+  ],
+  "claims": [
+    {
+      "claim": "The engineering smoke should produce cleaned body, technical explanation, and cold-start asset cards while keeping blocking controller separate from human acceptance.",
+      "source_refs": [
+        "loc-engineering-body-purpose",
+        "loc-engineering-guards-failure",
+        "loc-engineering-guards-reuse"
+      ],
+      "confidence": "medium"
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [
+      "reader/01_工程材料阅读页.md",
+      "reader/02_技术合伙人旁批.md",
+      "reader/03_资产卡导出页.md"
+    ],
+    "internal_audit": [
+      "audit/contracts/capability-map.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

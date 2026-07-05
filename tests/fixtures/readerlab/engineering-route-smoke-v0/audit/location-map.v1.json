@@ -1,0 +1,51 @@
+{
+  "schema": "readerlab.location-map.v1",
+  "material": {
+    "id": "engineering-route-smoke-v0",
+    "title": "Skill / 工程材料路线烟测样本",
+    "type": "skill_engineering"
+  },
+  "locations": [
+    {
+      "location_id": "loc-engineering-body-purpose",
+      "source_id": "src-engineering-skill-body",
+      "path": "audit/source-excerpts/skill-body.md",
+      "range": "用途",
+      "role": "cleaned_body_purpose",
+      "summary": "The source states that engineering materials should become traceable reading packages, not summaries."
+    },
+    {
+      "location_id": "loc-engineering-body-output-boundary",
+      "source_id": "src-engineering-skill-body",
+      "path": "audit/source-excerpts/skill-body.md",
+      "range": "输出边界",
+      "role": "output_boundary",
+      "summary": "The source separates main body, technical explanation, asset cards, and human review."
+    },
+    {
+      "location_id": "loc-engineering-guards-failure",
+      "source_id": "src-engineering-workflow-guards",
+      "path": "audit/source-excerpts/workflow-guards.md",
+      "range": "失败保护",
+      "role": "failure_protection",
+      "summary": "The source states that missing full-source evidence, missing asset fields, or blocking gates must block acceptance."
+    },
+    {
+      "location_id": "loc-engineering-guards-reuse",
+      "source_id": "src-engineering-workflow-guards",
+      "path": "audit/source-excerpts/workflow-guards.md",
+      "range": "复用边界",
+      "role": "agent_reuse_boundary",
+      "summary": "The source defines reusable asset cards as self-contained material for future Agent cold starts."
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/location-map.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}
