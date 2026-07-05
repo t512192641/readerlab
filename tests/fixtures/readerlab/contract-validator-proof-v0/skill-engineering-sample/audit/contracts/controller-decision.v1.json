@@ -1,0 +1,25 @@
+{
+  "schema": "readerlab.controller-decision.v1",
+  "material": {
+    "id": "proof-skill-engineering",
+    "title": "Skill engineering module proof",
+    "type": "skill_engineering_sample"
+  },
+  "blocking_gates": [
+    {
+      "id": "human_reader_acceptance",
+      "status": "blocking",
+      "reason": "This fixture is machine smoke only and has not been accepted by a human reader."
+    }
+  ],
+  "controller_decision": "blocked_pending_human_review",
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/contracts/controller-decision.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

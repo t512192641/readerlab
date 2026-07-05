@@ -4599,7 +4599,7 @@ def technical_asset_card_failures(asset_cards: dict[str, Any]) -> list[str]:
 
 def blocking_controller_failures(controller: dict[str, Any]) -> list[str]:
     if not controller:
-        return []
+        return ["controller-decision contract is required for capability-map packages"]
     blocking_gates = controller.get("blocking_gates")
     if not isinstance(blocking_gates, list) or not blocking_gates:
         return ["controller-decision must declare blocking_gates"]
@@ -4608,6 +4608,32 @@ def blocking_controller_failures(controller: dict[str, Any]) -> list[str]:
         if decision in {"accept", "limited_accept"}:
             return ["blocking gate cannot produce accept or limited_accept"]
     return []
+
+
+def full_source_evidence_failures(target: Path, source_registry: dict[str, Any]) -> list[str]:
+    evidence_path = target / "audit/full-source-track.md"
+    if not evidence_path.is_file():
+        return ["full-source evidence packet missing: audit/full-source-track.md"]
+    text = read_text(evidence_path)
+    sources = source_registry.get("sources") if isinstance(source_registry.get("sources"), list) else []
+    source_by_id = {
+        str(source.get("source_id")): str(source.get("source_path") or "")
+        for source in sources
+        if isinstance(source, dict) and source.get("source_id")
+    }
+    engineering_scope = source_registry.get("engineering_source_scope")
+    if not isinstance(engineering_scope, list) or not engineering_scope:
+        return ["source-registry must declare engineering_source_scope for capability-map packages"]
+    failures: list[str] = []
+    for source_id in engineering_scope:
+        source_id_text = str(source_id)
+        source_path = source_by_id.get(source_id_text)
+        if not source_path:
+            failures.append(f"engineering_source_scope references unknown source: {source_id_text}")
+            continue
+        if source_id_text not in text or source_path not in text:
+            failures.append(f"full-source evidence packet does not cover source: {source_id_text}")
+    return failures
 
 
 def load_contract_payloads(target: Path) -> tuple[list[Path], list[dict[str, Any]]]:
@@ -5087,8 +5113,19 @@ def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
     )
     failures.extend(first_hand_failures)
 
-    asset_card_failures: list[str] = []
-    if "readerlab.capability-map.v1" in {contract_schema(payload) for payload in payloads}:
+    has_capability_map = "readerlab.capability-map.v1" in {contract_schema(payload) for payload in payloads}
+    if has_capability_map:
+        source_registry_payload = first_contract_payload(payloads, "readerlab.source-registry.v1")
+        full_source_failures = full_source_evidence_failures(target, source_registry_payload)
+        gates.append(
+            {
+                "id": "full_source_evidence_packet_present",
+                "status": "fail" if full_source_failures else "pass",
+                "failures": full_source_failures,
+            }
+        )
+        failures.extend(full_source_failures)
+
         asset_card_failures = technical_asset_card_failures(
             first_contract_payload(payloads, "readerlab.technical-asset-cards.v1")
         )
@@ -5101,8 +5138,8 @@ def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
         )
         failures.extend(asset_card_failures)
 
-    controller_payload = first_contract_payload(payloads, "readerlab.controller-decision.v1")
-    if controller_payload:
+    if has_capability_map:
+        controller_payload = first_contract_payload(payloads, "readerlab.controller-decision.v1")
         controller_failures = blocking_controller_failures(controller_payload)
         gates.append(
             {

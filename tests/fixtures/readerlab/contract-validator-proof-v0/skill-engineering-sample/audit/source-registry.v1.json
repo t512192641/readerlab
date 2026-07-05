@@ -29,6 +29,11 @@
     "coverage_status": "sample",
     "coverage_note": "Only three small modules are covered; this proves capability-map shape, not full package understanding."
   },
+  "engineering_source_scope": [
+    "src-router",
+    "src-evidence",
+    "src-output-eval"
+  ],
   "location_refs": [
     "loc-router-contract",
     "loc-evidence-boundary",
@@ -39,7 +44,8 @@
   "display": {
     "reader_facing": [],
     "internal_audit": [
-      "audit/source-registry.v1.json"
+      "audit/source-registry.v1.json",
+      "audit/full-source-track.md"
     ],
     "relationship": "separate_reader_and_audit"
   }

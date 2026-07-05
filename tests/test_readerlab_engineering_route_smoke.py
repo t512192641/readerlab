@@ -171,6 +171,44 @@ class ReaderLabEngineeringRouteSmokeTests(unittest.TestCase):
         self.assertIn("blocking_controller_decision", [gate["id"] for gate in payload["gates"]])
         self.assertTrue(any("blocking gate" in failure for failure in payload["failures"]))
 
+    def test_eval_rejects_missing_full_source_evidence_packet(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            shutil.copytree(FIXTURE, fixture)
+            (fixture / "audit/full-source-track.md").unlink()
+
+            result = subprocess.run(
+                ["python3", "scripts/readerlab.py", "eval-rendered-package", str(fixture)],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+            )
+            payload = json.loads(result.stdout)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(payload["passed"])
+        self.assertIn("full_source_evidence_packet_present", [gate["id"] for gate in payload["gates"]])
+        self.assertTrue(any("full-source evidence packet" in failure for failure in payload["failures"]))
+
+    def test_eval_rejects_missing_controller_contract(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            shutil.copytree(FIXTURE, fixture)
+            (fixture / "audit/contracts/controller-decision.v1.json").unlink()
+
+            result = subprocess.run(
+                ["python3", "scripts/readerlab.py", "eval-rendered-package", str(fixture)],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+            )
+            payload = json.loads(result.stdout)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(payload["passed"])
+        self.assertIn("blocking_controller_decision", [gate["id"] for gate in payload["gates"]])
+        self.assertTrue(any("controller-decision contract is required" in failure for failure in payload["failures"]))
+
 
 if __name__ == "__main__":
     unittest.main()

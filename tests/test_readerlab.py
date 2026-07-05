@@ -723,6 +723,8 @@ echo ok
                     }
                     if sample.name == "skill-engineering-sample":
                         expected_gates.add("technical_asset_cards_cold_start_present")
+                        expected_gates.add("full_source_evidence_packet_present")
+                        expected_gates.add("blocking_controller_decision")
                     self.assertEqual({gate["id"] for gate in payload["gates"]}, expected_gates)
 
     def test_eval_rendered_package_writes_success_report_md(self) -> None:
