@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import subprocess
 import tempfile
 from pathlib import Path
@@ -63,11 +64,18 @@ def require_layered_route_payload(payload: dict[str, Any], *, phase: str) -> dic
     missing = sorted(required - set(layers))
     if missing:
         raise ReviewFailure(phase, f"route smoke missing verification layers: {', '.join(missing)}")
+    for layer in ("configuration_structure", "runner_contract", "quality_gate_request"):
+        if layers[layer] != "pass":
+            raise ReviewFailure(phase, f"route smoke layer {layer} must be pass, got {layers[layer]!r}")
     if layers["reader_evaluation"] != "machine_smoke_only":
         raise ReviewFailure(phase, "reader_evaluation must remain machine_smoke_only at RC stage")
     if layers["human_acceptance"] != "not_run":
         raise ReviewFailure(phase, "human_acceptance must remain not_run at RC stage")
     return {str(key): str(value) for key, value in layers.items()}
+
+
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def require_package_audit(package_root: Path) -> dict[str, Any]:
@@ -95,10 +103,23 @@ def require_package_audit(package_root: Path) -> dict[str, Any]:
         for marker in forbidden_paths:
             if marker in path:
                 raise ReviewFailure("clean_package_audit", f"forbidden package path marker: {path}")
-    audited_paths = {file["path"] for file in audit.get("files", []) if isinstance(file, dict) and "path" in file}
+    audited_files = {
+        file["path"]: file
+        for file in audit.get("files", [])
+        if isinstance(file, dict) and isinstance(file.get("path"), str)
+    }
+    audited_paths = set(audited_files)
     unaudited_paths = sorted(set(paths) - audited_paths - {"PACKAGE_AUDIT.json"})
     if unaudited_paths:
         raise ReviewFailure("clean_package_audit", f"package contains files missing from PACKAGE_AUDIT.json: {unaudited_paths}")
+    for path, file_record in audited_files.items():
+        current = package_root / path
+        if not current.is_file():
+            raise ReviewFailure("clean_package_audit", f"audited package file missing: {path}")
+        current_bytes = current.stat().st_size
+        current_sha256 = file_sha256(current)
+        if file_record.get("bytes") != current_bytes or file_record.get("sha256") != current_sha256:
+            raise ReviewFailure("clean_package_audit", f"audited package file changed after audit: {path}")
     return audit
 
 

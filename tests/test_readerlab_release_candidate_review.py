@@ -1,3 +1,4 @@
+import importlib.util
 import json
 import subprocess
 import tempfile
@@ -8,6 +9,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REVIEW_SCRIPT = ROOT / "packaging" / "release_candidate_review.py"
 BUILD_SCRIPT = ROOT / "scripts" / "build_readerlab_package.py"
+REVIEW_SPEC = importlib.util.spec_from_file_location("release_candidate_review", REVIEW_SCRIPT)
+assert REVIEW_SPEC is not None
+release_candidate_review = importlib.util.module_from_spec(REVIEW_SPEC)
+assert REVIEW_SPEC.loader is not None
+REVIEW_SPEC.loader.exec_module(release_candidate_review)
 
 
 class ReaderLabReleaseCandidateReviewTests(unittest.TestCase):
@@ -102,6 +108,53 @@ class ReaderLabReleaseCandidateReviewTests(unittest.TestCase):
             self.assertEqual(payload["status"], "fail")
             self.assertEqual(payload["failed_phase"], "clean_package_audit")
             self.assertIn("forbidden package path marker", payload["message"])
+
+    def test_built_package_self_review_rejects_audited_file_changed_after_audit(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            subprocess.run(
+                ["python3", str(BUILD_SCRIPT), "--output-dir", tmp, "--force"],
+                cwd=ROOT,
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            package_root = Path(tmp) / "readerlab"
+            skill_file = package_root / "SKILL.md"
+            skill_file.write_text(skill_file.read_text(encoding="utf-8") + "\n/Users/example/leak\n", encoding="utf-8")
+
+            rc = subprocess.run(
+                ["python3", "tests/release_candidate_review.py"],
+                cwd=package_root,
+                check=False,
+                text=True,
+                capture_output=True,
+            )
+            payload = json.loads(rc.stdout)
+
+            self.assertNotEqual(rc.returncode, 0)
+            self.assertEqual(payload["status"], "fail")
+            self.assertEqual(payload["failed_phase"], "clean_package_audit")
+            self.assertIn("audited package file changed after audit", payload["message"])
+
+    def test_route_summary_rejects_failed_contract_layers(self) -> None:
+        payload = {
+            "status": "pass",
+            "check_class": "book_route_smoke",
+            "not_reader_acceptance": True,
+            "not_production_ready": True,
+            "verification_layers": {
+                "configuration_structure": "pass",
+                "runner_contract": "fail",
+                "quality_gate_request": "pass",
+                "reader_evaluation": "machine_smoke_only",
+                "human_acceptance": "not_run",
+            },
+        }
+
+        with self.assertRaises(release_candidate_review.ReviewFailure) as failure:
+            release_candidate_review.summarize_route("book", payload, phase="book_route")
+
+        self.assertIn("runner_contract", failure.exception.message)
 
 
 if __name__ == "__main__":
