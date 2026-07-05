@@ -190,6 +190,34 @@ class ReaderLabEngineeringRouteSmokeTests(unittest.TestCase):
         self.assertIn("full_source_evidence_packet_present", [gate["id"] for gate in payload["gates"]])
         self.assertTrue(any("full-source evidence packet" in failure for failure in payload["failures"]))
 
+    def test_eval_rejects_engineering_scope_that_drops_primary_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            shutil.copytree(FIXTURE, fixture)
+            registry_path = fixture / "audit/source-registry.v1.json"
+            registry = json.loads(registry_path.read_text(encoding="utf-8"))
+            registry["engineering_source_scope"] = ["src-engineering-skill-body"]
+            registry_path.write_text(json.dumps(registry, ensure_ascii=False, indent=2), encoding="utf-8")
+            track_path = fixture / "audit/full-source-track.md"
+            track_path.write_text(
+                "# Full Source Evidence Packet\n\n"
+                "- `src-engineering-skill-body`: `audit/source-excerpts/skill-body.md`\n",
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                ["python3", "scripts/readerlab.py", "eval-rendered-package", str(fixture)],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+            )
+            payload = json.loads(result.stdout)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(payload["passed"])
+        self.assertIn("full_source_evidence_packet_present", [gate["id"] for gate in payload["gates"]])
+        self.assertTrue(any("every primary_module source id" in failure for failure in payload["failures"]))
+
     def test_eval_rejects_missing_controller_contract(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             fixture = Path(tmp) / "fixture"

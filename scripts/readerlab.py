@@ -4625,6 +4625,18 @@ def full_source_evidence_failures(target: Path, source_registry: dict[str, Any])
     if not isinstance(engineering_scope, list) or not engineering_scope:
         return ["source-registry must declare engineering_source_scope for capability-map packages"]
     failures: list[str] = []
+    primary_source_ids = [
+        str(source.get("source_id"))
+        for source in sources
+        if isinstance(source, dict) and source.get("source_role") == "primary_module" and source.get("source_id")
+    ]
+    scope_ids = [str(source_id) for source_id in engineering_scope]
+    missing_primary_ids = [source_id for source_id in primary_source_ids if source_id not in scope_ids]
+    if missing_primary_ids:
+        failures.append(
+            "engineering_source_scope must cover every primary_module source id: "
+            + ", ".join(missing_primary_ids)
+        )
     for source_id in engineering_scope:
         source_id_text = str(source_id)
         source_path = source_by_id.get(source_id_text)
