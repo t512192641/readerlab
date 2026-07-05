@@ -4575,6 +4575,28 @@ def first_contract_payload(payloads: list[dict[str, Any]], schema: str) -> dict[
     return {}
 
 
+TECHNICAL_ASSET_CARD_REQUIRED_FIELDS = ("purpose", "reader", "use_boundary", "selection_rule", "first_action")
+
+
+def technical_asset_card_failures(asset_cards: dict[str, Any]) -> list[str]:
+    cards = asset_cards.get("cards")
+    if not isinstance(cards, list) or not cards:
+        return ["technical-asset-cards must declare at least one card"]
+    failures: list[str] = []
+    for index, card in enumerate(cards, start=1):
+        if not isinstance(card, dict):
+            failures.append(f"technical asset card {index} must be an object")
+            continue
+        missing = [field for field in TECHNICAL_ASSET_CARD_REQUIRED_FIELDS if not str(card.get(field) or "").strip()]
+        source_refs = card.get("source_refs")
+        if not isinstance(source_refs, list) or not any(str(ref or "").strip() for ref in source_refs):
+            missing.append("source_refs")
+        if missing:
+            label = card.get("card_id") or card.get("name") or index
+            failures.append(f"technical asset card {label} missing cold-start fields: {', '.join(missing)}")
+    return failures
+
+
 def load_contract_payloads(target: Path) -> tuple[list[Path], list[dict[str, Any]]]:
     paths: list[Path] = []
     payloads: list[dict[str, Any]] = []
@@ -4751,6 +4773,9 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
     asset_cards = first_contract_payload(payloads, "readerlab.technical-asset-cards.v1")
     excerpts = source_excerpt_records(sample_dir, source_registry)
     domains = capability.get("capability_domains") if isinstance(capability.get("capability_domains"), list) else []
+    card_failures = technical_asset_card_failures(asset_cards)
+    if card_failures:
+        raise SystemExit("; ".join(card_failures))
     title = str((capability.get("material") or {}).get("title") or "工程材料阅读页")
     reader_lines = [
         f"# Skill/工程材料样本：{title}",
@@ -4821,8 +4846,7 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
         "这些卡片给未来无背景 Agent 冷启动使用；第一步动作不应要求回读原始 source。",
         "",
     ]
-    cards = asset_cards.get("cards") if isinstance(asset_cards.get("cards"), list) else []
-    for card in cards:
+    for card in asset_cards["cards"]:
         if not isinstance(card, dict):
             continue
         card_lines.extend(
@@ -5049,6 +5073,20 @@ def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
         }
     )
     failures.extend(first_hand_failures)
+
+    asset_card_failures: list[str] = []
+    if "readerlab.capability-map.v1" in {contract_schema(payload) for payload in payloads}:
+        asset_card_failures = technical_asset_card_failures(
+            first_contract_payload(payloads, "readerlab.technical-asset-cards.v1")
+        )
+        gates.append(
+            {
+                "id": "technical_asset_cards_cold_start_present",
+                "status": "fail" if asset_card_failures else "pass",
+                "failures": asset_card_failures,
+            }
+        )
+        failures.extend(asset_card_failures)
 
     missing_eval = sorted(OUTPUT_EVAL_REQUIRED_CATEGORIES - output_eval_categories(payloads))
     gates.append(

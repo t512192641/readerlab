@@ -714,16 +714,16 @@ echo ok
                     payload = json.loads(evaluation.stdout)
                     self.assertTrue(payload["passed"])
                     self.assertTrue(payload["validate_contract_passed"])
-                    self.assertEqual(
-                        {gate["id"] for gate in payload["gates"]},
-                        {
-                            "reader_markdown_exists",
-                            "reader_audit_path_separation",
-                            "first_hand_body_source_present",
-                            "output_eval_9_gates_present",
-                            "human_status_not_machine_accepted",
-                        },
-                    )
+                    expected_gates = {
+                        "reader_markdown_exists",
+                        "reader_audit_path_separation",
+                        "first_hand_body_source_present",
+                        "output_eval_9_gates_present",
+                        "human_status_not_machine_accepted",
+                    }
+                    if sample.name == "skill-engineering-sample":
+                        expected_gates.add("technical_asset_cards_cold_start_present")
+                    self.assertEqual({gate["id"] for gate in payload["gates"]}, expected_gates)
 
     def test_eval_rendered_package_writes_success_report_md(self) -> None:
         sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
