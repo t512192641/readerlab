@@ -4597,6 +4597,19 @@ def technical_asset_card_failures(asset_cards: dict[str, Any]) -> list[str]:
     return failures
 
 
+def blocking_controller_failures(controller: dict[str, Any]) -> list[str]:
+    if not controller:
+        return []
+    blocking_gates = controller.get("blocking_gates")
+    if not isinstance(blocking_gates, list) or not blocking_gates:
+        return ["controller-decision must declare blocking_gates"]
+    decision = str(controller.get("controller_decision") or "")
+    if any(isinstance(gate, dict) and gate.get("status") == "blocking" for gate in blocking_gates):
+        if decision in {"accept", "limited_accept"}:
+            return ["blocking gate cannot produce accept or limited_accept"]
+    return []
+
+
 def load_contract_payloads(target: Path) -> tuple[list[Path], list[dict[str, Any]]]:
     paths: list[Path] = []
     payloads: list[dict[str, Any]] = []
@@ -5087,6 +5100,18 @@ def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
             }
         )
         failures.extend(asset_card_failures)
+
+    controller_payload = first_contract_payload(payloads, "readerlab.controller-decision.v1")
+    if controller_payload:
+        controller_failures = blocking_controller_failures(controller_payload)
+        gates.append(
+            {
+                "id": "blocking_controller_decision",
+                "status": "fail" if controller_failures else "pass",
+                "failures": controller_failures,
+            }
+        )
+        failures.extend(controller_failures)
 
     missing_eval = sorted(OUTPUT_EVAL_REQUIRED_CATEGORIES - output_eval_categories(payloads))
     gates.append(

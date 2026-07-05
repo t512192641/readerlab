@@ -149,6 +149,28 @@ class ReaderLabEngineeringRouteSmokeTests(unittest.TestCase):
         self.assertIn("technical_asset_cards_cold_start_present", [gate["id"] for gate in payload["gates"]])
         self.assertTrue(any("technical-asset-cards" in failure for failure in payload["failures"]))
 
+    def test_eval_rejects_blocking_controller_acceptance(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            shutil.copytree(FIXTURE, fixture)
+            controller_path = fixture / "audit/contracts/controller-decision.v1.json"
+            controller = json.loads(controller_path.read_text(encoding="utf-8"))
+            controller["controller_decision"] = "limited_accept"
+            controller_path.write_text(json.dumps(controller, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            result = subprocess.run(
+                ["python3", "scripts/readerlab.py", "eval-rendered-package", str(fixture)],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+            )
+            payload = json.loads(result.stdout)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(payload["passed"])
+        self.assertIn("blocking_controller_decision", [gate["id"] for gate in payload["gates"]])
+        self.assertTrue(any("blocking gate" in failure for failure in payload["failures"]))
+
 
 if __name__ == "__main__":
     unittest.main()
