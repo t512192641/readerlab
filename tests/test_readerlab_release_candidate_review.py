@@ -75,6 +75,34 @@ class ReaderLabReleaseCandidateReviewTests(unittest.TestCase):
             self.assertEqual(payload["status"], "installable_release_candidate")
             self.assertEqual(payload["review_mode"], "built_package_self_review")
 
+    def test_built_package_self_review_rejects_files_added_after_audit(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            subprocess.run(
+                ["python3", str(BUILD_SCRIPT), "--output-dir", tmp, "--force"],
+                cwd=ROOT,
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            package_root = Path(tmp) / "readerlab"
+            leak_path = package_root / "docs" / "reports" / "leak.md"
+            leak_path.parent.mkdir(parents=True)
+            leak_path.write_text("should not ship", encoding="utf-8")
+
+            rc = subprocess.run(
+                ["python3", "tests/release_candidate_review.py"],
+                cwd=package_root,
+                check=False,
+                text=True,
+                capture_output=True,
+            )
+            payload = json.loads(rc.stdout)
+
+            self.assertNotEqual(rc.returncode, 0)
+            self.assertEqual(payload["status"], "fail")
+            self.assertEqual(payload["failed_phase"], "clean_package_audit")
+            self.assertIn("forbidden package path marker", payload["message"])
+
 
 if __name__ == "__main__":
     unittest.main()

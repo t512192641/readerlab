@@ -86,11 +86,19 @@ def require_package_audit(package_root: Path) -> dict[str, Any]:
         "experiments/",
         "skills-canonical/packages/gstack",
     ]
-    paths = [file["path"] for file in audit.get("files", []) if isinstance(file, dict) and "path" in file]
+    paths = [
+        path.relative_to(package_root).as_posix()
+        for path in sorted(package_root.rglob("*"))
+        if path.is_file()
+    ]
     for path in paths:
         for marker in forbidden_paths:
             if marker in path:
                 raise ReviewFailure("clean_package_audit", f"forbidden package path marker: {path}")
+    audited_paths = {file["path"] for file in audit.get("files", []) if isinstance(file, dict) and "path" in file}
+    unaudited_paths = sorted(set(paths) - audited_paths - {"PACKAGE_AUDIT.json"})
+    if unaudited_paths:
+        raise ReviewFailure("clean_package_audit", f"package contains files missing from PACKAGE_AUDIT.json: {unaudited_paths}")
     return audit
 
 
