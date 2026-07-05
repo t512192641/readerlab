@@ -4597,16 +4597,27 @@ def technical_asset_card_failures(asset_cards: dict[str, Any]) -> list[str]:
     return failures
 
 
-def blocking_controller_failures(controller: dict[str, Any]) -> list[str]:
+def blocking_controller_failures(controller: dict[str, Any], output_eval: dict[str, Any]) -> list[str]:
     if not controller:
         return ["controller-decision contract is required for capability-map packages"]
     blocking_gates = controller.get("blocking_gates")
     if not isinstance(blocking_gates, list) or not blocking_gates:
         return ["controller-decision must declare blocking_gates"]
     decision = str(controller.get("controller_decision") or "")
+    if decision not in {"accept", "limited_accept"}:
+        return []
     if any(isinstance(gate, dict) and gate.get("status") == "blocking" for gate in blocking_gates):
-        if decision in {"accept", "limited_accept"}:
-            return ["blocking gate cannot produce accept or limited_accept"]
+        return ["blocking gate cannot produce accept or limited_accept"]
+    checks = ((output_eval.get("output_eval") or {}).get("checks") or []) if isinstance(output_eval, dict) else []
+    needs_review = [
+        str(check.get("id") or check.get("name") or "unknown")
+        for check in checks
+        if isinstance(check, dict) and str(check.get("status") or "").lower() == "needs_human_review"
+    ]
+    if needs_review:
+        return ["controller cannot accept while output-eval needs human review: " + ", ".join(needs_review)]
+    if str(controller.get("human_status") or "").lower() == "pending":
+        return ["controller cannot accept while human_status is pending"]
     return []
 
 
@@ -5152,7 +5163,10 @@ def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
 
     if has_capability_map:
         controller_payload = first_contract_payload(payloads, "readerlab.controller-decision.v1")
-        controller_failures = blocking_controller_failures(controller_payload)
+        controller_failures = blocking_controller_failures(
+            controller_payload,
+            first_contract_payload(payloads, "readerlab.output-eval.v1"),
+        )
         gates.append(
             {
                 "id": "blocking_controller_decision",
