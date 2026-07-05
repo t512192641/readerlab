@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """Release-candidate review for the ReaderLab shareable Skill package."""
 
-from __future__ import annotations
-
-import json
 import hashlib
+import json
 import subprocess
 import tempfile
 from pathlib import Path
@@ -15,6 +13,20 @@ ROOT = Path(__file__).resolve().parents[1]
 BUILD_SCRIPT = ROOT / "scripts" / "build_readerlab_package.py"
 INSTALL_SMOKE = ROOT / "packaging" / "install_smoke_test.py"
 PACKAGE_INSTALL_SMOKE = ROOT / "tests" / "install_smoke_test.py"
+TEXT_EXTS = {".md", ".json", ".py", ".txt", ".yaml", ".yml", ".toml"}
+FORBIDDEN_TEXT_MARKERS = (
+    "/" + "Users" + "/",
+    "/" + "private" + "/",
+    "/" + "tmp" + "/",
+    "/" + "workspace" + "/",
+    "技能项目/skills-canonical/packages/" + "gstack",
+    "python3 scripts/readerlab_trace_validator.py validate-suite --demo "
+    "tests/fixtures/readerlab/" + "private-material-validation",
+    "active only inside this " + "repository",
+    "repo-" + "local only",
+    "只在本仓库 `.agents/skills/" + "readerlab/` 激活",
+    "不安装到 `~/.codex/" + "skills/`",
+)
 
 
 class ReviewFailure(Exception):
@@ -78,6 +90,10 @@ def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def is_text_file(path: Path) -> bool:
+    return path.suffix.lower() in TEXT_EXTS
+
+
 def require_package_audit(package_root: Path) -> dict[str, Any]:
     audit_path = package_root / "PACKAGE_AUDIT.json"
     if not audit_path.is_file():
@@ -116,6 +132,11 @@ def require_package_audit(package_root: Path) -> dict[str, Any]:
         current = package_root / path
         if not current.is_file():
             raise ReviewFailure("clean_package_audit", f"audited package file missing: {path}")
+        if is_text_file(current):
+            text = current.read_text(encoding="utf-8")
+            for marker in FORBIDDEN_TEXT_MARKERS:
+                if marker in text:
+                    raise ReviewFailure("clean_package_audit", f"{path}: forbidden text marker {marker!r}")
         current_bytes = current.stat().st_size
         current_sha256 = file_sha256(current)
         if file_record.get("bytes") != current_bytes or file_record.get("sha256") != current_sha256:
@@ -137,6 +158,11 @@ def summarize_route(name: str, payload: dict[str, Any], *, phase: str) -> dict[s
         if layers.get("blocking_controller") != "pass":
             raise ReviewFailure(phase, "engineering route must prove blocking_controller: pass")
         summary["engineering_source_scope"] = payload.get("engineering_source_scope")
+    else:
+        if "controller" not in layers:
+            raise ReviewFailure(phase, "route smoke must prove controller boundary")
+        if layers["controller"] in {"fail", "missing", ""}:
+            raise ReviewFailure(phase, f"route smoke controller boundary must be present, got {layers['controller']!r}")
     return summary
 
 

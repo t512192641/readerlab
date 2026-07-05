@@ -120,7 +120,7 @@ class ReaderLabReleaseCandidateReviewTests(unittest.TestCase):
             )
             package_root = Path(tmp) / "readerlab"
             skill_file = package_root / "SKILL.md"
-            skill_file.write_text(skill_file.read_text(encoding="utf-8") + "\n/Users/example/leak\n", encoding="utf-8")
+            skill_file.write_text(skill_file.read_text(encoding="utf-8") + "\nextra audited content\n", encoding="utf-8")
 
             rc = subprocess.run(
                 ["python3", "tests/release_candidate_review.py"],
@@ -135,6 +135,40 @@ class ReaderLabReleaseCandidateReviewTests(unittest.TestCase):
             self.assertEqual(payload["status"], "fail")
             self.assertEqual(payload["failed_phase"], "clean_package_audit")
             self.assertIn("audited package file changed after audit", payload["message"])
+
+    def test_built_package_self_review_rejects_forbidden_text_even_with_matching_audit(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            subprocess.run(
+                ["python3", str(BUILD_SCRIPT), "--output-dir", tmp, "--force"],
+                cwd=ROOT,
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            package_root = Path(tmp) / "readerlab"
+            skill_file = package_root / "SKILL.md"
+            skill_file.write_text(skill_file.read_text(encoding="utf-8") + "\n/Users/example/leak\n", encoding="utf-8")
+            audit_path = package_root / "PACKAGE_AUDIT.json"
+            audit = json.loads(audit_path.read_text(encoding="utf-8"))
+            for file_record in audit["files"]:
+                if file_record["path"] == "SKILL.md":
+                    file_record["bytes"] = skill_file.stat().st_size
+                    file_record["sha256"] = release_candidate_review.file_sha256(skill_file)
+            audit_path.write_text(json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            rc = subprocess.run(
+                ["python3", "tests/release_candidate_review.py"],
+                cwd=package_root,
+                check=False,
+                text=True,
+                capture_output=True,
+            )
+            payload = json.loads(rc.stdout)
+
+            self.assertNotEqual(rc.returncode, 0)
+            self.assertEqual(payload["status"], "fail")
+            self.assertEqual(payload["failed_phase"], "clean_package_audit")
+            self.assertIn("forbidden text marker", payload["message"])
 
     def test_route_summary_rejects_failed_contract_layers(self) -> None:
         payload = {
@@ -155,6 +189,26 @@ class ReaderLabReleaseCandidateReviewTests(unittest.TestCase):
             release_candidate_review.summarize_route("book", payload, phase="book_route")
 
         self.assertIn("runner_contract", failure.exception.message)
+
+    def test_route_summary_requires_controller_boundary_for_book_and_longform(self) -> None:
+        payload = {
+            "status": "pass",
+            "check_class": "book_route_smoke",
+            "not_reader_acceptance": True,
+            "not_production_ready": True,
+            "verification_layers": {
+                "configuration_structure": "pass",
+                "runner_contract": "pass",
+                "quality_gate_request": "pass",
+                "reader_evaluation": "machine_smoke_only",
+                "human_acceptance": "not_run",
+            },
+        }
+
+        with self.assertRaises(release_candidate_review.ReviewFailure) as failure:
+            release_candidate_review.summarize_route("book", payload, phase="book_route")
+
+        self.assertIn("controller boundary", failure.exception.message)
 
 
 if __name__ == "__main__":
