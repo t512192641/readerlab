@@ -194,6 +194,36 @@ class ReaderLabEngineeringRouteSmokeTests(unittest.TestCase):
         self.assertIn("blocking_controller_decision", [gate["id"] for gate in payload["gates"]])
         self.assertTrue(any("needs human review" in failure for failure in payload["failures"]))
 
+    def test_eval_rejects_accept_when_output_eval_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            shutil.copytree(FIXTURE, fixture)
+            controller_path = fixture / "audit/contracts/controller-decision.v1.json"
+            controller = json.loads(controller_path.read_text(encoding="utf-8"))
+            controller["blocking_gates"][0]["status"] = "pass"
+            controller["controller_decision"] = "accept"
+            controller["human_status"] = "approved"
+            controller_path.write_text(json.dumps(controller, ensure_ascii=False, indent=2), encoding="utf-8")
+            eval_path = fixture / "audit/contracts/output-eval.v1.json"
+            output_eval = json.loads(eval_path.read_text(encoding="utf-8"))
+            for check in output_eval["output_eval"]["checks"]:
+                check["status"] = "pass"
+            output_eval["output_eval"]["checks"][0]["status"] = "fail"
+            eval_path.write_text(json.dumps(output_eval, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            result = subprocess.run(
+                ["python3", "scripts/readerlab.py", "eval-rendered-package", str(fixture)],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+            )
+            payload = json.loads(result.stdout)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(payload["passed"])
+        self.assertIn("blocking_controller_decision", [gate["id"] for gate in payload["gates"]])
+        self.assertTrue(any("failed checks" in failure for failure in payload["failures"]))
+
     def test_eval_rejects_missing_full_source_evidence_packet(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             fixture = Path(tmp) / "fixture"

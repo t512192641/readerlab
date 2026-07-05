@@ -4616,6 +4616,13 @@ def blocking_controller_failures(controller: dict[str, Any], output_eval: dict[s
     ]
     if needs_review:
         return ["controller cannot accept while output-eval needs human review: " + ", ".join(needs_review)]
+    failed_checks = [
+        str(check.get("id") or check.get("name") or "unknown")
+        for check in checks
+        if isinstance(check, dict) and str(check.get("status") or "").lower() == "fail"
+    ]
+    if failed_checks:
+        return ["controller cannot accept while output-eval has failed checks: " + ", ".join(failed_checks)]
     if str(controller.get("human_status") or "").lower() == "pending":
         return ["controller cannot accept while human_status is pending"]
     return []
