@@ -18,6 +18,20 @@
 
 旧 prompt、旧样章、旧报告、旧聊天摘要和单纯 `git diff` 不是当前事实源。当前 PR #10 只落发布边界和调度 RFC；V2 runner、builder、`experiments/readerlab-v2/` 等原型文件如果尚未提交，只能作为本机工作区历史线索，不能当成 fresh checkout 的当前事实。
 
+## 2026-07-05 当前执行更新
+
+PR #10/#11/#12/#13/#14/#15/#16 已合并到 `readerlab-elon-checkpoint`，对应 #2/#4/#3/#5/#6/#7/#8 的实现已经进入提交树。GitHub 上 #2/#3/#5/#6/#7/#8 曾因 auto-close 未触发而保持 open，已在本轮按对应 merged PR 手动关闭；#4 此前已关闭。当前 GitHub 队列只剩 #9：ReaderLab V2 installable release candidate 复核。
+
+当前 slice 是 #9。目标是增加一个可复跑的 RC 复核入口，证明当前最多可以进入 `installable_release_candidate`，同时明确不能声明 production ready、friend smoke passed 或 reader accepted。
+
+#9 的交付边界：
+
+- 增加 RC 复核脚本，重新构建干净包并复跑 clean package audit、package smoke、install / discovery smoke、三类材料路线 smoke。
+- 增加 RC 复核说明，固定复核层次和状态口径。
+- 包内应包含 install smoke 和 RC 复核入口，方便分享包候选自查。
+- 结论必须仍然区分配置结构、runner contract、Quality Gate request、机器 reader-page smoke、controller / blocking controller、人工验收。
+- 当前通过只能说明结构 / runner / smoke 通过，不代表人工读者验收通过。
+
 ## Active Slice
 
 ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
