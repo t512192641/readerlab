@@ -1092,6 +1092,34 @@ echo ok
             self.assertIn("skill reader product shape missing start page", result.stdout)
             self.assertIn("skill reader page contains non-reader-facing marker: machine_status", result.stdout)
 
+    def test_eval_rendered_package_allows_legitimate_skill_manifest_language(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            map_page = out / "reader/01_能力地图.md"
+            text = map_page.read_text(encoding="utf-8")
+            text += "\n## 合法输出说明\n\n- 这个能力会读取 package manifest 来判断包边界。\n"
+            map_page.write_text(text, encoding="utf-8")
+
+            evaluation = run_readerlab("eval-rendered-package", str(out))
+            self.assertTrue(json.loads(evaluation.stdout)["passed"])
+
+    def test_eval_rendered_package_rejects_empty_required_skill_reader_pages(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample"
+
+        for empty_path in ["reader/03_技术负责人解说.md", "reader/04_设计资产卡.md"]:
+            with self.subTest(empty_path=empty_path), tempfile.TemporaryDirectory() as tmp:
+                out = Path(tmp) / "rendered"
+                run_readerlab("render-contract-package", str(sample), str(out))
+                (out / empty_path).write_text(" \n", encoding="utf-8")
+
+                result = run_readerlab_unchecked("eval-rendered-package", str(out))
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("skill_reader_product_shape", result.stdout)
+                self.assertIn("skill reader product shape empty", result.stdout)
+
     def test_import_skills_generates_v01_reading_pack(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

@@ -5624,12 +5624,13 @@ def skill_reader_product_shape_failures(target: Path, reader_paths: set[str], sc
     for rel_path, label in required.items():
         if rel_path not in reader_texts:
             failures.append(f"skill reader product shape missing {label}: {rel_path}")
+        elif not reader_texts[rel_path].strip():
+            failures.append(f"skill reader product shape empty {label}: {rel_path}")
 
     combined_without_body = "\n".join(remove_first_hand_body_sections(text) for text in reader_texts.values())
     forbidden_markers = [
         "audit/",
         "source-excerpts",
-        "manifest",
         "pending target",
         "machine_status",
         "human_status",
@@ -5646,6 +5647,21 @@ def skill_reader_product_shape_failures(target: Path, reader_paths: set[str], sc
         needle = marker.lower() if marker.isascii() else marker
         if needle in haystack:
             failures.append(f"skill reader page contains non-reader-facing marker: {marker}")
+    old_inventory_patterns = (
+        "manifest/status",
+        "manifest 和状态",
+        "manifest/status table",
+        "only a manifest",
+        "只有 manifest",
+        "只有清单",
+        "状态表",
+        "待生成清单",
+    )
+    for pattern in old_inventory_patterns:
+        haystack = lowered if pattern.isascii() else combined_without_body
+        needle = pattern.lower() if pattern.isascii() else pattern
+        if needle in haystack:
+            failures.append(f"skill reader page looks like old inventory/status output: {pattern}")
 
     body_page = reader_texts.get("reader/02_工程材料正文陪读.md", "")
     if body_page:
