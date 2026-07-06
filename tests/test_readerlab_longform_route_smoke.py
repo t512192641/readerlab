@@ -135,6 +135,47 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
 
         self.assertLess(text.index("报告开头不是先给结论"), text.index("访谈对象在这里先否认"))
 
+    def test_renderer_keeps_multi_source_unit_title_with_each_excerpt(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            output_root = Path(tmp) / "output"
+            shutil.copytree(FIXTURE, fixture)
+            catalog_path = fixture / "audit/contracts/catalog-map.v1.json"
+            catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+            catalog["catalog"]["reading_units"] = [
+                {
+                    "unit_id": "combined-unit",
+                    "title": "同一阅读单元覆盖两个来源",
+                    "status": "sample_argument_unit",
+                    "source_refs": [
+                        "src-longform-report-argument",
+                        "src-longform-interview-turn",
+                    ],
+                },
+                {
+                    "unit_id": "later-unit",
+                    "title": "后续阅读单元",
+                    "status": "sample_interview_unit",
+                    "source_refs": [],
+                },
+            ]
+            catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            subprocess.run(
+                ["python3", "scripts/readerlab.py", "render-contract-package", str(fixture), str(output_root)],
+                cwd=ROOT,
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            text = (output_root / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
+
+        report = text.index("报告开头不是先给结论")
+        interview = text.index("访谈对象在这里先否认")
+        self.assertLess(text.index("### 同一阅读单元覆盖两个来源"), report)
+        self.assertLess(text.index("### 同一阅读单元覆盖两个来源", report), interview)
+        self.assertNotIn("### 后续阅读单元", text)
+
     def test_renderer_preserves_non_adjacent_repeated_source_positions(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             fixture = Path(tmp) / "fixture"

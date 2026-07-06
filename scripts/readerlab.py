@@ -4738,13 +4738,16 @@ def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: li
     emitted_source_ids: set[str] = set()
     last_source_id = ""
     reading_units = ((catalog.get("catalog") or {}).get("reading_units") or []) if isinstance(catalog, dict) else []
-    for unit in reading_units:
+    for unit_index, unit in enumerate(reading_units, start=1):
         if not isinstance(unit, dict):
             continue
+        unit_title = reading_unit_title(unit, unit_index)
         for ref in unit.get("source_refs") or []:
             source_id = location_to_source.get(str(ref)) or str(ref)
             if source_id and source_id in source_by_id and source_id != last_source_id:
-                ordered.append(source_by_id[source_id])
+                excerpt = dict(source_by_id[source_id])
+                excerpt["unit_title"] = unit_title
+                ordered.append(excerpt)
                 emitted_source_ids.add(source_id)
                 last_source_id = source_id
     for excerpt in excerpts:
@@ -4904,7 +4907,7 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
         "",
     ]
     for index, excerpt in enumerate(excerpts, start=1):
-        unit_title = reading_unit_title(reading_units[index - 1], index) if index <= len(reading_units) and isinstance(reading_units[index - 1], dict) else f"第 {index} 个正文片段"
+        unit_title = excerpt.get("unit_title") or f"第 {index} 个正文片段"
         lines.extend(
             [
                 f"### {unit_title}",
