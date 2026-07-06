@@ -1543,6 +1543,7 @@ description: 实现前审查计划。
             self.assertFalse((book_dir / "10_中文精读" / "01_核心入口与总览" / "01_spec.md").exists())
             unfreeze_page = book_dir / "10_中文精读" / "07_流程执行与交付运维" / "unfreeze.md"
             self.assertTrue(unfreeze_page.exists())
+
             unfreeze_text = unfreeze_page.read_text(encoding="utf-8")
             self.assertIn("## 短导读", unfreeze_text)
             self.assertIn("## 阅读地图", unfreeze_text)
@@ -1717,6 +1718,53 @@ description: 实现前审查计划。
             strict_validation = run_readerlab_unchecked("validate", str(book_dir), "--require-complete")
             self.assertNotEqual(strict_validation.returncode, 0)
             self.assertIn("未完成 Skill", strict_validation.stdout)
+
+    def test_import_skills_preserves_unlabeled_output_blocks_in_cleaned_body(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "skills"
+            (source / "layout").mkdir(parents=True)
+            (source / "layout" / "SKILL.md").write_text(
+                """---
+name: layout
+description: Produce a reusable package layout.
+---
+
+# Layout Skill
+
+Use this when the user needs a stable output structure.
+
+## Output Contract
+
+```
+reader/00_开始阅读.md
+reader/01_能力地图.md
+reader/02_正文/layout.md
+```
+
+```bash
+echo shell setup
+```
+""",
+                encoding="utf-8",
+            )
+            dest = root / "out"
+
+            run_readerlab(
+                "import-skills",
+                str(source),
+                "--dest",
+                str(dest),
+                "--book-id",
+                "layout-demo",
+                "--title",
+                "layout-demo",
+            )
+
+            body_text = (dest / "layout-demo" / "reader" / "02_正文" / "layout.md").read_text(encoding="utf-8")
+            self.assertIn("reader/00_开始阅读.md", body_text)
+            self.assertIn("reader/02_正文/layout.md", body_text)
+            self.assertNotIn("echo shell setup", body_text)
 
     def test_ambiguous_pack_outputs_structure_diagnosis_instead_of_manual_grouping(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

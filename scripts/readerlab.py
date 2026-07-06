@@ -1468,7 +1468,7 @@ def import_skill_reader_page_path(skill: SkillInfo) -> str:
 
 def cleaned_skill_source_body(skill: SkillInfo) -> str:
     body = reader_visible_body(read_text(skill.file.path), skill)
-    body = re.sub(r"(?ms)^```(?:bash|sh|shell|zsh)?\n.*?\n```\s*", "", body)
+    body = re.sub(r"(?ms)^```(?:bash|sh|shell|zsh)\n.*?\n```\s*", "", body)
     body = re.sub(r"(?m)^#{1,6}\s+", "### ", body)
     return body.strip() or "这份 Skill 正文暂时为空，不能生成读者验收结论。"
 

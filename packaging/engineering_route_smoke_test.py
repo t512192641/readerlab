@@ -165,6 +165,8 @@ def assert_reader_pages(output_root: Path) -> dict[str, Any]:
         if marker not in start_text:
             raise SmokeFailure("reader_evaluation", f"start page missing marker: {marker}")
     map_text = map_path.read_text(encoding="utf-8")
+    if "reader/01_工程材料阅读页.md" in map_text:
+        raise SmokeFailure("reader_evaluation", "capability map points at retired engineering reader page")
     for marker in ("按问题域阅读", "支撑材料", "触发信号", "输出要求"):
         if marker not in map_text:
             raise SmokeFailure("reader_evaluation", f"capability map missing marker: {marker}")

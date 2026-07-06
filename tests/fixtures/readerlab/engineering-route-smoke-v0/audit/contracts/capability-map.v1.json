@@ -37,7 +37,7 @@
         "净化正文片段"
       ],
       "output_contract": [
-        "reader/01_工程材料阅读页.md",
+        "reader/02_工程材料正文陪读.md",
         "正文先于 AI 旁批"
       ],
       "verification": [
