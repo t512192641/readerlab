@@ -4745,7 +4745,42 @@ def markdown_section_for_range(text: str, range_label: str) -> str:
         if in_section:
             selected.append(line)
     section = "\n".join(selected).strip()
-    return section or text
+    if section:
+        return section
+    paragraphs = [chunk.strip() for chunk in re.split(r"\n\s*\n", text) if chunk.strip()]
+    body_paragraphs = [chunk for chunk in paragraphs if not chunk.lstrip().startswith("#")]
+    if body_paragraphs and ("开头" in label or label.lower() in {"paragraph 1", "para 1"}):
+        return body_paragraphs[0]
+    return ""
+
+
+def markdown_section_for_heading_path(text: str, heading_path: Any) -> str:
+    if isinstance(heading_path, list):
+        labels = [str(item).strip() for item in heading_path if str(item).strip()]
+        label = labels[-1] if labels else ""
+    else:
+        label = str(heading_path or "").strip()
+    return markdown_section_for_range(text, label) if label else text
+
+
+def text_for_location_anchor(text: str, location: dict[str, Any]) -> str:
+    if location.get("range"):
+        section = markdown_section_for_range(text, location["range"])
+        if section:
+            return section
+    if location.get("heading_path"):
+        section = markdown_section_for_heading_path(text, location["heading_path"])
+        if section:
+            return section
+    char_range = location.get("char_range")
+    if isinstance(char_range, list) and len(char_range) == 2:
+        start, end = char_range
+        if isinstance(start, int) and isinstance(end, int) and 0 <= start < end <= len(text):
+            return text[start:end].strip()
+    raise SystemExit(
+        "location-map location cannot be rendered without matching range, heading_path, or char_range: "
+        f"{location.get('location_id') or location.get('id') or location.get('ref_id') or '<unknown>'}"
+    )
 
 
 def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: list[dict[str, Any]]) -> list[dict[str, str]]:
@@ -4755,7 +4790,7 @@ def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: li
     material_type = str(material.get("type") or "").lower()
     preserves_whole_source = material_type == "book" or material_type.startswith("book_")
     source_by_id = {excerpt["source_id"]: excerpt for excerpt in excerpts if excerpt.get("source_id")}
-    location_by_id: dict[str, dict[str, str]] = {}
+    location_by_id: dict[str, dict[str, Any]] = {}
     for location in location_map.get("locations") or []:
         if not isinstance(location, dict):
             continue
@@ -4763,8 +4798,11 @@ def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: li
         source_id = location.get("source_id")
         if location_id and source_id:
             location_by_id[str(location_id)] = {
+                "location_id": str(location_id),
                 "source_id": str(source_id),
                 "range": str(location.get("range") or ""),
+                "heading_path": location.get("heading_path") or [],
+                "char_range": location.get("char_range") or [],
             }
 
     ordered: list[dict[str, str]] = []
@@ -4786,7 +4824,7 @@ def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: li
                 if location and not preserves_whole_source:
                     excerpt["location_id"] = ref_text
                     excerpt["range"] = location["range"]
-                    excerpt["text"] = markdown_section_for_range(excerpt["text"], location["range"])
+                    excerpt["text"] = text_for_location_anchor(excerpt["text"], location)
                 ordered.append(excerpt)
                 emitted_source_ids.add(source_id)
                 emitted_unit_sources.add(unit_source_key)
