@@ -1106,6 +1106,20 @@ echo ok
             evaluation = run_readerlab("eval-rendered-package", str(out))
             self.assertTrue(json.loads(evaluation.stdout)["passed"])
 
+    def test_rendered_skill_reader_resolves_audit_refs_to_reader_safe_labels(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/engineering-route-smoke-v0"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            run_readerlab("render-contract-package", str(sample), str(out))
+
+            map_text = (out / "reader/01_能力地图.md").read_text(encoding="utf-8")
+            card_text = (out / "reader/04_设计资产卡.md").read_text(encoding="utf-8")
+            self.assertIn("skill-body.md（用途）", map_text)
+            self.assertIn("workflow-guards.md（失败保护）", card_text)
+            self.assertNotIn("loc-engineering-body-purpose", map_text)
+            self.assertNotIn("loc-engineering-guards-failure", card_text)
+
     def test_eval_rendered_package_rejects_empty_required_skill_reader_pages(self) -> None:
         sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample"
 
@@ -1742,9 +1756,9 @@ reader/01_能力地图.md
 reader/02_正文/layout.md
 ```
 
-```bash
+   ```bash prompt
 echo shell setup
-```
+   ```
 """,
                 encoding="utf-8",
             )

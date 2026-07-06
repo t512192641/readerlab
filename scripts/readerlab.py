@@ -1468,7 +1468,7 @@ def import_skill_reader_page_path(skill: SkillInfo) -> str:
 
 def cleaned_skill_source_body(skill: SkillInfo) -> str:
     body = reader_visible_body(read_text(skill.file.path), skill)
-    body = re.sub(r"(?ms)^```(?:bash|sh|shell|zsh)\n.*?\n```\s*", "", body)
+    body = re.sub(r"(?ms)^[ \t]{0,3}```(?:bash|sh|shell|zsh)(?:[ \t][^\n]*)?\n.*?\n[ \t]{0,3}```\s*", "", body)
     body = re.sub(r"(?m)^#{1,6}\s+", "### ", body)
     return body.strip() or "这份 Skill 正文暂时为空，不能生成读者验收结论。"
 
@@ -5046,6 +5046,53 @@ def reader_safe_markdown_list(items: Any, *, indent: str = "") -> list[str]:
     return [f"{indent}- {reader_safe_sentence(str(item), fallback='未声明。')}" for item in items]
 
 
+def reader_safe_source_ref_labels(payloads: list[dict[str, Any]]) -> dict[str, str]:
+    labels: dict[str, str] = {}
+    source_paths: dict[str, str] = {}
+    for payload in payloads:
+        if contract_schema(payload) != "readerlab.source-registry.v1":
+            continue
+        for source in payload.get("sources") or []:
+            if not isinstance(source, dict):
+                continue
+            source_id = source.get("source_id") or source.get("id")
+            source_path = str(source.get("source_path") or source.get("path") or "").strip()
+            if not source_id:
+                continue
+            label = Path(source_path).name if source_path else str(source_id)
+            source_paths[str(source_id)] = label
+            labels[str(source_id)] = reader_safe_sentence(label, fallback="来源材料")
+    for payload in payloads:
+        if contract_schema(payload) != "readerlab.location-map.v1":
+            continue
+        for location in payload.get("locations") or []:
+            if not isinstance(location, dict):
+                continue
+            location_id = location.get("location_id") or location.get("id") or location.get("ref_id")
+            if not location_id:
+                continue
+            source_label = source_paths.get(str(location.get("source_id") or ""))
+            if not source_label:
+                raw_path = str(location.get("path") or "").strip()
+                source_label = Path(raw_path).name if raw_path else "来源材料"
+            range_label = str(location.get("range") or location.get("role") or "").strip()
+            labels[str(location_id)] = reader_safe_sentence(
+                f"{source_label}（{range_label}）" if range_label else source_label,
+                fallback="来源材料",
+            )
+    return labels
+
+
+def reader_safe_source_ref_list(items: Any, labels: dict[str, str], *, indent: str = "") -> list[str]:
+    if not isinstance(items, list) or not items:
+        return [f"{indent}- 未声明。"]
+    lines: list[str] = []
+    for item in items:
+        raw = str(item)
+        lines.append(f"{indent}- {labels.get(raw) or reader_safe_sentence(raw, fallback='来源材料')}")
+    return lines
+
+
 def markdown_quote(text: str) -> str:
     lines: list[str] = []
     for line in text.splitlines():
@@ -5241,6 +5288,7 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
     asset_cards = first_contract_payload(payloads, "readerlab.technical-asset-cards.v1")
     excerpts = source_excerpt_records(sample_dir, source_registry)
     domains = capability.get("capability_domains") if isinstance(capability.get("capability_domains"), list) else []
+    source_ref_labels = reader_safe_source_ref_labels(payloads)
     card_failures = technical_asset_card_failures(asset_cards)
     if card_failures:
         raise SystemExit("; ".join(card_failures))
@@ -5285,7 +5333,7 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
                 "",
                 f"- 解决的问题：{domain.get('owned_job') or '需要补充问题域说明。'}",
                 "- 支撑材料：",
-                *reader_safe_markdown_list(domain.get("source_refs"), indent="  "),
+                *reader_safe_source_ref_list(domain.get("source_refs"), source_ref_labels, indent="  "),
                 "- 触发信号：",
                 *reader_safe_markdown_list(domain.get("trigger_signals"), indent="  "),
                 "- 输出要求：",
@@ -5372,7 +5420,7 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
                 f"- 使用场景：{card.get('selection_rule') or '未声明'}",
                 f"- 可复用做法：{card.get('purpose') or '未声明'}",
                 "- 来源依据：",
-                *lines_to_markdown_list(source_refs, indent="  "),
+                *reader_safe_source_ref_list(source_refs, source_ref_labels, indent="  "),
                 f"- 使用前提：{card.get('selection_rule') or '未声明'}",
                 f"- 风险：{card.get('use_boundary') or '未声明'}",
                 f"- 边界：{card.get('use_boundary') or '未声明'}",
