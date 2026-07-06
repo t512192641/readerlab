@@ -57,7 +57,7 @@
 - 资产卡冷启动验收标准：`v3/standards/asset-card-cold-start-standard.md`。
 - 修订后的资产卡测试输入：`v3/pilots/gstack-spec-r3-asset-cards.md`。
 - R3 资产卡冷启动重测记录：`v3/pilots/gstack-spec-r3-cold-start-test.md`。
-- Phase 4 第二个 Skill 试点候选：`v3/pilots/skill-r3-code-dense-candidate.md`，候选为 `codex-claude-bridge`，等待用户选择确认。
+- Phase 4 第二个 Skill 试点候选：`v3/pilots/skill-r3-code-dense-candidate.md`，候选改为 GSTACK 内部的 `gstack/browse`，等待用户选择确认。
 - 当前 stop gate：等待用户 R3 判定与 Phase 4 第二个 Skill 试点选择；不得进入 Phase 2。
 
 ## R2 图书线用户判定

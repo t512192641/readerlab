@@ -2,33 +2,35 @@
 
 ## 候选
 
-`codex-claude-bridge`
+`gstack/browse`
 
-来源路径：`/Users/tianqiang/技能项目/skills-canonical/packages/codex-claude-bridge`
+来源路径：`/Users/tianqiang/技能项目/skills-canonical/packages/gstack/browse`
 
 ## 为什么选它
 
-这个包比 `gstack/spec` 更适合测试技术负责人页上限：它不是单纯流程 prompt，而是一个真实的 Codex 监督 Claude 执行循环的桥接系统。
+`gstack/browse` 是 GSTACK 内部更适合做第二个 Skill 试点的样本：它不是单一 prompt 流程，而是一个有真实工程结构的浏览器控制系统，能测试技术负责人页是否能把“系统为什么这样设计”讲给非工程读者。
 
-已观察到的材料结构：
+它比 `gstack/spec` 更适合拉高上限：
 
-- Skill 主文档：`SKILL.md`
-- 主脚本：`scripts/bridge.py`，4282 行
-- fake matrix 测试：`scripts/test_bridge_fake_matrix.py`，2478 行
-- hook 安装脚本：`scripts/install_project_hook.py`，111 行
-- hook 回调：`scripts/hooks/claude_hook_notify.py`
-- prompt 模板：`scripts/prompts/claude_worker.md`、`scripts/prompts/codex_supervisor.md`
-- schema：`scripts/schemas/codex_decision.schema.json`
-- 项目状态文档：`docs/dev-state.md`、`docs/decisions.md`、release notes
+- `SKILL.md` 入口约 1022 行，包含触发条件、前置状态、运行协议、权限边界和工具调用约束。
+- `src/` 下 TypeScript 约 24489 行，覆盖服务端、浏览器管理、CDP、终端 Agent、cookie 导入、写命令、安全分类、会话状态等模块。
+- `test/` 下测试约 27321 行，覆盖服务端、权限、安全、CDP、侧边栏、终端会话、cookie、代理、截图、文件投放等行为。
+- 主工程文件足够长：`src/server.ts` 约 3170 行，`src/browser-manager.ts` 约 1804 行，`src/cli.ts` 约 1362 行，`src/write-commands.ts` 约 1440 行，`src/terminal-agent.ts` 约 1011 行。
 
 ## 它能测试什么
 
-- 真实脚本和状态目录如何配合。
-- hook 事件、bridge state、dispatch、recover、audit report 的数据流。
-- 为什么需要 lock、token、fallback exit event、bounded stdout/stderr tail。
-- 技术负责人页能否用非工程师语言讲清“Codex 做决策层，Claude 做执行层”的工程边界。
-- 资产卡能否沉淀“监督循环”“hook-driven completion”“bounded acceptance note”等可复用设计。
+- 技术负责人页能不能解释“为什么浏览器控制要拆成服务端、浏览器管理器、命令层、会话层和安全层”。
+- 能不能用非工程师语言讲清 CDP、cookie、截图、文件写入、终端 Agent、SSE / 会话保持这些机制各自解决什么问题。
+- 能不能把安全设计讲明白：路径校验、token、来源限制、内容安全、下载清理、代理配置、权限边界。
+- 能不能把复杂测试体系讲成产品风险图谱，而不是堆测试文件名。
+- 资产卡能否沉淀“浏览器自动化证据链”“会话隔离”“安全出口扫描”“可复用浏览器控制协议”等可复用设计。
+
+## 不选项
+
+不再选择 `codex-claude-bridge`，因为用户明确要求第二个试点仍从 GSTACK 内部选择。
+
+暂不选 `gstack/spec` 或 `gstack/review`，因为它们已经作为前序样本使用过，且更偏流程协议，不足以测试技术负责人页的工程上限。
 
 ## 建议
 
-报给用户选择为 Phase 4 第二个 Skill 试点候选。用户确认前不生成试点包。
+报给用户确认 `gstack/browse` 是否作为 Phase 4 第二个 Skill 试点。用户确认前不生成试点包。
