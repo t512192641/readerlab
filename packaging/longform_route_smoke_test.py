@@ -176,11 +176,11 @@ def assert_reader_page(output_root: Path) -> dict[str, Any]:
             "按访谈的问答转折",
             "## 一手正文",
             "### 报告论证：从现象张力到证据组",
-            "报告开头不是先给结论",
-            "## 证据组：两个现象指向同一个结构问题",
+            "## 论证推进：先提出张力",
+            "信息量增加并没有自动带来判断质量",
             "### 访谈转折：从同步很多到无法复原判断",
-            "访谈对象在这里先否认",
             "## 问答转折：从否认到承认限制",
+            "新人只看会议纪要",
             "## AI 旁批",
             "长文阅读单元建立在论证推进、证据组和访谈转折上",
             "## 阅读边界",
@@ -225,7 +225,7 @@ def assert_reader_page(output_root: Path) -> dict[str, Any]:
         "structure_map": "reader/01_结构地图.md",
         "reader_page": "reader/02_章节正文陪读.md",
         "body_before_companion": text.index("## 一手正文") < text.index("## AI 旁批"),
-        "argument_before_interview_turn": text.index("报告开头不是先给结论") < text.index("访谈对象在这里先否认"),
+        "argument_before_interview_turn": text.index("信息量增加并没有自动带来判断质量") < text.index("新人只看会议纪要"),
         "companion_tied_to_reading_problem": "具体阅读问题" in text or "读者容易误读" in text,
     }
 

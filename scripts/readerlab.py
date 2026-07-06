@@ -4721,18 +4721,48 @@ def source_excerpt_records(sample_dir: Path, source_registry: dict[str, Any]) ->
     return records
 
 
+def markdown_section_for_range(text: str, range_label: str) -> str:
+    label = range_label.strip()
+    if not label:
+        return text
+    lines = text.splitlines()
+    selected: list[str] = []
+    in_section = False
+    matched_level = 0
+    heading_pattern = re.compile(r"^(#{1,6})\s+(.*)$")
+    for line in lines:
+        heading = heading_pattern.match(line)
+        if heading:
+            level = len(heading.group(1))
+            title = heading.group(2)
+            if in_section and level <= matched_level:
+                break
+            if label in title:
+                in_section = True
+                matched_level = level
+                selected.append(line)
+                continue
+        if in_section:
+            selected.append(line)
+    section = "\n".join(selected).strip()
+    return section or text
+
+
 def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: list[dict[str, Any]]) -> list[dict[str, str]]:
     catalog = first_contract_payload(payloads, "readerlab.catalog-map.v1")
     location_map = first_contract_payload(payloads, "readerlab.location-map.v1")
     source_by_id = {excerpt["source_id"]: excerpt for excerpt in excerpts if excerpt.get("source_id")}
-    location_to_source: dict[str, str] = {}
+    location_by_id: dict[str, dict[str, str]] = {}
     for location in location_map.get("locations") or []:
         if not isinstance(location, dict):
             continue
         location_id = location.get("location_id") or location.get("id") or location.get("ref_id")
         source_id = location.get("source_id")
         if location_id and source_id:
-            location_to_source[str(location_id)] = str(source_id)
+            location_by_id[str(location_id)] = {
+                "source_id": str(source_id),
+                "range": str(location.get("range") or ""),
+            }
 
     ordered: list[dict[str, str]] = []
     emitted_source_ids: set[str] = set()
@@ -4743,11 +4773,17 @@ def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: li
             continue
         unit_title = reading_unit_title(unit, unit_index)
         for ref in unit.get("source_refs") or []:
-            source_id = location_to_source.get(str(ref)) or str(ref)
-            unit_source_key = (unit_index, source_id)
+            ref_text = str(ref)
+            location = location_by_id.get(ref_text)
+            source_id = location["source_id"] if location else ref_text
+            unit_source_key = (unit_index, ref_text)
             if source_id and source_id in source_by_id and unit_source_key not in emitted_unit_sources:
                 excerpt = dict(source_by_id[source_id])
                 excerpt["unit_title"] = unit_title
+                if location:
+                    excerpt["location_id"] = ref_text
+                    excerpt["range"] = location["range"]
+                    excerpt["text"] = markdown_section_for_range(excerpt["text"], location["range"])
                 ordered.append(excerpt)
                 emitted_source_ids.add(source_id)
                 emitted_unit_sources.add(unit_source_key)
@@ -5074,9 +5110,6 @@ def sync_rendered_reader_display_paths(output_dir: Path, rendered_pages: dict[st
         display = payload.get("display")
         if not isinstance(display, dict):
             continue
-        reader_paths = display.get("reader_facing") or display.get("reader_facing_paths") or []
-        if not reader_paths:
-            continue
         display["reader_facing"] = rendered_reader_paths
         write_text(path, json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
 
@@ -5163,21 +5196,39 @@ def normalize_inline_text(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
 
 
+def source_body_snippets(source_text: str) -> list[str]:
+    snippets: list[str] = []
+    normalized = normalize_inline_text(source_text)
+    if normalized:
+        snippets.append(normalized[:80])
+    for chunk in re.split(r"\n\s*\n", source_text):
+        text = normalize_inline_text(re.sub(r"^#{1,6}\s+", "", chunk.strip()))
+        if len(text) >= 30:
+            snippets.append(text[:80])
+    seen: set[str] = set()
+    unique: list[str] = []
+    for snippet in snippets:
+        if snippet and snippet not in seen:
+            unique.append(snippet)
+            seen.add(snippet)
+    return unique
+
+
 def first_hand_body_failures(target: Path, reader_paths: set[str], source_paths: list[str]) -> list[str]:
     failures: list[str] = []
     if not source_paths:
         return ["source-registry has no source_path for first-hand body check"]
-    source_snippets: list[tuple[str, str]] = []
+    source_snippets: list[str] = []
     for source_path in source_paths:
         path = target / source_path
         if not path.is_file():
             failures.append(f"source excerpt not found for first-hand body check: {source_path}")
             continue
-        source_text = normalize_inline_text(strip_markdown_title(read_text(path)))
+        source_text = strip_markdown_title(read_text(path))
         if not source_text:
             failures.append(f"source excerpt is empty for first-hand body check: {source_path}")
             continue
-        source_snippets.append((source_path, source_text[:80]))
+        source_snippets.extend(source_body_snippets(source_text))
     if failures:
         return failures
     body_found = False
@@ -5191,7 +5242,7 @@ def first_hand_body_failures(target: Path, reader_paths: set[str], source_paths:
             continue
         body = body_match.group(1)
         normalized_body = normalize_inline_text(body)
-        if any(snippet in normalized_body for _source_path, snippet in source_snippets):
+        if any(snippet in normalized_body for snippet in source_snippets):
             body_found = True
             break
     if not body_found:

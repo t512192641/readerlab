@@ -219,9 +219,9 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
             )
             text = (output_root / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
 
-        first_report = text.index("报告开头不是先给结论")
-        interview = text.index("访谈对象在这里先否认")
-        second_report = text.index("报告开头不是先给结论", interview)
+        first_report = text.index("信息量增加并没有自动带来判断质量")
+        interview = text.index("新人只看会议纪要")
+        second_report = text.index("第一组证据来自周会纪要")
         self.assertLess(first_report, interview)
         self.assertLess(interview, second_report)
 
@@ -264,8 +264,9 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
         first_title = text.index("### 报告开头")
         second_title = text.index("### 报告证据组")
         self.assertLess(first_title, second_title)
-        self.assertLess(text.index("报告开头不是先给结论", first_title), second_title)
-        self.assertIn("报告开头不是先给结论", text[second_title:])
+        self.assertLess(text.index("信息量增加并没有自动带来判断质量", first_title), second_title)
+        self.assertIn("第一组证据来自周会纪要", text[second_title:])
+        self.assertNotIn("信息量增加并没有自动带来判断质量", text[second_title:])
 
     def test_shipped_fixture_reader_display_path_is_evaluable(self) -> None:
         result = subprocess.run(

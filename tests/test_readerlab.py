@@ -808,13 +808,15 @@ echo ok
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "rendered"
             run_readerlab("render-contract-package", str(sample), str(out))
-            for contract_path in [
-                out / "audit/contracts/catalog-map.v1.json",
-                out / "audit/contracts/local-deepread.v1.json",
+            for contract_path in list((out / "audit/contracts").glob("*.json")) + [
+                out / "audit/source-registry.v1.json",
+                out / "audit/location-map.v1.json",
             ]:
                 contract = json.loads(contract_path.read_text(encoding="utf-8"))
-                contract["display"]["reader_facing"] = []
-                contract_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+                display = contract.get("display")
+                if isinstance(display, dict):
+                    display["reader_facing"] = []
+                    contract_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
             result = run_readerlab_unchecked("eval-rendered-package", str(out))
             self.assertNotEqual(result.returncode, 0)
@@ -824,34 +826,36 @@ echo ok
     def test_render_contract_package_updates_copied_reader_display_paths(self) -> None:
         sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
 
-        with tempfile.TemporaryDirectory() as tmp:
-            fixture = Path(tmp) / "fixture"
-            out = Path(tmp) / "rendered"
-            shutil.copytree(sample, fixture)
-            for contract_path in [
-                fixture / "audit/contracts/catalog-map.v1.json",
-                fixture / "audit/contracts/local-deepread.v1.json",
-            ]:
-                contract = json.loads(contract_path.read_text(encoding="utf-8"))
-                contract["display"]["reader_facing"] = ["reader/01_局部长文阅读页.md"]
-                contract_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        for initial_reader_paths in (["reader/01_局部长文阅读页.md"], []):
+            with self.subTest(initial_reader_paths=initial_reader_paths):
+                with tempfile.TemporaryDirectory() as tmp:
+                    fixture = Path(tmp) / "fixture"
+                    out = Path(tmp) / "rendered"
+                    shutil.copytree(sample, fixture)
+                    for contract_path in [
+                        fixture / "audit/contracts/catalog-map.v1.json",
+                        fixture / "audit/contracts/local-deepread.v1.json",
+                    ]:
+                        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+                        contract["display"]["reader_facing"] = initial_reader_paths
+                        contract_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-            run_readerlab("render-contract-package", str(fixture), str(out))
-            evaluation = run_readerlab("eval-rendered-package", str(out))
-            self.assertTrue(json.loads(evaluation.stdout)["passed"])
-            for contract_path in [
-                out / "audit/contracts/catalog-map.v1.json",
-                out / "audit/contracts/local-deepread.v1.json",
-            ]:
-                contract = json.loads(contract_path.read_text(encoding="utf-8"))
-                self.assertEqual(
-                    contract["display"]["reader_facing"],
-                    [
-                        "reader/00_开始阅读.md",
-                        "reader/01_结构地图.md",
-                        "reader/02_章节正文陪读.md",
-                    ],
-                )
+                    run_readerlab("render-contract-package", str(fixture), str(out))
+                    evaluation = run_readerlab("eval-rendered-package", str(out))
+                    self.assertTrue(json.loads(evaluation.stdout)["passed"])
+                    for contract_path in [
+                        out / "audit/contracts/catalog-map.v1.json",
+                        out / "audit/contracts/local-deepread.v1.json",
+                    ]:
+                        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+                        self.assertEqual(
+                            contract["display"]["reader_facing"],
+                            [
+                                "reader/00_开始阅读.md",
+                                "reader/01_结构地图.md",
+                                "reader/02_章节正文陪读.md",
+                            ],
+                        )
 
     def test_rendered_book_generated_notes_hide_fixture_language(self) -> None:
         sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
