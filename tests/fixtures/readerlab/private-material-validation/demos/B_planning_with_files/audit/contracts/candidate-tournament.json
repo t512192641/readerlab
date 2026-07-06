@@ -1,0 +1,103 @@
+{
+  "contract": "candidate-tournament.v1",
+  "material_id": "B_planning_with_files_skill_engineering",
+  "candidates": [
+    {
+      "candidate_id": "K1",
+      "type": "framework",
+      "candidate": "Externalize complex task memory into durable project files.",
+      "claim_refs": ["C1", "C2"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "pass",
+      "risk_check": "pass",
+      "decision": "promote",
+      "decision_reason": "Strong source support and strong ReaderLab transfer value."
+    },
+    {
+      "candidate_id": "K2",
+      "type": "principle",
+      "candidate": "Use the method only when task complexity justifies the overhead.",
+      "claim_refs": ["C3"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "weak",
+      "risk_check": "pass",
+      "decision": "promote",
+      "decision_reason": "The source's skip list is essential to prevent process burden."
+    },
+    {
+      "candidate_id": "K3",
+      "type": "mechanism",
+      "candidate": "Plan, findings, and progress files divide goal, evidence, and execution state.",
+      "claim_refs": ["C4", "C5"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "pass",
+      "risk_check": "pass",
+      "decision": "promote",
+      "decision_reason": "This explains why three files exist and how they reduce drift."
+    },
+    {
+      "candidate_id": "K4",
+      "type": "mechanism",
+      "candidate": "Record failures and change strategy after repeated errors.",
+      "claim_refs": ["C6"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "pass",
+      "v2_predictive_or_actionable": "pass",
+      "v3_distinctiveness": "weak",
+      "risk_check": "pass",
+      "decision": "keep",
+      "decision_reason": "Useful and source-supported, but not unique enough to lead the narrative."
+    },
+    {
+      "candidate_id": "K5",
+      "type": "hazard",
+      "candidate": "Adopt Claude plugin hooks as ReaderLab's default architecture.",
+      "claim_refs": ["C7"],
+      "v0_source_support": "weak",
+      "v1_cross_context": "fail",
+      "v2_predictive_or_actionable": "fail",
+      "v3_distinctiveness": "weak",
+      "risk_check": "fail",
+      "decision": "reject",
+      "decision_reason": "Host-specific runtime shell should not become ReaderLab architecture."
+    },
+    {
+      "candidate_id": "K6",
+      "type": "hazard",
+      "candidate": "Require planning files for every task.",
+      "claim_refs": ["C3"],
+      "v0_source_support": "fail",
+      "v1_cross_context": "fail",
+      "v2_predictive_or_actionable": "weak",
+      "v3_distinctiveness": "weak",
+      "risk_check": "caution",
+      "decision": "downgrade",
+      "decision_reason": "The source explicitly skips simple tasks; universal use would create overhead."
+    },
+    {
+      "candidate_id": "K7",
+      "type": "transfer_insight",
+      "candidate": "Use fixed filenames task_plan.md, findings.md, and progress.md as ReaderLab package standard.",
+      "claim_refs": ["C4", "C7"],
+      "v0_source_support": "pass",
+      "v1_cross_context": "weak",
+      "v2_predictive_or_actionable": "weak",
+      "v3_distinctiveness": "weak",
+      "risk_check": "caution",
+      "decision": "downgrade",
+      "decision_reason": "The role separation transfers better than the exact filenames."
+    }
+  ],
+  "decision_summary": {
+    "promoted": 3,
+    "kept": 1,
+    "downgraded": 2,
+    "rejected": 1
+  }
+}

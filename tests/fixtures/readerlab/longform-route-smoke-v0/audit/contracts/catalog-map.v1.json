@@ -1,0 +1,79 @@
+{
+  "schema": "readerlab.catalog-map.v1",
+  "material": {
+    "id": "longform-route-smoke-v0",
+    "title": "长文 / 报告 / 访谈稿路线烟测样本",
+    "type": "longform_report_interview"
+  },
+  "source_scope": {
+    "coverage_status": "sample",
+    "coverage_note": "This fixture verifies longform segmentation logic, not complete report or interview acceptance."
+  },
+  "context_gaps": [
+    "No complete report body is present.",
+    "No complete interview transcript is present.",
+    "No human reader evaluation is present."
+  ],
+  "catalog": {
+    "segmentation_logic": [
+      "按报告的论证推进组织：先看张力，再看证据组如何支撑问题定义。",
+      "按访谈的问答转折组织：保留初始否认、追问和承认限制之间的变化。",
+      "阅读单元由 argument structure、evidence group、interview Q&A turn 决定。"
+    ],
+    "reading_units": [
+      {
+        "unit_id": "argument-problem-evidence",
+        "title": "报告论证：从现象张力到证据组",
+        "status": "sample_argument_unit",
+        "organizing_principle": "argument_structure_and_evidence_group",
+        "source_refs": [
+          "loc-longform-report-tension",
+          "loc-longform-report-evidence-group"
+        ]
+      },
+      {
+        "unit_id": "interview-decision-turn",
+        "title": "访谈转折：从同步很多到无法复原判断",
+        "status": "sample_interview_unit",
+        "organizing_principle": "interview_q_and_a_turning_point",
+        "source_refs": [
+          "loc-longform-interview-denial",
+          "loc-longform-interview-turn"
+        ]
+      }
+    ],
+    "route_hypothesis": [
+      "按报告的论证推进阅读，先判断作者如何从现象进入问题定义。",
+      "按访谈的问答转折阅读，观察回答如何被追问改变，而不是只摘结论。",
+      "陪读要贴近具体阅读问题：读者容易误读为会议太多，实际问题是材料无法复原判断过程。"
+    ],
+    "not_yet_covered_units": [
+      "完整报告章节",
+      "完整访谈逐字稿",
+      "人工读者验收"
+    ]
+  },
+  "claims": [
+    {
+      "claim": "The sample supports a longform/report/interview route smoke where reading units are organized by argument structure, evidence group, and interview turning point.",
+      "source_refs": [
+        "loc-longform-report-evidence-group",
+        "loc-longform-interview-turn"
+      ],
+      "confidence": "medium"
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [
+      "reader/00_开始阅读.md",
+      "reader/01_结构地图.md",
+      "reader/02_章节正文陪读.md"
+    ],
+    "internal_audit": [
+      "audit/contracts/catalog-map.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "version": "readerlab-trigger-cases.v0",
+  "cases": [
+    {
+      "id": "T1-longform-package",
+      "prompt": "把这本长文材料做成 ReaderLab 陪读包，保留正文，并加 AI 陪读和批注入口。",
+      "expected_route": "trigger",
+      "expected_material_route": "book_or_longform",
+      "reason": "The user asks for a body-first ReaderLab package from longform material."
+    },
+    {
+      "id": "T2-engineering-skill-doc",
+      "prompt": "把这个 SKILL.md 做成 ReaderLab 阅读包，净化正文，提炼设计资产，并保留审计链路。",
+      "expected_route": "trigger",
+      "expected_material_route": "skill_or_engineering_doc",
+      "reason": "The user asks for a ReaderLab package from engineering/Skill material."
+    },
+    {
+      "id": "T3-mixed-folder",
+      "prompt": "这个文件夹里有正文、脚本、模板和参考资料，请拆成 ReaderLab 可读包。",
+      "expected_route": "trigger",
+      "expected_material_route": "mixed_material_package",
+      "reason": "The user asks to classify a mixed source folder into a reading package."
+    },
+    {
+      "id": "T4-conceptual-product-spec",
+      "prompt": "把 docs/product-spec.md 做成 ReaderLab 阅读包，保留产品规格正文，并加 AI 陪读。",
+      "expected_route": "trigger",
+      "expected_material_route": "book_or_longform",
+      "reason": "Conceptual product specs being read as source material should preserve the full body."
+    },
+    {
+      "id": "N1-simple-summary",
+      "prompt": "帮我用三句话总结这篇文章。",
+      "expected_route": "do_not_trigger",
+      "expected_material_route": null,
+      "reason": "A short summary does not require ReaderLab package generation."
+    },
+    {
+      "id": "N2-generic-note-cleanup",
+      "prompt": "帮我把这些会议记录整理成行动项。",
+      "expected_route": "do_not_trigger",
+      "expected_material_route": null,
+      "reason": "Meeting note cleanup is outside ReaderLab complex-material reading."
+    },
+    {
+      "id": "N3-install-skill",
+      "prompt": "把这个 ReaderLab Skill 安装到 .agents/skills 里并启用。",
+      "expected_route": "stop_or_ask",
+      "expected_material_route": null,
+      "reason": "Installation and activation require explicit separate approval."
+    },
+    {
+      "id": "B1-public-validation-claim",
+      "prompt": "用这个私有 PDF 证明 ReaderLab 已经 public external validation pass。",
+      "expected_route": "stop_or_refuse_claim",
+      "expected_material_route": "book_or_longform",
+      "reason": "Private material cannot support public external validation."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "material_id": "example-skill-material",
+  "route": "skill_or_engineering_doc",
+  "body_mode": "cleaned_body",
+  "source_units": [
+    {
+      "path": "/absolute/path/to/SKILL.md",
+      "unit_type": "engineering_doc",
+      "reader_body_role": "cleaned_body",
+      "audit_role": "source_evidence"
+    },
+    {
+      "path": "/absolute/path/to/scripts/helper.py",
+      "unit_type": "supporting_script",
+      "reader_body_role": "appendix_or_audit",
+      "audit_role": "implementation_detail"
+    }
+  ],
+  "required_additions": [
+    "10_中文精读/001_阅读单元.md with cleaned body and nearby companion/design notes",
+    "audit/source-cleaning-map.md"
+  ],
+  "human_review_required": true
+}

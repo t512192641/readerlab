@@ -1,0 +1,15 @@
+{
+  "contract": "body-track-gate.v1",
+  "material_id": "A_feel_good_productivity_private_longform",
+  "material_type": "book_longform",
+  "body_track": {
+    "status": "present_full_body",
+    "body_path": "10_一手正文/001_正文.md",
+    "link_target": null,
+    "coverage": "full_chapter",
+    "notes": "The full selected PDF text was extracted locally by pdftotext. The source is private/copyrighted and must not be pushed to a public repository."
+  },
+  "allowed_status": "reader_package_pass",
+  "blocking_reasons": [],
+  "checked_at": "2026-07-01"
+}

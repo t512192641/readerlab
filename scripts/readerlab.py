@@ -54,10 +54,32 @@ TRIAL_UNIT_ID = "01_核心入口与总览"
 TERMS_PAGE_BASENAME = "02_Skill阅读术语表"
 TERMS_PAGE_FILENAME = f"{TERMS_PAGE_BASENAME}.md"
 DEFAULT_AGENT_READINGS_DIR = Path("data/skill-readings")
-LIFEATLAS_ROOT = Path("/Users/tianqiang/LifeAtlas")
 CONTRACT_SCHEMA_DIR = Path(__file__).resolve().parents[1] / "docs" / "contracts"
 REQUIRED_CONTRACT_SCHEMAS = ("readerlab.global-map.v1", "readerlab.distillation.v1")
 HUMAN_CLEARED_STATUSES = {"accepted", "not_required"}
+RUN_CONFIG_REQUIRED_FIELDS = (
+    "source_paths",
+    "output_root",
+    "permission_boundary",
+    "material_family",
+    "requested_scope",
+    "human_review_required",
+    "declared_scope",
+    "declared_units",
+    "full_book_required",
+    "dual_view_required",
+)
+RUN_CONFIG_SUPPORTED_MATERIAL_FAMILIES = {
+    "book_longform",
+    "longform_report_interview",
+    "skill_engineering",
+}
+RUN_CONFIG_FORBIDDEN_BOUNDARY_TERMS = {
+    "public",
+    "production",
+    "production_ready",
+    "reader_accepted",
+}
 CONTRACT_PACKAGE_REQUIRED_SCHEMAS = {
     "readerlab.source-registry.v1",
     "readerlab.location-map.v1",
@@ -113,6 +135,21 @@ TRIAL_SKILL_NAMES = {
     "plan-devex-review",
     "plan-tune",
 }
+
+
+@dataclass(frozen=True)
+class ReaderLabRunConfig:
+    source_paths: tuple[Path, ...]
+    output_root: Path
+    permission_boundary: str
+    material_family: str
+    requested_scope: str
+    human_review_required: bool
+    declared_scope: str
+    declared_units: tuple[str, ...]
+    full_book_required: bool
+    dual_view_required: bool
+    engineering_source_scope: tuple[str, ...]
 
 READING_UNIT_CLASSIFIERS: list[tuple[str, tuple[str, ...], tuple[str, ...]]] = [
     (
@@ -221,6 +258,138 @@ HUMAN_REVIEW_REGISTRY: dict[tuple[str, str], dict[str, str]] = {
         "note": "用户已人工阅读并基本认可该 DB Skill 核心页；机器 validate 仍只代表结构和覆盖验收。",
     },
 }
+
+
+def _is_non_empty_string(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
+def _is_non_empty_string_list(value: Any) -> bool:
+    return isinstance(value, list) and bool(value) and all(_is_non_empty_string(item) for item in value)
+
+
+def load_json_object(path: Path) -> dict[str, Any]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"invalid JSON config at line {exc.lineno}, column {exc.colno}: {exc.msg}") from exc
+    except OSError as exc:
+        raise SystemExit(f"cannot read config: {path}: {exc}") from exc
+    if not isinstance(payload, dict):
+        raise SystemExit("run config must be a JSON object")
+    return payload
+
+
+def validate_run_config_payload(payload: dict[str, Any], *, require_source_exists: bool = True) -> list[str]:
+    errors: list[str] = []
+    for field in RUN_CONFIG_REQUIRED_FIELDS:
+        if field not in payload:
+            errors.append(f"missing required config field: {field}")
+
+    if "source_paths" in payload and not _is_non_empty_string_list(payload.get("source_paths")):
+        errors.append("source_paths must be a non-empty list of paths")
+    if "declared_units" in payload and not _is_non_empty_string_list(payload.get("declared_units")):
+        errors.append("declared_units must be a non-empty list of unit ids")
+
+    for field in ("output_root", "permission_boundary", "material_family", "requested_scope", "declared_scope"):
+        if field in payload and not _is_non_empty_string(payload.get(field)):
+            errors.append(f"{field} must be a non-empty string")
+
+    for field in ("human_review_required", "full_book_required", "dual_view_required"):
+        if field in payload and not isinstance(payload.get(field), bool):
+            errors.append(f"{field} must be a boolean")
+    if payload.get("human_review_required") is False:
+        errors.append("human_review_required must be true; ReaderLab config checks cannot waive human review")
+
+    family = payload.get("material_family")
+    if isinstance(family, str) and family not in RUN_CONFIG_SUPPORTED_MATERIAL_FAMILIES:
+        supported = ", ".join(sorted(RUN_CONFIG_SUPPORTED_MATERIAL_FAMILIES))
+        errors.append(f"material_family must be one of: {supported}")
+
+    boundary = str(payload.get("permission_boundary", "")).lower()
+    forbidden_terms = sorted(term for term in RUN_CONFIG_FORBIDDEN_BOUNDARY_TERMS if term in boundary)
+    if forbidden_terms:
+        errors.append(
+            "permission_boundary must describe local/user-approved limits, not public validation or production readiness: "
+            + ", ".join(forbidden_terms)
+        )
+
+    engineering_scope = payload.get("engineering_source_scope")
+    if family == "skill_engineering" and not _is_non_empty_string_list(engineering_scope):
+        errors.append("engineering_source_scope is required for material_family=skill_engineering")
+    elif engineering_scope is not None and not _is_non_empty_string_list(engineering_scope):
+        errors.append("engineering_source_scope must be a non-empty list of source ids or paths when present")
+
+    if require_source_exists and _is_non_empty_string_list(payload.get("source_paths")):
+        for raw_path in payload["source_paths"]:
+            source_path = Path(raw_path).expanduser()
+            if not source_path.exists():
+                errors.append(f"source_path does not exist: {source_path}")
+
+    output_root = payload.get("output_root")
+    if require_source_exists and isinstance(output_root, str) and output_root.strip():
+        parent = Path(output_root).expanduser().parent
+        if parent != Path(".") and not parent.exists():
+            errors.append(f"output_root parent does not exist: {parent}")
+
+    return errors
+
+
+def run_config_from_payload(payload: dict[str, Any]) -> ReaderLabRunConfig:
+    errors = validate_run_config_payload(payload)
+    if errors:
+        remedy = (
+            "Provide a complete run config with source_paths, output_root, permission_boundary, "
+            "material_family, requested_scope, human_review_required, declared_scope, declared_units, "
+            "full_book_required, and dual_view_required. Add engineering_source_scope for skill_engineering."
+        )
+        raise SystemExit("invalid ReaderLab run config:\n- " + "\n- ".join(errors) + f"\nremedy: {remedy}")
+    engineering_scope = tuple(str(item) for item in payload.get("engineering_source_scope", []))
+    return ReaderLabRunConfig(
+        source_paths=tuple(Path(item).expanduser() for item in payload["source_paths"]),
+        output_root=Path(payload["output_root"]).expanduser(),
+        permission_boundary=str(payload["permission_boundary"]),
+        material_family=str(payload["material_family"]),
+        requested_scope=str(payload["requested_scope"]),
+        human_review_required=bool(payload["human_review_required"]),
+        declared_scope=str(payload["declared_scope"]),
+        declared_units=tuple(str(item) for item in payload["declared_units"]),
+        full_book_required=bool(payload["full_book_required"]),
+        dual_view_required=bool(payload["dual_view_required"]),
+        engineering_source_scope=engineering_scope,
+    )
+
+
+def load_run_config(path: str | None) -> ReaderLabRunConfig | None:
+    if not path:
+        return None
+    return run_config_from_payload(load_json_object(Path(path).expanduser()))
+
+
+def validate_run_config_cmd(args: argparse.Namespace) -> None:
+    config_path = Path(args.config).expanduser()
+    payload = load_json_object(config_path)
+    errors = validate_run_config_payload(payload, require_source_exists=not args.no_source_exists_check)
+    result = {
+        "check_class": "configuration_structure",
+        "passed": not errors,
+        "config": str(config_path),
+        "material_family": payload.get("material_family"),
+        "declared_scope": payload.get("declared_scope"),
+        "declared_units": payload.get("declared_units"),
+        "permission_boundary": payload.get("permission_boundary"),
+        "source_paths": payload.get("source_paths"),
+        "output_root": payload.get("output_root"),
+        "remedy": None
+        if not errors
+        else "Fill missing fields and pass user-owned source_paths/output_root explicitly; do not rely on LifeAtlas, GSTACK, or report-backed defaults.",
+        "not_reader_acceptance": True,
+        "not_production_ready": True,
+        "errors": errors,
+    }
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    if errors:
+        raise SystemExit(1)
 
 TRIAL_SKILL_DESCRIPTIONS_ZH = {
     "spec": "把模糊意图整理成五阶段的可执行规格，核心是先澄清目标、边界和验收方式，再进入实施计划。",
@@ -3508,10 +3677,23 @@ def build_manifest(
 
 def import_skills(args: argparse.Namespace) -> None:
     global AGENT_SKILL_READINGS
-    source = Path(args.source).expanduser().resolve()
+    run_config = load_run_config(args.run_config)
+    if run_config:
+        if len(run_config.source_paths) != 1:
+            raise SystemExit("import-skills currently requires exactly one source path in run config")
+        source = run_config.source_paths[0].resolve()
+        dest_root = run_config.output_root
+        if run_config.material_family != "skill_engineering":
+            raise SystemExit("import-skills requires material_family=skill_engineering in run config")
+    else:
+        if not args.source:
+            raise SystemExit("source is required unless --run-config is provided")
+        if not args.dest:
+            raise SystemExit("--dest is required unless --run-config is provided")
+        source = Path(args.source).expanduser().resolve()
+        dest_root = Path(args.dest).expanduser()
     if not source.exists() or not source.is_dir():
         raise SystemExit(f"source is not a directory: {source}")
-    dest_root = Path(args.dest).expanduser()
     book_id = args.book_id or slugify(source.name)
     title = args.title or source.name
     book_dir = dest_root / book_id
@@ -4393,6 +4575,97 @@ def first_contract_payload(payloads: list[dict[str, Any]], schema: str) -> dict[
     return {}
 
 
+TECHNICAL_ASSET_CARD_REQUIRED_FIELDS = ("purpose", "reader", "use_boundary", "selection_rule", "first_action")
+
+
+def technical_asset_card_failures(asset_cards: dict[str, Any]) -> list[str]:
+    cards = asset_cards.get("cards")
+    if not isinstance(cards, list) or not cards:
+        return ["technical-asset-cards must declare at least one card"]
+    failures: list[str] = []
+    for index, card in enumerate(cards, start=1):
+        if not isinstance(card, dict):
+            failures.append(f"technical asset card {index} must be an object")
+            continue
+        missing = [field for field in TECHNICAL_ASSET_CARD_REQUIRED_FIELDS if not str(card.get(field) or "").strip()]
+        source_refs = card.get("source_refs")
+        if not isinstance(source_refs, list) or not any(str(ref or "").strip() for ref in source_refs):
+            missing.append("source_refs")
+        if missing:
+            label = card.get("card_id") or card.get("name") or index
+            failures.append(f"technical asset card {label} missing cold-start fields: {', '.join(missing)}")
+    return failures
+
+
+def blocking_controller_failures(controller: dict[str, Any], output_eval: dict[str, Any]) -> list[str]:
+    if not controller:
+        return ["controller-decision contract is required for capability-map packages"]
+    blocking_gates = controller.get("blocking_gates")
+    if not isinstance(blocking_gates, list) or not blocking_gates:
+        return ["controller-decision must declare blocking_gates"]
+    decision = str(controller.get("controller_decision") or "")
+    if decision not in {"accept", "limited_accept"}:
+        return []
+    if any(isinstance(gate, dict) and gate.get("status") == "blocking" for gate in blocking_gates):
+        return ["blocking gate cannot produce accept or limited_accept"]
+    checks = ((output_eval.get("output_eval") or {}).get("checks") or []) if isinstance(output_eval, dict) else []
+    needs_review = [
+        str(check.get("id") or check.get("name") or "unknown")
+        for check in checks
+        if isinstance(check, dict) and str(check.get("status") or "").lower() == "needs_human_review"
+    ]
+    if needs_review:
+        return ["controller cannot accept while output-eval needs human review: " + ", ".join(needs_review)]
+    failed_checks = [
+        str(check.get("id") or check.get("name") or "unknown")
+        for check in checks
+        if isinstance(check, dict) and str(check.get("status") or "").lower() == "fail"
+    ]
+    if failed_checks:
+        return ["controller cannot accept while output-eval has failed checks: " + ", ".join(failed_checks)]
+    if str(controller.get("human_status") or "").lower() == "pending":
+        return ["controller cannot accept while human_status is pending"]
+    return []
+
+
+def full_source_evidence_failures(target: Path, source_registry: dict[str, Any]) -> list[str]:
+    evidence_path = target / "audit/full-source-track.md"
+    if not evidence_path.is_file():
+        return ["full-source evidence packet missing: audit/full-source-track.md"]
+    text = read_text(evidence_path)
+    sources = source_registry.get("sources") if isinstance(source_registry.get("sources"), list) else []
+    source_by_id = {
+        str(source.get("source_id")): str(source.get("source_path") or "")
+        for source in sources
+        if isinstance(source, dict) and source.get("source_id")
+    }
+    engineering_scope = source_registry.get("engineering_source_scope")
+    if not isinstance(engineering_scope, list) or not engineering_scope:
+        return ["source-registry must declare engineering_source_scope for capability-map packages"]
+    failures: list[str] = []
+    primary_source_ids = [
+        str(source.get("source_id"))
+        for source in sources
+        if isinstance(source, dict) and source.get("source_role") == "primary_module" and source.get("source_id")
+    ]
+    scope_ids = [str(source_id) for source_id in engineering_scope]
+    missing_primary_ids = [source_id for source_id in primary_source_ids if source_id not in scope_ids]
+    if missing_primary_ids:
+        failures.append(
+            "engineering_source_scope must cover every primary_module source id: "
+            + ", ".join(missing_primary_ids)
+        )
+    for source_id in engineering_scope:
+        source_id_text = str(source_id)
+        source_path = source_by_id.get(source_id_text)
+        if not source_path:
+            failures.append(f"engineering_source_scope references unknown source: {source_id_text}")
+            continue
+        if source_id_text not in text or source_path not in text:
+            failures.append(f"full-source evidence packet does not cover source: {source_id_text}")
+    return failures
+
+
 def load_contract_payloads(target: Path) -> tuple[list[Path], list[dict[str, Any]]]:
     paths: list[Path] = []
     payloads: list[dict[str, Any]] = []
@@ -4429,7 +4702,8 @@ def source_excerpt_records(sample_dir: Path, source_registry: dict[str, Any]) ->
         if not path.exists():
             failures.append(f"source excerpt not found: {source_path}")
             continue
-        text = strip_markdown_title(read_text(path))
+        raw_text = read_text(path)
+        text = strip_markdown_title(raw_text)
         if not text:
             failures.append(f"source excerpt is empty: {source_path}")
             continue
@@ -4438,6 +4712,7 @@ def source_excerpt_records(sample_dir: Path, source_registry: dict[str, Any]) ->
                 "source_id": source_id,
                 "source_path": source_path,
                 "source_role": str(source.get("source_role") or ""),
+                "raw_text": raw_text,
                 "text": text,
             }
         )
@@ -4448,10 +4723,154 @@ def source_excerpt_records(sample_dir: Path, source_registry: dict[str, Any]) ->
     return records
 
 
+def markdown_section_for_range(text: str, range_label: str) -> str:
+    label = range_label.strip()
+    if not label:
+        return text
+    lines = text.splitlines()
+    selected: list[str] = []
+    in_section = False
+    matched_level = 0
+    heading_pattern = re.compile(r"^(#{1,6})\s+(.*)$")
+    for line in lines:
+        heading = heading_pattern.match(line)
+        if heading:
+            level = len(heading.group(1))
+            title = heading.group(2)
+            if in_section and level <= matched_level:
+                break
+            if label in title:
+                in_section = True
+                matched_level = level
+                selected.append(line)
+                continue
+        if in_section:
+            selected.append(line)
+    section = "\n".join(selected).strip()
+    if section:
+        return section
+    paragraphs = [chunk.strip() for chunk in re.split(r"\n\s*\n", text) if chunk.strip()]
+    body_paragraphs = [chunk for chunk in paragraphs if not chunk.lstrip().startswith("#")]
+    if body_paragraphs and ("开头" in label or label.lower() in {"paragraph 1", "para 1"}):
+        return body_paragraphs[0]
+    return ""
+
+
+def markdown_section_for_heading_path(text: str, heading_path: Any) -> str:
+    if isinstance(heading_path, list):
+        labels = [str(item).strip() for item in heading_path if str(item).strip()]
+    else:
+        labels = [part.strip() for part in str(heading_path or "").split("/") if part.strip()]
+    if not labels:
+        return ""
+    lines = text.splitlines()
+    selected: list[str] = []
+    in_section = False
+    matched_level = 0
+    heading_stack: list[tuple[int, str]] = []
+    heading_pattern = re.compile(r"^(#{1,6})\s+(.*)$")
+    for line in lines:
+        heading = heading_pattern.match(line)
+        if heading:
+            level = len(heading.group(1))
+            title = heading.group(2).strip()
+            if in_section and level <= matched_level:
+                break
+            heading_stack = [(existing_level, existing_title) for existing_level, existing_title in heading_stack if existing_level < level]
+            heading_stack.append((level, title))
+            stack_titles = [existing_title for _existing_level, existing_title in heading_stack]
+            if len(stack_titles) >= len(labels) and stack_titles[-len(labels) :] == labels:
+                in_section = True
+                matched_level = level
+                selected.append(line)
+                continue
+        if in_section:
+            selected.append(line)
+    return "\n".join(selected).strip()
+
+
+def text_for_location_anchor(text: str, raw_text: str, location: dict[str, Any]) -> str:
+    if location.get("range"):
+        section = markdown_section_for_range(text, location["range"])
+        if section:
+            return section
+    if location.get("heading_path"):
+        section = markdown_section_for_heading_path(raw_text, location["heading_path"])
+        if section:
+            return strip_markdown_title(section)
+    char_range = location.get("char_range")
+    if isinstance(char_range, list) and len(char_range) == 2:
+        start, end = char_range
+        if isinstance(start, int) and isinstance(end, int) and 0 <= start < end <= len(raw_text):
+            return raw_text[start:end].strip()
+    raise SystemExit(
+        "location-map location cannot be rendered without matching range, heading_path, or char_range: "
+        f"{location.get('location_id') or location.get('id') or location.get('ref_id') or '<unknown>'}"
+    )
+
+
+def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: list[dict[str, Any]]) -> list[dict[str, str]]:
+    catalog = first_contract_payload(payloads, "readerlab.catalog-map.v1")
+    location_map = first_contract_payload(payloads, "readerlab.location-map.v1")
+    material = catalog.get("material") if isinstance(catalog.get("material"), dict) else {}
+    material_type = str(material.get("type") or "").lower()
+    preserves_whole_source = material_type == "book" or material_type.startswith("book_")
+    source_by_id = {excerpt["source_id"]: excerpt for excerpt in excerpts if excerpt.get("source_id")}
+    location_by_id: dict[str, dict[str, Any]] = {}
+    for location in location_map.get("locations") or []:
+        if not isinstance(location, dict):
+            continue
+        location_id = location.get("location_id") or location.get("id") or location.get("ref_id")
+        source_id = location.get("source_id")
+        if location_id and source_id:
+            location_by_id[str(location_id)] = {
+                "location_id": str(location_id),
+                "source_id": str(source_id),
+                "range": str(location.get("range") or ""),
+                "heading_path": location.get("heading_path") or [],
+                "char_range": location.get("char_range") or [],
+            }
+
+    ordered: list[dict[str, str]] = []
+    emitted_source_ids: set[str] = set()
+    emitted_unit_sources: set[tuple[int, str]] = set()
+    reading_units = ((catalog.get("catalog") or {}).get("reading_units") or []) if isinstance(catalog, dict) else []
+    for unit_index, unit in enumerate(reading_units, start=1):
+        if not isinstance(unit, dict):
+            continue
+        unit_title = reading_unit_title(unit, unit_index)
+        for ref in unit.get("source_refs") or []:
+            ref_text = str(ref)
+            location = location_by_id.get(ref_text)
+            source_id = location["source_id"] if location else ref_text
+            unit_source_key = (unit_index, source_id if preserves_whole_source else ref_text)
+            if source_id and source_id in source_by_id and unit_source_key not in emitted_unit_sources:
+                excerpt = dict(source_by_id[source_id])
+                excerpt["unit_title"] = unit_title
+                if location and not preserves_whole_source:
+                    excerpt["location_id"] = ref_text
+                    excerpt["range"] = location["range"]
+                    excerpt["text"] = text_for_location_anchor(excerpt["text"], excerpt.get("raw_text") or excerpt["text"], location)
+                ordered.append(excerpt)
+                emitted_source_ids.add(source_id)
+                emitted_unit_sources.add(unit_source_key)
+    for excerpt in excerpts:
+        source_id = excerpt.get("source_id")
+        if source_id not in emitted_source_ids:
+            ordered.append(excerpt)
+    return ordered
+
+
 def lines_to_markdown_list(items: Any, *, indent: str = "") -> list[str]:
     if not isinstance(items, list) or not items:
         return [f"{indent}- 未声明。"]
     return [f"{indent}- {item}" for item in items]
+
+
+def reader_safe_markdown_list(items: Any, *, indent: str = "") -> list[str]:
+    if not isinstance(items, list) or not items:
+        return [f"{indent}- 未声明。"]
+    return [f"{indent}- {reader_safe_sentence(str(item), fallback='未声明。')}" for item in items]
 
 
 def markdown_quote(text: str) -> str:
@@ -4459,6 +4878,66 @@ def markdown_quote(text: str) -> str:
     for line in text.splitlines():
         lines.append(f"> {line}" if line else ">")
     return "\n".join(lines)
+
+
+def reader_safe_title(title: str, *, fallback: str) -> str:
+    cleaned = re.sub(r"\s+", " ", title.strip() or fallback).strip(" ：:-")
+    known_fixture_titles = {
+        "图书路线烟测样本": "图书路线",
+        "长文 / 报告 / 访谈稿路线烟测样本": "长文 / 报告 / 访谈稿路线",
+        "Longform local fragment proof": "Longform",
+    }
+    if cleaned in known_fixture_titles:
+        return known_fixture_titles[cleaned]
+    for suffix in ("烟测样本", " fixture", " local sample", " contract proof"):
+        if cleaned.endswith(suffix):
+            cleaned = cleaned[: -len(suffix)].strip(" ：:-")
+            break
+    return cleaned or fallback
+
+
+def reader_safe_sentence(text: str, *, fallback: str) -> str:
+    cleaned = text.strip() or fallback
+    replacements = [
+        ("这个样本", "这份材料"),
+        ("本样本", "这份材料"),
+        ("该样本", "这份材料"),
+        ("烟测样本", "材料"),
+        ("This is a smoke fixture; ", ""),
+        ("This fixture", "This material"),
+        ("this fixture", "this material"),
+        ("smoke fixture", "局部材料"),
+        ("fixture", "material"),
+    ]
+    for old, new in replacements:
+        cleaned = cleaned.replace(old, new)
+    return cleaned.strip() or fallback
+
+
+def chinese_scope_label(source_scope: dict[str, Any], unit_count: int) -> str:
+    coverage_status = str(source_scope.get("coverage_status") or "").lower()
+    if coverage_status in {"full", "full_book", "complete"}:
+        return "当前覆盖完整材料。"
+    if unit_count:
+        return f"当前只覆盖 {unit_count} 个阅读单元，不能代表整本书或整份材料的最终验收。"
+    return "当前覆盖范围有限，不能代表整本书或整份材料的最终验收。"
+
+
+def reading_unit_title(unit: dict[str, Any], index: int) -> str:
+    title = str(unit.get("title") or "").strip()
+    if title:
+        return reader_safe_title(title, fallback=f"第 {index} 个阅读单元")
+    return f"第 {index} 个阅读单元"
+
+
+def reader_safe_unit_role(status: Any) -> str:
+    raw = str(status or "").strip()
+    if not raw:
+        return "已覆盖单元"
+    lowered = raw.lower()
+    if "sample" in lowered or "fixture" in lowered or "smoke" in lowered:
+        return "已覆盖单元"
+    return reader_safe_sentence(raw, fallback="已覆盖单元")
 
 
 def render_status_block(payloads: list[dict[str, Any]]) -> list[str]:
@@ -4478,27 +4957,73 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
     source_registry = first_contract_payload(payloads, "readerlab.source-registry.v1")
     catalog = first_contract_payload(payloads, "readerlab.catalog-map.v1")
     deepread = first_contract_payload(payloads, "readerlab.local-deepread.v1")
-    excerpts = source_excerpt_records(sample_dir, source_registry)
+    excerpts = order_excerpts_by_catalog_units(source_excerpt_records(sample_dir, source_registry), payloads)
     reading_units = ((catalog.get("catalog") or {}).get("reading_units") or []) if isinstance(catalog, dict) else []
     unit = reading_units[0] if reading_units and isinstance(reading_units[0], dict) else {}
     deepread_card = deepread.get("local_deepread") if isinstance(deepread.get("local_deepread"), dict) else {}
-    title = str(unit.get("title") or deepread_card.get("title") or "局部长文阅读页")
+    material = catalog.get("material") if isinstance(catalog.get("material"), dict) else {}
+    material_title = reader_safe_title(str(material.get("title") or ""), fallback="这份材料")
+    title = reading_unit_title(unit, 1) if unit else reader_safe_title(str(deepread_card.get("title") or ""), fallback="章节正文陪读")
     route_hypothesis = (catalog.get("catalog") or {}).get("route_hypothesis") if isinstance(catalog, dict) else []
     not_yet = (catalog.get("catalog") or {}).get("not_yet_covered_units") if isinstance(catalog, dict) else []
-    lines = [
-        f"# 局部长文样本：{title}",
+    source_scope = catalog.get("source_scope") if isinstance(catalog.get("source_scope"), dict) else {}
+    scope_label = chinese_scope_label(source_scope, len(reading_units) or len(excerpts))
+    start_lines = [
+        f"# 开始阅读：{material_title}",
         "",
-        "## 这一节先看什么",
+        "## 你现在读到什么",
         "",
-        *lines_to_markdown_list(route_hypothesis),
+        scope_label,
         "",
-        "## 处理过的一手正文",
+        "## 从哪里开始",
+        "",
+        *reader_safe_markdown_list(route_hypothesis),
+        "",
+        "## 验收边界",
+        "",
+        "- 这只说明当前输出进入读者产品形态检查，不代表人工读者已经接受。",
+        "- 如果只覆盖章节节选，不能说成全书验收通过。",
         "",
     ]
-    for excerpt in excerpts:
+    map_lines = [
+        f"# 结构地图：{material_title}",
+        "",
+        "## 阅读单元",
+        "",
+    ]
+    for index, reading_unit in enumerate(reading_units, start=1):
+        if not isinstance(reading_unit, dict):
+            continue
+        map_lines.extend(
+            [
+                f"### {index}. {reading_unit_title(reading_unit, index)}",
+                "",
+                f"- 位置：第 {index} 个已覆盖阅读单元",
+                f"- 角色：{reader_safe_unit_role(reading_unit.get('status'))}",
+                "",
+            ]
+        )
+    if not reading_units:
+        map_lines.extend(["- 当前没有结构化阅读单元，只能作为局部正文阅读。", ""])
+    map_lines.extend(["## 尚未覆盖", "", *reader_safe_markdown_list(not_yet), ""])
+
+    lines = [
+        f"# 正文陪读：{title}",
+        "",
+        "## 这一章放在哪",
+        "",
+        scope_label,
+        "",
+        *reader_safe_markdown_list(route_hypothesis),
+        "",
+        "## 一手正文",
+        "",
+    ]
+    for index, excerpt in enumerate(excerpts, start=1):
+        unit_title = excerpt.get("unit_title") or f"第 {index} 个正文片段"
         lines.extend(
             [
-                f"### 来源：`{excerpt['source_path']}`",
+                f"### {unit_title}",
                 "",
                 markdown_quote(excerpt["text"]),
                 "",
@@ -4508,33 +5033,42 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
         [
             "## AI 旁批",
             "",
-            str(deepread_card.get("reader_gain") or "这一页只提供局部阅读辅助，不能替代一手材料。"),
-            "",
-            "## 深读判断",
-            "",
-            f"- 主张：{deepread_card.get('claim') or '未声明'}",
-            f"- 边界：{deepread_card.get('boundary') or '未声明'}",
-            f"- 置信度：{deepread_card.get('confidence') or 'unknown'}",
+            reader_safe_sentence(
+                str(deepread_card.get("reader_gain") or ""),
+                fallback="这一页只提供局部阅读辅助，不能替代一手材料。",
+            ),
             "",
             "## 尚未覆盖",
             "",
-            *lines_to_markdown_list(not_yet),
+            *reader_safe_markdown_list(not_yet),
             "",
-            *render_status_block(payloads),
+            "## 阅读边界",
+            "",
+            "- 这是一份局部正文陪读；如果只覆盖章节节选，不能替代全书阅读判断。",
+            "- 机器检查和人工读者接受是两件事，人工接受需要单独记录。",
+            "",
             "## 可批注问题",
             "",
             "- 这个局部原则在你的材料或工作流里应该怎样被验证，而不是直接照搬？",
             "",
         ]
     )
-    return {"reader/01_局部长文阅读页.md": "\n".join(lines)}
+    return {
+        "reader/00_开始阅读.md": "\n".join(start_lines),
+        "reader/01_结构地图.md": "\n".join(map_lines),
+        "reader/02_章节正文陪读.md": "\n".join(lines),
+    }
 
 
 def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dict[str, str]:
     source_registry = first_contract_payload(payloads, "readerlab.source-registry.v1")
     capability = first_contract_payload(payloads, "readerlab.capability-map.v1")
+    asset_cards = first_contract_payload(payloads, "readerlab.technical-asset-cards.v1")
     excerpts = source_excerpt_records(sample_dir, source_registry)
     domains = capability.get("capability_domains") if isinstance(capability.get("capability_domains"), list) else []
+    card_failures = technical_asset_card_failures(asset_cards)
+    if card_failures:
+        raise SystemExit("; ".join(card_failures))
     title = str((capability.get("material") or {}).get("title") or "工程材料阅读页")
     reader_lines = [
         f"# Skill/工程材料样本：{title}",
@@ -4551,7 +5085,7 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
             [
                 f"### 模块{index}：`{excerpt['source_path']}`",
                 "",
-                excerpt["text"],
+                markdown_quote(excerpt["text"]),
                 "",
             ]
         )
@@ -4570,9 +5104,9 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
         ]
     )
     side_lines = [
-        "# 技术合伙人旁批",
+        "# 技术合伙人解说",
         "",
-        "下面只记录可迁移的工程设计原子；它不是人工验收结论。",
+        "这页面向产品负责人解释工程材料为什么这样组织；它不是人工验收结论，也不是正文换皮摘要。",
         "",
     ]
     for domain in domains:
@@ -4583,6 +5117,10 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
                 f"## {domain.get('name') or domain.get('domain_id')}",
                 "",
                 f"- owned_job：{domain.get('owned_job') or '未声明'}",
+                f"- design_structure：{domain.get('design_structure') or '把触发、输入、输出、验证和不适用边界拆开，避免 Agent 直接自由发挥。'}",
+                f"- failure_protection：{domain.get('failure_protection') or '缺少证据、状态或边界时不能升级结论。'}",
+                f"- reuse_point：{domain.get('reuse_point') or '后续 Agent 可以按字段接手，而不是回读整份 source 后猜职责。'}",
+                f"- cost_and_boundary：{domain.get('cost_and_boundary') or '会增加前置整理成本，但换来可检查、可回放的交付边界。'}",
                 "- trigger_signals：",
                 *lines_to_markdown_list(domain.get("trigger_signals"), indent="  "),
                 "- required_inputs：",
@@ -4595,10 +5133,52 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
                 "",
             ]
         )
+    card_lines = [
+        "# 资产卡导出页",
+        "",
+        "这些卡片给未来无背景 Agent 冷启动使用；第一步动作不应要求回读原始 source。",
+        "",
+    ]
+    for card in asset_cards["cards"]:
+        if not isinstance(card, dict):
+            continue
+        card_lines.extend(
+            [
+                f"## {card.get('name') or card.get('card_id')}",
+                "",
+                f"- purpose：{card.get('purpose') or '未声明'}",
+                f"- reader：{card.get('reader') or '未声明'}",
+                f"- use_boundary：{card.get('use_boundary') or '未声明'}",
+                f"- selection_rule：{card.get('selection_rule') or '未声明'}",
+                f"- first_action：{card.get('first_action') or '未声明'}",
+                "- source_refs：",
+                *lines_to_markdown_list(card.get("source_refs"), indent="  "),
+                "",
+            ]
+        )
     return {
         "reader/01_工程材料阅读页.md": "\n".join(reader_lines),
         "reader/02_技术合伙人旁批.md": "\n".join(side_lines),
+        "reader/03_资产卡导出页.md": "\n".join(card_lines),
     }
+
+
+def sync_rendered_reader_display_paths(output_dir: Path, rendered_pages: dict[str, str]) -> None:
+    rendered_reader_paths = sorted(path for path in rendered_pages if Path(path).parts[:1] == ("reader",))
+    if not rendered_reader_paths:
+        return
+    for path in iter_contract_json_paths(output_dir):
+        try:
+            payload = json.loads(read_text(path))
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(payload, dict) or not contract_schema(payload).startswith("readerlab."):
+            continue
+        display = payload.get("display")
+        if not isinstance(display, dict):
+            continue
+        display["reader_facing"] = rendered_reader_paths
+        write_text(path, json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
 
 
 def render_contract_package_cmd(args: argparse.Namespace) -> None:
@@ -4629,6 +5209,7 @@ def render_contract_package_cmd(args: argparse.Namespace) -> None:
         raise SystemExit("sample_dir 缺少可渲染的 catalog-map 或 capability-map")
     for rel_path, text in rendered_pages.items():
         write_text(output_dir / rel_path, text.rstrip() + "\n")
+    sync_rendered_reader_display_paths(output_dir, rendered_pages)
     result = {
         "sample_dir": str(sample_dir),
         "output_dir": str(output_dir),
@@ -4678,42 +5259,121 @@ def collect_declared_source_paths(payloads: list[dict[str, Any]]) -> list[str]:
 
 
 def normalize_inline_text(value: str) -> str:
+    value = re.sub(r"(?m)^>\s?", "", value)
     return re.sub(r"\s+", " ", value).strip()
+
+
+def source_body_snippets(source_text: str) -> list[str]:
+    snippets: list[str] = []
+    normalized = normalize_inline_text(source_text)
+    if normalized:
+        snippets.append(normalized[:80])
+    for chunk in re.split(r"\n\s*\n", source_text):
+        text = normalize_inline_text(re.sub(r"^#{1,6}\s+", "", chunk.strip()))
+        if len(text) >= 30:
+            snippets.append(text[:80])
+    seen: set[str] = set()
+    unique: list[str] = []
+    for snippet in snippets:
+        if snippet and snippet not in seen:
+            unique.append(snippet)
+            seen.add(snippet)
+    return unique
 
 
 def first_hand_body_failures(target: Path, reader_paths: set[str], source_paths: list[str]) -> list[str]:
     failures: list[str] = []
     if not source_paths:
         return ["source-registry has no source_path for first-hand body check"]
-    source_snippets: list[tuple[str, str]] = []
+    source_snippets_by_path: dict[str, list[str]] = {}
     for source_path in source_paths:
         path = target / source_path
         if not path.is_file():
             failures.append(f"source excerpt not found for first-hand body check: {source_path}")
             continue
-        source_text = normalize_inline_text(strip_markdown_title(read_text(path)))
+        source_text = strip_markdown_title(read_text(path))
         if not source_text:
             failures.append(f"source excerpt is empty for first-hand body check: {source_path}")
             continue
-        source_snippets.append((source_path, source_text[:80]))
+        source_snippets_by_path[source_path] = source_body_snippets(source_text)
     if failures:
         return failures
-    body_found = False
+    combined_body = ""
     for reader_path in sorted(reader_paths):
         path = target / reader_path
         if not path.is_file():
             continue
         text = read_text(path)
-        body_match = re.search(r"^## 处理过的一手正文\s*(.*?)(?=^## |\Z)", text, re.M | re.S)
+        body_match = re.search(r"^## (?:处理过的一手正文|一手正文)\s*(.*?)(?=^## |\Z)", text, re.M | re.S)
         if not body_match:
             continue
-        body = body_match.group(1)
-        normalized_body = normalize_inline_text(body)
-        if any(source_path in body and snippet in normalized_body for source_path, snippet in source_snippets):
-            body_found = True
-            break
-    if not body_found:
+        combined_body += "\n" + body_match.group(1)
+    normalized_body = normalize_inline_text(combined_body)
+    if not normalized_body:
         failures.append("reader markdown missing actual first-hand body from source excerpts")
+        return failures
+    for source_path, snippets in source_snippets_by_path.items():
+        if not any(snippet in normalized_body for snippet in snippets):
+            failures.append(f"reader markdown missing actual first-hand body from source excerpt: {source_path}")
+    return failures
+
+
+def remove_first_hand_body_sections(text: str) -> str:
+    return re.sub(r"^## (?:处理过的一手正文|一手正文)\s*.*?(?=^## |\Z)", "", text, flags=re.M | re.S)
+
+
+def reader_product_shape_failures(target: Path, reader_paths: set[str], schemas: set[str]) -> list[str]:
+    failures: list[str] = []
+    reader_texts: dict[str, str] = {}
+    for reader_path in sorted(reader_paths):
+        path = target / reader_path
+        if path.is_file():
+            reader_texts[reader_path] = read_text(path)
+    if "readerlab.catalog-map.v1" not in schemas:
+        return failures
+
+    required = {
+        "reader/00_开始阅读.md": "start page",
+        "reader/01_结构地图.md": "structure map",
+        "reader/02_章节正文陪读.md": "body-first reading page",
+    }
+    for rel_path, label in required.items():
+        if rel_path not in reader_texts:
+            failures.append(f"book reader product shape missing {label}: {rel_path}")
+
+    combined = "\n".join(remove_first_hand_body_sections(text) for text in reader_texts.values())
+    forbidden_markers = [
+        "audit/",
+        "source-excerpts",
+        "source_id",
+        "fixture",
+        "machine_status",
+        "human_status",
+        "smoke fixture",
+        "repo-local fixture",
+        "local sample",
+        "contract proof",
+        "烟测",
+        "烟测样本",
+        "局部样本",
+    ]
+    lowered = combined.lower()
+    for marker in forbidden_markers:
+        haystack = lowered if marker.isascii() else combined
+        needle = marker.lower() if marker.isascii() else marker
+        if needle in haystack:
+            failures.append(f"book reader page contains non-reader-facing marker: {marker}")
+
+    body_page = reader_texts.get("reader/02_章节正文陪读.md", "")
+    if body_page:
+        body_position = body_page.find("## 一手正文")
+        companion_position = body_page.find("## AI 旁批")
+        if body_position == -1:
+            failures.append("book reader page missing body-first section: ## 一手正文")
+        if companion_position == -1:
+            failures.append("book reader page missing nearby companion section: ## AI 旁批")
+        if body_position != -1 and companion_position != -1 and body_position > companion_position:
+            failures.append("book reader page must show first-hand body before AI companion notes")
     return failures
 
 
@@ -4760,11 +5420,7 @@ def render_eval_markdown_report(result: dict[str, Any]) -> str:
 def prepare_report_path(raw_path: str, *, overwrite: bool = False) -> Path:
     report_path = Path(raw_path).expanduser()
     resolved = report_path.resolve()
-    try:
-        resolved.relative_to(LIFEATLAS_ROOT)
-    except ValueError:
-        pass
-    else:
+    if "LifeAtlas" in resolved.parts:
         raise SystemExit("refusing to write eval report under LifeAtlas; use /private/tmp or repo-local path")
     if resolved.exists() and not overwrite:
         raise SystemExit(f"report path already exists; use --overwrite-report to replace: {resolved}")
@@ -4808,6 +5464,58 @@ def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
         }
     )
     failures.extend(first_hand_failures)
+
+    schemas = {contract_schema(payload) for payload in payloads}
+    if "readerlab.catalog-map.v1" in schemas:
+        product_shape_failures = reader_product_shape_failures(target, reader_paths, schemas)
+        gates.append(
+            {
+                "id": "reader_product_shape",
+                "status": "fail" if product_shape_failures else "pass",
+                "failures": product_shape_failures,
+            }
+        )
+        failures.extend(product_shape_failures)
+
+    has_capability_map = "readerlab.capability-map.v1" in schemas
+    if has_capability_map:
+        source_registry_payload = first_contract_payload(payloads, "readerlab.source-registry.v1")
+        full_source_failures = full_source_evidence_failures(target, source_registry_payload)
+        gates.append(
+            {
+                "id": "full_source_evidence_packet_present",
+                "status": "fail" if full_source_failures else "pass",
+                "failures": full_source_failures,
+            }
+        )
+        failures.extend(full_source_failures)
+
+        asset_card_failures = technical_asset_card_failures(
+            first_contract_payload(payloads, "readerlab.technical-asset-cards.v1")
+        )
+        gates.append(
+            {
+                "id": "technical_asset_cards_cold_start_present",
+                "status": "fail" if asset_card_failures else "pass",
+                "failures": asset_card_failures,
+            }
+        )
+        failures.extend(asset_card_failures)
+
+    if has_capability_map:
+        controller_payload = first_contract_payload(payloads, "readerlab.controller-decision.v1")
+        controller_failures = blocking_controller_failures(
+            controller_payload,
+            first_contract_payload(payloads, "readerlab.output-eval.v1"),
+        )
+        gates.append(
+            {
+                "id": "blocking_controller_decision",
+                "status": "fail" if controller_failures else "pass",
+                "failures": controller_failures,
+            }
+        )
+        failures.extend(controller_failures)
 
     missing_eval = sorted(OUTPUT_EVAL_REQUIRED_CATEGORIES - output_eval_categories(payloads))
     gates.append(
@@ -5223,8 +5931,9 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p_import = sub.add_parser("import-skills")
-    p_import.add_argument("source")
-    p_import.add_argument("--dest", required=True)
+    p_import.add_argument("source", nargs="?")
+    p_import.add_argument("--dest")
+    p_import.add_argument("--run-config", help="JSON runtime config with explicit source_paths and output_root")
     p_import.add_argument("--book-id")
     p_import.add_argument("--title")
     p_import.add_argument("--goal", default="学习这份材料的结构、方法和可复用经验。")
@@ -5232,6 +5941,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_import.add_argument("--force", action="store_true")
     p_import.add_argument("--preserve-comments", action="store_true")
     p_import.set_defaults(func=import_skills)
+
+    p_run_config = sub.add_parser("validate-run-config")
+    p_run_config.add_argument("config")
+    p_run_config.add_argument(
+        "--no-source-exists-check",
+        action="store_true",
+        help="Only validate config shape; do not require source_paths to exist on this machine.",
+    )
+    p_run_config.set_defaults(func=validate_run_config_cmd)
 
     p_validate = sub.add_parser("validate")
     p_validate.add_argument("book_dir")

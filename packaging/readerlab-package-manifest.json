@@ -1,0 +1,221 @@
+{
+  "schema": "readerlab.package-manifest.v1",
+  "status": "shareable_package_prepared",
+  "package_root_name": "readerlab",
+  "include_files": [
+    {
+      "source": ".agents/skills/readerlab/SKILL.md",
+      "target": "SKILL.md",
+      "sanitize": true
+    },
+    {
+      "source": ".agents/skills/readerlab/checks/activation-checklist.md",
+      "target": "checks/activation-checklist.md",
+      "sanitize": true
+    },
+    {
+      "source": ".agents/skills/readerlab/checks/readiness-checklist.md",
+      "target": "checks/readiness-checklist.md",
+      "sanitize": true
+    },
+    {
+      "source": ".agents/skills/readerlab/evals/trigger-cases.json",
+      "target": "evals/trigger-cases.json",
+      "sanitize": false
+    },
+    {
+      "source": ".agents/skills/readerlab/evals/output-cases.json",
+      "target": "evals/output-cases.json",
+      "sanitize": false
+    },
+    {
+      "source": ".agents/skills/readerlab/examples/input-request.json",
+      "target": "examples/input-request.json",
+      "sanitize": true
+    },
+    {
+      "source": ".agents/skills/readerlab/examples/route-decision-example.json",
+      "target": "examples/route-decision-example.json",
+      "sanitize": true
+    },
+    {
+      "source": ".agents/skills/readerlab/examples/run-config-example.json",
+      "target": "examples/run-config-example.json",
+      "sanitize": false
+    },
+    {
+      "source": "scripts/readerlab.py",
+      "target": "scripts/readerlab.py",
+      "sanitize": true
+    },
+    {
+      "source": "scripts/readerlab_trace_validator.py",
+      "target": "scripts/readerlab_trace_validator.py",
+      "sanitize": false
+    },
+    {
+      "source": "scripts/readerlab_fullbook_demo_validate.py",
+      "target": "scripts/readerlab_fullbook_demo_validate.py",
+      "sanitize": false
+    },
+    {
+      "source": "scripts/readerlab_review_pack_validate.py",
+      "target": "scripts/readerlab_review_pack_validate.py",
+      "sanitize": false
+    },
+    {
+      "source": "packaging/package_smoke_test.py",
+      "target": "tests/package_smoke_test.py",
+      "sanitize": false
+    },
+    {
+      "source": "packaging/install_smoke_test.py",
+      "target": "tests/install_smoke_test.py",
+      "sanitize": false
+    },
+    {
+      "source": "packaging/book_route_smoke_test.py",
+      "target": "tests/book_route_smoke_test.py",
+      "sanitize": false
+    },
+    {
+      "source": "packaging/longform_route_smoke_test.py",
+      "target": "tests/longform_route_smoke_test.py",
+      "sanitize": false
+    },
+    {
+      "source": "packaging/engineering_route_smoke_test.py",
+      "target": "tests/engineering_route_smoke_test.py",
+      "sanitize": false
+    },
+    {
+      "source": "packaging/release_candidate_review.py",
+      "target": "tests/release_candidate_review.py",
+      "sanitize": false
+    },
+    {
+      "source": "docs/product-spec.md",
+      "target": "docs/product-spec.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/readerlab-package-spec.md",
+      "target": "docs/readerlab-package-spec.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/eval-gates.md",
+      "target": "docs/eval-gates.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/decisions.md",
+      "target": "docs/decisions.md",
+      "sanitize": true
+    },
+    {
+      "source": "docs/ai-reading-method.md",
+      "target": "docs/ai-reading-method.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/high-order-explanation-method.md",
+      "target": "docs/high-order-explanation-method.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/technical-cofounder-method.md",
+      "target": "docs/technical-cofounder-method.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/readerlab-v2-runtime-config.md",
+      "target": "docs/readerlab-v2-runtime-config.md",
+      "sanitize": true
+    },
+    {
+      "source": "docs/readerlab-v2-package-build.md",
+      "target": "docs/readerlab-v2-package-build.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/readerlab-v2-install-smoke.md",
+      "target": "docs/readerlab-v2-install-smoke.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/readerlab-v2-book-route-smoke.md",
+      "target": "docs/readerlab-v2-book-route-smoke.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/readerlab-v2-longform-route-smoke.md",
+      "target": "docs/readerlab-v2-longform-route-smoke.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/readerlab-v2-engineering-route-smoke.md",
+      "target": "docs/readerlab-v2-engineering-route-smoke.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/readerlab-v2-release-candidate-review.md",
+      "target": "docs/readerlab-v2-release-candidate-review.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/readerlab-v2-package-boundary.md",
+      "target": "docs/readerlab-v2-package-boundary.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/readerlab-v2-reader-product-shape.md",
+      "target": "docs/readerlab-v2-reader-product-shape.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/readerlab-v2-shareable-skill-prd.md",
+      "target": "docs/readerlab-v2-shareable-skill-prd.md",
+      "sanitize": false
+    },
+    {
+      "source": "docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md",
+      "target": "docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md",
+      "sanitize": false
+    }
+  ],
+  "include_dirs": [
+    {
+      "source": "docs/contracts",
+      "target": "docs/contracts",
+      "sanitize": false
+    },
+    {
+      "source": "tests/fixtures/readerlab/contract-validator-proof-v0",
+      "target": "fixtures/contract-validator-proof-v0",
+      "sanitize": false
+    },
+    {
+      "source": "tests/fixtures/readerlab/book-route-smoke-v0",
+      "target": "fixtures/book-route-smoke-v0",
+      "sanitize": false
+    },
+    {
+      "source": "tests/fixtures/readerlab/longform-route-smoke-v0",
+      "target": "fixtures/longform-route-smoke-v0",
+      "sanitize": false
+    },
+    {
+      "source": "tests/fixtures/readerlab/engineering-route-smoke-v0",
+      "target": "fixtures/engineering-route-smoke-v0",
+      "sanitize": false
+    }
+  ],
+  "exclude_path_markers": [
+    "docs/reports",
+    "experiments/readerlab-v2/reports",
+    "private-material-validation",
+    "comment-replay",
+    "skills-canonical/packages/gstack"
+  ]
+}

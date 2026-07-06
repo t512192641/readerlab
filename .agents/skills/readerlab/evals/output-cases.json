@@ -1,0 +1,69 @@
+{
+  "version": "readerlab-output-cases.v0",
+  "execution_status": "assertion_design_only",
+  "cases": [
+    {
+      "id": "O4-product-spec-route-tie-breaker",
+      "task": "Create a ReaderLab package from a conceptual product specification.",
+      "baseline_risk": "May misroute product specs as engineering docs and over-clean the body.",
+      "with_skill_expected": [
+        "routes conceptual product specs as book_or_longform",
+        "preserves full body in 10_中文精读/ single-page reader units",
+        "keeps body and companion notes in the same annotatable Markdown page",
+        "keeps any cleaning candidates in audit instead of silently removing text"
+      ],
+      "forbidden": [
+        "uses cleaned_body for conceptual product specs without explicit reason",
+        "drops product principles or boundaries as boilerplate",
+        "splits one reader unit into separate body, companion, and comment-question files"
+      ]
+    },
+    {
+      "id": "O1-longform-body-first",
+      "task": "Create a ReaderLab package from a longform source.",
+      "baseline_risk": "May summarize the source and omit the body track.",
+      "with_skill_expected": [
+        "includes 10_中文精读/ with one annotatable Markdown page per reader unit",
+        "places source body and nearby AI companion notes in the same reader page",
+        "does not let AI companion text replace source body",
+        "includes audit/location-map.json",
+        "includes audit/contracts/trace-validation.json",
+        "ends with human review rather than automatic promotion"
+      ],
+      "forbidden": [
+        "claims reader_package_pass without full body",
+        "claims public validation from private source",
+        "creates generated annotation-question files as the default comment surface"
+      ]
+    },
+    {
+      "id": "O2-engineering-cleaned-body",
+      "task": "Create a ReaderLab package from SKILL.md or engineering workflow material.",
+      "baseline_risk": "May either paste execution boilerplate as body or over-summarize away operational constraints.",
+      "with_skill_expected": [
+        "includes cleaned body in the same reader page as nearby companion notes",
+        "preserves purpose, trigger, user intent, workflow, constraints, failure conditions, output requirements, and design highlights",
+        "includes audit/source-cleaning-map.md"
+      ],
+      "forbidden": [
+        "promotes host-specific runtime shell as ReaderLab architecture",
+        "drops safety-critical constraints",
+        "forces readers to jump between body files and companion files for the same unit"
+      ]
+    },
+    {
+      "id": "O3-mixed-package-classification",
+      "task": "Create a ReaderLab package from a folder with body docs, templates, scripts, and examples.",
+      "baseline_risk": "May flatten the folder into one generic summary.",
+      "with_skill_expected": [
+        "includes audit/unit-classification-map.json",
+        "routes meaningful units separately",
+        "keeps scripts/templates distinct from primary body unless they are the material being read"
+      ],
+      "forbidden": [
+        "treats every file as equivalent body material",
+        "hides source classification"
+      ]
+    }
+  ]
+}

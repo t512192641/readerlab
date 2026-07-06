@@ -1,0 +1,28 @@
+{
+  "contract": "material-profile.v1",
+  "material_id": "A_feel_good_productivity_private_longform",
+  "title": "Feel-Good Productivity 全书完整中译",
+  "material_type": "book_longform",
+  "source_basis": [
+    "private local PDF selected by user",
+    "full text extracted to 10_一手正文/001_正文.md"
+  ],
+  "coverage": "full",
+  "body_track_status": "present_full_body",
+  "risks": {
+    "translation_or_editing": "high",
+    "context_loss": "medium",
+    "external_verification_needed": true,
+    "ai_reconstruction_risk": "low"
+  },
+  "reader_gap_filled": [
+    "complete first-hand body track exists locally",
+    "AI companion explicitly points back to the body",
+    "claims are bounded to the selected private text"
+  ],
+  "reader_gap_not_filled": [
+    "not publicly reviewable while repository is public",
+    "translation provenance is not independently verified in this run",
+    "Obsidian annotation UI replay is not executed in this run"
+  ]
+}

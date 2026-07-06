@@ -1,0 +1,156 @@
+{
+  "contract": "trace-validation.v1",
+  "material_id": "B_planning_with_files_skill_engineering",
+  "reader_paragraphs": [
+    {
+      "reader_ref": "B-READER-001",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "central design interpretation",
+      "anchor_refs": ["B-BODY-001"],
+      "claim_refs": ["C1", "C2"],
+      "candidate_refs": ["K1"],
+      "gate_refs": ["body-track-gate", "candidate-tournament", "skillization-gate"],
+      "final_use": "skill_candidate",
+      "trace_status": "complete",
+      "notes": "Frames the source as durable recovery memory for agent work."
+    },
+    {
+      "reader_ref": "B-READER-002",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "workflow summary",
+      "anchor_refs": ["B-BODY-003"],
+      "claim_refs": ["C4"],
+      "candidate_refs": ["K3"],
+      "gate_refs": ["candidate-tournament", "skillization-gate"],
+      "final_use": "skill_candidate",
+      "trace_status": "complete",
+      "notes": "Compresses the operational workflow while preserving update timing."
+    },
+    {
+      "reader_ref": "B-READER-003",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "failure and recovery mechanism",
+      "anchor_refs": ["B-BODY-003", "B-BODY-004"],
+      "claim_refs": ["C5", "C6"],
+      "candidate_refs": ["K3", "K4"],
+      "gate_refs": ["candidate-tournament"],
+      "final_use": "reader_facing",
+      "trace_status": "complete",
+      "notes": "Explains drift, lost findings, and repeated failure as design targets."
+    },
+    {
+      "reader_ref": "B-READER-004",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "ReaderLab transfer",
+      "anchor_refs": ["B-BODY-001"],
+      "claim_refs": ["C2"],
+      "candidate_refs": ["K1"],
+      "gate_refs": ["candidate-tournament", "skillization-gate"],
+      "final_use": "design_asset",
+      "trace_status": "complete",
+      "notes": "Transfers the recoverability principle to ReaderLab continuity."
+    },
+    {
+      "reader_ref": "B-READER-005",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "boundary and rejection",
+      "anchor_refs": ["B-BODY-005"],
+      "claim_refs": ["C7"],
+      "candidate_refs": ["K5", "K7"],
+      "gate_refs": ["candidate-tournament"],
+      "final_use": "audit_only",
+      "trace_status": "complete",
+      "notes": "Keeps host-specific shell and filename prescriptions out of ReaderLab defaults."
+    },
+    {
+      "reader_ref": "B-READER-006",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "annotation-facing judgment",
+      "anchor_refs": ["B-BODY-002"],
+      "claim_refs": ["C3"],
+      "candidate_refs": ["K6"],
+      "gate_refs": ["candidate-tournament"],
+      "final_use": "annotation_trigger",
+      "trace_status": "complete",
+      "notes": "Keeps the method bounded to complex tasks and rejects universal planning overhead."
+    }
+  ],
+  "candidate_uses": [
+    {
+      "candidate_ref": "K1",
+      "decision": "promote",
+      "final_use": ["reader_facing", "design_asset", "skill_candidate"],
+      "reader_refs": ["B-READER-001", "B-READER-004"],
+      "reason": "Central recoverability framework and repeatable candidate."
+    },
+    {
+      "candidate_ref": "K2",
+      "decision": "promote",
+      "final_use": ["annotation_trigger"],
+      "reader_refs": ["B-READER-006"],
+      "reason": "Bounds the method to complex tasks."
+    },
+    {
+      "candidate_ref": "K3",
+      "decision": "promote",
+      "final_use": ["reader_facing", "skill_candidate"],
+      "reader_refs": ["B-READER-002", "B-READER-003"],
+      "reason": "Explains role separation across planning, findings, and progress."
+    },
+    {
+      "candidate_ref": "K4",
+      "decision": "keep",
+      "final_use": ["reader_facing", "annotation_trigger"],
+      "reader_refs": ["B-READER-003"],
+      "reason": "Useful recovery mechanism but not the lead idea."
+    },
+    {
+      "candidate_ref": "K5",
+      "decision": "reject",
+      "final_use": ["audit_only"],
+      "reader_refs": ["B-READER-005"],
+      "reason": "Rejected host-specific architecture transfer."
+    },
+    {
+      "candidate_ref": "K6",
+      "decision": "downgrade",
+      "final_use": ["annotation_trigger", "audit_only"],
+      "reader_refs": ["B-READER-006"],
+      "reason": "Downgraded to prevent workflow overhead on simple tasks."
+    },
+    {
+      "candidate_ref": "K7",
+      "decision": "downgrade",
+      "final_use": ["audit_only"],
+      "reader_refs": ["B-READER-005"],
+      "reason": "Downgraded because role separation transfers better than fixed filenames."
+    }
+  ],
+  "skill_candidate_traces": [
+    {
+      "candidate_ref": "K1",
+      "has_trigger": true,
+      "has_input": true,
+      "has_steps": true,
+      "has_output": true,
+      "has_boundary": true,
+      "has_evidence": true,
+      "evidence_refs": ["C1", "C2", "C3", "B-BODY-001", "B-BODY-002"],
+      "trace_status": "complete"
+    },
+    {
+      "candidate_ref": "K3",
+      "has_trigger": true,
+      "has_input": true,
+      "has_steps": true,
+      "has_output": true,
+      "has_boundary": true,
+      "has_evidence": true,
+      "evidence_refs": ["C4", "C5", "B-BODY-003"],
+      "trace_status": "complete"
+    }
+  ],
+  "result": "pass",
+  "blocking_reasons": [],
+  "checked_at": "2026-07-01"
+}

@@ -1,0 +1,157 @@
+{
+  "contract": "trace-validation.v1",
+  "material_id": "A_feel_good_productivity_private_longform",
+  "reader_paragraphs": [
+    {
+      "reader_ref": "A-READER-001",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "body-first instruction",
+      "anchor_refs": ["A-BODY-001"],
+      "claim_refs": ["C1"],
+      "candidate_refs": ["K1"],
+      "gate_refs": ["body-track-gate", "candidate-tournament"],
+      "final_use": "reader_facing",
+      "trace_status": "complete",
+      "notes": "Makes the extracted body the primary reading material."
+    },
+    {
+      "reader_ref": "A-READER-002",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "overall high-order framing",
+      "anchor_refs": ["A-BODY-002"],
+      "claim_refs": ["C2"],
+      "candidate_refs": ["K2"],
+      "gate_refs": ["claim-ledger", "candidate-tournament"],
+      "final_use": "reader_facing",
+      "trace_status": "complete",
+      "notes": "Frames the book as a diagnosis shift while keeping it interpretive."
+    },
+    {
+      "reader_ref": "A-READER-003",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "opening diagnosis",
+      "anchor_refs": ["A-BODY-002"],
+      "claim_refs": ["C3"],
+      "candidate_refs": ["K5"],
+      "gate_refs": ["candidate-tournament"],
+      "final_use": "reader_facing",
+      "trace_status": "complete",
+      "notes": "Uses the opening crisis as bounded diagnostic evidence, not a broad rejection of pressure."
+    },
+    {
+      "reader_ref": "A-READER-004",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "energy source interpretation",
+      "anchor_refs": ["A-BODY-003"],
+      "claim_refs": ["C4"],
+      "candidate_refs": ["K3"],
+      "gate_refs": ["claim-ledger", "candidate-tournament"],
+      "final_use": "reader_facing",
+      "trace_status": "complete",
+      "notes": "Connects play, control, and connection to the source-backed energy-system interpretation."
+    },
+    {
+      "reader_ref": "A-READER-005",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "action design interpretation",
+      "anchor_refs": ["A-BODY-004"],
+      "claim_refs": ["C5"],
+      "candidate_refs": ["K4"],
+      "gate_refs": ["candidate-tournament", "skillization-gate"],
+      "final_use": "skill_candidate",
+      "trace_status": "complete",
+      "notes": "Promotes action design and backs the skill candidate."
+    },
+    {
+      "reader_ref": "A-READER-006",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "rest and alignment interpretation",
+      "anchor_refs": ["A-BODY-005"],
+      "claim_refs": ["C6"],
+      "candidate_refs": ["K6"],
+      "gate_refs": ["claim-ledger", "candidate-tournament"],
+      "final_use": "reader_facing",
+      "trace_status": "complete",
+      "notes": "Keeps rest and alignment as maintenance, not generic relaxation advice."
+    },
+    {
+      "reader_ref": "A-READER-007",
+      "reader_path": "20_AI陪读/001_reader-facing.md",
+      "paragraph_role": "absorb downgrade reject",
+      "anchor_refs": ["A-BODY-005", "A-BODY-001"],
+      "claim_refs": ["C7"],
+      "candidate_refs": ["K7"],
+      "gate_refs": ["candidate-tournament"],
+      "final_use": "audit_only",
+      "trace_status": "complete",
+      "notes": "Keeps the rejected happy-productivity overclaim visible only as a bounded warning."
+    }
+  ],
+  "candidate_uses": [
+    {
+      "candidate_ref": "K1",
+      "decision": "promote",
+      "final_use": ["reader_facing"],
+      "reader_refs": ["A-READER-001"],
+      "reason": "Body-first behavior is core to the reading package."
+    },
+    {
+      "candidate_ref": "K2",
+      "decision": "promote",
+      "final_use": ["reader_facing"],
+      "reader_refs": ["A-READER-002"],
+      "reason": "Explains the book as a diagnosis shift."
+    },
+    {
+      "candidate_ref": "K3",
+      "decision": "keep",
+      "final_use": ["reader_facing", "annotation_trigger"],
+      "reader_refs": ["A-READER-004"],
+      "reason": "Useful source-backed interpretation but not the lead idea."
+    },
+    {
+      "candidate_ref": "K4",
+      "decision": "promote",
+      "final_use": ["reader_facing", "skill_candidate"],
+      "reader_refs": ["A-READER-005"],
+      "reason": "Source-backed and repeatable as a bounded action-design candidate."
+    },
+    {
+      "candidate_ref": "K5",
+      "decision": "reject",
+      "final_use": ["audit_only"],
+      "reader_refs": ["A-READER-003"],
+      "reason": "Rejected as a warning against overclaiming pressure as always bad."
+    },
+    {
+      "candidate_ref": "K6",
+      "decision": "keep",
+      "final_use": ["reader_facing", "annotation_trigger"],
+      "reader_refs": ["A-READER-006"],
+      "reason": "Kept as support for rest and calibration."
+    },
+    {
+      "candidate_ref": "K7",
+      "decision": "reject",
+      "final_use": ["audit_only"],
+      "reader_refs": ["A-READER-007"],
+      "reason": "Rejected because it overclaims happy productivity."
+    }
+  ],
+  "skill_candidate_traces": [
+    {
+      "candidate_ref": "K4",
+      "has_trigger": true,
+      "has_input": true,
+      "has_steps": true,
+      "has_output": true,
+      "has_boundary": true,
+      "has_evidence": true,
+      "evidence_refs": ["C5", "A-BODY-004"],
+      "trace_status": "complete"
+    }
+  ],
+  "result": "pass",
+  "blocking_reasons": [],
+  "checked_at": "2026-07-01"
+}

@@ -1,0 +1,50 @@
+{
+  "schema": "readerlab.source-registry.v1",
+  "material": {
+    "id": "engineering-route-smoke-v0",
+    "title": "Skill / 工程材料路线烟测样本",
+    "type": "skill_engineering"
+  },
+  "sources": [
+    {
+      "source_id": "src-engineering-skill-body",
+      "source_path": "audit/source-excerpts/skill-body.md",
+      "source_type": "markdown_skill_excerpt",
+      "source_role": "primary_module",
+      "coverage_role": "cleaned_body_source",
+      "extraction_status": "repo_local_fixture"
+    },
+    {
+      "source_id": "src-engineering-workflow-guards",
+      "source_path": "audit/source-excerpts/workflow-guards.md",
+      "source_type": "markdown_workflow_excerpt",
+      "source_role": "primary_module",
+      "coverage_role": "engineering_guard_source",
+      "extraction_status": "repo_local_fixture"
+    }
+  ],
+  "source_scope": {
+    "coverage_status": "complete",
+    "coverage_note": "Complete for the two local smoke excerpts only; not complete GSTACK validation."
+  },
+  "engineering_source_scope": [
+    "src-engineering-skill-body",
+    "src-engineering-workflow-guards"
+  ],
+  "location_refs": [
+    "loc-engineering-body-purpose",
+    "loc-engineering-body-output-boundary",
+    "loc-engineering-guards-failure",
+    "loc-engineering-guards-reuse"
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/source-registry.v1.json",
+      "audit/full-source-track.md"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

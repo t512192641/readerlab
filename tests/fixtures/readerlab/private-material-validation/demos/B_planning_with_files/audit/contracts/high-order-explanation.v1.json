@@ -1,0 +1,128 @@
+{
+  "contract_type": "high-order-explanation.v1",
+  "unit_id": "B_planning_with_files_skill_engineering",
+  "material_type": "skill_engineering",
+  "source_scope": "Local planning-with-files SKILL.md",
+  "source_anchors": [
+    {
+      "anchor_id": "B-BODY-001",
+      "source_ref": "metadata and Core Pattern",
+      "what_text_says": "The material frames filesystem state as durable memory for complex tasks.",
+      "supports": ["C1", "C2"],
+      "does_not_support": ["simple note-taking template only"]
+    },
+    {
+      "anchor_id": "B-BODY-002",
+      "source_ref": "When to Use / Skip section",
+      "what_text_says": "The method applies to complex tasks and skips simple ones.",
+      "supports": ["C3"],
+      "does_not_support": ["universal planning requirement"]
+    },
+    {
+      "anchor_id": "B-BODY-003",
+      "source_ref": "Quick Start, File Purposes, Critical Rules",
+      "what_text_says": "The source separates plan, findings, and progress and tells when to update each.",
+      "supports": ["C4", "C5"],
+      "does_not_support": ["filenames alone are the method"]
+    },
+    {
+      "anchor_id": "B-BODY-004",
+      "source_ref": "3-Strike Error Protocol",
+      "what_text_says": "Errors should be logged and repeated failures should change strategy or escalate.",
+      "supports": ["C6"],
+      "does_not_support": ["repeat the same failing command"]
+    },
+    {
+      "anchor_id": "B-BODY-005",
+      "source_ref": "hooks and command snippets",
+      "what_text_says": "The source contains host-specific runtime enforcement details.",
+      "supports": ["C7"],
+      "does_not_support": ["ReaderLab should adopt Claude plugin shell as default"]
+    }
+  ],
+  "baseline_summary_trap": "This Skill tells agents to create task_plan.md, findings.md, and progress.md before doing complex work.",
+  "upgrade_question": "How can a complex AI-assisted workflow remain recoverable across context loss, task drift, and repeated failures without turning every small task into process overhead?",
+  "mechanism_graph": {
+    "input": ["complex task", "research findings", "execution steps", "errors"],
+    "constraint": ["context window loss", "session recovery", "workflow overhead", "host-specific plugin shell"],
+    "action": ["externalize state", "record findings", "update progress", "read before decisions", "change strategy after failures"],
+    "feedback": ["plan status", "recorded errors", "verification results"],
+    "output": ["recoverable task execution"],
+    "failure_mode": ["template worship", "process burden", "host protocol leakage"],
+    "boundary": ["not for simple tasks", "not a ReaderLab Skill draft"]
+  },
+  "lens_candidates": [
+    {
+      "lens": "recoverability as product design",
+      "text_trigger": "Context Window = RAM, Filesystem = Disk",
+      "clarifies": "why the method writes state before the agent forgets",
+      "boundary_power": "separates durable state from chat memory",
+      "reader_gain": "reader can transfer the idea to ReaderLab annotation continuity",
+      "overreach_risk": "could over-process small tasks",
+      "scores": {
+        "text_trigger_strength": 2,
+        "explanatory_power": 2,
+        "boundary_power": 2,
+        "reader_gain": 2,
+        "overreach_risk": -1,
+        "total": 7
+      },
+      "decision": "promote"
+    },
+    {
+      "lens": "workflow burden",
+      "text_trigger": "skip list for simple questions and quick lookups",
+      "clarifies": "why the method needs task-size boundaries",
+      "boundary_power": "prevents universal process creep",
+      "reader_gain": "reader can decide when not to use it",
+      "overreach_risk": "low",
+      "scores": {
+        "text_trigger_strength": 2,
+        "explanatory_power": 2,
+        "boundary_power": 2,
+        "reader_gain": 2,
+        "overreach_risk": 0,
+        "total": 8
+      },
+      "decision": "promote"
+    },
+    {
+      "lens": "Claude hook architecture as ReaderLab default",
+      "text_trigger": "hook commands and plugin paths",
+      "clarifies": "implementation shell only",
+      "boundary_power": "weak if promoted",
+      "reader_gain": "low",
+      "overreach_risk": "high",
+      "scores": {
+        "text_trigger_strength": 1,
+        "explanatory_power": 0,
+        "boundary_power": 0,
+        "reader_gain": 0,
+        "overreach_risk": -2,
+        "total": -1
+      },
+      "decision": "reject"
+    }
+  ],
+  "judgments": {
+    "absorb": ["Externalize complex workflow memory.", "Use error records to change strategy.", "Keep resume entrypoints explicit."],
+    "downgrade": ["Exact filenames and save frequency should be adapted to ReaderLab rather than copied literally."],
+    "reject": ["Do not adopt Claude plugin hook protocol as ReaderLab architecture."]
+  },
+  "reader_facing_explanation": {
+    "title": "这不是计划模板，而是把复杂任务变成可恢复系统",
+    "body": "The reader-facing page explains the Skill as recoverability design and separates runtime shell from transferable method."
+  },
+  "delta_eval": {
+    "beyond_summary": true,
+    "upgrade_question_present": true,
+    "mechanism_present": true,
+    "lens_illuminates_text": true,
+    "source_boundaries_clear": true,
+    "overreach_controlled": true,
+    "verdicts_clear": true,
+    "reader_gain": "Reader can distinguish persistent work-memory design from template or hook copying."
+  },
+  "machine_status": "machine_checked",
+  "human_status": "pending"
+}

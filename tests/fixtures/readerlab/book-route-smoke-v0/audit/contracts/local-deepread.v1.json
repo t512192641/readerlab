@@ -1,0 +1,44 @@
+{
+  "schema": "readerlab.local-deepread.v1",
+  "material": {
+    "id": "book-route-smoke-v0:chapter-relationship",
+    "title": "章节关系先于金句抽取",
+    "type": "local_deepread"
+  },
+  "source_scope": {
+    "coverage_status": "sample",
+    "coverage_note": "Deepread only covers the two fixture chapters."
+  },
+  "local_deepread": {
+    "id": "deepread-chapter-relationship",
+    "type": "book_route_smoke",
+    "title": "先保留章节关系，再写陪读",
+    "claim": "A book ReaderLab page should preserve chapter body and order before adding AI companion notes.",
+    "reader_gain": "读者能先接触第一章和第二章的正文，再看 AI 对章节关系和误读边界的提示。",
+    "primary_refs": [
+      "loc-book-ch1-position",
+      "loc-book-ch2-structure"
+    ],
+    "boundary": "This is a smoke fixture; it does not prove full-book reader acceptance.",
+    "confidence": "medium",
+    "human_status": "pending",
+    "v_checks": {
+      "v1_transfer": "pass",
+      "v2_predictive": "partial",
+      "v3_non_obvious": "partial"
+    }
+  },
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [
+      "reader/00_开始阅读.md",
+      "reader/01_结构地图.md",
+      "reader/02_章节正文陪读.md"
+    ],
+    "internal_audit": [
+      "audit/contracts/local-deepread.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

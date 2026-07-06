@@ -1,0 +1,20 @@
+{
+  "material_id": "A_feel_good_productivity_private_longform",
+  "title": "Feel-Good Productivity 全书完整中译",
+  "source_type": "private_copyrighted_longform_pdf",
+  "source_path": "/Users/tianqiang/LifeAtlas/200_原始资料/270_电子书与书籍资料/2026-06-20_Feel-Good Productivity 全书完整中译.pdf",
+  "body_path": "10_一手正文/001_正文.md",
+  "body_generation": {
+    "method": "pdftotext -layout",
+    "coverage": "full_pdf_text_extraction",
+    "line_count": 4705,
+    "byte_count": 360457,
+    "meaning_change": false
+  },
+  "permission_boundary": {
+    "public_github_allowed": false,
+    "private_local_validation_allowed_by_user": true,
+    "notes": "User selected this material for local validation and stated the repository will later be made private. Do not push full body text to a public repository."
+  },
+  "checked_at": "2026-07-01"
+}

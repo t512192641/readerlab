@@ -1,0 +1,44 @@
+{
+  "schema": "readerlab.local-deepread.v1",
+  "material": {
+    "id": "longform-route-smoke-v0:segmentation",
+    "title": "按论证和问答变化组织长文阅读单元",
+    "type": "local_deepread"
+  },
+  "source_scope": {
+    "coverage_status": "sample",
+    "coverage_note": "Deepread only covers the two fixture excerpts."
+  },
+  "local_deepread": {
+    "id": "deepread-longform-segmentation",
+    "type": "longform_report_interview_route_smoke",
+    "title": "长文阅读单元不按长度盲切",
+    "claim": "A longform/report/interview ReaderLab page should preserve body and organize units by argument structure, evidence group, or interview Q&A turn before adding AI companion notes.",
+    "reader_gain": "这个样本把长文阅读单元建立在论证推进、证据组和访谈转折上；具体阅读问题是：读者容易误读为会议太多，实际要看材料能不能复原判断过程。",
+    "primary_refs": [
+      "loc-longform-report-evidence-group",
+      "loc-longform-interview-turn"
+    ],
+    "boundary": "This is a smoke fixture; it does not prove complete longform reader acceptance.",
+    "confidence": "medium",
+    "human_status": "pending",
+    "v_checks": {
+      "v1_transfer": "pass",
+      "v2_predictive": "partial",
+      "v3_non_obvious": "partial"
+    }
+  },
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [
+      "reader/00_开始阅读.md",
+      "reader/01_结构地图.md",
+      "reader/02_章节正文陪读.md"
+    ],
+    "internal_audit": [
+      "audit/contracts/local-deepread.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

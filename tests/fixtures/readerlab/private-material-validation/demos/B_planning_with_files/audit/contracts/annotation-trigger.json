@@ -1,0 +1,41 @@
+{
+  "contract": "annotation-trigger.v1",
+  "material_id": "B_planning_with_files_skill_engineering",
+  "triggers": [
+    {
+      "trigger_id": "BT1",
+      "anchor_ref": "B-BODY-001",
+      "reader_question": "这份材料真正解决的是计划缺失，还是跨时间工作不可恢复？",
+      "likely_misread": "把它读成普通项目计划模板。",
+      "reply_mode": "explain"
+    },
+    {
+      "trigger_id": "BT2",
+      "anchor_ref": "B-BODY-002",
+      "reader_question": "哪些任务复杂到值得启用这套方法，哪些任务启用后只会增加负担？",
+      "likely_misread": "把所有任务都流程化。",
+      "reply_mode": "boundary"
+    },
+    {
+      "trigger_id": "BT3",
+      "anchor_ref": "B-BODY-003",
+      "reader_question": "计划、发现、进度三类文件分别承接什么风险，能不能合并？",
+      "likely_misread": "只记住三个文件名，不理解角色分离。",
+      "reply_mode": "challenge"
+    },
+    {
+      "trigger_id": "BT4",
+      "anchor_ref": "B-BODY-004",
+      "reader_question": "三次失败后升级，是保护效率，还是太早把问题推回给用户？",
+      "likely_misread": "机械执行三次规则，不看失败类型。",
+      "reply_mode": "verify"
+    },
+    {
+      "trigger_id": "BT5",
+      "anchor_ref": "B-BODY-005",
+      "reader_question": "哪些部分是可迁移方法，哪些只是 Claude 插件运行外壳？",
+      "likely_misread": "把宿主协议当成 ReaderLab 架构。",
+      "reply_mode": "boundary"
+    }
+  ]
+}

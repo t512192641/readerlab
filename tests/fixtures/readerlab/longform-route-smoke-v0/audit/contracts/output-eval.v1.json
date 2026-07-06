@@ -1,0 +1,99 @@
+{
+  "schema": "readerlab.output-eval.v1",
+  "material": {
+    "id": "longform-route-smoke-v0",
+    "title": "长文 / 报告 / 访谈稿路线烟测样本",
+    "type": "longform_report_interview"
+  },
+  "output_eval": {
+    "checks": [
+      {
+        "id": "reader_audit_separation",
+        "name": "reader-facing does not expose audit noise",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-report-tension"
+        ]
+      },
+      {
+        "id": "audit_evidence_preserved",
+        "name": "audit evidence is preserved in source and location contracts",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-report-evidence-group",
+          "loc-longform-interview-turn"
+        ]
+      },
+      {
+        "id": "first_hand_body_not_replaced",
+        "name": "first-hand report and interview body remain visible instead of being replaced by AI summary",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-report-tension",
+          "loc-longform-interview-denial"
+        ]
+      },
+      {
+        "id": "ai_reduces_understanding_cost",
+        "name": "AI note explains the reading problem near body anchors without replacing source text",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-report-evidence-group",
+          "loc-longform-interview-turn"
+        ]
+      },
+      {
+        "id": "high_value_details_preserved",
+        "name": "argument tension, evidence group, and interview turning point are preserved",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-report-tension",
+          "loc-longform-report-evidence-group",
+          "loc-longform-interview-turn"
+        ]
+      },
+      {
+        "id": "source_refs_specific",
+        "name": "claims point to concrete report and interview location refs",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-report-evidence-group",
+          "loc-longform-interview-turn"
+        ]
+      },
+      {
+        "id": "technical_insights_non_generic",
+        "name": "not applicable to longform smoke; marked as not_required",
+        "status": "not_required",
+        "evidence_refs": [
+          "loc-longform-interview-turn"
+        ]
+      },
+      {
+        "id": "overpromoted_claims_downgraded",
+        "name": "sample coverage does not claim complete report/interview reader acceptance",
+        "status": "pass",
+        "evidence_refs": [
+          "loc-longform-interview-turn"
+        ]
+      },
+      {
+        "id": "machine_not_human",
+        "name": "machine validation is not human acceptance",
+        "status": "needs_human_review",
+        "evidence_refs": [
+          "loc-longform-interview-turn"
+        ]
+      }
+    ]
+  },
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/contracts/output-eval.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

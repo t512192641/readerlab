@@ -1,0 +1,65 @@
+{
+  "schema": "readerlab.catalog-map.v1",
+  "material": {
+    "id": "book-route-smoke-v0",
+    "title": "图书路线烟测样本",
+    "type": "book"
+  },
+  "source_scope": {
+    "coverage_status": "sample",
+    "coverage_note": "This fixture verifies ordered chapter handling, not full-book acceptance."
+  },
+  "catalog": {
+    "reading_units": [
+      {
+        "unit_id": "chapter-01",
+        "title": "第一章 先看问题，不先看答案",
+        "status": "sample_chapter",
+        "source_refs": [
+          "loc-book-ch1-problem",
+          "loc-book-ch1-position"
+        ]
+      },
+      {
+        "unit_id": "chapter-02",
+        "title": "第二章 结构比金句更重要",
+        "status": "sample_chapter",
+        "source_refs": [
+          "loc-book-ch2-structure",
+          "loc-book-ch2-boundary"
+        ]
+      }
+    ],
+    "route_hypothesis": [
+      "先读第一章建立问题意识，再读第二章理解章节关系和判断边界。"
+    ],
+    "not_yet_covered_units": [
+      "完整全书章节",
+      "全书级 grounded-global-map",
+      "人工读者验收"
+    ]
+  },
+  "claims": [
+    {
+      "claim": "The sample supports a book route smoke where chapter order and source body remain visible before AI companion notes.",
+      "source_refs": [
+        "loc-book-ch1-problem",
+        "loc-book-ch2-structure"
+      ],
+      "confidence": "medium"
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [
+      "reader/00_开始阅读.md",
+      "reader/01_结构地图.md",
+      "reader/02_章节正文陪读.md"
+    ],
+    "internal_audit": [
+      "audit/contracts/catalog-map.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "contract": "skillization-gate.v1",
+  "material_id": "B_planning_with_files_skill_engineering",
+  "items": [
+    {
+      "candidate_ref": "K1",
+      "candidate": "Externalize complex task memory into durable project files.",
+      "trigger": "A task is complex, multi-step, research-heavy, or likely to continue across sessions.",
+      "input": "Task goal, current context, observed facts, attempted actions, and verification results.",
+      "steps": [
+        "Create or identify the task state file.",
+        "Record goal, phases, and constraints.",
+        "Record findings after research batches.",
+        "Record progress and errors after execution phases.",
+        "Read the state before major decisions or resuming work."
+      ],
+      "output": "A recoverable task state layer with goal, findings, progress, and errors.",
+      "boundary": "Candidate only; not a formal ReaderLab Skill draft and not required for simple tasks.",
+      "evidence": ["C1", "C2", "C3", "B-BODY-001", "B-BODY-002"],
+      "decision": "skill_candidate",
+      "decision_reason": "All six fields are present and the candidate is repeatable."
+    },
+    {
+      "candidate_ref": "K3",
+      "candidate": "Plan, findings, and progress files divide goal, evidence, and execution state.",
+      "trigger": "A workflow needs durable separation between objective, evidence, and done work.",
+      "input": "A task with evolving evidence and execution state.",
+      "steps": [
+        "Separate goal and phase plan from evidence.",
+        "Store research findings separately from execution log.",
+        "Update execution status after each phase."
+      ],
+      "output": "A three-layer state structure.",
+      "boundary": "Transfer the role separation, not necessarily the exact filenames.",
+      "evidence": ["C4", "C5", "B-BODY-003"],
+      "decision": "skill_candidate",
+      "decision_reason": "Repeatable and bounded, with evidence from the source."
+    },
+    {
+      "candidate_ref": "K6",
+      "candidate": "Require planning files for every task.",
+      "trigger": null,
+      "input": null,
+      "steps": [],
+      "output": null,
+      "boundary": "Contradicts the source's skip conditions.",
+      "evidence": ["C3"],
+      "decision": "reject",
+      "decision_reason": "Rejected because the source explicitly limits the method to complex tasks."
+    },
+    {
+      "candidate_ref": "K7",
+      "candidate": "Use fixed filenames task_plan.md, findings.md, and progress.md as ReaderLab package standard.",
+      "trigger": null,
+      "input": "ReaderLab package needing state separation.",
+      "steps": [],
+      "output": null,
+      "boundary": "Exact filenames are source-specific and should be downgraded.",
+      "evidence": ["C4"],
+      "decision": "insight_only",
+      "decision_reason": "The structure transfers, but the literal filenames are not enough for a Skill candidate."
+    }
+  ]
+}

@@ -20,6 +20,8 @@ _VALIDATOR_SPEC.loader.exec_module(validator)
 
 
 def _copy_pack(tmp: str) -> Path:
+    if not PACK.is_dir():
+        raise unittest.SkipTest("docs/reports fullbook fixture is not present in this checkout")
     copied = Path(tmp) / "pack"
     shutil.copytree(PACK, copied)
     return copied
@@ -31,6 +33,8 @@ def _write_json(path: Path, data: dict) -> None:
 
 class FullbookDemoValidatorTests(unittest.TestCase):
     def test_current_fullbook_demo_passes(self) -> None:
+        if not PACK.is_dir():
+            self.skipTest("docs/reports fullbook fixture is not present in this checkout")
         result = subprocess.run(
             ["python3", str(SCRIPT), str(PACK)],
             check=False,
@@ -39,6 +43,16 @@ class FullbookDemoValidatorTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("PASS ReaderLab fullbook demo validation", result.stdout)
+
+    def test_cli_requires_explicit_pack_dir(self) -> None:
+        result = subprocess.run(
+            ["python3", str(SCRIPT)],
+            check=False,
+            text=True,
+            capture_output=True,
+        )
+        self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+        self.assertIn("PACK_DIR", result.stdout)
 
     def test_rejects_missing_spine_location(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

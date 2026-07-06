@@ -1,0 +1,51 @@
+{
+  "schema": "readerlab.location-map.v1",
+  "material": {
+    "id": "longform-route-smoke-v0",
+    "title": "长文 / 报告 / 访谈稿路线烟测样本",
+    "type": "longform_report_interview"
+  },
+  "locations": [
+    {
+      "location_id": "loc-longform-report-tension",
+      "source_id": "src-longform-report-argument",
+      "path": "audit/source-excerpts/report-argument.md",
+      "range": "论证推进",
+      "role": "argument_structure",
+      "summary": "The report opens with a tension between more process material and slower decisions."
+    },
+    {
+      "location_id": "loc-longform-report-evidence-group",
+      "source_id": "src-longform-report-argument",
+      "path": "audit/source-excerpts/report-argument.md",
+      "range": "证据组",
+      "role": "evidence_group",
+      "summary": "Two evidence groups point to shared structure loss, not a single communication failure."
+    },
+    {
+      "location_id": "loc-longform-interview-denial",
+      "source_id": "src-longform-interview-turn",
+      "path": "audit/source-excerpts/interview-turn.md",
+      "range": "访谈开头",
+      "role": "interview_initial_answer",
+      "summary": "The interviewee first denies a process problem by pointing to weekly meetings."
+    },
+    {
+      "location_id": "loc-longform-interview-turn",
+      "source_id": "src-longform-interview-turn",
+      "path": "audit/source-excerpts/interview-turn.md",
+      "range": "问答转折",
+      "role": "interview_turning_point",
+      "summary": "A follow-up question reveals the difference between conclusions and reconstructable judgment."
+    }
+  ],
+  "machine_status": "ready",
+  "human_status": "pending",
+  "display": {
+    "reader_facing": [],
+    "internal_audit": [
+      "audit/location-map.v1.json"
+    ],
+    "relationship": "separate_reader_and_audit"
+  }
+}
