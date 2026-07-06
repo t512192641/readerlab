@@ -26,6 +26,7 @@ REQUIRED_FILES = (
     "docs/readerlab-v2-longform-route-smoke.md",
     "docs/readerlab-v2-engineering-route-smoke.md",
     "docs/readerlab-v2-release-candidate-review.md",
+    "docs/readerlab-v2-reader-product-shape.md",
     "docs/contracts/trace-validation-v1.md",
     "fixtures/contract-validator-proof-v0/README.md",
     "fixtures/book-route-smoke-v0/audit/source-excerpts/chapter-01.md",

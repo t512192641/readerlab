@@ -49,6 +49,7 @@ class ReaderLabPackageBuilderTests(unittest.TestCase):
             self.assertTrue((package_root / "docs/readerlab-v2-longform-route-smoke.md").is_file())
             self.assertTrue((package_root / "docs/readerlab-v2-engineering-route-smoke.md").is_file())
             self.assertTrue((package_root / "docs/readerlab-v2-release-candidate-review.md").is_file())
+            self.assertTrue((package_root / "docs/readerlab-v2-reader-product-shape.md").is_file())
             self.assertTrue((package_root / "docs/contracts/trace-validation-v1.md").is_file())
             self.assertTrue((package_root / "fixtures/contract-validator-proof-v0/README.md").is_file())
             self.assertTrue((package_root / "fixtures/book-route-smoke-v0/audit/source-excerpts/chapter-01.md").is_file())
