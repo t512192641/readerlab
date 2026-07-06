@@ -4763,6 +4763,12 @@ def lines_to_markdown_list(items: Any, *, indent: str = "") -> list[str]:
     return [f"{indent}- {item}" for item in items]
 
 
+def reader_safe_markdown_list(items: Any, *, indent: str = "") -> list[str]:
+    if not isinstance(items, list) or not items:
+        return [f"{indent}- 未声明。"]
+    return [f"{indent}- {reader_safe_sentence(str(item), fallback='未声明。')}" for item in items]
+
+
 def markdown_quote(text: str) -> str:
     lines: list[str] = []
     for line in text.splitlines():
@@ -4794,7 +4800,10 @@ def reader_safe_sentence(text: str, *, fallback: str) -> str:
         ("该样本", "这份材料"),
         ("烟测样本", "材料"),
         ("This is a smoke fixture; ", ""),
+        ("This fixture", "This material"),
+        ("this fixture", "this material"),
         ("smoke fixture", "局部材料"),
+        ("fixture", "material"),
     ]
     for old, new in replacements:
         cleaned = cleaned.replace(old, new)
@@ -4864,7 +4873,7 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
         "",
         "## 从哪里开始",
         "",
-        *lines_to_markdown_list(route_hypothesis),
+        *reader_safe_markdown_list(route_hypothesis),
         "",
         "## 验收边界",
         "",
@@ -4892,7 +4901,7 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
         )
     if not reading_units:
         map_lines.extend(["- 当前没有结构化阅读单元，只能作为局部正文阅读。", ""])
-    map_lines.extend(["## 尚未覆盖", "", *lines_to_markdown_list(not_yet), ""])
+    map_lines.extend(["## 尚未覆盖", "", *reader_safe_markdown_list(not_yet), ""])
 
     lines = [
         f"# 正文陪读：{title}",
@@ -4901,7 +4910,7 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
         "",
         scope_label,
         "",
-        *lines_to_markdown_list(route_hypothesis),
+        *reader_safe_markdown_list(route_hypothesis),
         "",
         "## 一手正文",
         "",
@@ -4927,7 +4936,7 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
             "",
             "## 尚未覆盖",
             "",
-            *lines_to_markdown_list(not_yet),
+            *reader_safe_markdown_list(not_yet),
             "",
             "## 阅读边界",
             "",
@@ -5050,6 +5059,27 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
     }
 
 
+def sync_rendered_reader_display_paths(output_dir: Path, rendered_pages: dict[str, str]) -> None:
+    rendered_reader_paths = sorted(path for path in rendered_pages if Path(path).parts[:1] == ("reader",))
+    if not rendered_reader_paths:
+        return
+    for path in iter_contract_json_paths(output_dir):
+        try:
+            payload = json.loads(read_text(path))
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(payload, dict) or not contract_schema(payload).startswith("readerlab."):
+            continue
+        display = payload.get("display")
+        if not isinstance(display, dict):
+            continue
+        reader_paths = display.get("reader_facing") or display.get("reader_facing_paths") or []
+        if not reader_paths:
+            continue
+        display["reader_facing"] = rendered_reader_paths
+        write_text(path, json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
+
+
 def render_contract_package_cmd(args: argparse.Namespace) -> None:
     sample_dir = Path(args.sample_dir).expanduser()
     output_dir = Path(args.output_dir).expanduser()
@@ -5078,6 +5108,7 @@ def render_contract_package_cmd(args: argparse.Namespace) -> None:
         raise SystemExit("sample_dir 缺少可渲染的 catalog-map 或 capability-map")
     for rel_path, text in rendered_pages.items():
         write_text(output_dir / rel_path, text.rstrip() + "\n")
+    sync_rendered_reader_display_paths(output_dir, rendered_pages)
     result = {
         "sample_dir": str(sample_dir),
         "output_dir": str(output_dir),

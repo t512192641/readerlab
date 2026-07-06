@@ -820,6 +820,67 @@ echo ok
             self.assertIn("book reader product shape missing start page", result.stdout)
             self.assertIn("reader markdown missing actual first-hand body", result.stdout)
 
+    def test_render_contract_package_updates_copied_reader_display_paths(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            out = Path(tmp) / "rendered"
+            shutil.copytree(sample, fixture)
+            for contract_path in [
+                fixture / "audit/contracts/catalog-map.v1.json",
+                fixture / "audit/contracts/local-deepread.v1.json",
+            ]:
+                contract = json.loads(contract_path.read_text(encoding="utf-8"))
+                contract["display"]["reader_facing"] = ["reader/01_局部长文阅读页.md"]
+                contract_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            run_readerlab("render-contract-package", str(fixture), str(out))
+            evaluation = run_readerlab("eval-rendered-package", str(out))
+            self.assertTrue(json.loads(evaluation.stdout)["passed"])
+            for contract_path in [
+                out / "audit/contracts/catalog-map.v1.json",
+                out / "audit/contracts/local-deepread.v1.json",
+            ]:
+                contract = json.loads(contract_path.read_text(encoding="utf-8"))
+                self.assertEqual(
+                    contract["display"]["reader_facing"],
+                    [
+                        "reader/00_开始阅读.md",
+                        "reader/01_结构地图.md",
+                        "reader/02_章节正文陪读.md",
+                    ],
+                )
+
+    def test_rendered_book_generated_notes_hide_fixture_language(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            out = Path(tmp) / "rendered"
+            shutil.copytree(sample, fixture)
+            catalog_path = fixture / "audit/contracts/catalog-map.v1.json"
+            catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+            catalog["catalog"]["route_hypothesis"] = ["This fixture demonstrates a reader route."]
+            catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            deepread_path = fixture / "audit/contracts/local-deepread.v1.json"
+            deepread = json.loads(deepread_path.read_text(encoding="utf-8"))
+            deepread["local_deepread"]["reader_gain"] = "This fixture helps readers see the boundary."
+            deepread_path.write_text(json.dumps(deepread, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            run_readerlab("render-contract-package", str(fixture), str(out))
+            rendered = "\n".join(
+                (out / path).read_text(encoding="utf-8")
+                for path in [
+                    "reader/00_开始阅读.md",
+                    "reader/02_章节正文陪读.md",
+                ]
+            )
+            self.assertNotIn("fixture", rendered)
+            self.assertIn("This material", rendered)
+            evaluation = run_readerlab("eval-rendered-package", str(out))
+            self.assertTrue(json.loads(evaluation.stdout)["passed"])
+
     def test_eval_rendered_package_writes_failure_report_md(self) -> None:
         sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
 
