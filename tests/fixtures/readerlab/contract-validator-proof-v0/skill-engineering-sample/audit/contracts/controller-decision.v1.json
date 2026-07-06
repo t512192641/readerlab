@@ -16,7 +16,13 @@
   "machine_status": "ready",
   "human_status": "pending",
   "display": {
-    "reader_facing": [],
+    "reader_facing": [
+      "reader/00_开始阅读.md",
+      "reader/01_能力地图.md",
+      "reader/02_工程材料正文陪读.md",
+      "reader/03_技术负责人解说.md",
+      "reader/04_设计资产卡.md"
+    ],
     "internal_audit": [
       "audit/contracts/controller-decision.v1.json"
     ],

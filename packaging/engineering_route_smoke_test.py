@@ -151,32 +151,42 @@ def assert_in_order(text: str, markers: list[str], *, phase: str) -> None:
 
 
 def assert_reader_pages(output_root: Path) -> dict[str, Any]:
-    main_path = output_root / "reader" / "01_工程材料阅读页.md"
-    tech_path = output_root / "reader" / "02_技术合伙人旁批.md"
-    asset_path = output_root / "reader" / "03_资产卡导出页.md"
-    for path in (main_path, tech_path, asset_path):
+    start_path = output_root / "reader" / "00_开始阅读.md"
+    map_path = output_root / "reader" / "01_能力地图.md"
+    main_path = output_root / "reader" / "02_工程材料正文陪读.md"
+    tech_path = output_root / "reader" / "03_技术负责人解说.md"
+    asset_path = output_root / "reader" / "04_设计资产卡.md"
+    for path in (start_path, map_path, main_path, tech_path, asset_path):
         if not path.is_file():
             raise SmokeFailure("reader_evaluation", f"reader page missing: {path}")
 
+    start_text = start_path.read_text(encoding="utf-8")
+    for marker in ("Skill / 工程材料陪读包", "从哪里开始", "人工读者已经接受"):
+        if marker not in start_text:
+            raise SmokeFailure("reader_evaluation", f"start page missing marker: {marker}")
+    map_text = map_path.read_text(encoding="utf-8")
+    for marker in ("按问题域阅读", "支撑材料", "触发信号", "输出要求"):
+        if marker not in map_text:
+            raise SmokeFailure("reader_evaluation", f"capability map missing marker: {marker}")
     main_text = main_path.read_text(encoding="utf-8")
     assert_in_order(
         main_text,
         [
             "## 处理过的一手正文",
-            "### 模块1：`audit/source-excerpts/skill-body.md`",
+            "### 模块 1",
             "这个 Skill 的正文先说明用途",
-            "### 模块2：`audit/source-excerpts/workflow-guards.md`",
+            "### 模块 2",
             "运行保护段要求",
             "## AI 旁批",
         ],
         phase="reader_evaluation",
     )
     tech_text = tech_path.read_text(encoding="utf-8")
-    for marker in ("design_structure", "failure_protection", "reuse_point", "cost_and_boundary"):
+    for marker in ("为什么这样设计", "防住的失败", "可迁移做法", "代价和边界"):
         if marker not in tech_text:
             raise SmokeFailure("reader_evaluation", f"technical page missing marker: {marker}")
     asset_text = asset_path.read_text(encoding="utf-8")
-    for marker in ("purpose", "reader", "use_boundary", "selection_rule", "first_action"):
+    for marker in ("问题", "使用场景", "可复用做法", "来源依据", "使用前提", "风险", "边界", "什么时候不要用", "第一步动作"):
         if marker not in asset_text:
             raise SmokeFailure("reader_evaluation", f"asset card page missing cold-start field: {marker}")
     forbidden = [
@@ -190,9 +200,11 @@ def assert_reader_pages(output_root: Path) -> dict[str, Any]:
         if marker in combined:
             raise SmokeFailure("reader_evaluation", f"reader page contains forbidden marker: {marker}")
     return {
-        "main_reader_page": "reader/01_工程材料阅读页.md",
-        "technical_page": "reader/02_技术合伙人旁批.md",
-        "asset_cards_page": "reader/03_资产卡导出页.md",
+        "start_page": "reader/00_开始阅读.md",
+        "capability_map_page": "reader/01_能力地图.md",
+        "main_reader_page": "reader/02_工程材料正文陪读.md",
+        "technical_page": "reader/03_技术负责人解说.md",
+        "asset_cards_page": "reader/04_设计资产卡.md",
         "cleaned_body_before_companion": main_text.index("## 处理过的一手正文") < main_text.index("## AI 旁批"),
         "asset_cards_have_cold_start_fields": True,
     }

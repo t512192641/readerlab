@@ -1462,6 +1462,166 @@ def build_start(book_id: str, title: str, goal: str, skills: list[SkillInfo]) ->
 """
 
 
+def import_skill_reader_page_path(skill: SkillInfo) -> str:
+    return f"reader/02_正文/{skill_reading_filename(skill)}"
+
+
+def cleaned_skill_source_body(skill: SkillInfo) -> str:
+    body = reader_visible_body(read_text(skill.file.path), skill)
+    body = re.sub(r"(?ms)^```(?:bash|sh|shell|zsh)?\n.*?\n```\s*", "", body)
+    body = re.sub(r"(?m)^#{1,6}\s+", "### ", body)
+    return body.strip() or "这份 Skill 正文暂时为空，不能生成读者验收结论。"
+
+
+def build_import_reader_start(title: str, goal: str, skills: list[SkillInfo]) -> str:
+    core_count = len(skills)
+    return f"""# 开始阅读：{title}
+
+## 你现在读到什么
+
+这是一份 Skill / 工程材料陪读包，当前覆盖 {core_count} 个 Skill。它不是目录清单，也不是安装说明；它把每个 Skill 当作一段可以阅读、批注和复用的工程材料。
+
+## 从哪里开始
+
+1. 先读 `01_能力地图.md`，看这些 Skill 按什么问题域组织。
+2. 再进入 `02_正文/`，逐个阅读处理过的一手正文。
+3. 读 `03_技术负责人解说.md`，理解这些 Skill 的设计选择、失败防护和取舍。
+4. 最后读 `04_设计资产卡.md`，判断哪些做法可以交给未来 Agent 复用。
+
+## 这次阅读目标
+
+{goal}
+
+## 验收边界
+
+- 机器生成只说明已经进入 ReaderLab V2 Skill 读者形态，不代表人工读者已经接受。
+- 如果某个 Skill 的用途、触发或边界仍不清楚，应当回到能力地图做结构诊断，不能把文件名顺序当作阅读路线。
+"""
+
+
+def build_import_capability_map(title: str, skills: list[SkillInfo], files: list[FileInfo]) -> str:
+    lines = [
+        f"# 能力地图：{title}",
+        "",
+        "## 按问题域阅读",
+        "",
+    ]
+    for group, items in grouped_skills(skills).items():
+        lines.extend(
+            [
+                f"## {group}",
+                "",
+                f"- 问题域：{reading_unit_purpose(group)}",
+                f"- 分组理由：{reading_unit_reason(group, items)}",
+                f"- 把握程度：{reading_unit_confidence(items)}",
+                "",
+                "| Skill | 正文页 | 支撑材料 | 读者先看什么 |",
+                "|---|---|---:|---|",
+            ]
+        )
+        for skill in items:
+            artifact_count = len(discover_skill_artifacts(skill, files))
+            lines.append(
+                f"| `{skill.name}` | `{import_skill_reader_page_path(skill)}` | {artifact_count} | {reader_skill_role(skill)} |"
+            )
+        lines.append("")
+    return "\n".join(lines)
+
+
+def build_import_skill_body_page(skill: SkillInfo, files: list[FileInfo]) -> str:
+    artifacts = discover_skill_artifacts(skill, files)
+    artifact_lines = [
+        f"- `{artifact.rel}`：{artifact_role(artifact.rel)}" for artifact in artifacts[:12]
+    ] or ["- 当前没有发现额外支撑文件。"]
+    if len(artifacts) > 12:
+        artifact_lines.append(f"- 其余 {len(artifacts) - 12} 个文件留在后台索引，不进入第一次阅读。")
+    return f"""# {skill.name}：正文陪读
+
+## 这个 Skill 在解决什么
+
+{reader_skill_role(skill)}
+
+## 处理过的一手正文
+
+{cleaned_skill_source_body(skill)}
+
+## AI 旁批
+
+- 触发条件要先看清楚：这个 Skill 适合什么请求，不适合什么请求。
+- 约束和失败条件不是形式要求；它们决定 Agent 什么时候必须停下来、回问或降级。
+- 输出要求决定后续 Agent 能否接手，所以不能只读成“提示词写法”。
+
+## 支撑材料
+
+{chr(10).join(artifact_lines)}
+"""
+
+
+def build_import_technical_explanation(title: str, skills: list[SkillInfo], files: list[FileInfo]) -> str:
+    lines = [
+        f"# 技术负责人解说：{title}",
+        "",
+        "这页写给产品负责人，用来说明这些 Skill 为什么这样设计，而不是记录实现日志。",
+        "",
+    ]
+    for group, items in grouped_skills(skills).items():
+        lines.extend([f"## {group}", "", f"- 为什么这样设计：{reading_unit_reason(group, items)}"])
+        for skill in items:
+            artifacts = discover_skill_artifacts(skill, files)
+            lines.extend(
+                [
+                    f"### {skill.name}",
+                    "",
+                    f"- 解决的问题：{reader_skill_role(skill)}",
+                    "- 防住的失败：避免 Agent 在触发条件、输入不足或输出边界不清时直接执行。",
+                    "- 可迁移做法：把触发、输入、步骤、失败条件和输出要求分开写，让后续 Agent 可以按字段接手。",
+                    f"- 代价和边界：需要先维护清晰的 `SKILL.md`；如果源材料本身含混，这里只能标成结构诊断，不能冒充完成路线。",
+                    f"- 参考材料数量：{len(artifacts)}",
+                    "",
+                ]
+            )
+    return "\n".join(lines)
+
+
+def build_import_asset_cards(title: str, skills: list[SkillInfo]) -> str:
+    lines = [
+        f"# 设计资产卡：{title}",
+        "",
+        "这些卡片给未来无背景 Agent 冷启动使用。每张卡都必须能独立说明什么时候用、怎么用、风险是什么。",
+        "",
+    ]
+    for skill in sorted(skills, key=lambda item: (item.group, item.name)):
+        lines.extend(
+            [
+                f"## {skill.name}",
+                "",
+                f"- 问题：{reader_skill_role(skill)}",
+                f"- 使用场景：当用户请求命中 `{skill.name}` 的触发条件，且材料上下文足以执行。",
+                "- 可复用做法：先判断触发，再检查输入，然后按步骤执行，最后按输出要求交付。",
+                f"- 来源依据：`{skill.file.rel}`",
+                "- 使用前提：必须读到该 Skill 的触发条件、约束和输出要求。",
+                "- 风险：如果只记住标题，不读边界，Agent 可能把相邻能力误当成当前能力。",
+                "- 边界：不能替代人工产品判断，也不能把机器输出说成人工验收。",
+                "- 什么时候不要用：请求目的不匹配、输入不足、或需要先做材料分类时不要直接使用。",
+                f"- 第一步动作：打开 `{import_skill_reader_page_path(skill)}`，先读“这个 Skill 在解决什么”和“处理过的一手正文”。",
+                "",
+            ]
+        )
+    return "\n".join(lines)
+
+
+def build_import_reader_pages(title: str, goal: str, skills: list[SkillInfo], files: list[FileInfo]) -> dict[str, str]:
+    pages = {
+        "reader/00_开始阅读.md": build_import_reader_start(title, goal, skills),
+        "reader/01_能力地图.md": build_import_capability_map(title, skills, files),
+        "reader/03_技术负责人解说.md": build_import_technical_explanation(title, skills, files),
+        "reader/04_设计资产卡.md": build_import_asset_cards(title, skills),
+    }
+    for skill in sorted(skills, key=lambda item: (item.group, item.name)):
+        pages[import_skill_reader_page_path(skill)] = build_import_skill_body_page(skill, files)
+    return pages
+
+
 def build_decomposition(title: str, skills: list[SkillInfo]) -> str:
     groups = grouped_skills(skills)
     rows = []
@@ -3717,8 +3877,19 @@ def import_skills(args: argparse.Namespace) -> None:
     AGENT_SKILL_READINGS = load_agent_skill_readings(readings_dir, book_id)
     reading_root = "10_中文精读/"
     reading_pages = build_reading_pages(book_id, skills, files)
+    import_reader_pages = build_import_reader_pages(title, args.goal, skills, files)
     support_pages = build_support_pages(book_id, skills, files)
     manifest = build_manifest(book_id, title, source, files, skills, reading_pages)
+    manifest["reader_product_shape"] = {
+        "line": "skill_engineering",
+        "reader_pages": sorted(import_reader_pages),
+        "core_skill_body_pages": {
+            skill.name: import_skill_reader_page_path(skill) for skill in sorted(skills, key=lambda item: (item.group, item.name))
+        },
+        "human_reader_experience": "pending_product_owner_acceptance",
+        "product_expectation": "v2_skill_reader_shape",
+        "agent_reuse": "design_asset_cards_present",
+    }
 
     if book_dir.exists():
         shutil.rmtree(book_dir)
@@ -3732,6 +3903,8 @@ def import_skills(args: argparse.Namespace) -> None:
     write_text(book_dir / "02_试跑记录.md", build_trial_record(book_id, reading_root, skills))
     write_text(book_dir / "03_验收标准.md", build_acceptance_doc())
     write_text(book_dir / "04_主控清单.md", build_master_checklist(book_id, skills))
+    for path, page in import_reader_pages.items():
+        write_text(book_dir / path, page)
     for path, page in reading_pages.items():
         write_text(book_dir / reading_root / path, page)
     for path, page in support_pages.items():
@@ -4908,6 +5081,8 @@ def reader_safe_sentence(text: str, *, fallback: str) -> str:
         ("this fixture", "this material"),
         ("smoke fixture", "局部材料"),
         ("fixture", "material"),
+        ("machine_status", "机器检查状态"),
+        ("human_status", "人工验收状态"),
     ]
     for old, new in replacements:
         cleaned = cleaned.replace(old, new)
@@ -5069,13 +5244,61 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
     card_failures = technical_asset_card_failures(asset_cards)
     if card_failures:
         raise SystemExit("; ".join(card_failures))
-    title = str((capability.get("material") or {}).get("title") or "工程材料阅读页")
+    title = reader_safe_title(str((capability.get("material") or {}).get("title") or ""), fallback="工程材料")
+    domain_count = len([domain for domain in domains if isinstance(domain, dict)])
+    coverage_label = "单 Skill / 单模块" if domain_count <= 1 else "多模块 / 多能力包"
+    start_lines = [
+        f"# 开始阅读：{title}",
+        "",
+        "## 你现在读到什么",
+        "",
+        f"这是一份 Skill / 工程材料陪读包，当前覆盖形态是：{coverage_label}。",
+        "",
+        "它解决的问题不是让你看文件目录，而是让你先理解这个 Skill 或工作流在帮人处理什么问题、为什么要这样设计、哪些做法可以迁移。",
+        "",
+        "## 从哪里开始",
+        "",
+        "1. 先读 `02_工程材料正文陪读.md`，直接看处理过的一手正文。",
+        "2. 再读 `03_技术负责人解说.md`，理解关键设计选择和取舍。",
+        "3. 最后读 `04_设计资产卡.md`，判断哪些做法可以交给未来 Agent 复用。",
+        "",
+        "## 验收边界",
+        "",
+        "- 这只是机器可检查的阅读包形态，不代表人工读者已经接受。",
+        "- 如果结构分组信心不足，应当回到能力地图做结构诊断，不能把目录清单当成阅读路线。",
+        "",
+    ]
+    map_lines = [
+        f"# 能力地图：{title}",
+        "",
+        "## 按问题域阅读",
+        "",
+    ]
+    if not domains:
+        map_lines.extend(["- 当前还没有可解释的问题域，只能作为结构诊断材料。", ""])
+    for index, domain in enumerate(domains, start=1):
+        if not isinstance(domain, dict):
+            continue
+        map_lines.extend(
+            [
+                f"### {index}. {domain.get('name') or domain.get('domain_id') or '未命名能力'}",
+                "",
+                f"- 解决的问题：{domain.get('owned_job') or '需要补充问题域说明。'}",
+                "- 支撑材料：",
+                *reader_safe_markdown_list(domain.get("source_refs"), indent="  "),
+                "- 触发信号：",
+                *reader_safe_markdown_list(domain.get("trigger_signals"), indent="  "),
+                "- 输出要求：",
+                *reader_safe_markdown_list(domain.get("output_contract"), indent="  "),
+                "",
+            ]
+        )
     reader_lines = [
-        f"# Skill/工程材料样本：{title}",
+        f"# 工程材料正文陪读：{title}",
         "",
         "## 这一节先看什么",
         "",
-        "这个渲染页按模块能力阅读材料：先看一手模块正文，再看触发、输入、输出和验收边界。",
+        "先看处理过的一手正文，再看旁批。这里保留用途、触发条件、用户意图、工作流、约束、失败条件、输出要求和设计亮点；运行外壳、重复命令和机器证据留在审计层。",
         "",
         "## 处理过的一手正文",
         "",
@@ -5083,7 +5306,7 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
     for index, excerpt in enumerate(excerpts, start=1):
         reader_lines.extend(
             [
-                f"### 模块{index}：`{excerpt['source_path']}`",
+                f"### 模块 {index}",
                 "",
                 markdown_quote(excerpt["text"]),
                 "",
@@ -5100,13 +5323,12 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
             "- capability-map 不是目录列表；它必须说明触发、输入、输出、验证和不适用边界。",
             "- output-eval 只能表达机器检查结论，不能冒充人工阅读验收。",
             "",
-            *render_status_block(payloads),
         ]
     )
     side_lines = [
-        "# 技术合伙人解说",
+        "# 技术负责人解说",
         "",
-        "这页面向产品负责人解释工程材料为什么这样组织；它不是人工验收结论，也不是正文换皮摘要。",
+        "这页面向产品负责人解释工程材料为什么这样组织。它不是实现日志，也不是术语表，而是说明哪些设计选择在防止什么失败。",
         "",
     ]
     for domain in domains:
@@ -5116,50 +5338,55 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
             [
                 f"## {domain.get('name') or domain.get('domain_id')}",
                 "",
-                f"- owned_job：{domain.get('owned_job') or '未声明'}",
-                f"- design_structure：{domain.get('design_structure') or '把触发、输入、输出、验证和不适用边界拆开，避免 Agent 直接自由发挥。'}",
-                f"- failure_protection：{domain.get('failure_protection') or '缺少证据、状态或边界时不能升级结论。'}",
-                f"- reuse_point：{domain.get('reuse_point') or '后续 Agent 可以按字段接手，而不是回读整份 source 后猜职责。'}",
-                f"- cost_and_boundary：{domain.get('cost_and_boundary') or '会增加前置整理成本，但换来可检查、可回放的交付边界。'}",
-                "- trigger_signals：",
-                *lines_to_markdown_list(domain.get("trigger_signals"), indent="  "),
-                "- required_inputs：",
-                *lines_to_markdown_list(domain.get("required_inputs"), indent="  "),
-                "- output_contract：",
-                *lines_to_markdown_list(domain.get("output_contract"), indent="  "),
-                "- verification：",
-                *lines_to_markdown_list(domain.get("verification"), indent="  "),
-                f"- human_status：{domain.get('human_status') or 'pending'}",
+                f"- 这个模块要解决什么：{domain.get('owned_job') or '需要补充职责说明。'}",
+                f"- 为什么这样设计：{domain.get('design_structure') or '把触发、输入、输出、验证和不适用边界拆开，避免 Agent 直接自由发挥。'}",
+                f"- 防住的失败：{domain.get('failure_protection') or '缺少证据、状态或边界时不能升级结论。'}",
+                f"- 可迁移做法：{domain.get('reuse_point') or '后续 Agent 可以按字段接手，而不是回读整份材料后猜职责。'}",
+                f"- 代价和边界：{domain.get('cost_and_boundary') or '会增加前置整理成本，但换来可检查、可回放的交付边界。'}",
+                "- 触发信号：",
+                *reader_safe_markdown_list(domain.get("trigger_signals"), indent="  "),
+                "- 必要输入：",
+                *reader_safe_markdown_list(domain.get("required_inputs"), indent="  "),
+                "- 输出要求：",
+                *reader_safe_markdown_list(domain.get("output_contract"), indent="  "),
+                "- 验证办法：",
+                *reader_safe_markdown_list(domain.get("verification"), indent="  "),
                 "",
             ]
         )
     card_lines = [
-        "# 资产卡导出页",
+        "# 设计资产卡",
         "",
-        "这些卡片给未来无背景 Agent 冷启动使用；第一步动作不应要求回读原始 source。",
+        "这些卡片给未来无背景 Agent 冷启动使用。每张卡必须单独说清问题、用法、前提、风险和第一步动作。",
         "",
     ]
     for card in asset_cards["cards"]:
         if not isinstance(card, dict):
             continue
+        source_refs = card.get("source_refs")
         card_lines.extend(
             [
                 f"## {card.get('name') or card.get('card_id')}",
                 "",
-                f"- purpose：{card.get('purpose') or '未声明'}",
-                f"- reader：{card.get('reader') or '未声明'}",
-                f"- use_boundary：{card.get('use_boundary') or '未声明'}",
-                f"- selection_rule：{card.get('selection_rule') or '未声明'}",
-                f"- first_action：{card.get('first_action') or '未声明'}",
-                "- source_refs：",
-                *lines_to_markdown_list(card.get("source_refs"), indent="  "),
+                f"- 问题：{card.get('purpose') or '未声明'}",
+                f"- 使用场景：{card.get('selection_rule') or '未声明'}",
+                f"- 可复用做法：{card.get('purpose') or '未声明'}",
+                "- 来源依据：",
+                *lines_to_markdown_list(source_refs, indent="  "),
+                f"- 使用前提：{card.get('selection_rule') or '未声明'}",
+                f"- 风险：{card.get('use_boundary') or '未声明'}",
+                f"- 边界：{card.get('use_boundary') or '未声明'}",
+                f"- 什么时候不要用：{card.get('use_boundary') or '未声明'}",
+                f"- 第一步动作：{card.get('first_action') or '未声明'}",
                 "",
             ]
         )
     return {
-        "reader/01_工程材料阅读页.md": "\n".join(reader_lines),
-        "reader/02_技术合伙人旁批.md": "\n".join(side_lines),
-        "reader/03_资产卡导出页.md": "\n".join(card_lines),
+        "reader/00_开始阅读.md": "\n".join(start_lines),
+        "reader/01_能力地图.md": "\n".join(map_lines),
+        "reader/02_工程材料正文陪读.md": "\n".join(reader_lines),
+        "reader/03_技术负责人解说.md": "\n".join(side_lines),
+        "reader/04_设计资产卡.md": "\n".join(card_lines),
     }
 
 
@@ -5377,6 +5604,73 @@ def reader_product_shape_failures(target: Path, reader_paths: set[str], schemas:
     return failures
 
 
+def skill_reader_product_shape_failures(target: Path, reader_paths: set[str], schemas: set[str]) -> list[str]:
+    failures: list[str] = []
+    if "readerlab.capability-map.v1" not in schemas:
+        return failures
+    reader_texts: dict[str, str] = {}
+    for reader_path in sorted(reader_paths):
+        path = target / reader_path
+        if path.is_file():
+            reader_texts[reader_path] = read_text(path)
+
+    required = {
+        "reader/00_开始阅读.md": "start page",
+        "reader/01_能力地图.md": "capability map",
+        "reader/02_工程材料正文陪读.md": "cleaned-body reader page",
+        "reader/03_技术负责人解说.md": "technical lead explanation page",
+        "reader/04_设计资产卡.md": "design asset cards page",
+    }
+    for rel_path, label in required.items():
+        if rel_path not in reader_texts:
+            failures.append(f"skill reader product shape missing {label}: {rel_path}")
+
+    combined_without_body = "\n".join(remove_first_hand_body_sections(text) for text in reader_texts.values())
+    forbidden_markers = [
+        "audit/",
+        "source-excerpts",
+        "manifest",
+        "pending target",
+        "machine_status",
+        "human_status",
+        "fixture",
+        "smoke fixture",
+        "contract proof",
+        "烟测",
+        "状态表",
+        "待生成",
+    ]
+    lowered = combined_without_body.lower()
+    for marker in forbidden_markers:
+        haystack = lowered if marker.isascii() else combined_without_body
+        needle = marker.lower() if marker.isascii() else marker
+        if needle in haystack:
+            failures.append(f"skill reader page contains non-reader-facing marker: {marker}")
+
+    body_page = reader_texts.get("reader/02_工程材料正文陪读.md", "")
+    if body_page:
+        body_position = body_page.find("## 处理过的一手正文")
+        companion_position = body_page.find("## AI 旁批")
+        if body_position == -1:
+            failures.append("skill reader page missing cleaned-body section: ## 处理过的一手正文")
+        if companion_position == -1:
+            failures.append("skill reader page missing nearby companion section: ## AI 旁批")
+        if body_position != -1 and companion_position != -1 and body_position > companion_position:
+            failures.append("skill reader page must show cleaned body before AI companion notes")
+
+    tech_page = reader_texts.get("reader/03_技术负责人解说.md", "")
+    for marker in ("为什么这样设计", "防住的失败", "代价和边界"):
+        if tech_page and marker not in tech_page:
+            failures.append(f"technical lead page missing product-owner explanation marker: {marker}")
+
+    asset_page = reader_texts.get("reader/04_设计资产卡.md", "")
+    for marker in ("问题", "使用场景", "可复用做法", "来源依据", "使用前提", "风险", "边界", "什么时候不要用", "第一步动作"):
+        if asset_page and marker not in asset_page:
+            failures.append(f"design asset card page missing cold-start field: {marker}")
+
+    return failures
+
+
 def render_eval_markdown_report(result: dict[str, Any]) -> str:
     lines = [
         "# ReaderLab Rendered Package Eval Report",
@@ -5479,6 +5773,16 @@ def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
 
     has_capability_map = "readerlab.capability-map.v1" in schemas
     if has_capability_map:
+        skill_shape_failures = skill_reader_product_shape_failures(target, reader_paths, schemas)
+        gates.append(
+            {
+                "id": "skill_reader_product_shape",
+                "status": "fail" if skill_shape_failures else "pass",
+                "failures": skill_shape_failures,
+            }
+        )
+        failures.extend(skill_shape_failures)
+
         source_registry_payload = first_contract_payload(payloads, "readerlab.source-registry.v1")
         full_source_failures = full_source_evidence_failures(target, source_registry_payload)
         gates.append(

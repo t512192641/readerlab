@@ -659,7 +659,7 @@ echo ok
             ROOT
             / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample/reader/02_章节正文陪读.md",
             ROOT
-            / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample/reader/01_工程材料阅读页.md",
+            / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample/reader/02_工程材料正文陪读.md",
         ]
         for page in pages:
             with self.subTest(page=page.name):
@@ -679,7 +679,7 @@ echo ok
             ),
             (
                 ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample",
-                "reader/01_工程材料阅读页.md",
+                "reader/02_工程材料正文陪读.md",
             ),
         ]
         with tempfile.TemporaryDirectory() as tmp:
@@ -697,7 +697,7 @@ echo ok
                             (out / primary_page).read_text(encoding="utf-8"),
                         )
                     else:
-                        self.assertNotEqual(
+                        self.assertEqual(
                             (sample / primary_page).read_text(encoding="utf-8"),
                             (out / primary_page).read_text(encoding="utf-8"),
                         )
@@ -728,6 +728,7 @@ echo ok
                         "human_status_not_machine_accepted",
                     }
                     if sample.name == "skill-engineering-sample":
+                        expected_gates.add("skill_reader_product_shape")
                         expected_gates.add("technical_asset_cards_cold_start_present")
                         expected_gates.add("full_source_evidence_packet_present")
                         expected_gates.add("blocking_controller_decision")
@@ -1049,6 +1050,47 @@ echo ok
             result = run_readerlab_unchecked("eval-rendered-package", str(out))
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("human_status must remain pending", result.stdout)
+
+    def test_eval_rendered_package_rejects_old_skill_inventory_shape(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            for path in [
+                "reader/00_开始阅读.md",
+                "reader/01_能力地图.md",
+                "reader/02_工程材料正文陪读.md",
+                "reader/03_技术负责人解说.md",
+                "reader/04_设计资产卡.md",
+            ]:
+                (out / path).unlink()
+            old_page = out / "reader/01_工程材料阅读页.md"
+            old_page.write_text(
+                "# 工程材料状态表\n\n"
+                "## 处理过的一手正文\n\n"
+                "> Route vague user intent to a bounded capability. First identify material type and current goal.\n\n"
+                "## AI 旁批\n\n"
+                "- machine_status：ready\n"
+                "- human_status：pending\n"
+                "- pending target：reader/02_待生成.md\n",
+                encoding="utf-8",
+            )
+            for contract_path in list((out / "audit/contracts").glob("*.json")) + [
+                out / "audit/source-registry.v1.json",
+                out / "audit/location-map.v1.json",
+            ]:
+                contract = json.loads(contract_path.read_text(encoding="utf-8"))
+                display = contract.get("display")
+                if isinstance(display, dict):
+                    display["reader_facing"] = ["reader/01_工程材料阅读页.md"]
+                    contract_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            result = run_readerlab_unchecked("eval-rendered-package", str(out))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("skill_reader_product_shape", result.stdout)
+            self.assertIn("skill reader product shape missing start page", result.stdout)
+            self.assertIn("skill reader page contains non-reader-facing marker: machine_status", result.stdout)
 
     def test_import_skills_generates_v01_reading_pack(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1443,6 +1485,32 @@ description: 实现前审查计划。
                 self.assertIn(term, terms_text)
             self.assertTrue((book_dir / "03_验收标准.md").exists())
             self.assertTrue((book_dir / "04_主控清单.md").exists())
+            reader_start = book_dir / "reader" / "00_开始阅读.md"
+            reader_map = book_dir / "reader" / "01_能力地图.md"
+            reader_unfreeze = book_dir / "reader" / "02_正文" / "unfreeze.md"
+            reader_tech = book_dir / "reader" / "03_技术负责人解说.md"
+            reader_assets = book_dir / "reader" / "04_设计资产卡.md"
+            for reader_page in [reader_start, reader_map, reader_unfreeze, reader_tech, reader_assets]:
+                self.assertTrue(reader_page.exists(), reader_page)
+            start_text = reader_start.read_text(encoding="utf-8")
+            self.assertIn("Skill / 工程材料陪读包", start_text)
+            self.assertIn("不是目录清单", start_text)
+            map_text = reader_map.read_text(encoding="utf-8")
+            self.assertIn("## 按问题域阅读", map_text)
+            self.assertIn("reader/02_正文/unfreeze.md", map_text)
+            reader_unfreeze_text = reader_unfreeze.read_text(encoding="utf-8")
+            self.assertIn("## 处理过的一手正文", reader_unfreeze_text)
+            self.assertIn("Use when you want to widen edit scope", reader_unfreeze_text)
+            self.assertIn("## AI 旁批", reader_unfreeze_text)
+            self.assertNotIn("machine_status", reader_unfreeze_text)
+            self.assertNotIn("human_status", reader_unfreeze_text)
+            tech_text = reader_tech.read_text(encoding="utf-8")
+            self.assertIn("为什么这样设计", tech_text)
+            self.assertIn("防住的失败", tech_text)
+            self.assertIn("代价和边界", tech_text)
+            asset_text = reader_assets.read_text(encoding="utf-8")
+            for marker in ("问题", "使用场景", "可复用做法", "来源依据", "使用前提", "风险", "边界", "什么时候不要用", "第一步动作"):
+                self.assertIn(marker, asset_text)
             self.assertTrue((book_dir / "10_中文精读" / "01_核心入口与总览" / "00_本组导读.md").exists())
             self.assertFalse((book_dir / "10_中文精读" / "01_核心入口与总览" / "01_spec.md").exists())
             unfreeze_page = book_dir / "10_中文精读" / "07_流程执行与交付运维" / "unfreeze.md"
@@ -1510,6 +1578,9 @@ description: 实现前审查计划。
             self.assertEqual(manifest["coverage_policy"]["reading_page_structure"], "main_reading_page_centered")
             self.assertEqual(manifest["coverage_policy"]["non_body_handling"], "codex_absorption_with_trace")
             self.assertEqual(manifest["coverage_policy"]["reader_visible_evidence_pages"], False)
+            self.assertEqual(manifest["reader_product_shape"]["line"], "skill_engineering")
+            self.assertEqual(manifest["reader_product_shape"]["core_skill_body_pages"]["unfreeze"], "reader/02_正文/unfreeze.md")
+            self.assertEqual(manifest["reader_product_shape"]["product_expectation"], "v2_skill_reader_shape")
             self.assertEqual(len(manifest["skills"]), 8)
             self.assertEqual(len({s["source_file"] for s in manifest["skills"]}), 8)
             self.assertEqual(len({s["reading_page"] for s in manifest["skills"]}), 8)
