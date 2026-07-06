@@ -12,6 +12,7 @@
 - 当前 PRD：`docs/readerlab-v2-shareable-skill-prd.md`
 - 当前包边界：`docs/readerlab-v2-package-boundary.md`
 - 当前 RFC：`docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`
+- 当前读者产品形态：`docs/readerlab-v2-reader-product-shape.md`
 - 历史运行摘要：`docs/agent-run-ledger.md` 顶部最新两条
 - 稳定路径和验证命令：`docs/dev-state.md`
 - 耐久决策：`docs/decisions.md`
@@ -23,6 +24,17 @@
 PR #10/#11/#12/#13/#14/#15/#16 已合并到 `readerlab-elon-checkpoint`，对应 #2/#4/#3/#5/#6/#7/#8 的实现已经进入提交树。GitHub 上 #2/#3/#5/#6/#7/#8 曾因 auto-close 未触发而保持 open，已在本轮按对应 merged PR 手动关闭；#4 此前已关闭。当前 GitHub 队列只剩 #9：ReaderLab V2 installable release candidate 复核。
 
 当前 slice 是 #9。目标是增加一个可复跑的 RC 复核入口，证明当前最多可以进入 `installable_release_candidate`，同时明确不能声明 production ready、friend smoke passed 或 reader accepted。
+
+## 2026-07-06 产品形态纠偏
+
+真实材料试跑暴露出一个集成断层：当前可安装包候选能跑包构建、配置、安装和路线 smoke，但仍可能调用旧的 `import-skills` / contract renderer 形态，产出目录、清单、状态表、fixture 语言或待生成页面，而不是 V2 已确认的 reader-facing 陪读包。
+
+因此新增权威产品形态文档：`docs/readerlab-v2-reader-product-shape.md`。后续任何“reader accepted”或真实材料验收，必须分别按两条主线判断：
+
+- 图书 / 长文线：读者打开后是在读书或长文正文，带自然方位说明和正文旁陪读；不能像 EPUB 抽取报告、contract proof 或 audit dump。
+- Skill / 工程材料线：读者打开后能读到净化正文主读页、技术负责人解说页和可独立复用的设计资产卡；不能只是目录、manifest、状态表或待生成清单。
+
+GSTACK `spec` / `review` 只作为复杂 Skill 压力样本，不是产品边界。任何规则必须能泛化到 Matt 等非 GSTACK Skill 包，禁止写 GSTACK 专项适配。
 
 #9 的交付边界：
 
@@ -41,6 +53,8 @@ ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
 当前 PRD：`docs/readerlab-v2-shareable-skill-prd.md`。
 
 当前包边界：`docs/readerlab-v2-package-boundary.md`。
+
+当前读者产品形态：`docs/readerlab-v2-reader-product-shape.md`。
 
 当前 RFC：`docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`。#2-#8 的 GitHub issue 开发链路已经完成；#9 / PR #17 仍按 PR -> Codex review -> feedback fixes -> ready-to-merge candidate -> merge 执行。
 
@@ -182,29 +196,38 @@ git diff --check
 - 已提交包构建器、运行配置外置、安装 / 发现 smoke 和三类材料路线 smoke。
 - PR #17 中已提交 RC 复核入口，用来复跑 clean package audit、package smoke、install / discovery smoke 和三类路线 smoke。
 - 已提交文档固定了验收矩阵必须拆成合同履约 / 结构合规、内容完整性、人类读者体验、产品预期、无上下文 Agent 复用。
+- 已提交 `docs/readerlab-v2-reader-product-shape.md` 固定了两条 reader-facing 产品线的最终形态：图书 / 长文线与 Skill / 工程材料线必须分别验收，不能合并成一条笼统 reader gate。
 - 已提交文档固定了 `limited_accept` 只能表示有限 prototype 接受，不能说成 production ready。
 - 本机未提交原型中，工程材料路线曾有两个完整单 Skill case 通过：`gstack/spec` 和 `gstack/review`；这只能作为后续 issue 的历史线索，不能作为 fresh checkout 的已提交能力。
 - 本机未提交原型中，runner / quality gate / assets page 曾具备的若干结构和冷启动约束，只有已进入 PR #10-#17 的部分才是当前可运行事实。
 
 ## Next Work Queue
 
-当前不要再回到 #2-#8，也不要先扩第三个 GSTACK Skill。权威下一步是完成 #9 / PR #17：
+当前不要再回到 #2-#8，也不要先扩第三个 GSTACK Skill。权威下一步分两段：
+
+第一段，完成 #9 / PR #17：
 
 1. 处理 PR #17 的 Codex Review 反馈，直到当前 head commit 被 review 覆盖且没有 actionable blocker。
 2. PR #17 `mergeStateStatus: CLEAN` 且 Review 无 major issues 后，按用户授权可直接 merge。
 3. Merge 后关闭 #9，并删除 PR #17 heartbeat。
 4. 合并后状态最多推进到 `installable_release_candidate`，不能说 production ready、friend smoke passed 或 reader accepted。
-5. 下一阶段应从工程链路转到真实使用验收：
-   - 在干净目标中安装合并后的 ReaderLab Skill 候选包。
-   - 选一个小而完整的真实材料做端到端输出。
-   - 按合同履约、内容完整性、人类读者体验、产品预期、无上下文 Agent 复用分别验收。
-   - 只有当真实验收问题能反推成稳定生产条件时，才开新 issue 写红灯测试或 runner 约束。
+
+第二段，从工程链路转到读者产品形态接入，新增两条并列 issue：
+
+0. #18 Fix ReaderLab V2 reader product shape gates：先固定两条 reader-facing 产品线和可验收条件，避免继续用 smoke 或旧输出形态冒充 reader accepted。
+1. #19 Book / Longform reader product shape integration：把可安装包的图书输出从 sample / contract renderer 形态接回正文优先章节陪读包。
+2. #20 Skill / Engineering reader product shape integration：把可安装包的 Skill 输出从 `import-skills` 清单形态接回净化正文主读页、技术负责人解说页和设计资产卡。
+
+两条线都必须先在本地实现和真实材料验证，再开 PR、唤醒云端 Codex Review、轮询 review 结果、按反馈本地修复并继续。通过声明必须说明是安装 / route smoke，还是 reader product shape，还是人工 reader accepted。
 
 ## Stop Conditions
 
 - 把 `limited_accept` 说成 production ready。
 - 把 runner 结构通过说成读者质量通过。
 - 把“内容完整性”“合同履约”“读者体验”“产品预期”“Agent 复用性”混成一个笼统验收。
+- 把图书 / 长文线和 Skill / 工程材料线合并成一套 reader-facing 形态。
+- 把旧 `import-skills` 目录 / 清单 / 待生成页面当作 Skill 线 reader accepted 输出。
+- 把 contract renderer 的 sample 页面当作图书 / 长文线 reader accepted 输出。
 - 只修最终读者页，不修 builder / 中间 artifact / gate request。
 - 修改 `/Users/tianqiang/技能项目/skills-canonical/packages/gstack` 原始 source。
 - 新会话只看 `git diff`，忽略 `docs/current-task.md`、PRD、RFC 和包边界；未提交 V2 原型文件和真实产物只能作为历史线索，不能当成 fresh checkout 的当前事实。
