@@ -89,6 +89,23 @@ class ReaderLabBookRouteSmokeTests(unittest.TestCase):
         self.assertEqual(failure.exception.phase, "configuration_structure")
         self.assertIn("declared_units", failure.exception.message)
 
+    def test_renderer_preserves_whole_chapter_body_for_book_units(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_root = Path(tmp) / "output"
+            subprocess.run(
+                ["python3", "scripts/readerlab.py", "render-contract-package", str(FIXTURE), str(output_root)],
+                cwd=ROOT,
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            text = (output_root / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
+
+        self.assertIn("第一章先让读者停在问题本身", text)
+        self.assertIn("第二章把第一章的问题继续往前推", text)
+        self.assertEqual(text.count("### 第一章 先看问题，不先看答案"), 1)
+        self.assertEqual(text.count("### 第二章 结构比金句更重要"), 1)
+
     def test_shipped_fixture_reader_display_path_is_evaluable(self) -> None:
         result = subprocess.run(
             ["python3", "scripts/readerlab.py", "eval-rendered-package", str(FIXTURE)],

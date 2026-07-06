@@ -135,11 +135,11 @@ def assert_reader_page(output_root: Path) -> dict[str, Any]:
         [
             "## 一手正文",
             "### 第一章 先看问题，不先看答案",
+            "第一章先让读者停在问题本身",
             "## 第一节 问题从哪里来",
-            "读一本复杂的书，第一步不是马上寻找结论",
             "### 第二章 结构比金句更重要",
+            "第二章把第一章的问题继续往前推",
             "## 第一节 从章节关系理解观点",
-            "第二章承接第一章的问题意识",
             "## AI 旁批",
             "## 阅读边界",
         ],
@@ -179,8 +179,8 @@ def assert_reader_page(output_root: Path) -> dict[str, Any]:
         "structure_map": "reader/01_结构地图.md",
         "reader_page": "reader/02_章节正文陪读.md",
         "body_before_companion": text.index("## 一手正文") < text.index("## AI 旁批"),
-        "chapter_order_preserved": text.index("读一本复杂的书，第一步不是马上寻找结论")
-        < text.index("第二章承接第一章的问题意识"),
+        "chapter_order_preserved": text.index("第一章先让读者停在问题本身")
+        < text.index("第二章把第一章的问题继续往前推"),
     }
 
 

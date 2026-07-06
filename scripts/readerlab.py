@@ -4751,6 +4751,8 @@ def markdown_section_for_range(text: str, range_label: str) -> str:
 def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: list[dict[str, Any]]) -> list[dict[str, str]]:
     catalog = first_contract_payload(payloads, "readerlab.catalog-map.v1")
     location_map = first_contract_payload(payloads, "readerlab.location-map.v1")
+    material = catalog.get("material") if isinstance(catalog.get("material"), dict) else {}
+    preserves_whole_source = str(material.get("type") or "").lower() == "book"
     source_by_id = {excerpt["source_id"]: excerpt for excerpt in excerpts if excerpt.get("source_id")}
     location_by_id: dict[str, dict[str, str]] = {}
     for location in location_map.get("locations") or []:
@@ -4776,11 +4778,11 @@ def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: li
             ref_text = str(ref)
             location = location_by_id.get(ref_text)
             source_id = location["source_id"] if location else ref_text
-            unit_source_key = (unit_index, ref_text)
+            unit_source_key = (unit_index, source_id if preserves_whole_source else ref_text)
             if source_id and source_id in source_by_id and unit_source_key not in emitted_unit_sources:
                 excerpt = dict(source_by_id[source_id])
                 excerpt["unit_title"] = unit_title
-                if location:
+                if location and not preserves_whole_source:
                     excerpt["location_id"] = ref_text
                     excerpt["range"] = location["range"]
                     excerpt["text"] = markdown_section_for_range(excerpt["text"], location["range"])
