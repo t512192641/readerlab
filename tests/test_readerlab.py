@@ -776,6 +776,31 @@ echo ok
             evaluation = run_readerlab("eval-rendered-package", str(out))
             self.assertTrue(json.loads(evaluation.stdout)["passed"])
 
+    def test_rendered_book_titles_preserve_real_sample_and_proof_words(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            out = Path(tmp) / "rendered"
+            shutil.copytree(sample, fixture)
+            catalog_path = fixture / "audit/contracts/catalog-map.v1.json"
+            catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+            catalog["material"]["title"] = "样本空间与 Proof 方法"
+            catalog["catalog"]["reading_units"][0]["title"] = "样本空间里的 Proof 章节"
+            catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            run_readerlab("render-contract-package", str(fixture), str(out))
+            start_text = (out / "reader/00_开始阅读.md").read_text(encoding="utf-8")
+            map_text = (out / "reader/01_结构地图.md").read_text(encoding="utf-8")
+            body_text = (out / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
+
+            self.assertIn("样本空间与 Proof 方法", start_text)
+            self.assertIn("样本空间与 Proof 方法", map_text)
+            self.assertIn("样本空间里的 Proof 章节", map_text)
+            self.assertIn("样本空间里的 Proof 章节", body_text)
+            evaluation = run_readerlab("eval-rendered-package", str(out))
+            self.assertTrue(json.loads(evaluation.stdout)["passed"])
+
     def test_eval_rendered_package_writes_failure_report_md(self) -> None:
         sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
 

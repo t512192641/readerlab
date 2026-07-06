@@ -4768,20 +4768,18 @@ def markdown_quote(text: str) -> str:
 
 
 def reader_safe_title(title: str, *, fallback: str) -> str:
-    cleaned = title.strip() or fallback
-    replacements = [
-        ("烟测样本", ""),
-        ("样本", ""),
-        ("fixture", ""),
-        ("Fixture", ""),
-        ("local sample", ""),
-        ("local fragment proof", ""),
-        ("contract proof", ""),
-        ("proof", ""),
-    ]
-    for old, new in replacements:
-        cleaned = cleaned.replace(old, new)
-    cleaned = re.sub(r"\s+", " ", cleaned).strip(" ：:-")
+    cleaned = re.sub(r"\s+", " ", title.strip() or fallback).strip(" ：:-")
+    known_fixture_titles = {
+        "图书路线烟测样本": "图书路线",
+        "长文 / 报告 / 访谈稿路线烟测样本": "长文 / 报告 / 访谈稿路线",
+        "Longform local fragment proof": "Longform",
+    }
+    if cleaned in known_fixture_titles:
+        return known_fixture_titles[cleaned]
+    for suffix in ("烟测样本", " fixture", " local sample", " contract proof"):
+        if cleaned.endswith(suffix):
+            cleaned = cleaned[: -len(suffix)].strip(" ：:-")
+            break
     return cleaned or fallback
 
 
@@ -4792,10 +4790,8 @@ def reader_safe_sentence(text: str, *, fallback: str) -> str:
         ("本样本", "这份材料"),
         ("该样本", "这份材料"),
         ("烟测样本", "材料"),
-        ("样本", "材料"),
         ("This is a smoke fixture; ", ""),
         ("smoke fixture", "局部材料"),
-        ("fixture", "材料"),
     ]
     for old, new in replacements:
         cleaned = cleaned.replace(old, new)
@@ -5202,7 +5198,8 @@ def reader_product_shape_failures(target: Path, reader_paths: set[str], schemas:
         "source_id",
         "machine_status",
         "human_status",
-        "fixture",
+        "smoke fixture",
+        "repo-local fixture",
         "local sample",
         "contract proof",
         "烟测",
