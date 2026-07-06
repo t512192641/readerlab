@@ -169,6 +169,11 @@
       "sanitize": false
     },
     {
+      "source": "docs/readerlab-v2-reader-product-shape.md",
+      "target": "docs/readerlab-v2-reader-product-shape.md",
+      "sanitize": false
+    },
+    {
       "source": "docs/readerlab-v2-shareable-skill-prd.md",
       "target": "docs/readerlab-v2-shareable-skill-prd.md",
       "sanitize": false

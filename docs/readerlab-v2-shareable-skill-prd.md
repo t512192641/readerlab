@@ -22,6 +22,7 @@ ReaderLab V2 已经证明若干核心方向是对的：正文优先、正文旁�
 - 让配置项接管输入源、输出根目录、权限边界和材料类型，不让 Skill 依赖用户本机路径。
 - 三类材料路线都必须有最小 smoke / regression：图书、长文 / 报告 / 访谈稿、Skill / 工程材料。
 - 保持生产约束和验收约束分层：runner 只管生产硬约束，读者体验和复用质量由 Quality Gate / Reader Evaluation / 人工复核判断。
+- 把 reader-facing 产品形态作为单独交付门槛：图书 / 长文线和 Skill / 工程材料线必须分别满足 `docs/readerlab-v2-reader-product-shape.md`，不能用安装 smoke、route smoke 或旧 import 输出替代。
 
 ## Historical Anti-Regression
 
@@ -37,6 +38,8 @@ ReaderLab V2 已经证明若干核心方向是对的：正文优先、正文旁�
 8. Skill / 工程材料必须有净化正文主读页、技术解说页、资产卡导出页。技术解说不能替代净化正文，资产卡也不能要求未来 Agent 先读原始 source 才能用。
 9. 图书和长文默认保留原样正文和章节顺序，不能用 AI 导读、摘要或高阶讲解替代正文。
 10. 旧实验、报告、私有路径和 LifeAtlas 本机目录不能进入可分享 Skill 包；可分享包只能保留必要模板、协议、脚本、fixtures 和说明。
+11. 旧 `import-skills` 输出是盘点 / regrouping / comment preservation 工具，不是 Skill / 工程材料线的最终 reader-facing 形态。它不能只靠目录、状态表或待生成清单通过 reader acceptance。
+12. Contract renderer / route smoke 能证明 fixture 和结构链路，不能证明图书 / 长文线的自然读者页已经成立。图书 / 长文 reader acceptance 必须按 `docs/readerlab-v2-reader-product-shape.md` 单独判断。
 
 ## User Stories
 
@@ -55,6 +58,7 @@ ReaderLab V2 已经证明若干核心方向是对的：正文优先、正文旁�
 13. 作为未来 Agent，我想资产卡能独立说明问题、做法、前提、风险、边界和来源，以便不打开原始 source 也能冷启动复用。
 14. 作为维护者，我想发布包排除旧实验、历史 reports 和私有材料，以便包边界清楚、可审计。
 15. 作为维护者，我想有状态用语梯子，以便 `dev_worktree`、`installable_release_candidate`、`friend_smoke_passed`、`reader_accepted` 不被混用。
+16. 作为普通读者，我想图书线和 Skill 线的输出形态不同，以便读书时像读书，读 Skill 时像读工程材料陪读，而不是两者都变成同一种清单或审计页面。
 
 ## Implementation Decisions
 
@@ -66,6 +70,7 @@ ReaderLab V2 已经证明若干核心方向是对的：正文优先、正文旁�
 - 材料路线保留两大家族：`book_longform` 和 `skill_engineering`。长文 / 报告 / 访谈稿归入 book/longform 家族，但必须有独立验收样本。
 - 图书 / 长文路线继续使用结构地图、正文保留、陪读候选、陪读选择、读者页装配、reader evaluation、controller 的链条。
 - Skill / 工程路线继续使用 full-source evidence packet、cleaned body、source-cleaning map、reader guidance、technical cofounder notes、asset cards、三份 reader-facing 页面。
+- Reader-facing 产品形态以 `docs/readerlab-v2-reader-product-shape.md` 为准。图书 / 长文线和 Skill / 工程材料线是并列主线；共享底层原则，但验收输入和页面形态不同。
 - Runner 只承载生产约束：来源范围、正文 / 净化正文、证据层、产物结构、顺序依赖、失败回指、blocking controller。
 - Quality Gate / Reader Evaluation 承载验收约束：内容完整性、人类读者体验、产品预期、高阶讲解增量、Agent 冷启动复用。
 - 发布状态不能使用 production ready。建议状态梯子为：`dev_worktree`、`shareable_package_boundary_defined`、`shareable_package_prepared`、`installable_release_candidate`、`friend_smoke_passed`、`reader_accepted`。
@@ -79,6 +84,7 @@ ReaderLab V2 已经证明若干核心方向是对的：正文优先、正文旁�
 - 图书路线 smoke 必须证明：正文保留、章节结构不平铺、AI 不替代正文、reader evaluation / controller 状态分开。
 - 长文 / 报告 / 访谈稿 smoke 必须证明：论证结构或问答结构驱动阅读单元，不按固定长度或文件顺序盲切。
 - Skill / 工程路线 smoke 必须证明：净化正文主读页、工程解说页、资产卡页都存在，且 evidence layer 和 blocking controller 生效。
+- Reader product shape tests must prove the visible package shape, not only the smoke route. Book / longform checks must reject fixture language, audit paths, extraction noise, and AI summary replacing body. Skill / engineering checks must reject directory-only outputs, pending-page-only outputs, and asset cards that require source context.
 - 回归测试继续保留现有 V2 runner 和 quality gate adapter 测试；发布阶段新增包边界和安装 smoke。
 - 验收报告必须明确每条命令通过的类别：包边界、安装、runner 合同、Quality Gate request、reader evaluation、controller，或人工验收。
 
@@ -110,6 +116,7 @@ ReaderLab V2 已经证明若干核心方向是对的：正文优先、正文旁�
 - Skill 包可以安装到 Codex Skill 目录并被发现。
 - Skill 包不含本机私有源材料、LifeAtlas 固定路径、GSTACK 原始仓库、实验 reports 或旧 handoff。
 - 图书、长文 / 报告 / 访谈稿、Skill / 工程材料三类路线都有最小 smoke 或回归样本。
+- 图书 / 长文线和 Skill / 工程材料线分别满足 reader-facing product shape gates；不能用一条通用 reader gate 替代两条主线验收。
 - 所有通过声明都带作用域，不把 `limited_accept` 或 runner 通过说成 production ready。
 - 生产约束和验收约束分层仍成立：runner 不能绕过 blocking gate，也不能把质量判断包装成机器硬通过。
 - PRD 中的历史防回归项被转成 issue 或执行清单，后续开发不再重复追问已定结论。

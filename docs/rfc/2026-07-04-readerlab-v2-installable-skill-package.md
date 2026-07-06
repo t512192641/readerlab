@@ -22,12 +22,14 @@ RFC -> GitHub Issues -> git worktrees -> worker agents -> PRs -> Codex review ->
 - 安装 smoke 能证明 Skill 可发现、入口可读、最小命令可运行。
 - 图书、长文 / 报告 / 访谈稿、Skill / 工程材料三类路线都有独立 smoke。
 - RC 复核明确区分合同、结构、质量 gate、reader evaluation、controller 和人工验收。
+- Reader-facing product shape is defined separately in `docs/readerlab-v2-reader-product-shape.md`; installable RC status cannot be upgraded to reader acceptance until the relevant line-specific shape gates pass.
 
 ## Non-Goals
 
 - 不声明 ReaderLab V2 production ready。
 - 不声明完整 GSTACK 包通过。
 - 不声明图书、长文、Skill 三路线最终读者质量全部合格。
+- 不把 route smoke、package smoke、旧 `import-skills` 输出或 contract-renderer sample 输出称为 reader-accepted 产品形态。
 - 不自动 merge PR。
 - 不新增依赖，除非用户另行批准。
 - 不写入 LifeAtlas `300/600/800` 正式沉淀区。
@@ -95,6 +97,7 @@ RFC -> GitHub Issues -> git worktrees -> worker agents -> PRs -> Codex review ->
 - 页面是否像中文陪读包，而不是审计报告。
 - AI 是否没有挡在正文前面。
 - 陪读是否贴近正文、不可替换、不过度模板化。
+- 图书 / 长文线按 `docs/readerlab-v2-reader-product-shape.md` 的 Book / Longform Line 验收；Skill / 工程材料线按 Skill / Engineering-Material Line 验收。二者不能合并成一套泛化 reader checklist。
 
 ### 4. 产品预期
 
@@ -122,6 +125,28 @@ RFC -> GitHub Issues -> git worktrees -> worker agents -> PRs -> Codex review ->
 - 是否能知道第一步怎么调用。
 - 是否能识别使用限制和失败信号。
 - 是否不需要回读原始 source 才能开始复用。
+
+## Reader Product Shape Integration
+
+The existing installable package chain is the distribution skeleton. It does not
+automatically prove the V2 reader product. After #9, the next product work must
+be split into two separate issues:
+
+1. Book / longform reader product shape integration.
+2. Skill / engineering-material reader product shape integration.
+
+These issues must connect the V2 reader-facing shape to the installable package.
+They must not merely add another smoke fixture. They must use real material
+validation and must reject old output forms:
+
+- Book / longform: reject fixture/sample titles, audit paths, extraction noise,
+  machine status as reader content, and AI guide text replacing body.
+- Skill / engineering: reject directory-only inventory, manifest/status tables
+  as the product, pending-page-only output, and asset cards that require opening
+  the source.
+
+GSTACK can remain a pressure sample, but any implementation must also validate
+against non-GSTACK material to avoid overfitting.
 
 ## Parameter And Configuration Verification
 

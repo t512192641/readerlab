@@ -176,3 +176,14 @@ Skill / 工程材料路线中：
 - `reader_accepted`：某个具体输出包经过读者验收。
 
 这些状态不能自动升级。每次升级都必须说明刚刚通过的是哪类核验。
+
+## Reader Product Shape Boundary
+
+可分享包边界和安装 smoke 只证明包能分发、安装和运行；它们不证明最终读者产物合格。
+
+`reader_accepted` 必须额外满足 `docs/readerlab-v2-reader-product-shape.md`，并且按两条主线分别判断：
+
+- 图书 / 长文线：正文优先章节 / 长文陪读包，不能是 contract renderer sample、EPUB 抽取报告或 audit dump。
+- Skill / 工程材料线：净化正文主读页、技术负责人解说页和设计资产卡，不能是 `import-skills` 目录清单、manifest、状态表或待生成页面。
+
+GSTACK 只能作为复杂 Skill 压力样本。可分享包不得通过 GSTACK 专项规则来满足 Skill / 工程材料线验收；后续真实验收必须包含非 GSTACK Skill 包或工程材料。
