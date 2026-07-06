@@ -759,6 +759,23 @@ echo ok
             self.assertIn("human_status pending", text)
             self.assertIn("not human acceptance", text)
 
+    def test_eval_rendered_package_allows_source_body_sample_word(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            reader_path = out / "reader/02_章节正文陪读.md"
+            text = reader_path.read_text(encoding="utf-8")
+            text = text.replace(
+                "## AI 旁批",
+                "> 正文如果讨论样本量或样本偏差，读者页必须保留这些词，不能当成工程态语言误杀。\n\n## AI 旁批",
+            )
+            reader_path.write_text(text, encoding="utf-8")
+
+            evaluation = run_readerlab("eval-rendered-package", str(out))
+            self.assertTrue(json.loads(evaluation.stdout)["passed"])
+
     def test_eval_rendered_package_writes_failure_report_md(self) -> None:
         sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
 

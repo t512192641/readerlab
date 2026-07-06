@@ -5172,6 +5172,10 @@ def first_hand_body_failures(target: Path, reader_paths: set[str], source_paths:
     return failures
 
 
+def remove_first_hand_body_sections(text: str) -> str:
+    return re.sub(r"^## (?:处理过的一手正文|一手正文)\s*.*?(?=^## |\Z)", "", text, flags=re.M | re.S)
+
+
 def reader_product_shape_failures(target: Path, reader_paths: set[str], schemas: set[str]) -> list[str]:
     failures: list[str] = []
     reader_texts: dict[str, str] = {}
@@ -5191,7 +5195,7 @@ def reader_product_shape_failures(target: Path, reader_paths: set[str], schemas:
         if rel_path not in reader_texts:
             failures.append(f"book reader product shape missing {label}: {rel_path}")
 
-    combined = "\n".join(reader_texts.values())
+    combined = "\n".join(remove_first_hand_body_sections(text) for text in reader_texts.values())
     forbidden_markers = [
         "audit/",
         "source-excerpts",
@@ -5202,7 +5206,8 @@ def reader_product_shape_failures(target: Path, reader_paths: set[str], schemas:
         "local sample",
         "contract proof",
         "烟测",
-        "样本",
+        "烟测样本",
+        "局部样本",
     ]
     lowered = combined.lower()
     for marker in forbidden_markers:
