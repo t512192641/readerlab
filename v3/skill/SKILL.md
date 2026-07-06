@@ -13,11 +13,11 @@ ReaderLab V3 turns complex material into Chinese reading packages for LifeAtlas 
 
 ## Product Rule
 
-Visible means selected. A book-side annotation below `有用` must not appear on a reader page. If no annotation survives, deliver an active-point list instead: anchor, why it is worth annotating, and material clues. A short honest list beats a page of 60-point notes.
+Visible means selected. A book-side annotation below `有用` must not appear on a reader page. If no annotation survives, keep active points in audit and deliver chapter-end lecture paragraphs instead. A short honest lecture beats a page of 60-point notes.
 
 ## Run Modes
 
-- Mid-tier mode: run mechanical coverage fully, publish only strictly selected annotations, and fill gaps with active-point lists.
+- Mid-tier mode: run mechanical coverage fully, publish only strictly selected annotations, and use chapter-end lecture paragraphs as the main value carrier.
 - Strong-tier mode: run the full annotation seat with richer material cards, 5-7 routes per anchor, and a broader expert seat.
 - Quality note: zero instant-death items and no visible low-value notes are the promise. Stable `惊艳` density depends on model tier, source richness, and material depth.
 
@@ -64,7 +64,7 @@ Reader-facing book pages may include:
 - chapter title and source path
 - source body or anchor cluster
 - surviving annotations only
-- active-point list when annotations do not survive
+- chapter-end lecture paragraphs when annotations do not survive
 - distillation candidate links
 
 They must not include:
