@@ -4767,6 +4767,67 @@ def markdown_quote(text: str) -> str:
     return "\n".join(lines)
 
 
+def reader_safe_title(title: str, *, fallback: str) -> str:
+    cleaned = title.strip() or fallback
+    replacements = [
+        ("烟测样本", ""),
+        ("样本", ""),
+        ("fixture", ""),
+        ("Fixture", ""),
+        ("local sample", ""),
+        ("local fragment proof", ""),
+        ("contract proof", ""),
+        ("proof", ""),
+    ]
+    for old, new in replacements:
+        cleaned = cleaned.replace(old, new)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip(" ：:-")
+    return cleaned or fallback
+
+
+def reader_safe_sentence(text: str, *, fallback: str) -> str:
+    cleaned = text.strip() or fallback
+    replacements = [
+        ("这个样本", "这份材料"),
+        ("本样本", "这份材料"),
+        ("该样本", "这份材料"),
+        ("烟测样本", "材料"),
+        ("样本", "材料"),
+        ("This is a smoke fixture; ", ""),
+        ("smoke fixture", "局部材料"),
+        ("fixture", "材料"),
+    ]
+    for old, new in replacements:
+        cleaned = cleaned.replace(old, new)
+    return cleaned.strip() or fallback
+
+
+def chinese_scope_label(source_scope: dict[str, Any], unit_count: int) -> str:
+    coverage_status = str(source_scope.get("coverage_status") or "").lower()
+    if coverage_status in {"full", "full_book", "complete"}:
+        return "当前覆盖完整材料。"
+    if unit_count:
+        return f"当前只覆盖 {unit_count} 个阅读单元，不能代表整本书或整份材料的最终验收。"
+    return "当前覆盖范围有限，不能代表整本书或整份材料的最终验收。"
+
+
+def reading_unit_title(unit: dict[str, Any], index: int) -> str:
+    title = str(unit.get("title") or "").strip()
+    if title:
+        return reader_safe_title(title, fallback=f"第 {index} 个阅读单元")
+    return f"第 {index} 个阅读单元"
+
+
+def reader_safe_unit_role(status: Any) -> str:
+    raw = str(status or "").strip()
+    if not raw:
+        return "已覆盖单元"
+    lowered = raw.lower()
+    if "sample" in lowered or "fixture" in lowered or "smoke" in lowered:
+        return "已覆盖单元"
+    return reader_safe_sentence(raw, fallback="已覆盖单元")
+
+
 def render_status_block(payloads: list[dict[str, Any]]) -> list[str]:
     machine_statuses = sorted({str(payload.get("machine_status")) for payload in payloads if payload.get("machine_status")})
     human_statuses = sorted({str(payload.get("human_status")) for payload in payloads if payload.get("human_status")})
@@ -4788,23 +4849,69 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
     reading_units = ((catalog.get("catalog") or {}).get("reading_units") or []) if isinstance(catalog, dict) else []
     unit = reading_units[0] if reading_units and isinstance(reading_units[0], dict) else {}
     deepread_card = deepread.get("local_deepread") if isinstance(deepread.get("local_deepread"), dict) else {}
-    title = str(unit.get("title") or deepread_card.get("title") or "局部长文阅读页")
+    material = catalog.get("material") if isinstance(catalog.get("material"), dict) else {}
+    material_title = reader_safe_title(str(material.get("title") or ""), fallback="这份材料")
+    title = reading_unit_title(unit, 1) if unit else reader_safe_title(str(deepread_card.get("title") or ""), fallback="章节正文陪读")
     route_hypothesis = (catalog.get("catalog") or {}).get("route_hypothesis") if isinstance(catalog, dict) else []
     not_yet = (catalog.get("catalog") or {}).get("not_yet_covered_units") if isinstance(catalog, dict) else []
-    lines = [
-        f"# 局部长文样本：{title}",
+    source_scope = catalog.get("source_scope") if isinstance(catalog.get("source_scope"), dict) else {}
+    scope_label = chinese_scope_label(source_scope, len(reading_units) or len(excerpts))
+    start_lines = [
+        f"# 开始阅读：{material_title}",
         "",
-        "## 这一节先看什么",
+        "## 你现在读到什么",
+        "",
+        scope_label,
+        "",
+        "## 从哪里开始",
         "",
         *lines_to_markdown_list(route_hypothesis),
         "",
-        "## 处理过的一手正文",
+        "## 验收边界",
+        "",
+        "- 这只说明当前输出进入读者产品形态检查，不代表人工读者已经接受。",
+        "- 如果只覆盖章节节选，不能说成全书验收通过。",
         "",
     ]
-    for excerpt in excerpts:
+    map_lines = [
+        f"# 结构地图：{material_title}",
+        "",
+        "## 阅读单元",
+        "",
+    ]
+    for index, reading_unit in enumerate(reading_units, start=1):
+        if not isinstance(reading_unit, dict):
+            continue
+        map_lines.extend(
+            [
+                f"### {index}. {reading_unit_title(reading_unit, index)}",
+                "",
+                f"- 位置：第 {index} 个已覆盖阅读单元",
+                f"- 角色：{reader_safe_unit_role(reading_unit.get('status'))}",
+                "",
+            ]
+        )
+    if not reading_units:
+        map_lines.extend(["- 当前没有结构化阅读单元，只能作为局部正文阅读。", ""])
+    map_lines.extend(["## 尚未覆盖", "", *lines_to_markdown_list(not_yet), ""])
+
+    lines = [
+        f"# 正文陪读：{title}",
+        "",
+        "## 这一章放在哪",
+        "",
+        scope_label,
+        "",
+        *lines_to_markdown_list(route_hypothesis),
+        "",
+        "## 一手正文",
+        "",
+    ]
+    for index, excerpt in enumerate(excerpts, start=1):
+        unit_title = reading_unit_title(reading_units[index - 1], index) if index <= len(reading_units) and isinstance(reading_units[index - 1], dict) else f"第 {index} 个正文片段"
         lines.extend(
             [
-                f"### 来源：`{excerpt['source_path']}`",
+                f"### {unit_title}",
                 "",
                 markdown_quote(excerpt["text"]),
                 "",
@@ -4814,26 +4921,31 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
         [
             "## AI 旁批",
             "",
-            str(deepread_card.get("reader_gain") or "这一页只提供局部阅读辅助，不能替代一手材料。"),
-            "",
-            "## 深读判断",
-            "",
-            f"- 主张：{deepread_card.get('claim') or '未声明'}",
-            f"- 边界：{deepread_card.get('boundary') or '未声明'}",
-            f"- 置信度：{deepread_card.get('confidence') or 'unknown'}",
+            reader_safe_sentence(
+                str(deepread_card.get("reader_gain") or ""),
+                fallback="这一页只提供局部阅读辅助，不能替代一手材料。",
+            ),
             "",
             "## 尚未覆盖",
             "",
             *lines_to_markdown_list(not_yet),
             "",
-            *render_status_block(payloads),
+            "## 阅读边界",
+            "",
+            "- 这是一份局部正文陪读；如果只覆盖章节节选，不能替代全书阅读判断。",
+            "- 机器检查和人工读者接受是两件事，人工接受需要单独记录。",
+            "",
             "## 可批注问题",
             "",
             "- 这个局部原则在你的材料或工作流里应该怎样被验证，而不是直接照搬？",
             "",
         ]
     )
-    return {"reader/01_局部长文阅读页.md": "\n".join(lines)}
+    return {
+        "reader/00_开始阅读.md": "\n".join(start_lines),
+        "reader/01_结构地图.md": "\n".join(map_lines),
+        "reader/02_章节正文陪读.md": "\n".join(lines),
+    }
 
 
 def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dict[str, str]:
@@ -4994,7 +5106,7 @@ def output_eval_categories(payloads: list[dict[str, Any]]) -> set[str]:
     return categories
 
 
-def collect_reader_paths(payloads: list[dict[str, Any]]) -> set[str]:
+def collect_reader_paths(payloads: list[dict[str, Any]], target: Path | None = None) -> set[str]:
     paths: set[str] = set()
     for payload in payloads:
         display = payload.get("display")
@@ -5003,6 +5115,10 @@ def collect_reader_paths(payloads: list[dict[str, Any]]) -> set[str]:
         reader_paths = display.get("reader_facing") or display.get("reader_facing_paths") or []
         if isinstance(reader_paths, list):
             paths.update(str(path) for path in reader_paths if path)
+    if target is not None:
+        reader_root = target / "reader"
+        if reader_root.is_dir():
+            paths.update(path.relative_to(target).as_posix() for path in reader_root.rglob("*.md"))
     return paths
 
 
@@ -5016,6 +5132,7 @@ def collect_declared_source_paths(payloads: list[dict[str, Any]]) -> list[str]:
 
 
 def normalize_inline_text(value: str) -> str:
+    value = re.sub(r"(?m)^>\s?", "", value)
     return re.sub(r"\s+", " ", value).strip()
 
 
@@ -5042,16 +5159,68 @@ def first_hand_body_failures(target: Path, reader_paths: set[str], source_paths:
         if not path.is_file():
             continue
         text = read_text(path)
-        body_match = re.search(r"^## 处理过的一手正文\s*(.*?)(?=^## |\Z)", text, re.M | re.S)
+        body_match = re.search(r"^## (?:处理过的一手正文|一手正文)\s*(.*?)(?=^## |\Z)", text, re.M | re.S)
         if not body_match:
             continue
         body = body_match.group(1)
         normalized_body = normalize_inline_text(body)
-        if any(source_path in body and snippet in normalized_body for source_path, snippet in source_snippets):
+        if any(snippet in normalized_body for _source_path, snippet in source_snippets):
             body_found = True
             break
     if not body_found:
         failures.append("reader markdown missing actual first-hand body from source excerpts")
+    return failures
+
+
+def reader_product_shape_failures(target: Path, reader_paths: set[str], schemas: set[str]) -> list[str]:
+    failures: list[str] = []
+    reader_texts: dict[str, str] = {}
+    for reader_path in sorted(reader_paths):
+        path = target / reader_path
+        if path.is_file():
+            reader_texts[reader_path] = read_text(path)
+    if "readerlab.catalog-map.v1" not in schemas:
+        return failures
+
+    required = {
+        "reader/00_开始阅读.md": "start page",
+        "reader/01_结构地图.md": "structure map",
+        "reader/02_章节正文陪读.md": "body-first reading page",
+    }
+    for rel_path, label in required.items():
+        if rel_path not in reader_texts:
+            failures.append(f"book reader product shape missing {label}: {rel_path}")
+
+    combined = "\n".join(reader_texts.values())
+    forbidden_markers = [
+        "audit/",
+        "source-excerpts",
+        "source_id",
+        "machine_status",
+        "human_status",
+        "fixture",
+        "local sample",
+        "contract proof",
+        "烟测",
+        "样本",
+    ]
+    lowered = combined.lower()
+    for marker in forbidden_markers:
+        haystack = lowered if marker.isascii() else combined
+        needle = marker.lower() if marker.isascii() else marker
+        if needle in haystack:
+            failures.append(f"book reader page contains non-reader-facing marker: {marker}")
+
+    body_page = reader_texts.get("reader/02_章节正文陪读.md", "")
+    if body_page:
+        body_position = body_page.find("## 一手正文")
+        companion_position = body_page.find("## AI 旁批")
+        if body_position == -1:
+            failures.append("book reader page missing body-first section: ## 一手正文")
+        if companion_position == -1:
+            failures.append("book reader page missing nearby companion section: ## AI 旁批")
+        if body_position != -1 and companion_position != -1 and body_position > companion_position:
+            failures.append("book reader page must show first-hand body before AI companion notes")
     return failures
 
 
@@ -5113,7 +5282,7 @@ def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
     failures: list[str] = list(validation["failures"])
     gates: list[dict[str, Any]] = []
 
-    reader_paths = collect_reader_paths(payloads)
+    reader_paths = collect_reader_paths(payloads, target)
     missing_reader = sorted(path for path in reader_paths if not (target / path).is_file())
     audit_reader_paths = sorted(path for path in reader_paths if "audit" in Path(path).parts)
     gates.append(
@@ -5143,7 +5312,18 @@ def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
     )
     failures.extend(first_hand_failures)
 
-    has_capability_map = "readerlab.capability-map.v1" in {contract_schema(payload) for payload in payloads}
+    schemas = {contract_schema(payload) for payload in payloads}
+    product_shape_failures = reader_product_shape_failures(target, reader_paths, schemas)
+    gates.append(
+        {
+            "id": "reader_product_shape",
+            "status": "fail" if product_shape_failures else "pass",
+            "failures": product_shape_failures,
+        }
+    )
+    failures.extend(product_shape_failures)
+
+    has_capability_map = "readerlab.capability-map.v1" in schemas
     if has_capability_map:
         source_registry_payload = first_contract_payload(payloads, "readerlab.source-registry.v1")
         full_source_failures = full_source_evidence_failures(target, source_registry_payload)

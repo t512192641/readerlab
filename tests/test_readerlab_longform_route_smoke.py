@@ -131,7 +131,7 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
                 text=True,
                 capture_output=True,
             )
-            text = (output_root / "reader/01_局部长文阅读页.md").read_text(encoding="utf-8")
+            text = (output_root / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
 
         self.assertLess(text.index("报告开头不是先给结论"), text.index("访谈对象在这里先否认"))
 
@@ -176,7 +176,7 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
                 text=True,
                 capture_output=True,
             )
-            text = (output_root / "reader/01_局部长文阅读页.md").read_text(encoding="utf-8")
+            text = (output_root / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
 
         first_report = text.index("报告开头不是先给结论")
         interview = text.index("访谈对象在这里先否认")

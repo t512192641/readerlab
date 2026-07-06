@@ -119,38 +119,66 @@ def assert_in_order(text: str, markers: list[str], *, phase: str) -> None:
 
 
 def assert_reader_page(output_root: Path) -> dict[str, Any]:
-    reader_path = output_root / "reader" / "01_局部长文阅读页.md"
+    start_path = output_root / "reader" / "00_开始阅读.md"
+    map_path = output_root / "reader" / "01_结构地图.md"
+    reader_path = output_root / "reader" / "02_章节正文陪读.md"
+    for path in (start_path, map_path, reader_path):
+        if not path.is_file():
+            raise SmokeFailure("reader_evaluation", f"reader page missing: {path}")
+    start_text = start_path.read_text(encoding="utf-8")
+    map_text = map_path.read_text(encoding="utf-8")
     if not reader_path.is_file():
         raise SmokeFailure("reader_evaluation", f"reader page missing: {reader_path}")
     text = reader_path.read_text(encoding="utf-8")
     assert_in_order(
         text,
         [
-            "## 处理过的一手正文",
-            "### 来源：`audit/source-excerpts/chapter-01.md`",
+            "## 一手正文",
+            "### 第一章 先看问题，不先看答案",
             "第一章先让读者停在问题本身",
             "## 第一节 问题从哪里来",
-            "### 来源：`audit/source-excerpts/chapter-02.md`",
+            "### 第二章 结构比金句更重要",
             "第二章把第一章的问题继续往前推",
             "## 第一节 从章节关系理解观点",
             "## AI 旁批",
-            "## 深读判断",
-            "## 状态边界",
+            "## 阅读边界",
         ],
         phase="reader_evaluation",
     )
+    assert_in_order(
+        start_text,
+        ["# 开始阅读", "## 你现在读到什么", "## 从哪里开始", "## 验收边界"],
+        phase="reader_evaluation",
+    )
+    assert_in_order(
+        map_text,
+        ["# 结构地图", "## 阅读单元", "第一章 先看问题，不先看答案", "第二章 结构比金句更重要", "## 尚未覆盖"],
+        phase="reader_evaluation",
+    )
     forbidden = [
+        "audit/",
+        "source-excerpts",
+        "source_id",
+        "machine_status",
+        "human_status",
+        "fixture",
+        "local sample",
+        "contract proof",
+        "烟测",
+        "样本",
         "reader_package_pass",
         "production ready",
         "20_AI陪读",
         "批注问题.md",
     ]
     for marker in forbidden:
-        if marker in text:
+        if marker in "\n".join([start_text, map_text, text]):
             raise SmokeFailure("reader_evaluation", f"reader page contains forbidden marker: {marker}")
     return {
-        "reader_page": "reader/01_局部长文阅读页.md",
-        "body_before_companion": text.index("## 处理过的一手正文") < text.index("## AI 旁批"),
+        "start_page": "reader/00_开始阅读.md",
+        "structure_map": "reader/01_结构地图.md",
+        "reader_page": "reader/02_章节正文陪读.md",
+        "body_before_companion": text.index("## 一手正文") < text.index("## AI 旁批"),
         "chapter_order_preserved": text.index("第一章先让读者停在问题本身")
         < text.index("第二章把第一章的问题继续往前推"),
     }

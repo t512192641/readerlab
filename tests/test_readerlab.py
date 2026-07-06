@@ -657,14 +657,14 @@ echo ok
     def test_reader_facing_first_hand_body_is_not_only_summary(self) -> None:
         pages = [
             ROOT
-            / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample/reader/01_局部长文阅读页.md",
+            / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample/reader/02_章节正文陪读.md",
             ROOT
             / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample/reader/01_工程材料阅读页.md",
         ]
         for page in pages:
             with self.subTest(page=page.name):
                 text = page.read_text(encoding="utf-8")
-                body_match = re.search(r"^## 处理过的一手正文\s*(.*?)(?=^## |\Z)", text, re.M | re.S)
+                body_match = re.search(r"^## (?:处理过的一手正文|一手正文)\s*(.*?)(?=^## |\Z)", text, re.M | re.S)
                 self.assertIsNotNone(body_match)
                 body = body_match.group(1) if body_match else ""
                 self.assertNotIn("核心意思是", body)
@@ -675,7 +675,7 @@ echo ok
         samples = [
             (
                 ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample",
-                "reader/01_局部长文阅读页.md",
+                "reader/02_章节正文陪读.md",
             ),
             (
                 ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample",
@@ -691,10 +691,16 @@ echo ok
                     self.assertIn(primary_page, render_payload["rendered_pages"])
                     self.assertTrue((out / primary_page).is_file())
                     self.assertTrue((out / "audit/contracts/output-eval.v1.json").is_file())
-                    self.assertNotEqual(
-                        (sample / primary_page).read_text(encoding="utf-8"),
-                        (out / primary_page).read_text(encoding="utf-8"),
-                    )
+                    if sample.name == "book-longform-sample":
+                        self.assertEqual(
+                            (sample / primary_page).read_text(encoding="utf-8"),
+                            (out / primary_page).read_text(encoding="utf-8"),
+                        )
+                    else:
+                        self.assertNotEqual(
+                            (sample / primary_page).read_text(encoding="utf-8"),
+                            (out / primary_page).read_text(encoding="utf-8"),
+                        )
 
                     validation = run_readerlab("validate-contract", str(out))
                     validation_payload = json.loads(validation.stdout)
@@ -718,6 +724,7 @@ echo ok
                         "reader_markdown_exists",
                         "reader_audit_path_separation",
                         "first_hand_body_source_present",
+                        "reader_product_shape",
                         "output_eval_9_gates_present",
                         "human_status_not_machine_accepted",
                     }
@@ -744,6 +751,7 @@ echo ok
                 "reader_markdown_exists",
                 "reader_audit_path_separation",
                 "first_hand_body_source_present",
+                "reader_product_shape",
                 "output_eval_9_gates_present",
                 "human_status_not_machine_accepted",
             }:
@@ -758,11 +766,11 @@ echo ok
             out = Path(tmp) / "rendered"
             report = Path(tmp) / "eval-report.md"
             run_readerlab("render-contract-package", str(sample), str(out))
-            (out / "reader/01_局部长文阅读页.md").unlink()
+            (out / "reader/02_章节正文陪读.md").unlink()
             result = run_readerlab_unchecked("eval-rendered-package", str(out), "--report-md", str(report))
             self.assertNotEqual(result.returncode, 0)
             text = report.read_text(encoding="utf-8")
-            self.assertIn("- validate_contract_passed: false", text)
+            self.assertIn("- validate_contract_passed: true", text)
             self.assertIn("- reader_markdown_exists: fail", text)
             self.assertIn("reader markdown missing", text)
             self.assertIn("## Failures", text)
@@ -822,7 +830,7 @@ echo ok
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "missing-reader"
             run_readerlab("render-contract-package", str(sample), str(out))
-            (out / "reader/01_局部长文阅读页.md").unlink()
+            (out / "reader/02_章节正文陪读.md").unlink()
             result = run_readerlab_unchecked("eval-rendered-package", str(out))
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("reader markdown missing", result.stdout)
@@ -830,7 +838,7 @@ echo ok
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "missing-first-hand-body"
             run_readerlab("render-contract-package", str(sample), str(out))
-            reader_path = out / "reader/01_局部长文阅读页.md"
+            reader_path = out / "reader/02_章节正文陪读.md"
             reader_path.write_text(
                 "# 空壳阅读页\n\n## AI 旁批\n\n这里只有机器旁批，没有处理过的一手正文。\n",
                 encoding="utf-8",
@@ -842,7 +850,7 @@ echo ok
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "source-path-only"
             run_readerlab("render-contract-package", str(sample), str(out))
-            reader_path = out / "reader/01_局部长文阅读页.md"
+            reader_path = out / "reader/02_章节正文陪读.md"
             reader_path.write_text(
                 "# 空壳阅读页\n\n"
                 "## 处理过的一手正文\n\n"
