@@ -801,6 +801,25 @@ echo ok
             evaluation = run_readerlab("eval-rendered-package", str(out))
             self.assertTrue(json.loads(evaluation.stdout)["passed"])
 
+    def test_eval_rendered_package_requires_declared_reader_paths(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            for contract_path in [
+                out / "audit/contracts/catalog-map.v1.json",
+                out / "audit/contracts/local-deepread.v1.json",
+            ]:
+                contract = json.loads(contract_path.read_text(encoding="utf-8"))
+                contract["display"]["reader_facing"] = []
+                contract_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            result = run_readerlab_unchecked("eval-rendered-package", str(out))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("book reader product shape missing start page", result.stdout)
+            self.assertIn("reader markdown missing actual first-hand body", result.stdout)
+
     def test_eval_rendered_package_writes_failure_report_md(self) -> None:
         sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
 

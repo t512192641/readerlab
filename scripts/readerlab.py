@@ -5102,7 +5102,7 @@ def output_eval_categories(payloads: list[dict[str, Any]]) -> set[str]:
     return categories
 
 
-def collect_reader_paths(payloads: list[dict[str, Any]], target: Path | None = None) -> set[str]:
+def collect_reader_paths(payloads: list[dict[str, Any]]) -> set[str]:
     paths: set[str] = set()
     for payload in payloads:
         display = payload.get("display")
@@ -5111,10 +5111,6 @@ def collect_reader_paths(payloads: list[dict[str, Any]], target: Path | None = N
         reader_paths = display.get("reader_facing") or display.get("reader_facing_paths") or []
         if isinstance(reader_paths, list):
             paths.update(str(path) for path in reader_paths if path)
-    if target is not None:
-        reader_root = target / "reader"
-        if reader_root.is_dir():
-            paths.update(path.relative_to(target).as_posix() for path in reader_root.rglob("*.md"))
     return paths
 
 
@@ -5284,7 +5280,7 @@ def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
     failures: list[str] = list(validation["failures"])
     gates: list[dict[str, Any]] = []
 
-    reader_paths = collect_reader_paths(payloads, target)
+    reader_paths = collect_reader_paths(payloads)
     missing_reader = sorted(path for path in reader_paths if not (target / path).is_file())
     audit_reader_paths = sorted(path for path in reader_paths if "audit" in Path(path).parts)
     gates.append(
