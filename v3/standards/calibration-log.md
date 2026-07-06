@@ -58,7 +58,10 @@
 - 修订后的资产卡测试输入：`v3/pilots/gstack-spec-r3-asset-cards.md`。
 - R3 资产卡冷启动重测记录：`v3/pilots/gstack-spec-r3-cold-start-test.md`。
 - Phase 4 第二个 Skill 试点候选：`v3/pilots/skill-r3-code-dense-candidate.md`，候选改为 GSTACK 内部的 `gstack/browse`，等待用户选择确认。
-- 当前 stop gate：等待用户 R3 判定与 Phase 4 第二个 Skill 试点选择；不得进入 Phase 2。
+- Phase 4 第二个 Skill 试点产物：`v3/pilots/gstack-browse-phase4-mini-page.md`。
+- Phase 4 第二个 Skill 试点资产卡：`v3/pilots/gstack-browse-phase4-asset-cards.md`。
+- Phase 4 第二个 Skill 试点冷启动记录：`v3/pilots/gstack-browse-phase4-cold-start-test.md`。
+- 当前 stop gate：R3 图书线仍等待用户判定；`gstack/browse` 迷你成品页等待用户回答三问；不得进入 Phase 2。
 
 ## R2 图书线用户判定
 
