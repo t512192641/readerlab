@@ -212,9 +212,8 @@ git diff --check
 3. Merge 后关闭 #9，并删除 PR #17 heartbeat。
 4. 合并后状态最多推进到 `installable_release_candidate`，不能说 production ready、friend smoke passed 或 reader accepted。
 
-第二段，从工程链路转到读者产品形态接入，新增两条并列 issue：
+第二段，从工程链路转到读者产品形态接入。#18 由当前产品形态 gate PR 完成；后续不要回到 #18 重新做形态定义，直接推进两条并列集成 issue：
 
-0. #18 Fix ReaderLab V2 reader product shape gates：先固定两条 reader-facing 产品线和可验收条件，避免继续用 smoke 或旧输出形态冒充 reader accepted。
 1. #19 Book / Longform reader product shape integration：把可安装包的图书输出从 sample / contract renderer 形态接回正文优先章节陪读包。
 2. #20 Skill / Engineering reader product shape integration：把可安装包的 Skill 输出从 `import-skills` 清单形态接回净化正文主读页、技术负责人解说页和设计资产卡。
 
