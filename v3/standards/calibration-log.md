@@ -1,6 +1,6 @@
 # Phase 1 校准日志
 
-状态：R3 批次生成中。
+状态：R3 批次已生成，等待用户判定。
 
 ## 当前已准备
 
@@ -52,9 +52,13 @@
 - 批注本体必须像页边高手自言自语或与作者平视对话，禁止转身面向读者说教。
 - 凡指认学科 / 框架 / 概念，必须另写结构化“延伸”块。
 - R3 盲评封存流程同 R1/R2：先封存 `blind-eval-r3.md` 并单独 commit，再呈现无评分、乱序用户清单。
+- R3 盲评封存：`v3/standards/blind-eval-r3.md` 已单独 commit。
+- R3 用户清单：`v3/standards/calibration-r3-user-sheet.md`。
 - 资产卡冷启动验收标准：`v3/standards/asset-card-cold-start-standard.md`。
 - 修订后的资产卡测试输入：`v3/pilots/gstack-spec-r3-asset-cards.md`。
-- 当前 stop gate：R3 批次和资产卡重测完成后等待用户 R3 判定；不得进入 Phase 2。
+- R3 资产卡冷启动重测记录：`v3/pilots/gstack-spec-r3-cold-start-test.md`。
+- Phase 4 第二个 Skill 试点候选：`v3/pilots/skill-r3-code-dense-candidate.md`，候选为 `codex-claude-bridge`，等待用户选择确认。
+- 当前 stop gate：等待用户 R3 判定与 Phase 4 第二个 Skill 试点选择；不得进入 Phase 2。
 
 ## R2 图书线用户判定
 
