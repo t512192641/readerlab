@@ -131,9 +131,50 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
                 text=True,
                 capture_output=True,
             )
-            text = (output_root / "reader/01_局部长文阅读页.md").read_text(encoding="utf-8")
+            text = (output_root / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
 
         self.assertLess(text.index("报告开头不是先给结论"), text.index("访谈对象在这里先否认"))
+
+    def test_renderer_keeps_multi_source_unit_title_with_each_excerpt(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            output_root = Path(tmp) / "output"
+            shutil.copytree(FIXTURE, fixture)
+            catalog_path = fixture / "audit/contracts/catalog-map.v1.json"
+            catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+            catalog["catalog"]["reading_units"] = [
+                {
+                    "unit_id": "combined-unit",
+                    "title": "同一阅读单元覆盖两个来源",
+                    "status": "sample_argument_unit",
+                    "source_refs": [
+                        "src-longform-report-argument",
+                        "src-longform-interview-turn",
+                    ],
+                },
+                {
+                    "unit_id": "later-unit",
+                    "title": "后续阅读单元",
+                    "status": "sample_interview_unit",
+                    "source_refs": [],
+                },
+            ]
+            catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            subprocess.run(
+                ["python3", "scripts/readerlab.py", "render-contract-package", str(fixture), str(output_root)],
+                cwd=ROOT,
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            text = (output_root / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
+
+        report = text.index("报告开头不是先给结论")
+        interview = text.index("访谈对象在这里先否认")
+        self.assertLess(text.index("### 同一阅读单元覆盖两个来源"), report)
+        self.assertLess(text.index("### 同一阅读单元覆盖两个来源", report), interview)
+        self.assertNotIn("### 后续阅读单元", text)
 
     def test_renderer_preserves_non_adjacent_repeated_source_positions(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -176,13 +217,132 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
                 text=True,
                 capture_output=True,
             )
-            text = (output_root / "reader/01_局部长文阅读页.md").read_text(encoding="utf-8")
+            text = (output_root / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
 
-        first_report = text.index("报告开头不是先给结论")
-        interview = text.index("访谈对象在这里先否认")
-        second_report = text.index("报告开头不是先给结论", interview)
+        first_report = text.index("信息量增加并没有自动带来判断质量")
+        interview = text.index("新人只看会议纪要")
+        second_report = text.index("第一组证据来自周会纪要")
         self.assertLess(first_report, interview)
         self.assertLess(interview, second_report)
+
+    def test_renderer_preserves_adjacent_same_source_units(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            output_root = Path(tmp) / "output"
+            shutil.copytree(FIXTURE, fixture)
+            catalog_path = fixture / "audit/contracts/catalog-map.v1.json"
+            catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+            catalog["catalog"]["reading_units"] = [
+                {
+                    "unit_id": "report-opening",
+                    "title": "报告开头",
+                    "status": "sample_argument_unit",
+                    "source_refs": ["loc-longform-report-tension"],
+                },
+                {
+                    "unit_id": "report-evidence",
+                    "title": "报告证据组",
+                    "status": "sample_argument_unit",
+                    "source_refs": ["loc-longform-report-evidence-group"],
+                },
+            ]
+            catalog["claims"][0]["source_refs"] = [
+                "loc-longform-report-tension",
+                "loc-longform-report-evidence-group",
+            ]
+            catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            subprocess.run(
+                ["python3", "scripts/readerlab.py", "render-contract-package", str(fixture), str(output_root)],
+                cwd=ROOT,
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            text = (output_root / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
+
+        first_title = text.index("### 报告开头")
+        second_title = text.index("### 报告证据组")
+        self.assertLess(first_title, second_title)
+        self.assertLess(text.index("信息量增加并没有自动带来判断质量", first_title), second_title)
+        self.assertIn("第一组证据来自周会纪要", text[second_title:])
+        self.assertNotIn("信息量增加并没有自动带来判断质量", text[second_title:])
+
+    def test_renderer_uses_heading_path_when_longform_range_is_absent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            output_root = Path(tmp) / "output"
+            shutil.copytree(FIXTURE, fixture)
+            source_path = fixture / "audit/source-excerpts/report-argument.md"
+            source_path.write_text(
+                """# 报告片段：从现象到论点
+
+## 误导章节
+
+### 论证推进：先提出张力
+
+这段文字不应该被选中。
+
+## 论证推进：先提出张力
+
+作者先指出张力：信息量增加并没有自动带来判断质量。真正的问题不是缺少材料，而是材料没有被组织成能让不同角色共同判断的证据链。
+
+## 证据组：两个现象指向同一个结构问题
+
+第一组证据来自周会纪要：同一个风险在三周里被重复提到，却没有归属人。
+""",
+                encoding="utf-8",
+            )
+            location_path = fixture / "audit/location-map.v1.json"
+            location_map = json.loads(location_path.read_text(encoding="utf-8"))
+            for location in location_map["locations"]:
+                if location["location_id"] == "loc-longform-report-tension":
+                    location["range"] = ""
+                    location["heading_path"] = ["报告片段：从现象到论点", "论证推进：先提出张力"]
+            location_path.write_text(json.dumps(location_map, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            subprocess.run(
+                ["python3", "scripts/readerlab.py", "render-contract-package", str(fixture), str(output_root)],
+                cwd=ROOT,
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            text = (output_root / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
+
+        first_title = text.index("### 报告论证：从现象张力到证据组")
+        second_title = text.index("### 报告论证：从现象张力到证据组", first_title + 1)
+        self.assertLess(text.index("信息量增加并没有自动带来判断质量", first_title), second_title)
+        self.assertNotIn("这段文字不应该被选中", text[first_title:second_title])
+
+    def test_renderer_uses_char_range_when_longform_range_is_absent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            output_root = Path(tmp) / "output"
+            shutil.copytree(FIXTURE, fixture)
+            source_text = (fixture / "audit/source-excerpts/report-argument.md").read_text(encoding="utf-8")
+            snippet = "第一组证据来自周会纪要"
+            start = source_text.index(snippet)
+            end = start + len(snippet)
+            location_path = fixture / "audit/location-map.v1.json"
+            location_map = json.loads(location_path.read_text(encoding="utf-8"))
+            for location in location_map["locations"]:
+                if location["location_id"] == "loc-longform-report-evidence-group":
+                    location["range"] = ""
+                    location["char_range"] = [start, end]
+            location_path.write_text(json.dumps(location_map, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            subprocess.run(
+                ["python3", "scripts/readerlab.py", "render-contract-package", str(fixture), str(output_root)],
+                cwd=ROOT,
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            text = (output_root / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
+
+        self.assertIn(snippet, text)
+        self.assertNotIn("第二组证据来自访谈", text)
 
     def test_shipped_fixture_reader_display_path_is_evaluable(self) -> None:
         result = subprocess.run(

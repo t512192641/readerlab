@@ -657,14 +657,14 @@ echo ok
     def test_reader_facing_first_hand_body_is_not_only_summary(self) -> None:
         pages = [
             ROOT
-            / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample/reader/01_局部长文阅读页.md",
+            / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample/reader/02_章节正文陪读.md",
             ROOT
             / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample/reader/01_工程材料阅读页.md",
         ]
         for page in pages:
             with self.subTest(page=page.name):
                 text = page.read_text(encoding="utf-8")
-                body_match = re.search(r"^## 处理过的一手正文\s*(.*?)(?=^## |\Z)", text, re.M | re.S)
+                body_match = re.search(r"^## (?:处理过的一手正文|一手正文)\s*(.*?)(?=^## |\Z)", text, re.M | re.S)
                 self.assertIsNotNone(body_match)
                 body = body_match.group(1) if body_match else ""
                 self.assertNotIn("核心意思是", body)
@@ -675,7 +675,7 @@ echo ok
         samples = [
             (
                 ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample",
-                "reader/01_局部长文阅读页.md",
+                "reader/02_章节正文陪读.md",
             ),
             (
                 ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/skill-engineering-sample",
@@ -691,10 +691,16 @@ echo ok
                     self.assertIn(primary_page, render_payload["rendered_pages"])
                     self.assertTrue((out / primary_page).is_file())
                     self.assertTrue((out / "audit/contracts/output-eval.v1.json").is_file())
-                    self.assertNotEqual(
-                        (sample / primary_page).read_text(encoding="utf-8"),
-                        (out / primary_page).read_text(encoding="utf-8"),
-                    )
+                    if sample.name == "book-longform-sample":
+                        self.assertEqual(
+                            (sample / primary_page).read_text(encoding="utf-8"),
+                            (out / primary_page).read_text(encoding="utf-8"),
+                        )
+                    else:
+                        self.assertNotEqual(
+                            (sample / primary_page).read_text(encoding="utf-8"),
+                            (out / primary_page).read_text(encoding="utf-8"),
+                        )
 
                     validation = run_readerlab("validate-contract", str(out))
                     validation_payload = json.loads(validation.stdout)
@@ -725,6 +731,8 @@ echo ok
                         expected_gates.add("technical_asset_cards_cold_start_present")
                         expected_gates.add("full_source_evidence_packet_present")
                         expected_gates.add("blocking_controller_decision")
+                    else:
+                        expected_gates.add("reader_product_shape")
                     self.assertEqual({gate["id"] for gate in payload["gates"]}, expected_gates)
 
     def test_eval_rendered_package_writes_success_report_md(self) -> None:
@@ -744,12 +752,174 @@ echo ok
                 "reader_markdown_exists",
                 "reader_audit_path_separation",
                 "first_hand_body_source_present",
+                "reader_product_shape",
                 "output_eval_9_gates_present",
                 "human_status_not_machine_accepted",
             }:
                 self.assertIn(f"- {gate_id}: pass", text)
             self.assertIn("human_status pending", text)
             self.assertIn("not human acceptance", text)
+
+    def test_eval_rendered_package_allows_source_body_sample_word(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            reader_path = out / "reader/02_章节正文陪读.md"
+            text = reader_path.read_text(encoding="utf-8")
+            text = text.replace(
+                "## AI 旁批",
+                "> 正文如果讨论样本量或样本偏差，读者页必须保留这些词，不能当成工程态语言误杀。\n\n## AI 旁批",
+            )
+            reader_path.write_text(text, encoding="utf-8")
+
+            evaluation = run_readerlab("eval-rendered-package", str(out))
+            self.assertTrue(json.loads(evaluation.stdout)["passed"])
+
+    def test_rendered_book_titles_preserve_real_sample_and_proof_words(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            out = Path(tmp) / "rendered"
+            shutil.copytree(sample, fixture)
+            catalog_path = fixture / "audit/contracts/catalog-map.v1.json"
+            catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+            catalog["material"]["title"] = "样本空间与 Proof 方法"
+            catalog["catalog"]["reading_units"][0]["title"] = "样本空间里的 Proof 章节"
+            catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            run_readerlab("render-contract-package", str(fixture), str(out))
+            start_text = (out / "reader/00_开始阅读.md").read_text(encoding="utf-8")
+            map_text = (out / "reader/01_结构地图.md").read_text(encoding="utf-8")
+            body_text = (out / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
+
+            self.assertIn("样本空间与 Proof 方法", start_text)
+            self.assertIn("样本空间与 Proof 方法", map_text)
+            self.assertIn("样本空间里的 Proof 章节", map_text)
+            self.assertIn("样本空间里的 Proof 章节", body_text)
+            evaluation = run_readerlab("eval-rendered-package", str(out))
+            self.assertTrue(json.loads(evaluation.stdout)["passed"])
+
+    def test_eval_rendered_package_requires_declared_reader_paths(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            for contract_path in list((out / "audit/contracts").glob("*.json")) + [
+                out / "audit/source-registry.v1.json",
+                out / "audit/location-map.v1.json",
+            ]:
+                contract = json.loads(contract_path.read_text(encoding="utf-8"))
+                display = contract.get("display")
+                if isinstance(display, dict):
+                    display["reader_facing"] = []
+                    contract_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            result = run_readerlab_unchecked("eval-rendered-package", str(out))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("book reader product shape missing start page", result.stdout)
+            self.assertIn("reader markdown missing actual first-hand body", result.stdout)
+
+    def test_eval_rendered_package_requires_each_declared_source_body(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            body_page = out / "reader/02_章节正文陪读.md"
+            text = body_page.read_text(encoding="utf-8")
+            source_path = "audit/source-excerpts/longform-fragment.md"
+            source_text = readerlab.strip_markdown_title((out / source_path).read_text(encoding="utf-8"))
+            for snippet in readerlab.source_body_snippets(source_text):
+                text = text.replace(snippet, "")
+            body_page.write_text(text, encoding="utf-8")
+
+            result = run_readerlab_unchecked("eval-rendered-package", str(out))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                f"reader markdown missing actual first-hand body from source excerpt: {source_path}",
+                result.stdout,
+            )
+
+    def test_render_contract_package_updates_copied_reader_display_paths(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        for initial_reader_paths in (["reader/01_局部长文阅读页.md"], []):
+            with self.subTest(initial_reader_paths=initial_reader_paths):
+                with tempfile.TemporaryDirectory() as tmp:
+                    fixture = Path(tmp) / "fixture"
+                    out = Path(tmp) / "rendered"
+                    shutil.copytree(sample, fixture)
+                    for contract_path in [
+                        fixture / "audit/contracts/catalog-map.v1.json",
+                        fixture / "audit/contracts/local-deepread.v1.json",
+                    ]:
+                        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+                        contract["display"]["reader_facing"] = initial_reader_paths
+                        contract_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+                    run_readerlab("render-contract-package", str(fixture), str(out))
+                    evaluation = run_readerlab("eval-rendered-package", str(out))
+                    self.assertTrue(json.loads(evaluation.stdout)["passed"])
+                    for contract_path in [
+                        out / "audit/contracts/catalog-map.v1.json",
+                        out / "audit/contracts/local-deepread.v1.json",
+                    ]:
+                        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+                        self.assertEqual(
+                            contract["display"]["reader_facing"],
+                            [
+                                "reader/00_开始阅读.md",
+                                "reader/01_结构地图.md",
+                                "reader/02_章节正文陪读.md",
+                            ],
+                        )
+
+    def test_rendered_book_generated_notes_hide_fixture_language(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            out = Path(tmp) / "rendered"
+            shutil.copytree(sample, fixture)
+            catalog_path = fixture / "audit/contracts/catalog-map.v1.json"
+            catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+            catalog["catalog"]["route_hypothesis"] = ["This fixture demonstrates a reader route."]
+            catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            deepread_path = fixture / "audit/contracts/local-deepread.v1.json"
+            deepread = json.loads(deepread_path.read_text(encoding="utf-8"))
+            deepread["local_deepread"]["reader_gain"] = "This fixture helps readers see the boundary."
+            deepread_path.write_text(json.dumps(deepread, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+            run_readerlab("render-contract-package", str(fixture), str(out))
+            rendered = "\n".join(
+                (out / path).read_text(encoding="utf-8")
+                for path in [
+                    "reader/00_开始阅读.md",
+                    "reader/02_章节正文陪读.md",
+                ]
+            )
+            self.assertNotIn("fixture", rendered)
+            self.assertIn("This material", rendered)
+            evaluation = run_readerlab("eval-rendered-package", str(out))
+            self.assertTrue(json.loads(evaluation.stdout)["passed"])
+
+    def test_eval_rendered_package_rejects_bare_fixture_language_outside_body(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            start_page = out / "reader/00_开始阅读.md"
+            text = start_page.read_text(encoding="utf-8")
+            start_page.write_text("This fixture should not be reader-facing.\n\n" + text, encoding="utf-8")
+
+            result = run_readerlab_unchecked("eval-rendered-package", str(out))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("book reader page contains non-reader-facing marker: fixture", result.stdout)
 
     def test_eval_rendered_package_writes_failure_report_md(self) -> None:
         sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
@@ -758,11 +928,11 @@ echo ok
             out = Path(tmp) / "rendered"
             report = Path(tmp) / "eval-report.md"
             run_readerlab("render-contract-package", str(sample), str(out))
-            (out / "reader/01_局部长文阅读页.md").unlink()
+            (out / "reader/02_章节正文陪读.md").unlink()
             result = run_readerlab_unchecked("eval-rendered-package", str(out), "--report-md", str(report))
             self.assertNotEqual(result.returncode, 0)
             text = report.read_text(encoding="utf-8")
-            self.assertIn("- validate_contract_passed: false", text)
+            self.assertIn("- validate_contract_passed: true", text)
             self.assertIn("- reader_markdown_exists: fail", text)
             self.assertIn("reader markdown missing", text)
             self.assertIn("## Failures", text)
@@ -822,7 +992,7 @@ echo ok
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "missing-reader"
             run_readerlab("render-contract-package", str(sample), str(out))
-            (out / "reader/01_局部长文阅读页.md").unlink()
+            (out / "reader/02_章节正文陪读.md").unlink()
             result = run_readerlab_unchecked("eval-rendered-package", str(out))
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("reader markdown missing", result.stdout)
@@ -830,7 +1000,7 @@ echo ok
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "missing-first-hand-body"
             run_readerlab("render-contract-package", str(sample), str(out))
-            reader_path = out / "reader/01_局部长文阅读页.md"
+            reader_path = out / "reader/02_章节正文陪读.md"
             reader_path.write_text(
                 "# 空壳阅读页\n\n## AI 旁批\n\n这里只有机器旁批，没有处理过的一手正文。\n",
                 encoding="utf-8",
@@ -842,7 +1012,7 @@ echo ok
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "source-path-only"
             run_readerlab("render-contract-package", str(sample), str(out))
-            reader_path = out / "reader/01_局部长文阅读页.md"
+            reader_path = out / "reader/02_章节正文陪读.md"
             reader_path.write_text(
                 "# 空壳阅读页\n\n"
                 "## 处理过的一手正文\n\n"

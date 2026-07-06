@@ -67,7 +67,9 @@
   "human_status": "pending",
   "display": {
     "reader_facing": [
-      "reader/01_局部长文阅读页.md"
+      "reader/00_开始阅读.md",
+      "reader/01_结构地图.md",
+      "reader/02_章节正文陪读.md"
     ],
     "internal_audit": [
       "audit/contracts/catalog-map.v1.json"

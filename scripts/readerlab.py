@@ -4702,7 +4702,8 @@ def source_excerpt_records(sample_dir: Path, source_registry: dict[str, Any]) ->
         if not path.exists():
             failures.append(f"source excerpt not found: {source_path}")
             continue
-        text = strip_markdown_title(read_text(path))
+        raw_text = read_text(path)
+        text = strip_markdown_title(raw_text)
         if not text:
             failures.append(f"source excerpt is empty: {source_path}")
             continue
@@ -4711,6 +4712,7 @@ def source_excerpt_records(sample_dir: Path, source_registry: dict[str, Any]) ->
                 "source_id": source_id,
                 "source_path": source_path,
                 "source_role": str(source.get("source_role") or ""),
+                "raw_text": raw_text,
                 "text": text,
             }
         )
@@ -4721,32 +4723,137 @@ def source_excerpt_records(sample_dir: Path, source_registry: dict[str, Any]) ->
     return records
 
 
+def markdown_section_for_range(text: str, range_label: str) -> str:
+    label = range_label.strip()
+    if not label:
+        return text
+    lines = text.splitlines()
+    selected: list[str] = []
+    in_section = False
+    matched_level = 0
+    heading_pattern = re.compile(r"^(#{1,6})\s+(.*)$")
+    for line in lines:
+        heading = heading_pattern.match(line)
+        if heading:
+            level = len(heading.group(1))
+            title = heading.group(2)
+            if in_section and level <= matched_level:
+                break
+            if label in title:
+                in_section = True
+                matched_level = level
+                selected.append(line)
+                continue
+        if in_section:
+            selected.append(line)
+    section = "\n".join(selected).strip()
+    if section:
+        return section
+    paragraphs = [chunk.strip() for chunk in re.split(r"\n\s*\n", text) if chunk.strip()]
+    body_paragraphs = [chunk for chunk in paragraphs if not chunk.lstrip().startswith("#")]
+    if body_paragraphs and ("开头" in label or label.lower() in {"paragraph 1", "para 1"}):
+        return body_paragraphs[0]
+    return ""
+
+
+def markdown_section_for_heading_path(text: str, heading_path: Any) -> str:
+    if isinstance(heading_path, list):
+        labels = [str(item).strip() for item in heading_path if str(item).strip()]
+    else:
+        labels = [part.strip() for part in str(heading_path or "").split("/") if part.strip()]
+    if not labels:
+        return ""
+    lines = text.splitlines()
+    selected: list[str] = []
+    in_section = False
+    matched_level = 0
+    heading_stack: list[tuple[int, str]] = []
+    heading_pattern = re.compile(r"^(#{1,6})\s+(.*)$")
+    for line in lines:
+        heading = heading_pattern.match(line)
+        if heading:
+            level = len(heading.group(1))
+            title = heading.group(2).strip()
+            if in_section and level <= matched_level:
+                break
+            heading_stack = [(existing_level, existing_title) for existing_level, existing_title in heading_stack if existing_level < level]
+            heading_stack.append((level, title))
+            stack_titles = [existing_title for _existing_level, existing_title in heading_stack]
+            if len(stack_titles) >= len(labels) and stack_titles[-len(labels) :] == labels:
+                in_section = True
+                matched_level = level
+                selected.append(line)
+                continue
+        if in_section:
+            selected.append(line)
+    return "\n".join(selected).strip()
+
+
+def text_for_location_anchor(text: str, raw_text: str, location: dict[str, Any]) -> str:
+    if location.get("range"):
+        section = markdown_section_for_range(text, location["range"])
+        if section:
+            return section
+    if location.get("heading_path"):
+        section = markdown_section_for_heading_path(raw_text, location["heading_path"])
+        if section:
+            return strip_markdown_title(section)
+    char_range = location.get("char_range")
+    if isinstance(char_range, list) and len(char_range) == 2:
+        start, end = char_range
+        if isinstance(start, int) and isinstance(end, int) and 0 <= start < end <= len(raw_text):
+            return raw_text[start:end].strip()
+    raise SystemExit(
+        "location-map location cannot be rendered without matching range, heading_path, or char_range: "
+        f"{location.get('location_id') or location.get('id') or location.get('ref_id') or '<unknown>'}"
+    )
+
+
 def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: list[dict[str, Any]]) -> list[dict[str, str]]:
     catalog = first_contract_payload(payloads, "readerlab.catalog-map.v1")
     location_map = first_contract_payload(payloads, "readerlab.location-map.v1")
+    material = catalog.get("material") if isinstance(catalog.get("material"), dict) else {}
+    material_type = str(material.get("type") or "").lower()
+    preserves_whole_source = material_type == "book" or material_type.startswith("book_")
     source_by_id = {excerpt["source_id"]: excerpt for excerpt in excerpts if excerpt.get("source_id")}
-    location_to_source: dict[str, str] = {}
+    location_by_id: dict[str, dict[str, Any]] = {}
     for location in location_map.get("locations") or []:
         if not isinstance(location, dict):
             continue
         location_id = location.get("location_id") or location.get("id") or location.get("ref_id")
         source_id = location.get("source_id")
         if location_id and source_id:
-            location_to_source[str(location_id)] = str(source_id)
+            location_by_id[str(location_id)] = {
+                "location_id": str(location_id),
+                "source_id": str(source_id),
+                "range": str(location.get("range") or ""),
+                "heading_path": location.get("heading_path") or [],
+                "char_range": location.get("char_range") or [],
+            }
 
     ordered: list[dict[str, str]] = []
     emitted_source_ids: set[str] = set()
-    last_source_id = ""
+    emitted_unit_sources: set[tuple[int, str]] = set()
     reading_units = ((catalog.get("catalog") or {}).get("reading_units") or []) if isinstance(catalog, dict) else []
-    for unit in reading_units:
+    for unit_index, unit in enumerate(reading_units, start=1):
         if not isinstance(unit, dict):
             continue
+        unit_title = reading_unit_title(unit, unit_index)
         for ref in unit.get("source_refs") or []:
-            source_id = location_to_source.get(str(ref)) or str(ref)
-            if source_id and source_id in source_by_id and source_id != last_source_id:
-                ordered.append(source_by_id[source_id])
+            ref_text = str(ref)
+            location = location_by_id.get(ref_text)
+            source_id = location["source_id"] if location else ref_text
+            unit_source_key = (unit_index, source_id if preserves_whole_source else ref_text)
+            if source_id and source_id in source_by_id and unit_source_key not in emitted_unit_sources:
+                excerpt = dict(source_by_id[source_id])
+                excerpt["unit_title"] = unit_title
+                if location and not preserves_whole_source:
+                    excerpt["location_id"] = ref_text
+                    excerpt["range"] = location["range"]
+                    excerpt["text"] = text_for_location_anchor(excerpt["text"], excerpt.get("raw_text") or excerpt["text"], location)
+                ordered.append(excerpt)
                 emitted_source_ids.add(source_id)
-                last_source_id = source_id
+                emitted_unit_sources.add(unit_source_key)
     for excerpt in excerpts:
         source_id = excerpt.get("source_id")
         if source_id not in emitted_source_ids:
@@ -4760,11 +4867,77 @@ def lines_to_markdown_list(items: Any, *, indent: str = "") -> list[str]:
     return [f"{indent}- {item}" for item in items]
 
 
+def reader_safe_markdown_list(items: Any, *, indent: str = "") -> list[str]:
+    if not isinstance(items, list) or not items:
+        return [f"{indent}- 未声明。"]
+    return [f"{indent}- {reader_safe_sentence(str(item), fallback='未声明。')}" for item in items]
+
+
 def markdown_quote(text: str) -> str:
     lines: list[str] = []
     for line in text.splitlines():
         lines.append(f"> {line}" if line else ">")
     return "\n".join(lines)
+
+
+def reader_safe_title(title: str, *, fallback: str) -> str:
+    cleaned = re.sub(r"\s+", " ", title.strip() or fallback).strip(" ：:-")
+    known_fixture_titles = {
+        "图书路线烟测样本": "图书路线",
+        "长文 / 报告 / 访谈稿路线烟测样本": "长文 / 报告 / 访谈稿路线",
+        "Longform local fragment proof": "Longform",
+    }
+    if cleaned in known_fixture_titles:
+        return known_fixture_titles[cleaned]
+    for suffix in ("烟测样本", " fixture", " local sample", " contract proof"):
+        if cleaned.endswith(suffix):
+            cleaned = cleaned[: -len(suffix)].strip(" ：:-")
+            break
+    return cleaned or fallback
+
+
+def reader_safe_sentence(text: str, *, fallback: str) -> str:
+    cleaned = text.strip() or fallback
+    replacements = [
+        ("这个样本", "这份材料"),
+        ("本样本", "这份材料"),
+        ("该样本", "这份材料"),
+        ("烟测样本", "材料"),
+        ("This is a smoke fixture; ", ""),
+        ("This fixture", "This material"),
+        ("this fixture", "this material"),
+        ("smoke fixture", "局部材料"),
+        ("fixture", "material"),
+    ]
+    for old, new in replacements:
+        cleaned = cleaned.replace(old, new)
+    return cleaned.strip() or fallback
+
+
+def chinese_scope_label(source_scope: dict[str, Any], unit_count: int) -> str:
+    coverage_status = str(source_scope.get("coverage_status") or "").lower()
+    if coverage_status in {"full", "full_book", "complete"}:
+        return "当前覆盖完整材料。"
+    if unit_count:
+        return f"当前只覆盖 {unit_count} 个阅读单元，不能代表整本书或整份材料的最终验收。"
+    return "当前覆盖范围有限，不能代表整本书或整份材料的最终验收。"
+
+
+def reading_unit_title(unit: dict[str, Any], index: int) -> str:
+    title = str(unit.get("title") or "").strip()
+    if title:
+        return reader_safe_title(title, fallback=f"第 {index} 个阅读单元")
+    return f"第 {index} 个阅读单元"
+
+
+def reader_safe_unit_role(status: Any) -> str:
+    raw = str(status or "").strip()
+    if not raw:
+        return "已覆盖单元"
+    lowered = raw.lower()
+    if "sample" in lowered or "fixture" in lowered or "smoke" in lowered:
+        return "已覆盖单元"
+    return reader_safe_sentence(raw, fallback="已覆盖单元")
 
 
 def render_status_block(payloads: list[dict[str, Any]]) -> list[str]:
@@ -4788,23 +4961,69 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
     reading_units = ((catalog.get("catalog") or {}).get("reading_units") or []) if isinstance(catalog, dict) else []
     unit = reading_units[0] if reading_units and isinstance(reading_units[0], dict) else {}
     deepread_card = deepread.get("local_deepread") if isinstance(deepread.get("local_deepread"), dict) else {}
-    title = str(unit.get("title") or deepread_card.get("title") or "局部长文阅读页")
+    material = catalog.get("material") if isinstance(catalog.get("material"), dict) else {}
+    material_title = reader_safe_title(str(material.get("title") or ""), fallback="这份材料")
+    title = reading_unit_title(unit, 1) if unit else reader_safe_title(str(deepread_card.get("title") or ""), fallback="章节正文陪读")
     route_hypothesis = (catalog.get("catalog") or {}).get("route_hypothesis") if isinstance(catalog, dict) else []
     not_yet = (catalog.get("catalog") or {}).get("not_yet_covered_units") if isinstance(catalog, dict) else []
-    lines = [
-        f"# 局部长文样本：{title}",
+    source_scope = catalog.get("source_scope") if isinstance(catalog.get("source_scope"), dict) else {}
+    scope_label = chinese_scope_label(source_scope, len(reading_units) or len(excerpts))
+    start_lines = [
+        f"# 开始阅读：{material_title}",
         "",
-        "## 这一节先看什么",
+        "## 你现在读到什么",
         "",
-        *lines_to_markdown_list(route_hypothesis),
+        scope_label,
         "",
-        "## 处理过的一手正文",
+        "## 从哪里开始",
+        "",
+        *reader_safe_markdown_list(route_hypothesis),
+        "",
+        "## 验收边界",
+        "",
+        "- 这只说明当前输出进入读者产品形态检查，不代表人工读者已经接受。",
+        "- 如果只覆盖章节节选，不能说成全书验收通过。",
         "",
     ]
-    for excerpt in excerpts:
+    map_lines = [
+        f"# 结构地图：{material_title}",
+        "",
+        "## 阅读单元",
+        "",
+    ]
+    for index, reading_unit in enumerate(reading_units, start=1):
+        if not isinstance(reading_unit, dict):
+            continue
+        map_lines.extend(
+            [
+                f"### {index}. {reading_unit_title(reading_unit, index)}",
+                "",
+                f"- 位置：第 {index} 个已覆盖阅读单元",
+                f"- 角色：{reader_safe_unit_role(reading_unit.get('status'))}",
+                "",
+            ]
+        )
+    if not reading_units:
+        map_lines.extend(["- 当前没有结构化阅读单元，只能作为局部正文阅读。", ""])
+    map_lines.extend(["## 尚未覆盖", "", *reader_safe_markdown_list(not_yet), ""])
+
+    lines = [
+        f"# 正文陪读：{title}",
+        "",
+        "## 这一章放在哪",
+        "",
+        scope_label,
+        "",
+        *reader_safe_markdown_list(route_hypothesis),
+        "",
+        "## 一手正文",
+        "",
+    ]
+    for index, excerpt in enumerate(excerpts, start=1):
+        unit_title = excerpt.get("unit_title") or f"第 {index} 个正文片段"
         lines.extend(
             [
-                f"### 来源：`{excerpt['source_path']}`",
+                f"### {unit_title}",
                 "",
                 markdown_quote(excerpt["text"]),
                 "",
@@ -4814,26 +5033,31 @@ def render_longform_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> 
         [
             "## AI 旁批",
             "",
-            str(deepread_card.get("reader_gain") or "这一页只提供局部阅读辅助，不能替代一手材料。"),
-            "",
-            "## 深读判断",
-            "",
-            f"- 主张：{deepread_card.get('claim') or '未声明'}",
-            f"- 边界：{deepread_card.get('boundary') or '未声明'}",
-            f"- 置信度：{deepread_card.get('confidence') or 'unknown'}",
+            reader_safe_sentence(
+                str(deepread_card.get("reader_gain") or ""),
+                fallback="这一页只提供局部阅读辅助，不能替代一手材料。",
+            ),
             "",
             "## 尚未覆盖",
             "",
-            *lines_to_markdown_list(not_yet),
+            *reader_safe_markdown_list(not_yet),
             "",
-            *render_status_block(payloads),
+            "## 阅读边界",
+            "",
+            "- 这是一份局部正文陪读；如果只覆盖章节节选，不能替代全书阅读判断。",
+            "- 机器检查和人工读者接受是两件事，人工接受需要单独记录。",
+            "",
             "## 可批注问题",
             "",
             "- 这个局部原则在你的材料或工作流里应该怎样被验证，而不是直接照搬？",
             "",
         ]
     )
-    return {"reader/01_局部长文阅读页.md": "\n".join(lines)}
+    return {
+        "reader/00_开始阅读.md": "\n".join(start_lines),
+        "reader/01_结构地图.md": "\n".join(map_lines),
+        "reader/02_章节正文陪读.md": "\n".join(lines),
+    }
 
 
 def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dict[str, str]:
@@ -4939,6 +5163,24 @@ def render_skill_reader(sample_dir: Path, payloads: list[dict[str, Any]]) -> dic
     }
 
 
+def sync_rendered_reader_display_paths(output_dir: Path, rendered_pages: dict[str, str]) -> None:
+    rendered_reader_paths = sorted(path for path in rendered_pages if Path(path).parts[:1] == ("reader",))
+    if not rendered_reader_paths:
+        return
+    for path in iter_contract_json_paths(output_dir):
+        try:
+            payload = json.loads(read_text(path))
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(payload, dict) or not contract_schema(payload).startswith("readerlab."):
+            continue
+        display = payload.get("display")
+        if not isinstance(display, dict):
+            continue
+        display["reader_facing"] = rendered_reader_paths
+        write_text(path, json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
+
+
 def render_contract_package_cmd(args: argparse.Namespace) -> None:
     sample_dir = Path(args.sample_dir).expanduser()
     output_dir = Path(args.output_dir).expanduser()
@@ -4967,6 +5209,7 @@ def render_contract_package_cmd(args: argparse.Namespace) -> None:
         raise SystemExit("sample_dir 缺少可渲染的 catalog-map 或 capability-map")
     for rel_path, text in rendered_pages.items():
         write_text(output_dir / rel_path, text.rstrip() + "\n")
+    sync_rendered_reader_display_paths(output_dir, rendered_pages)
     result = {
         "sample_dir": str(sample_dir),
         "output_dir": str(output_dir),
@@ -5016,42 +5259,121 @@ def collect_declared_source_paths(payloads: list[dict[str, Any]]) -> list[str]:
 
 
 def normalize_inline_text(value: str) -> str:
+    value = re.sub(r"(?m)^>\s?", "", value)
     return re.sub(r"\s+", " ", value).strip()
+
+
+def source_body_snippets(source_text: str) -> list[str]:
+    snippets: list[str] = []
+    normalized = normalize_inline_text(source_text)
+    if normalized:
+        snippets.append(normalized[:80])
+    for chunk in re.split(r"\n\s*\n", source_text):
+        text = normalize_inline_text(re.sub(r"^#{1,6}\s+", "", chunk.strip()))
+        if len(text) >= 30:
+            snippets.append(text[:80])
+    seen: set[str] = set()
+    unique: list[str] = []
+    for snippet in snippets:
+        if snippet and snippet not in seen:
+            unique.append(snippet)
+            seen.add(snippet)
+    return unique
 
 
 def first_hand_body_failures(target: Path, reader_paths: set[str], source_paths: list[str]) -> list[str]:
     failures: list[str] = []
     if not source_paths:
         return ["source-registry has no source_path for first-hand body check"]
-    source_snippets: list[tuple[str, str]] = []
+    source_snippets_by_path: dict[str, list[str]] = {}
     for source_path in source_paths:
         path = target / source_path
         if not path.is_file():
             failures.append(f"source excerpt not found for first-hand body check: {source_path}")
             continue
-        source_text = normalize_inline_text(strip_markdown_title(read_text(path)))
+        source_text = strip_markdown_title(read_text(path))
         if not source_text:
             failures.append(f"source excerpt is empty for first-hand body check: {source_path}")
             continue
-        source_snippets.append((source_path, source_text[:80]))
+        source_snippets_by_path[source_path] = source_body_snippets(source_text)
     if failures:
         return failures
-    body_found = False
+    combined_body = ""
     for reader_path in sorted(reader_paths):
         path = target / reader_path
         if not path.is_file():
             continue
         text = read_text(path)
-        body_match = re.search(r"^## 处理过的一手正文\s*(.*?)(?=^## |\Z)", text, re.M | re.S)
+        body_match = re.search(r"^## (?:处理过的一手正文|一手正文)\s*(.*?)(?=^## |\Z)", text, re.M | re.S)
         if not body_match:
             continue
-        body = body_match.group(1)
-        normalized_body = normalize_inline_text(body)
-        if any(source_path in body and snippet in normalized_body for source_path, snippet in source_snippets):
-            body_found = True
-            break
-    if not body_found:
+        combined_body += "\n" + body_match.group(1)
+    normalized_body = normalize_inline_text(combined_body)
+    if not normalized_body:
         failures.append("reader markdown missing actual first-hand body from source excerpts")
+        return failures
+    for source_path, snippets in source_snippets_by_path.items():
+        if not any(snippet in normalized_body for snippet in snippets):
+            failures.append(f"reader markdown missing actual first-hand body from source excerpt: {source_path}")
+    return failures
+
+
+def remove_first_hand_body_sections(text: str) -> str:
+    return re.sub(r"^## (?:处理过的一手正文|一手正文)\s*.*?(?=^## |\Z)", "", text, flags=re.M | re.S)
+
+
+def reader_product_shape_failures(target: Path, reader_paths: set[str], schemas: set[str]) -> list[str]:
+    failures: list[str] = []
+    reader_texts: dict[str, str] = {}
+    for reader_path in sorted(reader_paths):
+        path = target / reader_path
+        if path.is_file():
+            reader_texts[reader_path] = read_text(path)
+    if "readerlab.catalog-map.v1" not in schemas:
+        return failures
+
+    required = {
+        "reader/00_开始阅读.md": "start page",
+        "reader/01_结构地图.md": "structure map",
+        "reader/02_章节正文陪读.md": "body-first reading page",
+    }
+    for rel_path, label in required.items():
+        if rel_path not in reader_texts:
+            failures.append(f"book reader product shape missing {label}: {rel_path}")
+
+    combined = "\n".join(remove_first_hand_body_sections(text) for text in reader_texts.values())
+    forbidden_markers = [
+        "audit/",
+        "source-excerpts",
+        "source_id",
+        "fixture",
+        "machine_status",
+        "human_status",
+        "smoke fixture",
+        "repo-local fixture",
+        "local sample",
+        "contract proof",
+        "烟测",
+        "烟测样本",
+        "局部样本",
+    ]
+    lowered = combined.lower()
+    for marker in forbidden_markers:
+        haystack = lowered if marker.isascii() else combined
+        needle = marker.lower() if marker.isascii() else marker
+        if needle in haystack:
+            failures.append(f"book reader page contains non-reader-facing marker: {marker}")
+
+    body_page = reader_texts.get("reader/02_章节正文陪读.md", "")
+    if body_page:
+        body_position = body_page.find("## 一手正文")
+        companion_position = body_page.find("## AI 旁批")
+        if body_position == -1:
+            failures.append("book reader page missing body-first section: ## 一手正文")
+        if companion_position == -1:
+            failures.append("book reader page missing nearby companion section: ## AI 旁批")
+        if body_position != -1 and companion_position != -1 and body_position > companion_position:
+            failures.append("book reader page must show first-hand body before AI companion notes")
     return failures
 
 
@@ -5143,7 +5465,19 @@ def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
     )
     failures.extend(first_hand_failures)
 
-    has_capability_map = "readerlab.capability-map.v1" in {contract_schema(payload) for payload in payloads}
+    schemas = {contract_schema(payload) for payload in payloads}
+    if "readerlab.catalog-map.v1" in schemas:
+        product_shape_failures = reader_product_shape_failures(target, reader_paths, schemas)
+        gates.append(
+            {
+                "id": "reader_product_shape",
+                "status": "fail" if product_shape_failures else "pass",
+                "failures": product_shape_failures,
+            }
+        )
+        failures.extend(product_shape_failures)
+
+    has_capability_map = "readerlab.capability-map.v1" in schemas
     if has_capability_map:
         source_registry_payload = first_contract_payload(payloads, "readerlab.source-registry.v1")
         full_source_failures = full_source_evidence_failures(target, source_registry_payload)

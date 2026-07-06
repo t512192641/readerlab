@@ -159,31 +159,55 @@ def assert_in_order(text: str, markers: list[str], *, phase: str) -> None:
 
 
 def assert_reader_page(output_root: Path) -> dict[str, Any]:
-    reader_path = output_root / "reader" / "01_局部长文阅读页.md"
-    if not reader_path.is_file():
-        raise SmokeFailure("reader_evaluation", f"reader page missing: {reader_path}")
+    start_path = output_root / "reader" / "00_开始阅读.md"
+    map_path = output_root / "reader" / "01_结构地图.md"
+    reader_path = output_root / "reader" / "02_章节正文陪读.md"
+    for path in (start_path, map_path, reader_path):
+        if not path.is_file():
+            raise SmokeFailure("reader_evaluation", f"reader page missing: {path}")
+    start_text = start_path.read_text(encoding="utf-8")
+    map_text = map_path.read_text(encoding="utf-8")
     text = reader_path.read_text(encoding="utf-8")
     assert_in_order(
         text,
         [
-            "## 这一节先看什么",
+            "## 这一章放在哪",
             "按报告的论证推进",
             "按访谈的问答转折",
-            "## 处理过的一手正文",
-            "### 来源：`audit/source-excerpts/report-argument.md`",
-            "报告开头不是先给结论",
-            "## 证据组：两个现象指向同一个结构问题",
-            "### 来源：`audit/source-excerpts/interview-turn.md`",
-            "访谈对象在这里先否认",
+            "## 一手正文",
+            "### 报告论证：从现象张力到证据组",
+            "## 论证推进：先提出张力",
+            "信息量增加并没有自动带来判断质量",
+            "### 访谈转折：从同步很多到无法复原判断",
             "## 问答转折：从否认到承认限制",
+            "新人只看会议纪要",
             "## AI 旁批",
-            "这个样本把长文阅读单元建立在论证推进、证据组和访谈转折上",
-            "## 深读判断",
-            "## 状态边界",
+            "长文阅读单元建立在论证推进、证据组和访谈转折上",
+            "## 阅读边界",
         ],
         phase="reader_evaluation",
     )
+    assert_in_order(
+        start_text,
+        ["# 开始阅读", "## 你现在读到什么", "## 从哪里开始", "## 验收边界"],
+        phase="reader_evaluation",
+    )
+    assert_in_order(
+        map_text,
+        ["# 结构地图", "## 阅读单元", "报告论证：从现象张力到证据组", "访谈转折：从同步很多到无法复原判断", "## 尚未覆盖"],
+        phase="reader_evaluation",
+    )
     forbidden = [
+        "audit/",
+        "source-excerpts",
+        "source_id",
+        "machine_status",
+        "human_status",
+        "fixture",
+        "local sample",
+        "contract proof",
+        "烟测",
+        "样本",
         "reader_package_pass",
         "production ready",
         "20_AI陪读",
@@ -194,12 +218,14 @@ def assert_reader_page(output_root: Path) -> dict[str, Any]:
         "盲切",
     ]
     for marker in forbidden:
-        if marker in text:
+        if marker in "\n".join([start_text, map_text, text]):
             raise SmokeFailure("reader_evaluation", f"reader page contains forbidden marker: {marker}")
     return {
-        "reader_page": "reader/01_局部长文阅读页.md",
-        "body_before_companion": text.index("## 处理过的一手正文") < text.index("## AI 旁批"),
-        "argument_before_interview_turn": text.index("报告开头不是先给结论") < text.index("访谈对象在这里先否认"),
+        "start_page": "reader/00_开始阅读.md",
+        "structure_map": "reader/01_结构地图.md",
+        "reader_page": "reader/02_章节正文陪读.md",
+        "body_before_companion": text.index("## 一手正文") < text.index("## AI 旁批"),
+        "argument_before_interview_turn": text.index("信息量增加并没有自动带来判断质量") < text.index("新人只看会议纪要"),
         "companion_tied_to_reading_problem": "具体阅读问题" in text or "读者容易误读" in text,
     }
 

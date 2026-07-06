@@ -17,13 +17,13 @@
 - 稳定路径和验证命令：`docs/dev-state.md`
 - 耐久决策：`docs/decisions.md`
 
-旧 prompt、旧样章、旧报告、旧聊天摘要和单纯 `git diff` 不是当前事实源。当前 #2-#8 已由 PR #10-#16 合并落地；#9 / PR #17 是当前唯一 GitHub issue slice。
+旧 prompt、旧样章、旧报告、旧聊天摘要和单纯 `git diff` 不是当前事实源。当前 #2-#9 和 #18 已合并落地；#19 是当前 GitHub issue slice，#20 排队。
 
 ## 2026-07-05 当前执行更新
 
 PR #10/#11/#12/#13/#14/#15/#16 已合并到 `readerlab-elon-checkpoint`，对应 #2/#4/#3/#5/#6/#7/#8 的实现已经进入提交树。GitHub 上 #2/#3/#5/#6/#7/#8 曾因 auto-close 未触发而保持 open，已在本轮按对应 merged PR 手动关闭；#4 此前已关闭。当前 GitHub 队列只剩 #9：ReaderLab V2 installable release candidate 复核。
 
-当前 slice 是 #9。目标是增加一个可复跑的 RC 复核入口，证明当前最多可以进入 `installable_release_candidate`，同时明确不能声明 production ready、friend smoke passed 或 reader accepted。
+#9 已完成并进入提交树。RC 复核入口证明当前最多可以进入 `installable_release_candidate`，同时明确不能声明 production ready、friend smoke passed 或 reader accepted。
 
 ## 2026-07-06 产品形态纠偏
 
@@ -36,7 +36,7 @@ PR #10/#11/#12/#13/#14/#15/#16 已合并到 `readerlab-elon-checkpoint`，对应
 
 GSTACK `spec` / `review` 只作为复杂 Skill 压力样本，不是产品边界。任何规则必须能泛化到 Matt 等非 GSTACK Skill 包，禁止写 GSTACK 专项适配。
 
-#9 的交付边界：
+#9 的交付边界已完成：
 
 - 增加 RC 复核脚本，重新构建干净包并复跑 clean package audit、package smoke、install / discovery smoke、三类材料路线 smoke。
 - 增加 RC 复核说明，固定复核层次和状态口径。
@@ -44,9 +44,31 @@ GSTACK `spec` / `review` 只作为复杂 Skill 压力样本，不是产品边界
 - 结论必须仍然区分配置结构、runner contract、Quality Gate request、机器 reader-page smoke、controller / blocking controller、人工验收。
 - 当前通过只能说明结构 / runner / smoke 通过，不代表人工读者验收通过。
 
+## 2026-07-06 #19 图书 / 长文线接入进展
+
+#18 / PR #21 已合并，reader product shape gate 已固定。
+
+当前 slice 是 #19：把可安装包的图书 / 长文输出从 contract-renderer / sample 页面接回 reader-facing 产品形态。
+
+本轮已落地：
+
+- 图书 / 长文 renderer 输出三页 reader-facing 结构：
+  - `reader/00_开始阅读.md`
+  - `reader/01_结构地图.md`
+  - `reader/02_章节正文陪读.md`
+- reader-facing 页不再展示 `audit/`、`source-excerpts`、source id、machine status、human status、fixture/sample/proof/smoke 语言。
+- `eval-rendered-package` 新增 `reader_product_shape` gate，并允许一手正文在 blockquote 中被机器检查识别。
+- book-route、longform-route 和 book-longform proof fixtures 已升级为同一三页结构。
+- 本地真实材料验证使用用户提供的《底层逻辑》EPUB 第 1 章节选，只验证 chapter excerpt；输出位于 `/private/tmp/bottom-logic-readerlab-output/`，不提交书籍正文，不声明全书验收或人工验收。
+
+仍未完成：
+
+- #19 还未开 PR、未触发云端 Codex Review、未 merge。
+- #20 Skill / Engineering 线尚未开始本轮实现。
+
 ## Active Slice
 
-ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
+ReaderLab V2 当前处于 **reader product shape 接入阶段**。
 
 当前目标已经从“继续打磨单个工程材料 prototype”调整为 **ReaderLab V2 可安装、可分享的干净 Skill 包候选**。这不是正式发布阶段，也不能声明 production ready；它要求先把发布边界、历史防回归、包构建、安装 smoke 和三类材料路线验收重新组织清楚，再继续开发和 debug。
 
@@ -56,7 +78,7 @@ ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
 
 当前读者产品形态：`docs/readerlab-v2-reader-product-shape.md`。
 
-当前 RFC：`docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`。#2-#8 的 GitHub issue 开发链路已经完成；#9 / PR #17 仍按 PR -> Codex review -> feedback fixes -> ready-to-merge candidate -> merge 执行。
+当前 RFC：`docs/rfc/2026-07-04-readerlab-v2-installable-skill-package.md`。#2-#9 和 #18 的 GitHub issue 开发链路已经完成；#19 按本地开发 -> PR -> Codex review -> feedback fixes -> ready-to-merge candidate -> merge 执行。
 
 当前 GitHub issue 状态：
 
@@ -67,7 +89,10 @@ ReaderLab V2 当前处于 **发布形态明确后的重整开发阶段**。
 - #6 建立 ReaderLab V2 图书路线 smoke：closed，PR #14 merged。
 - #7 建立 ReaderLab V2 长文 / 报告 / 访谈稿路线 smoke：closed，PR #15 merged。
 - #8 建立 ReaderLab V2 Skill / 工程材料路线 smoke：closed，PR #16 merged。
-- #9 ReaderLab V2 installable release candidate 复核：open，PR #17 active。
+- #9 ReaderLab V2 installable release candidate 复核：closed，PR #17 merged。
+- #18 Fix ReaderLab V2 reader product shape gates：closed，PR #21 merged。
+- #19 Integrate Book / Longform reader product shape into installable package：open，active local branch.
+- #20 Integrate Skill / Engineering reader product shape into installable package：open，queued after #19.
 
 生产约束 / 验收约束分层仍然有效：验收矩阵保留为评价语言，但不自动进入生产 runner。验收发现的问题必须先反推到最小上游 fault stage，再判断能否形成稳定、低误伤、可执行的生产条件。
 
@@ -203,18 +228,9 @@ git diff --check
 
 ## Next Work Queue
 
-当前不要再回到 #2-#8，也不要先扩第三个 GSTACK Skill。权威下一步分两段：
+当前不要再回到 #2-#9 或 #18，也不要先扩第三个 GSTACK Skill。权威下一步是完成 #19，然后进入 #20：
 
-第一段，完成 #9 / PR #17：
-
-1. 处理 PR #17 的 Codex Review 反馈，直到当前 head commit 被 review 覆盖且没有 actionable blocker。
-2. PR #17 `mergeStateStatus: CLEAN` 且 Review 无 major issues 后，按用户授权可直接 merge。
-3. Merge 后关闭 #9，并删除 PR #17 heartbeat。
-4. 合并后状态最多推进到 `installable_release_candidate`，不能说 production ready、friend smoke passed 或 reader accepted。
-
-第二段，从工程链路转到读者产品形态接入。#18 由当前产品形态 gate PR 完成；后续不要回到 #18 重新做形态定义，直接推进两条并列集成 issue：
-
-1. #19 Book / Longform reader product shape integration：把可安装包的图书输出从 sample / contract renderer 形态接回正文优先章节陪读包。
+1. #19 Book / Longform reader product shape integration：把可安装包的图书输出从 sample / contract renderer 形态接回正文优先章节陪读包；本地实现和真实章节级验证完成后，开 PR 并触发云端 Codex Review。
 2. #20 Skill / Engineering reader product shape integration：把可安装包的 Skill 输出从 `import-skills` 清单形态接回净化正文主读页、技术负责人解说页和设计资产卡。
 
 两条线都必须先在本地实现和真实材料验证，再开 PR、唤醒云端 Codex Review、轮询 review 结果、按反馈本地修复并继续。通过声明必须说明是安装 / route smoke，还是 reader product shape，还是人工 reader accepted。
