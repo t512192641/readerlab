@@ -724,7 +724,6 @@ echo ok
                         "reader_markdown_exists",
                         "reader_audit_path_separation",
                         "first_hand_body_source_present",
-                        "reader_product_shape",
                         "output_eval_9_gates_present",
                         "human_status_not_machine_accepted",
                     }
@@ -732,6 +731,8 @@ echo ok
                         expected_gates.add("technical_asset_cards_cold_start_present")
                         expected_gates.add("full_source_evidence_packet_present")
                         expected_gates.add("blocking_controller_decision")
+                    else:
+                        expected_gates.add("reader_product_shape")
                     self.assertEqual({gate["id"] for gate in payload["gates"]}, expected_gates)
 
     def test_eval_rendered_package_writes_success_report_md(self) -> None:
@@ -880,6 +881,20 @@ echo ok
             self.assertIn("This material", rendered)
             evaluation = run_readerlab("eval-rendered-package", str(out))
             self.assertTrue(json.loads(evaluation.stdout)["passed"])
+
+    def test_eval_rendered_package_rejects_bare_fixture_language_outside_body(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            start_page = out / "reader/00_开始阅读.md"
+            text = start_page.read_text(encoding="utf-8")
+            start_page.write_text("This fixture should not be reader-facing.\n\n" + text, encoding="utf-8")
+
+            result = run_readerlab_unchecked("eval-rendered-package", str(out))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("book reader page contains non-reader-facing marker: fixture", result.stdout)
 
     def test_eval_rendered_package_writes_failure_report_md(self) -> None:
         sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"

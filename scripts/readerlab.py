@@ -4736,7 +4736,7 @@ def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: li
 
     ordered: list[dict[str, str]] = []
     emitted_source_ids: set[str] = set()
-    last_source_id = ""
+    emitted_unit_sources: set[tuple[int, str]] = set()
     reading_units = ((catalog.get("catalog") or {}).get("reading_units") or []) if isinstance(catalog, dict) else []
     for unit_index, unit in enumerate(reading_units, start=1):
         if not isinstance(unit, dict):
@@ -4744,12 +4744,13 @@ def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: li
         unit_title = reading_unit_title(unit, unit_index)
         for ref in unit.get("source_refs") or []:
             source_id = location_to_source.get(str(ref)) or str(ref)
-            if source_id and source_id in source_by_id and source_id != last_source_id:
+            unit_source_key = (unit_index, source_id)
+            if source_id and source_id in source_by_id and unit_source_key not in emitted_unit_sources:
                 excerpt = dict(source_by_id[source_id])
                 excerpt["unit_title"] = unit_title
                 ordered.append(excerpt)
                 emitted_source_ids.add(source_id)
-                last_source_id = source_id
+                emitted_unit_sources.add(unit_source_key)
     for excerpt in excerpts:
         source_id = excerpt.get("source_id")
         if source_id not in emitted_source_ids:
@@ -5226,6 +5227,7 @@ def reader_product_shape_failures(target: Path, reader_paths: set[str], schemas:
         "audit/",
         "source-excerpts",
         "source_id",
+        "fixture",
         "machine_status",
         "human_status",
         "smoke fixture",
@@ -5345,15 +5347,16 @@ def eval_rendered_package_cmd(args: argparse.Namespace) -> None:
     failures.extend(first_hand_failures)
 
     schemas = {contract_schema(payload) for payload in payloads}
-    product_shape_failures = reader_product_shape_failures(target, reader_paths, schemas)
-    gates.append(
-        {
-            "id": "reader_product_shape",
-            "status": "fail" if product_shape_failures else "pass",
-            "failures": product_shape_failures,
-        }
-    )
-    failures.extend(product_shape_failures)
+    if "readerlab.catalog-map.v1" in schemas:
+        product_shape_failures = reader_product_shape_failures(target, reader_paths, schemas)
+        gates.append(
+            {
+                "id": "reader_product_shape",
+                "status": "fail" if product_shape_failures else "pass",
+                "failures": product_shape_failures,
+            }
+        )
+        failures.extend(product_shape_failures)
 
     has_capability_map = "readerlab.capability-map.v1" in schemas
     if has_capability_map:

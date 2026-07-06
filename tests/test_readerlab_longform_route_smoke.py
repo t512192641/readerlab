@@ -225,6 +225,48 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
         self.assertLess(first_report, interview)
         self.assertLess(interview, second_report)
 
+    def test_renderer_preserves_adjacent_same_source_units(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "fixture"
+            output_root = Path(tmp) / "output"
+            shutil.copytree(FIXTURE, fixture)
+            catalog_path = fixture / "audit/contracts/catalog-map.v1.json"
+            catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+            catalog["catalog"]["reading_units"] = [
+                {
+                    "unit_id": "report-opening",
+                    "title": "报告开头",
+                    "status": "sample_argument_unit",
+                    "source_refs": ["loc-longform-report-tension"],
+                },
+                {
+                    "unit_id": "report-evidence",
+                    "title": "报告证据组",
+                    "status": "sample_argument_unit",
+                    "source_refs": ["loc-longform-report-evidence-group"],
+                },
+            ]
+            catalog["claims"][0]["source_refs"] = [
+                "loc-longform-report-tension",
+                "loc-longform-report-evidence-group",
+            ]
+            catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            subprocess.run(
+                ["python3", "scripts/readerlab.py", "render-contract-package", str(fixture), str(output_root)],
+                cwd=ROOT,
+                check=True,
+                text=True,
+                capture_output=True,
+            )
+            text = (output_root / "reader/02_章节正文陪读.md").read_text(encoding="utf-8")
+
+        first_title = text.index("### 报告开头")
+        second_title = text.index("### 报告证据组")
+        self.assertLess(first_title, second_title)
+        self.assertLess(text.index("报告开头不是先给结论", first_title), second_title)
+        self.assertIn("报告开头不是先给结论", text[second_title:])
+
     def test_shipped_fixture_reader_display_path_is_evaluable(self) -> None:
         result = subprocess.run(
             ["python3", "scripts/readerlab.py", "eval-rendered-package", str(FIXTURE)],
