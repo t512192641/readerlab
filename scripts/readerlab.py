@@ -4702,7 +4702,8 @@ def source_excerpt_records(sample_dir: Path, source_registry: dict[str, Any]) ->
         if not path.exists():
             failures.append(f"source excerpt not found: {source_path}")
             continue
-        text = strip_markdown_title(read_text(path))
+        raw_text = read_text(path)
+        text = strip_markdown_title(raw_text)
         if not text:
             failures.append(f"source excerpt is empty: {source_path}")
             continue
@@ -4711,6 +4712,7 @@ def source_excerpt_records(sample_dir: Path, source_registry: dict[str, Any]) ->
                 "source_id": source_id,
                 "source_path": source_path,
                 "source_role": str(source.get("source_role") or ""),
+                "raw_text": raw_text,
                 "text": text,
             }
         )
@@ -4757,26 +4759,50 @@ def markdown_section_for_range(text: str, range_label: str) -> str:
 def markdown_section_for_heading_path(text: str, heading_path: Any) -> str:
     if isinstance(heading_path, list):
         labels = [str(item).strip() for item in heading_path if str(item).strip()]
-        label = labels[-1] if labels else ""
     else:
-        label = str(heading_path or "").strip()
-    return markdown_section_for_range(text, label) if label else text
+        labels = [part.strip() for part in str(heading_path or "").split("/") if part.strip()]
+    if not labels:
+        return ""
+    lines = text.splitlines()
+    selected: list[str] = []
+    in_section = False
+    matched_level = 0
+    heading_stack: list[tuple[int, str]] = []
+    heading_pattern = re.compile(r"^(#{1,6})\s+(.*)$")
+    for line in lines:
+        heading = heading_pattern.match(line)
+        if heading:
+            level = len(heading.group(1))
+            title = heading.group(2).strip()
+            if in_section and level <= matched_level:
+                break
+            heading_stack = [(existing_level, existing_title) for existing_level, existing_title in heading_stack if existing_level < level]
+            heading_stack.append((level, title))
+            stack_titles = [existing_title for _existing_level, existing_title in heading_stack]
+            if len(stack_titles) >= len(labels) and stack_titles[-len(labels) :] == labels:
+                in_section = True
+                matched_level = level
+                selected.append(line)
+                continue
+        if in_section:
+            selected.append(line)
+    return "\n".join(selected).strip()
 
 
-def text_for_location_anchor(text: str, location: dict[str, Any]) -> str:
+def text_for_location_anchor(text: str, raw_text: str, location: dict[str, Any]) -> str:
     if location.get("range"):
         section = markdown_section_for_range(text, location["range"])
         if section:
             return section
     if location.get("heading_path"):
-        section = markdown_section_for_heading_path(text, location["heading_path"])
+        section = markdown_section_for_heading_path(raw_text, location["heading_path"])
         if section:
-            return section
+            return strip_markdown_title(section)
     char_range = location.get("char_range")
     if isinstance(char_range, list) and len(char_range) == 2:
         start, end = char_range
-        if isinstance(start, int) and isinstance(end, int) and 0 <= start < end <= len(text):
-            return text[start:end].strip()
+        if isinstance(start, int) and isinstance(end, int) and 0 <= start < end <= len(raw_text):
+            return raw_text[start:end].strip()
     raise SystemExit(
         "location-map location cannot be rendered without matching range, heading_path, or char_range: "
         f"{location.get('location_id') or location.get('id') or location.get('ref_id') or '<unknown>'}"
@@ -4824,7 +4850,7 @@ def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: li
                 if location and not preserves_whole_source:
                     excerpt["location_id"] = ref_text
                     excerpt["range"] = location["range"]
-                    excerpt["text"] = text_for_location_anchor(excerpt["text"], location)
+                    excerpt["text"] = text_for_location_anchor(excerpt["text"], excerpt.get("raw_text") or excerpt["text"], location)
                 ordered.append(excerpt)
                 emitted_source_ids.add(source_id)
                 emitted_unit_sources.add(unit_source_key)

@@ -273,6 +273,26 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
             fixture = Path(tmp) / "fixture"
             output_root = Path(tmp) / "output"
             shutil.copytree(FIXTURE, fixture)
+            source_path = fixture / "audit/source-excerpts/report-argument.md"
+            source_path.write_text(
+                """# 报告片段：从现象到论点
+
+## 误导章节
+
+### 论证推进：先提出张力
+
+这段文字不应该被选中。
+
+## 论证推进：先提出张力
+
+作者先指出张力：信息量增加并没有自动带来判断质量。真正的问题不是缺少材料，而是材料没有被组织成能让不同角色共同判断的证据链。
+
+## 证据组：两个现象指向同一个结构问题
+
+第一组证据来自周会纪要：同一个风险在三周里被重复提到，却没有归属人。
+""",
+                encoding="utf-8",
+            )
             location_path = fixture / "audit/location-map.v1.json"
             location_map = json.loads(location_path.read_text(encoding="utf-8"))
             for location in location_map["locations"]:
@@ -293,7 +313,7 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
         first_title = text.index("### 报告论证：从现象张力到证据组")
         second_title = text.index("### 报告论证：从现象张力到证据组", first_title + 1)
         self.assertLess(text.index("信息量增加并没有自动带来判断质量", first_title), second_title)
-        self.assertNotIn("报告开头不是先给结论", text[first_title:second_title])
+        self.assertNotIn("这段文字不应该被选中", text[first_title:second_title])
 
     def test_renderer_uses_char_range_when_longform_range_is_absent(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -301,9 +321,8 @@ class ReaderLabLongformRouteSmokeTests(unittest.TestCase):
             output_root = Path(tmp) / "output"
             shutil.copytree(FIXTURE, fixture)
             source_text = (fixture / "audit/source-excerpts/report-argument.md").read_text(encoding="utf-8")
-            stripped_source = "\n".join(source_text.strip().splitlines()[1:]).strip()
             snippet = "第一组证据来自周会纪要"
-            start = stripped_source.index(snippet)
+            start = source_text.index(snippet)
             end = start + len(snippet)
             location_path = fixture / "audit/location-map.v1.json"
             location_map = json.loads(location_path.read_text(encoding="utf-8"))
