@@ -823,6 +823,27 @@ echo ok
             self.assertIn("book reader product shape missing start page", result.stdout)
             self.assertIn("reader markdown missing actual first-hand body", result.stdout)
 
+    def test_eval_rendered_package_requires_each_declared_source_body(self) -> None:
+        sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "rendered"
+            run_readerlab("render-contract-package", str(sample), str(out))
+            body_page = out / "reader/02_章节正文陪读.md"
+            text = body_page.read_text(encoding="utf-8")
+            source_path = "audit/source-excerpts/longform-fragment.md"
+            source_text = readerlab.strip_markdown_title((out / source_path).read_text(encoding="utf-8"))
+            for snippet in readerlab.source_body_snippets(source_text):
+                text = text.replace(snippet, "")
+            body_page.write_text(text, encoding="utf-8")
+
+            result = run_readerlab_unchecked("eval-rendered-package", str(out))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                f"reader markdown missing actual first-hand body from source excerpt: {source_path}",
+                result.stdout,
+            )
+
     def test_render_contract_package_updates_copied_reader_display_paths(self) -> None:
         sample = ROOT / "tests/fixtures/readerlab/contract-validator-proof-v0/book-longform-sample"
 

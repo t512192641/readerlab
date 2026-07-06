@@ -4752,7 +4752,8 @@ def order_excerpts_by_catalog_units(excerpts: list[dict[str, str]], payloads: li
     catalog = first_contract_payload(payloads, "readerlab.catalog-map.v1")
     location_map = first_contract_payload(payloads, "readerlab.location-map.v1")
     material = catalog.get("material") if isinstance(catalog.get("material"), dict) else {}
-    preserves_whole_source = str(material.get("type") or "").lower() == "book"
+    material_type = str(material.get("type") or "").lower()
+    preserves_whole_source = material_type == "book" or material_type.startswith("book_")
     source_by_id = {excerpt["source_id"]: excerpt for excerpt in excerpts if excerpt.get("source_id")}
     location_by_id: dict[str, dict[str, str]] = {}
     for location in location_map.get("locations") or []:
@@ -5220,7 +5221,7 @@ def first_hand_body_failures(target: Path, reader_paths: set[str], source_paths:
     failures: list[str] = []
     if not source_paths:
         return ["source-registry has no source_path for first-hand body check"]
-    source_snippets: list[str] = []
+    source_snippets_by_path: dict[str, list[str]] = {}
     for source_path in source_paths:
         path = target / source_path
         if not path.is_file():
@@ -5230,10 +5231,10 @@ def first_hand_body_failures(target: Path, reader_paths: set[str], source_paths:
         if not source_text:
             failures.append(f"source excerpt is empty for first-hand body check: {source_path}")
             continue
-        source_snippets.extend(source_body_snippets(source_text))
+        source_snippets_by_path[source_path] = source_body_snippets(source_text)
     if failures:
         return failures
-    body_found = False
+    combined_body = ""
     for reader_path in sorted(reader_paths):
         path = target / reader_path
         if not path.is_file():
@@ -5242,13 +5243,14 @@ def first_hand_body_failures(target: Path, reader_paths: set[str], source_paths:
         body_match = re.search(r"^## (?:处理过的一手正文|一手正文)\s*(.*?)(?=^## |\Z)", text, re.M | re.S)
         if not body_match:
             continue
-        body = body_match.group(1)
-        normalized_body = normalize_inline_text(body)
-        if any(snippet in normalized_body for snippet in source_snippets):
-            body_found = True
-            break
-    if not body_found:
+        combined_body += "\n" + body_match.group(1)
+    normalized_body = normalize_inline_text(combined_body)
+    if not normalized_body:
         failures.append("reader markdown missing actual first-hand body from source excerpts")
+        return failures
+    for source_path, snippets in source_snippets_by_path.items():
+        if not any(snippet in normalized_body for snippet in snippets):
+            failures.append(f"reader markdown missing actual first-hand body from source excerpt: {source_path}")
     return failures
 
 
