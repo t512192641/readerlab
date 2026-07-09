@@ -25,6 +25,18 @@ ReaderLab V3 的目标是把一次阅读变成可复利的认知资产：材料�
 5. Phase 4：用埃隆书 `022_丰饶时代` 和 `gstack/browse` 做完整成品阅读试点；`gstack/spec` 只保留为 Phase 1 校准与资产卡冷启动基线。
 6. Phase 5：经用户确认后回写资产层，并形成 v1 可声称 / 不可声称清单。
 
+## 当前进度（2026-07-09）
+
+- Phase 0：完成。独立 worktree、分支和 `v3/` 骨架已建立。
+- Phase 1：关闭。图书线收敛为“页边批注死刑制 + 章末延伸讲堂”；H03 讲堂体金标已入库。
+- Phase 2：repo-local 骨架完成。五登记簿 schema、种子和查重协议已存在；尚未写入 LifeAtlas 正式区。
+- Phase 3：repo-local 骨架完成。Skill 入口、双引擎、裁判、模板和范例库已存在；这不等于完整成品已经验证。
+- Phase 4：预检修正完成，完整试点尚未运行。下一步是分别交付 `022_丰饶时代` 图书成品页和 `gstack/browse` 完整 Skill 包，并按 `v3/standards/phase4-pilot-definition.md` 验收，单线最多三轮。
+- Phase 5：未开始。只有两个试点经用户确认后，才允许回写资产层并验证跨材料串联。
+- Phase 6：暂缓到 v1.1，当前不做 Obsidian 批注回复循环。
+
+当前完成的是“方法、协议和验收闸门”，尚未证明完整 ReaderLab 成品稳定成立。后续进度讨论以本节、`v3/standards/calibration-log.md` 和 `v3/standards/phase4-pilot-definition.md` 为准。
+
 ## 当前边界
 
 - 只在本 worktree 的 `v3/` 下新增 V3 材料。
