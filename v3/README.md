@@ -22,7 +22,7 @@ ReaderLab V3 的目标是把一次阅读变成可复利的认知资产：材料�
 2. Phase 1：先写图书批注与 Skill 工艺两份评分标准，并用金标样张校准。
 3. Phase 2：建立五个资产层登记簿 schema。
 4. Phase 3：编写纯 prompt 会话层 Skill 包与模板。
-5. Phase 4：用埃隆书章节和 `gstack/spec/SKILL.md` 做双试点校准。
+5. Phase 4：用埃隆书 `022_丰饶时代` 和 `gstack/browse` 做完整成品阅读试点；`gstack/spec` 只保留为 Phase 1 校准与资产卡冷启动基线。
 6. Phase 5：经用户确认后回写资产层，并形成 v1 可声称 / 不可声称清单。
 
 ## 当前边界

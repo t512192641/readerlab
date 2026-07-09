@@ -16,6 +16,18 @@ AI 方法层采用 E-R-D-D：Evidence -> Route -> Deepen -> Decide。旧结构�
 
 ## 启动顺序
 
+### V3 覆盖入口
+
+当当前分支是 `v3/cognitive-compounding`，或任务文件位于 `v3/` 下时，以下规则覆盖本节其余的旧线启动顺序：
+
+1. 先读 `AGENTS.md`、`v3/README.md`、`v3/standards/phase4-pilot-definition.md`。
+2. 再按任务路由读 `v3/skill/SKILL.md`、对应引擎、评分标准、模板和范例库；审计骨架问题读 `v3/standards/phase2-phase3-audit-packet.md`。
+3. V3 是纯 prompt / Markdown 试点：不得把旧 `scripts/readerlab.py`、旧 Python validator 或旧 `docs/` 线当作 V3 的生成或验收入口，除非任务明确回到旧线。
+4. Phase 4 固定为图书线 `022_丰饶时代` 与 Skill 线 `gstack/browse`；`gstack/spec` 仅保留为 Phase 1 校准和资产卡冷启动基线，不是 Phase 4 试点对象。
+5. V3 的来源地图、素材卡、裁判记录、冷启动和复现证据留在 audit；读者页只保留正文、陪读内容和沉淀候选，不能变成逐文件导读或审计报告。
+
+其余分支和旧线仍按下面的原启动顺序执行。
+
 每个新会话先读最小真相层：
 
 1. `AGENTS.md`
@@ -88,3 +100,5 @@ python3 scripts/readerlab.py validate /Users/tianqiang/LifeAtlas/200_原始资�
 ```
 
 当前阶段 `--require-complete` 应该失败，因为整包还没有完成。
+
+上列命令属于旧 Python / validator 线，不构成 V3 的生成或验收命令；V3 以 `v3/standards/phase4-pilot-definition.md` 的人工阅读、复现和冷启动闸门为准。
