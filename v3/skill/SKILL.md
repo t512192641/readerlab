@@ -1,98 +1,97 @@
 ---
 name: readerlab-v3
-description: Produce ReaderLab V3 reading packages with body-first source pages, strict book annotation filtering, skill-engineering interpretation, asset candidates, and audit-separated quality gates.
+description: Route a source-first ReaderLab V3 run through book or Skill protocols, isolated evidence, role-sized contracts, independent quality gates, and honest scope claims.
 ---
 
 # ReaderLab V3
 
-## Boundary
+## 边界
 
-This is a repo-local draft Skill for ReaderLab V3. Do not install or copy it to global Skill locations without explicit approval.
+这是 repo-local 草案，不得未经批准安装或复制到全局 Skill 目录。V3 只使用 Prompt / Markdown；不写生成用 Python，不改原始材料，不自动写入 LifeAtlas 正式登记簿。
 
-ReaderLab V3 turns complex material into Chinese reading packages for LifeAtlas and Obsidian. It keeps source text first, puts AI help beside it, and keeps audit evidence outside reader pages.
+五条总原则、两线专属规则和冲突优先级以 `v3/standards/constraint-architecture.md` 为唯一权威。本文件只负责运行声明、路由、最小上下文分发和停止闸门。
 
-## Product Rule
+## 开始前必须声明运行模式
 
-Visible means selected. A book-side annotation below `有用` must not appear on a reader page. If no annotation survives, keep active points in audit and deliver chapter-end lecture paragraphs instead. A short honest lecture beats a page of 60-point notes.
+每次运行先复制 `v3/skill/templates/run-manifest.md`，在读取生成产物前填好 `run_id`、模式、原始来源、样本确认、任务上限和新输出目录。
 
-## Run Modes
+### Fresh run
 
-- Mid-tier mode: run mechanical coverage fully, publish only strictly selected annotations, and use chapter-end lecture paragraphs as the main value carrier.
-- Strong-tier mode: run the full annotation seat with richer material cards, 5-7 routes per anchor, and a broader expert seat.
-- Quality note: zero instant-death items and no visible low-value notes are the promise. Stable `惊艳` density depends on model tier, source richness, and material depth.
+- 用途：验证当前流程能否从登记的原始材料独立工作。
+- 必须重新读取原始来源，重新执行声明范围内的正文/source map、识别、候选、核查、裁判、装配和验收。
+- 旧 URL 只能作定位线索；旧净化正文、source map、候选、audit、reader page、资产卡和复现结果不得作为输入。
+- 使用全新唯一输出目录；`reused_generated_artifacts` 必须为 `none`。
 
-## Inputs
+### Revision run
 
-Required:
+- 用途：修补已有产物的明确局部问题，不验证从零运行。
+- 必须声明复用基线、实际重跑阶段、未重跑阶段和不可声称范围。
+- 只能声称实际局部修订及对应检查通过，不能升级为完整流程通过。
 
-- Source material path.
-- Material type: book or longform, or Skill and engineering material.
-- Clean source body. Old generated companion blocks, command wrappers, and audit logs are not source anchors.
-- Asset-layer ledgers from `v3/asset-layer/`, if already confirmed by the user.
+## 必需输入
 
-Recommended:
+- 原始材料路径、材料类型和本次实际读取范围。
+- `fresh | revision` 运行模式与新输出目录。
+- 样本是否已由用户或当前权威文件固定；若选择会影响结论，先停下请用户确认。
+- 已确认可用的资产层登记簿只读路径；生成期间不得回写。
+- 本次任务数上限和需要通过的独立验收门。
 
-- Book protocol: `v3/skill/protocols/book-engine.md`.
-- Skill protocol: `v3/skill/protocols/skill-engine.md`.
-- Judge protocol: `v3/skill/protocols/judge.md`.
-- Example library: `v3/skill/examples/`.
-- Reader templates: `v3/skill/templates/`.
+## 路由与最小上下文
 
-## Routing
+主控读取：
 
-Use the book engine when the source is a book chapter, long article, essay, transcript, or other reading-first material.
+- `v3/standards/constraint-architecture.md`
+- 本次 run manifest
+- `v3/skill/protocols/judge.md`
+- `v3/skill/roles/orchestrator.md`
 
-Use the Skill engine when the source is an agent Skill, workflow, engineering method, script-backed process, architecture note, or code-heavy operational package.
+图书或长文的主控 / 线路编排只追加：
 
-Mixed materials keep two tracks: body-first reading pages for the human-readable source, and technical lead pages for mechanisms, tradeoffs, data flow, and reusable design assets.
+- `v3/skill/protocols/book-engine.md`
 
-## Workflow
+Skill 或工程材料的主控 / 线路编排只追加：
 
-1. Read the relevant asset ledgers, but do not write back to them during generation.
-2. Normalize the source into a body-first reading unit.
-3. Route to the book engine or Skill engine.
-4. Produce audit-only evidence: material cards, candidate alternatives, self-check records, cold-start records, and judge notes.
-5. Run the judge protocol.
-6. Assemble reader pages from templates.
-7. Put new tools, reading moves, open questions, and asset cards into the package's distillation candidate section only.
-8. Wait for user confirmation before writing any durable LifeAtlas ledger.
+- `v3/skill/protocols/skill-engine.md`
 
-## Book Output
+单个执行 Agent 只接收：主控提供的本线路两条专属规则摘录、`v3/skill/roles/` 下自己的合同、完成任务所需输入，以及该角色确需填写的模板。它不读取整份线路协议。
 
-Reader-facing book pages may include:
+只有裁判或回归执行者可按 case 读取 `v3/standards/regression-suite.md` 及其证据。普通作者、成文者和冷读者不得加载历史病历、另一条线路协议或完整生产日志。
 
-- chapter title and source path
-- source body or anchor cluster
-- surviving annotations only
-- chapter-end lecture paragraphs when annotations do not survive
-- distillation candidate links
+## 调度与成本
 
-They must not include:
+- 图书标准章的无早停计划为 11 个 Agent 任务；合法 0 候选会跳过无输入任务，`actual_tasks` 不凑数。短文 5—7，深读档 15—18；Skill 标准为 5 个任务，简单材料可降为 3—4。
+- 正文整理、最终成文和冷读是低分歧任务，不增加投票 Agent。
+- 图书盲区检查并入认知裁判，不另计任务；扩容仅因首轮认知皆普通、事实冲突会改变结论、裁判发现关键遗漏、Skill 需要额外事实核查或用户明确要求。
+- 未经用户同意不得突破 manifest 声明的任务上限。
 
-- material cards
-- blind evaluations
-- scores
-- dark-seed labels
-- prompt text
-- internal ids
-- protocol terms
+## 运行顺序
 
-## Skill Output
+1. 主控验证原始来源、模式、输出隔离、样本确认和任务预算。
+2. 按材料类型分发线路规则摘录和单个角色合同，不把全套规则塞给所有执行者。
+3. 证据产物只写本次 run 的 audit / contracts / eval 目录；读者页只从已通过项目装配。
+4. 依次执行事实、绝对价值、读者理解、冷启动/复现和运行完整性中适用的独立门。
+5. 在 manifest 逐项记录实际执行、跳过、复用、验证结果、可声称和不可声称。
+6. 等用户确认后，才可写回任何耐久资产或进入下一阶段。
 
-Reader-facing Skill pages must separate:
+## 输出边界
 
-- source body: cleaned source text that preserves purpose, trigger, flow, constraints, outputs, and failure conditions
-- product interpretation: why the workflow exists and what problem it solves
-- technical interpretation: how it works, why it is designed this way, and what would break if simplified
-- reusable assets: cards that can stand alone for a cold-start agent
+- 图书页：完整正文，以及 0 个或多个通过绝对价值门的单认知陪读单元；不得用数量或固定槽位逼迫上页。
+- Skill 主读页：可追溯净化正文；产品/技术解释不得混入正文。
+- 技术负责人页：机制、取舍、失败与迁移边界；不复制主读页摘要。
+- audit：source map、候选、事实、裁判、回归、冷读、运行与复用证据。
+- 沉淀只产生候选；未经用户确认不得成为正式资产。
 
-## Stop Conditions
+## 完成声明
 
-Stop and report instead of publishing reader pages if:
+报告必须分开列出：真实读取的输入、实际执行阶段、通过的门、复用内容、未执行/失败项、待用户验收项。机器检查、局部页、资产卡冷启动或 revision 都不能升级为完整 ReaderLab 流程通过。
 
-- the only available anchors are generated companion blocks
-- facts for a material card cannot be written clearly
-- book annotations all lose to calibrated gold examples
-- Skill asset cards cannot pass cold-start standards
-- reader pages would expose audit or calibration material
-- the run would claim Phase closure before user verdicts return
+## 停止条件
+
+遇到以下任一项，停止并报告：
+
+- 原始来源或 source map 无法确认；fresh 将复用旧生成产物或污染旧输出。
+- 样本选择会改变结论但尚未获用户确认。
+- 事实冲突会改变可见判断；锁定正例与硬负例无法同时守住。
+- 任务预算需超限，或只能靠继续堆禁令维持协议。
+- 读者页将泄漏 audit，或局部结果将被扩大成完整流程声明。
+- 准备生成真实内容、进入下一 Phase 或写回 LifeAtlas，但用户尚未批准。
