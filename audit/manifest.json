@@ -4,7 +4,7 @@
   "files": [
     {
       "path": "AGENTS.md",
-      "sha256": "4d88b211b7711c7b11d1c46c15dfa1e833e0fab9dafb13e1f2251aea9282d557"
+      "sha256": "2db26cb8800acfe1220958d5cace4f937a17e0541797c8d89d5105de0090dd6a"
     },
     {
       "path": "ENGINEERING-LESSONS.md",
@@ -21,6 +21,10 @@
     {
       "path": "README.md",
       "sha256": "d9d65d57392cb457a901139a1949e77cc42487ebe4cd05cfac573199ae631a0c"
+    },
+    {
+      "path": "blueprints/EXECUTION-ROADMAP.md",
+      "sha256": "f1de509b60bb33dbef153be50a12caf61fd02c25cd1cf882f594382cf9d1d700"
     },
     {
       "path": "blueprints/PIPELINE-MAP.md",
