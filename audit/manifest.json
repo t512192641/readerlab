@@ -24,7 +24,7 @@
     },
     {
       "path": "blueprints/EXECUTION-ROADMAP.md",
-      "sha256": "21ce9773df5d26bb6735d2e37a103a536a9cc6cc599299a3d88398d86688be1a"
+      "sha256": "b99731fe01c1af18561b1417d2b49950156ac06ab6fdf64966d259bfed21c9eb"
     },
     {
       "path": "blueprints/PIPELINE-MAP.md",
@@ -32,7 +32,7 @@
     },
     {
       "path": "contracts/GLOSSARY.md",
-      "sha256": "c5f62b629257eff607c5e6b48e6afc747e400dbe746542f7c25c14cfd4efb86b"
+      "sha256": "333b3eb4840cea16b7f5049fe7a8dbba09ddedb4ecb2b37479c1c13129737844"
     },
     {
       "path": "examples/book/negative/fresh-demo-five-rejected.md",

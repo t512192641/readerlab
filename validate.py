@@ -110,7 +110,10 @@ TEMPLATE_REQUIRED_TEXT = (
     "`accepted`",
     "不得先做后报",
 )
-GLOSSARY_STATUS_HEADER = "---\nstatus: draft\nscope: long-term\n---\n"
+GLOSSARY_STATUS_HEADERS = (
+    "---\nstatus: draft\nscope: long-term\n---\n",
+    "---\nstatus: frozen\nscope: long-term\n---\n",
+)
 GLOSSARY_CORE_HEADINGS = ("知识卡", "承重主张", "锚点")
 GLOSSARY_REVIEW_STATES = ("锁定", "淘汰", "退回", "待补证据")
 GLOSSARY_INCREMENT_HEADINGS = (
@@ -532,8 +535,10 @@ def validate_t0_3_contracts(
     glossary_text = read_regular_utf8(glossary, errors, project_root)
     if glossary_text is None:
         return
-    if not glossary_text.startswith(GLOSSARY_STATUS_HEADER):
-        errors.append("contracts/GLOSSARY.md must have draft/long-term status header")
+    if not glossary_text.startswith(GLOSSARY_STATUS_HEADERS):
+        errors.append(
+            "contracts/GLOSSARY.md must have draft-or-frozen/long-term status header"
+        )
 
     for heading in GLOSSARY_CORE_HEADINGS:
         if glossary_text.count(f"## {heading}\n") != 1:

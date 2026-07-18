@@ -21,7 +21,7 @@
 ## 会话护栏
 
 - **任务卡制**：派发前写自包含任务卡，逐项列出目标、读取白名单、交付路径、具体约束引用和完成判据。会话无状态，仓库是唯一记忆；会话间不得口头传递状态。T2.2 的隔离复合例外只允许主控准备／评分侧与鲜会话 judge 通过 frozen packet、brief、answers、key 与 baseline 文件交接。
-- **状态头分层**：未来合同、透镜和执行方法卡应带 `status: draft|frozen` 与 `scope: long-term|run-only`。T1 合同和种子透镜先以 `draft` 提交；M1 通过后，主控只在语义不变时改为 `frozen`，并创建 `contracts/M1-freeze-receipt.md` 的独立 gate commit。M1 receipt 必须逐文件绑定所有冻结 T1 合同和 `lenses/T1.9-seed-lenses.md` v1 的 SHA-256；需语义修改则先返工；无 receipt 不得进入 T2。T2 完成后，M2 创建 `diagnostics/M2-gate-receipt.md`，记录实际 `contracts/M1-freeze-receipt.md` 的 SHA-256，并逐文件绑定 `diagnostics/T2.1-r01-r08.md`、`diagnostics/T2.2-judge-baseline.md`、`lenses/T2.3-seed-lenses-v2.md` 及冻结 T1.8 合同的 SHA-256。阶段 3 每张卡先核对 M2 所记 M1 receipt SHA-256 与实际 M1 receipt 一致，再用实际 M1 receipt 核对本卡所读 T1 合同 hash；T3.3／T3.6 再用 M2 receipt 核对所读 T2 正文 hash，最后才读取正文。receipt 只证明身份与 hash，不复制、引用或替代正文。只有产品事实变化才修改 `PRODUCT-DECISIONS.md`，并由产品负责人决定。临时方案只能活在 `runs/`。
+- **状态头分层**：未来合同、透镜和执行方法卡应带 `status: draft|frozen` 与 `scope: long-term|run-only`。T0.3 术语表、T1 合同和种子透镜先以 `draft` 提交；M1 通过后，主控只在语义不变时改为 `frozen`，并创建 `contracts/M1-freeze-receipt.md` 的独立 gate commit。M1 receipt 必须逐文件绑定 `contracts/GLOSSARY.md`、所有冻结 T1 合同和 `lenses/T1.9-seed-lenses.md` v1 的 SHA-256；需语义修改则先返工；无 receipt 不得进入 T2。T2 完成后，M2 创建 `diagnostics/M2-gate-receipt.md`，记录实际 `contracts/M1-freeze-receipt.md` 的 SHA-256，并逐文件绑定 `diagnostics/T2.1-r01-r08.md`、`diagnostics/T2.2-judge-baseline.md`、`lenses/T2.3-seed-lenses-v2.md` 及冻结 T1.8 合同的 SHA-256。阶段 3 每张卡先核对 M2 所记 M1 receipt SHA-256 与实际 M1 receipt 一致，再用实际 M1 receipt 核对本卡所读 T1 合同 hash；T3.3／T3.6 再用 M2 receipt 核对所读 T2 正文 hash，最后才读取正文。receipt 只证明身份与 hash，不复制、引用或替代正文。只有产品事实变化才修改 `PRODUCT-DECISIONS.md`，并由产品负责人决定。临时方案只能活在 `runs/`。
 - **一任务一提交**：每任务恰好一次本地提交；验收查看 diff。
 - **决议一致性检查**：主控对每项交付逐条核对相关产品决议。
 
@@ -104,7 +104,7 @@ Writer 只接收锁定卡。一张卡只交付一条定稿标题和一份定稿�
 
 ## 里程碑、波次与卡壳协议
 
-- **M1 基座与合同组装**：阶段 0、1 提交后，核验术语、合同衔接和决议一致性。通过时主控仅冻结语义未变的 T1 合同与种子透镜，写 `contracts/M1-freeze-receipt.md` 并逐文件记录所有 T1 合同及 T1.9 v1 的 SHA-256，然后独立提交；需语义改动先返工。无 receipt 不得进阶段 2。
+- **M1 基座与合同组装**：阶段 0、1 提交后，核验术语、合同衔接和决议一致性。通过时主控仅冻结语义未变的 `contracts/GLOSSARY.md`、T1 合同与种子透镜，写 `contracts/M1-freeze-receipt.md` 并逐文件记录 `contracts/GLOSSARY.md`、所有 T1 合同及 T1.9 v1 的 SHA-256，然后独立提交；需语义改动先返工。无 receipt 不得进阶段 2。
 - **M2 裁判上岗**：T2.1、T2.2、T2.3 完成后，核验盲测、绝对判断与成绩。通过时主控写 `diagnostics/M2-gate-receipt.md`，记录实际 M1 receipt 的 SHA-256，并逐文件绑定并冻结 T2.1、T2.2 baseline、T2.3 v2 与冻结 T1.8 合同的 SHA-256；无 receipt 不得进阶段 3。
 - **M3 首次真实运行冻结**：T3.6 报告后、产品判词前，核验 execution／semantic；随后产品负责人判词。
 - **M4 复盘**：T4.1 receipt 冻结 ledger 后，核验 registry 与回填，并与产品负责人决定下一轮。
