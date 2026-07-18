@@ -1,0 +1,98 @@
+{
+  "schema": "readerlab-clean-seed-manifest/v1",
+  "purpose": "只验证当前候选包内部文件；不读取、不引用、不依赖任何旧项目目录。",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "4d88b211b7711c7b11d1c46c15dfa1e833e0fab9dafb13e1f2251aea9282d557"
+    },
+    {
+      "path": "ENGINEERING-LESSONS.md",
+      "sha256": "a70fa8c9e0e026a98107e8756909872f57565f10cf6c75ca7c43157aea1a005a"
+    },
+    {
+      "path": "GOLD-STANDARDS.md",
+      "sha256": "ca87c53ff671f7f9243dc61b519eea89ab69d70c9f5ee25a9de58f3b49b6ee68"
+    },
+    {
+      "path": "PRODUCT-DECISIONS.md",
+      "sha256": "91b0e13b72e013e288be31f0ecdd452b94a2be3b80499f7a52c2d851f62d1f46"
+    },
+    {
+      "path": "README.md",
+      "sha256": "d9d65d57392cb457a901139a1949e77cc42487ebe4cd05cfac573199ae631a0c"
+    },
+    {
+      "path": "blueprints/PIPELINE-MAP.md",
+      "sha256": "02120e6a39599b9cc5b1c7e4462b504d4863ce12be94028e89dddfeff48c3729"
+    },
+    {
+      "path": "examples/book/negative/fresh-demo-five-rejected.md",
+      "sha256": "6e52141085602851e644be4f8841abd4fbb1305e8e56ead32efa1083c234303b"
+    },
+    {
+      "path": "examples/book/negative/harari-chapter01-rejected.md",
+      "sha256": "f6e050611f578aa62ceb2c0beaf18fbb53bc476bb6df6259f7ffbdc6cb04866c"
+    },
+    {
+      "path": "examples/book/negative/innovation-failure-rejected.md",
+      "sha256": "d7e6507ef8eedf4ad0b80d0a50a1aae77d18f3bbf0975c2f115bcabe446de977"
+    },
+    {
+      "path": "examples/book/negative/lens-core-e1-rejected.md",
+      "sha256": "49fb54d32afc9a42fd11146668609c3809b33429afd0a23264ed9c2c907e3662"
+    },
+    {
+      "path": "examples/book/negative/lens-core-e2-rejected.md",
+      "sha256": "af022f6b3a5b57c8d6e4ebc91d8ae473fe27f1ba96a4ff6c69bf3b342d7aeaf1"
+    },
+    {
+      "path": "examples/book/negative/lens-core-e3-rejected.md",
+      "sha256": "7ae512ada094005cf24a0943faab00f39b8000ac54dbe83d2517b13f6d9f89a5"
+    },
+    {
+      "path": "examples/book/negative/phase4-centralized-rejected.md",
+      "sha256": "cda357e619321d8649669c3f404e0ff13e784a9f91792872d2629bc2060cbcf7"
+    },
+    {
+      "path": "examples/book/negative/phase4-nearby-rejected.md",
+      "sha256": "c41f24aa9efefce0814cdc29bb4b7fd2f63f6d29adb6030e4b193dd37a9b13a1"
+    },
+    {
+      "path": "examples/book/positive/automatic-driving-safe-state.md",
+      "sha256": "61c4962cddbedaf201cefc69b3925a292b9f38b147c3cb88d6cd673f8ba965da"
+    },
+    {
+      "path": "examples/book/positive/civilization-lifecycle.md",
+      "sha256": "15f80f71e2452d6adec9d0c89d67e03ba8fa37d211828ee4bb2962a450890804"
+    },
+    {
+      "path": "examples/book/positive/demand-pooling.md",
+      "sha256": "925cdd81638fdd398802083efe739e1b6b024b7abbdde7e58d3e753c0b59f1be"
+    },
+    {
+      "path": "examples/book/reference/book-kernel-h3-borderline.md",
+      "sha256": "07078e3627ac2ea24b98f2d62c8fff58fc1b578499f3427b0235ad1effe4d0d7"
+    },
+    {
+      "path": "examples/book/reference/premortem-non-gold.md",
+      "sha256": "682274e8873574e6ab83f6a8ef696f30041ae702160bf04d530dbefa961817fb"
+    },
+    {
+      "path": "examples/book/reference/r01-r08-borderline.md",
+      "sha256": "cf5f7e01e02d2c68bd5f14fde1773d4b9cd0b100a38417b243fc5fed92520238"
+    },
+    {
+      "path": "examples/skills/positive/gstack-browse.md",
+      "sha256": "424bbd836c11a0e121fc31225ae6031f9a8721d8a020b13a8c2aca81767a8df4"
+    },
+    {
+      "path": "examples/skills/reference/gstack-spec-borderline.md",
+      "sha256": "05565f71f2d95474c0460f4980114d4379ac6932896b94f3c075c2a38b701897"
+    },
+    {
+      "path": "references/BOOK-AND-SKILLS-METHODS.md",
+      "sha256": "beecca336b6b2c0da47cb98efc90c54d35a3cb87cf07f1b12d6f9b864836b354"
+    }
+  ]
+}
