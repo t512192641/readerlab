@@ -31,6 +31,10 @@
       "sha256": "02120e6a39599b9cc5b1c7e4462b504d4863ce12be94028e89dddfeff48c3729"
     },
     {
+      "path": "contracts/GLOSSARY.md",
+      "sha256": "c5f62b629257eff607c5e6b48e6afc747e400dbe746542f7c25c14cfd4efb86b"
+    },
+    {
       "path": "examples/book/negative/fresh-demo-five-rejected.md",
       "sha256": "6e52141085602851e644be4f8841abd4fbb1305e8e56ead32efa1083c234303b"
     },
@@ -101,6 +105,10 @@
     {
       "path": "references/BOOK-AND-SKILLS-METHODS.md",
       "sha256": "beecca336b6b2c0da47cb98efc90c54d35a3cb87cf07f1b12d6f9b864836b354"
+    },
+    {
+      "path": "taskcards/TEMPLATE.md",
+      "sha256": "b8f7f178509ae66e5564e278920048b87347155963c85a6a9a75a5937c4c7b2e"
     },
     {
       "path": "tools/run.py",

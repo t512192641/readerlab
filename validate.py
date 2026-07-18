@@ -6,6 +6,7 @@ from __future__ import annotations
 import ast
 import hashlib
 import json
+import os
 import re
 import stat
 import subprocess
@@ -26,6 +27,10 @@ SUPPORT_DOCS = {
     "blueprints/PIPELINE-MAP.md",
     "blueprints/EXECUTION-ROADMAP.md",
     "references/BOOK-AND-SKILLS-METHODS.md",
+}
+T0_3_FILES = {
+    "contracts/GLOSSARY.md",
+    "taskcards/TEMPLATE.md",
 }
 RUNTIME_FILES = {"tools/run.py"}
 MATERIAL_GUARD_FILES = {"materials/.gitignore"}
@@ -82,6 +87,51 @@ TASK_SECTION_NAMES = (
     "硬约束",
     "完成判据",
 )
+TASK_SECTION_HEADINGS = tuple(
+    f"## {index}. {heading}"
+    for index, heading in enumerate(TASK_SECTION_NAMES, start=1)
+)
+TEMPLATE_REQUIRED_TEXT = (
+    "taskcards/<任务编号>-BLOCKER.md",
+    "首次写入后",
+    "权限仅覆盖本节逐路径列出的交付文件",
+    "具体 owner 章节或路线任务条目",
+    "纯技术缺口",
+    "主控技术门",
+    "必须在汇报中对产品负责人可见",
+    "涉及产品判断、材料授权、产品事实或决议冲突",
+    "只能由产品负责人决定",
+    "主控不得代答",
+    "### 可机械检查",
+    "### 主控核验",
+    "`implemented`",
+    "`integrated`",
+    "`verified`",
+    "`accepted`",
+    "不得先做后报",
+)
+GLOSSARY_STATUS_HEADER = "---\nstatus: draft\nscope: long-term\n---\n"
+GLOSSARY_CORE_HEADINGS = ("知识卡", "承重主张", "锚点")
+GLOSSARY_REVIEW_STATES = ("锁定", "淘汰", "退回", "待补证据")
+GLOSSARY_INCREMENT_HEADINGS = (
+    "机制",
+    "模型",
+    "方法",
+    "预测",
+    "权衡",
+    "可迁移关系",
+    "高手指点",
+    "跨行业视角",
+)
+GLOSSARY_EVIDENCE_HEADINGS = ("execution", "semantic", "product")
+GLOSSARY_TANDEM_BOUNDARY = "- `tandem-comments` 的精确锚点格式：`unknown`。"
+GLOSSARY_REQUIRED_TEXT = (
+    "不拥有产品决议",
+    "不固定未来 schema、字段、阈值、聚合、失败处理或锚点格式",
+    "必须整体保留",
+    "Writer 不选题、不添事实",
+    "生产端不得读取 `GOLD-STANDARDS.md` 与 `examples/`",
+)
 STATEFUL_ROOTS = ("contracts", "lenses", "diagnostics")
 STATE_HEADER = re.compile(
     r"\A(?:---\n)?status: (?:draft|frozen)\nscope: (?:long-term|run-only)\n(?:---\n)?"
@@ -99,14 +149,72 @@ FORBIDDEN_TEXT = (
 )
 
 
-def digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+def read_regular_bytes(
+    path: Path, errors: list[str], project_root: Path
+) -> bytes | None:
+    label = path.relative_to(project_root).as_posix()
+    if path.parent.is_symlink():
+        errors.append(f"symlinked parent directory forbidden: {label}")
+        return None
+    try:
+        mode = path.lstat().st_mode
+    except OSError as error:
+        errors.append(f"missing or unreadable file: {label}: {error}")
+        return None
+    if stat.S_ISLNK(mode):
+        errors.append(f"symlink forbidden: {label}")
+        return None
+    if not stat.S_ISREG(mode):
+        errors.append(f"regular file required: {label}")
+        return None
+
+    descriptor = -1
+    try:
+        descriptor = os.open(
+            path,
+            os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0),
+        )
+        opened_mode = os.fstat(descriptor).st_mode
+        if not stat.S_ISREG(opened_mode):
+            errors.append(f"regular file required: {label}")
+            return None
+        with os.fdopen(descriptor, "rb") as handle:
+            descriptor = -1
+            return handle.read()
+    except OSError as error:
+        errors.append(f"cannot read regular file: {label}: {error}")
+        return None
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+
+
+def read_regular_utf8(
+    path: Path, errors: list[str], project_root: Path
+) -> str | None:
+    content = read_regular_bytes(path, errors, project_root)
+    if content is None:
+        return None
+    try:
+        return content.decode("utf-8")
+    except UnicodeError as error:
+        label = path.relative_to(project_root).as_posix()
+        errors.append(f"file is not valid UTF-8: {label}: {error}")
+        return None
+
+
+def has_exact_taskcard_sections(text: str) -> bool:
+    return (
+        re.findall(r"^## .+$", text, flags=re.MULTILINE)
+        == list(TASK_SECTION_HEADINGS)
+    )
 
 
 def owned_files() -> list[Path]:
     return sorted(
         [ROOT / name for name in TOP_DOCS]
         + [ROOT / name for name in SUPPORT_DOCS]
+        + [ROOT / name for name in T0_3_FILES]
         + [ROOT / name for name in RUNTIME_FILES]
         + [ROOT / name for name in MATERIAL_GUARD_FILES]
         + list((ROOT / "examples").rglob("*.md")),
@@ -114,19 +222,94 @@ def owned_files() -> list[Path]:
     )
 
 
-def build_manifest() -> dict[str, object]:
+def build_manifest(errors: list[str]) -> dict[str, object] | None:
     files = owned_files()
+    entries: list[dict[str, str]] = []
+    for path in files:
+        content = read_regular_bytes(path, errors, ROOT)
+        if content is None:
+            continue
+        entries.append(
+            {
+                "path": path.relative_to(ROOT).as_posix(),
+                "sha256": hashlib.sha256(content).hexdigest(),
+            }
+        )
+    if errors:
+        return None
     return {
         "schema": "readerlab-clean-seed-manifest/v1",
         "purpose": "只验证当前候选包内部文件；不读取、不引用、不依赖任何旧项目目录。",
-        "files": [
-            {
-                "path": path.relative_to(ROOT).as_posix(),
-                "sha256": digest(path),
-            }
-            for path in files
-        ],
+        "files": entries,
     }
+
+
+def validate_manifest_parent(errors: list[str]) -> None:
+    parent = MANIFEST.parent
+    label = parent.relative_to(ROOT).as_posix()
+    try:
+        mode = parent.lstat().st_mode
+    except OSError as error:
+        errors.append(
+            f"missing or unreadable manifest parent directory: {label}: {error}"
+        )
+        return
+    if stat.S_ISLNK(mode):
+        errors.append(f"symlinked manifest parent directory forbidden: {label}")
+    elif not stat.S_ISDIR(mode):
+        errors.append(f"manifest parent must be a directory: {label}")
+
+
+def write_manifest_atomically(text: str) -> None:
+    temporary_name = f".{MANIFEST.name}.tmp"
+    parent_descriptor = -1
+    descriptor = -1
+    created = False
+    try:
+        parent_descriptor = os.open(
+            MANIFEST.parent,
+            os.O_RDONLY
+            | getattr(os, "O_DIRECTORY", 0)
+            | getattr(os, "O_NOFOLLOW", 0),
+        )
+        descriptor = os.open(
+            temporary_name,
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL,
+            0o644,
+            dir_fd=parent_descriptor,
+        )
+        created = True
+        with os.fdopen(
+            descriptor, "w", encoding="utf-8", newline="\n"
+        ) as handle:
+            descriptor = -1
+            handle.write(text)
+        os.replace(
+            temporary_name,
+            MANIFEST.name,
+            src_dir_fd=parent_descriptor,
+            dst_dir_fd=parent_descriptor,
+        )
+        created = False
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+        if created and parent_descriptor >= 0:
+            try:
+                os.unlink(temporary_name, dir_fd=parent_descriptor)
+            except FileNotFoundError:
+                pass
+        if parent_descriptor >= 0:
+            os.close(parent_descriptor)
+
+
+def validate_forbidden_text(
+    path: Path, text: str, errors: list[str]
+) -> None:
+    label = path.relative_to(ROOT)
+    for forbidden in FORBIDDEN_TEXT:
+        if forbidden in text:
+            errors.append(f"legacy reference {forbidden!r} in {label}")
 
 
 def stateful_files() -> list[Path]:
@@ -326,6 +509,75 @@ def validate_t36_freeze_contract(errors: list[str]) -> None:
         errors.append(f"T3.6 two-freeze contract text missing: {missing}")
 
 
+def validate_t0_3_contracts(
+    errors: list[str], project_root: Path = ROOT
+) -> None:
+    template = project_root / "taskcards/TEMPLATE.md"
+    template_text = read_regular_utf8(template, errors, project_root)
+    if template_text is not None:
+        if not has_exact_taskcard_sections(template_text):
+            errors.append(
+                "taskcard template sections must be exact, unique, and ordered"
+            )
+        missing_template_text = sorted(
+            text for text in TEMPLATE_REQUIRED_TEXT if text not in template_text
+        )
+        if missing_template_text:
+            errors.append(
+                "taskcard template contract text missing: "
+                f"{missing_template_text}"
+            )
+
+    glossary = project_root / "contracts/GLOSSARY.md"
+    glossary_text = read_regular_utf8(glossary, errors, project_root)
+    if glossary_text is None:
+        return
+    if not glossary_text.startswith(GLOSSARY_STATUS_HEADER):
+        errors.append("contracts/GLOSSARY.md must have draft/long-term status header")
+
+    for heading in GLOSSARY_CORE_HEADINGS:
+        if glossary_text.count(f"## {heading}\n") != 1:
+            errors.append(
+                f"contracts/GLOSSARY.md must define {heading!r} exactly once"
+            )
+    for state_name in GLOSSARY_REVIEW_STATES:
+        state_pattern = rf"^- \*\*{re.escape(state_name)}\*\*：.+$"
+        if len(re.findall(state_pattern, glossary_text, flags=re.MULTILINE)) != 1:
+            errors.append(
+                "contracts/GLOSSARY.md must define review state "
+                f"{state_name!r} exactly once"
+            )
+    for heading in GLOSSARY_INCREMENT_HEADINGS:
+        if glossary_text.count(f"### {heading}\n") != 1:
+            errors.append(
+                "contracts/GLOSSARY.md must define increment type "
+                f"{heading!r} exactly once"
+            )
+    for heading in GLOSSARY_EVIDENCE_HEADINGS:
+        if glossary_text.count(f"### {heading}\n") != 1:
+            errors.append(
+                "contracts/GLOSSARY.md must distinguish evidence layer "
+                f"{heading!r} exactly once"
+            )
+
+    tandem_lines = [
+        line for line in glossary_text.splitlines() if "tandem-comments" in line
+    ]
+    if tandem_lines != [GLOSSARY_TANDEM_BOUNDARY]:
+        errors.append(
+            "contracts/GLOSSARY.md must keep the exact tandem-comments "
+            "anchor format unknown"
+        )
+    missing_glossary_text = sorted(
+        text for text in GLOSSARY_REQUIRED_TEXT if text not in glossary_text
+    )
+    if missing_glossary_text:
+        errors.append(
+            "contracts/GLOSSARY.md boundary text missing: "
+            f"{missing_glossary_text}"
+        )
+
+
 def _run_materials_only(project_root: Path) -> int:
     errors: list[str] = []
     validate_material_guard(errors, project_root)
@@ -335,6 +587,17 @@ def _run_materials_only(project_root: Path) -> int:
         print("\n".join(errors))
         return 1
     print("materials validation PASSED")
+    return 0
+
+
+def _run_t0_3_only(project_root: Path) -> int:
+    errors: list[str] = []
+    validate_t0_3_contracts(errors, project_root)
+    if errors:
+        print("T0.3 validation FAILED")
+        print("\n".join(errors))
+        return 1
+    print("T0.3 validation PASSED")
     return 0
 
 
@@ -348,13 +611,24 @@ def main() -> int:
             return 2
         return _run_materials_only(Path(sys.argv[2]).resolve())
 
-    if "--write-manifest" in sys.argv:
-        MANIFEST.write_text(
-            json.dumps(build_manifest(), ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
+    if "--check-t0-3-root" in sys.argv:
+        if len(sys.argv) != 3 or sys.argv[1] != "--check-t0-3-root":
+            print(
+                "usage: validate.py --check-t0-3-root <project-root>",
+                file=sys.stderr,
+            )
+            return 2
+        return _run_t0_3_only(Path(sys.argv[2]).resolve())
 
+    write_manifest = "--write-manifest" in sys.argv
     errors: list[str] = []
+    validate_t0_3_contracts(errors)
+    validate_manifest_parent(errors)
+    if errors:
+        print("clean seed validation FAILED")
+        print("\n".join(errors))
+        return 1
+
     top_docs = {path.name for path in ROOT.glob("*.md")}
     if top_docs != TOP_DOCS:
         errors.append(f"top-level Markdown mismatch: {sorted(top_docs)}")
@@ -411,12 +685,7 @@ def main() -> int:
             errors.append(f"symlink forbidden: {taskcard.relative_to(ROOT)}")
             continue
         text = taskcard.read_text(encoding="utf-8")
-        expected_sections = [
-            f"## {index}. {heading}"
-            for index, heading in enumerate(TASK_SECTION_NAMES, start=1)
-        ]
-        observed_sections = re.findall(r"^## .+$", text, flags=re.MULTILINE)
-        if observed_sections != expected_sections:
+        if not has_exact_taskcard_sections(text):
             errors.append(
                 f"taskcard sections must be exact, unique, and ordered: "
                 f"{taskcard.relative_to(ROOT)}"
@@ -441,11 +710,14 @@ def main() -> int:
         if not STATE_HEADER.search(text):
             errors.append(f"missing status/scope header: {path.relative_to(ROOT)}")
 
-    constrained_files = files + [MANIFEST]
+    constrained_files = set(files)
     if taskcard_root.is_dir() and not taskcard_root.is_symlink():
-        constrained_files.extend(taskcard_root.glob("*.md"))
-    constrained_files.extend(stateful_files())
-    for path in constrained_files:
+        constrained_files.update(taskcard_root.glob("*.md"))
+    constrained_files.update(stateful_files())
+    for path in sorted(
+        constrained_files,
+        key=lambda item: item.relative_to(ROOT).as_posix(),
+    ):
         if not path.is_file():
             errors.append(f"missing file: {path.relative_to(ROOT)}")
             continue
@@ -453,9 +725,7 @@ def main() -> int:
             errors.append(f"symlink forbidden: {path.relative_to(ROOT)}")
             continue
         text = path.read_text(encoding="utf-8")
-        for forbidden in FORBIDDEN_TEXT:
-            if forbidden in text:
-                errors.append(f"legacy reference {forbidden!r} in {path.relative_to(ROOT)}")
+        validate_forbidden_text(path, text, errors)
 
     for path in [ROOT / name for name in TOP_DOCS | SUPPORT_DOCS]:
         text = path.read_text(encoding="utf-8")
@@ -472,15 +742,20 @@ def main() -> int:
             if not resolved.is_file():
                 errors.append(f"broken link in {path.name}: {target}")
 
-    if not MANIFEST.is_file():
-        errors.append("audit/manifest.json missing")
-    else:
-        manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
-        if manifest != build_manifest():
-            errors.append("internal manifest does not match current clean-seed files")
-        manifest_text = MANIFEST.read_text(encoding="utf-8")
-        if re.search(r"(?:/Users/|/private/|readerlab-v3|readerlab-rebuild)", manifest_text):
-            errors.append("manifest contains a legacy or absolute path")
+    if not write_manifest:
+        manifest_text = read_regular_utf8(MANIFEST, errors, ROOT)
+        manifest: object | None = None
+        if manifest_text is not None:
+            try:
+                manifest = json.loads(manifest_text)
+            except json.JSONDecodeError as error:
+                errors.append(f"audit/manifest.json is not valid JSON: {error}")
+            manifest_errors: list[str] = []
+            expected_manifest = build_manifest(manifest_errors)
+            errors.extend(manifest_errors)
+            if expected_manifest is not None and manifest != expected_manifest:
+                errors.append("internal manifest does not match current clean-seed files")
+            validate_forbidden_text(MANIFEST, manifest_text, errors)
 
     all_paths = [
         path.relative_to(ROOT).as_posix()
@@ -499,15 +774,35 @@ def main() -> int:
     if cache_paths:
         errors.append(f"Python cache artifacts found: {cache_paths}")
 
+    manifest_text_to_write: str | None = None
+    if write_manifest and not errors:
+        manifest_errors: list[str] = []
+        manifest = build_manifest(manifest_errors)
+        errors.extend(manifest_errors)
+        if manifest is not None:
+            manifest_text_to_write = (
+                json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
+            )
+            validate_forbidden_text(MANIFEST, manifest_text_to_write, errors)
+
     if errors:
         print("clean seed validation FAILED")
         print("\n".join(errors))
         return 1
 
+    if manifest_text_to_write is not None:
+        try:
+            write_manifest_atomically(manifest_text_to_write)
+        except OSError as error:
+            print("clean seed validation FAILED")
+            print(f"cannot write audit/manifest.json atomically: {error}")
+            return 1
+
     print(
         "clean seed validation PASSED: "
         f"3 authority documents, 2 project entry documents, "
         f"{len(SUPPORT_DOCS)} derived support documents, {len(TASK_IDS)} taskcards, "
+        f"{len(T0_3_FILES)} T0.3 contract documents, "
         f"{len(example_files)} readable example files, {len(RUNTIME_FILES)} runtime script, "
         f"{len(MATERIAL_GUARD_FILES)} material guard, "
         "0 legacy paths, 0 opaque assets, internal-only manifest."
