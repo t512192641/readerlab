@@ -1,0 +1,8 @@
+# Copyrighted and source materials are ignored by default.
+*
+!*/
+!/.gitignore
+!.gitkeep
+!authorization.md
+!**/.gitkeep
+!**/authorization.md

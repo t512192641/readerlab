@@ -24,7 +24,7 @@
     },
     {
       "path": "blueprints/EXECUTION-ROADMAP.md",
-      "sha256": "f1de509b60bb33dbef153be50a12caf61fd02c25cd1cf882f594382cf9d1d700"
+      "sha256": "9147277c7a239b7eae1405a9beeb726297bed4c0cb3b80311c0870eb8df79cf4"
     },
     {
       "path": "blueprints/PIPELINE-MAP.md",
@@ -95,8 +95,16 @@
       "sha256": "05565f71f2d95474c0460f4980114d4379ac6932896b94f3c075c2a38b701897"
     },
     {
+      "path": "materials/.gitignore",
+      "sha256": "39255fdd722c51aade6850a53d91c7e868d933cafc3c63d2ff7f0b5ef6502ea0"
+    },
+    {
       "path": "references/BOOK-AND-SKILLS-METHODS.md",
       "sha256": "beecca336b6b2c0da47cb98efc90c54d35a3cb87cf07f1b12d6f9b864836b354"
+    },
+    {
+      "path": "tools/run.py",
+      "sha256": "a2081a62946fd1d074611ca0bcd3c372c13620315aeacfc8703ba1273301d97d"
     }
   ]
 }

@@ -3,11 +3,14 @@
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import json
 import re
+import stat
+import subprocess
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 
 ROOT = Path(__file__).resolve().parent
@@ -24,6 +27,18 @@ SUPPORT_DOCS = {
     "blueprints/EXECUTION-ROADMAP.md",
     "references/BOOK-AND-SKILLS-METHODS.md",
 }
+RUNTIME_FILES = {"tools/run.py"}
+MATERIAL_GUARD_FILES = {"materials/.gitignore"}
+EXPECTED_MATERIALS_GITIGNORE = (
+    "# Copyrighted and source materials are ignored by default.\n"
+    "*\n"
+    "!*/\n"
+    "!/.gitignore\n"
+    "!.gitkeep\n"
+    "!authorization.md\n"
+    "!**/.gitkeep\n"
+    "!**/authorization.md\n"
+)
 REQUIRED_DIRECTORIES = {
     "contracts",
     "runs",
@@ -92,6 +107,8 @@ def owned_files() -> list[Path]:
     return sorted(
         [ROOT / name for name in TOP_DOCS]
         + [ROOT / name for name in SUPPORT_DOCS]
+        + [ROOT / name for name in RUNTIME_FILES]
+        + [ROOT / name for name in MATERIAL_GUARD_FILES]
         + list((ROOT / "examples").rglob("*.md")),
         key=lambda path: path.relative_to(ROOT).as_posix(),
     )
@@ -133,7 +150,204 @@ def required_tree_symlinks() -> list[Path]:
     return links
 
 
+def validate_run_script(errors: list[str]) -> None:
+    run_script = ROOT / "tools/run.py"
+    if not run_script.is_file():
+        errors.append("tools/run.py missing")
+        return
+    if run_script.is_symlink():
+        errors.append("symlink forbidden: tools/run.py")
+        return
+    if stat.S_IMODE(run_script.stat().st_mode) & 0o111 != 0o111:
+        errors.append("tools/run.py must be executable by owner, group, and others")
+
+    try:
+        tree = ast.parse(run_script.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, SyntaxError) as error:
+        errors.append(f"tools/run.py is not valid Python: {error}")
+        return
+
+    imports: set[str] = set()
+    strings: set[str] = set()
+    subcommands: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            imports.update(alias.name.split(".", 1)[0] for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            imports.add(node.module.split(".", 1)[0])
+        elif isinstance(node, ast.Constant) and isinstance(node.value, str):
+            strings.add(node.value)
+        if (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "add_parser"
+            and node.args
+            and isinstance(node.args[0], ast.Constant)
+            and isinstance(node.args[0].value, str)
+        ):
+            subcommands.add(node.args[0].value)
+
+    allowed_imports = set(sys.stdlib_module_names) | {"__future__"}
+    nonstandard_imports = sorted(imports - allowed_imports)
+    if nonstandard_imports:
+        errors.append(f"tools/run.py has non-stdlib imports: {nonstandard_imports}")
+    if subcommands != {"new", "freeze", "check"}:
+        errors.append(
+            "tools/run.py subcommands must be exactly new/freeze/check: "
+            f"{sorted(subcommands)}"
+        )
+
+    required_literals = {
+        "new",
+        "freeze",
+        "check",
+        "raw",
+        "locked",
+        "final",
+        "acceptance",
+        "production-freeze.json",
+        "acceptance-freeze.json",
+        "judge-predictions.md",
+        "acceptance-report.md",
+        "product-verdicts.md",
+        "freeze-receipt.md",
+        "final/freeze-receipt.md",
+        "production=open",
+        "Single-writer contract",
+        "material missing / 材料丢失",
+        "material changed / 材料被改",
+    }
+    missing_literals = sorted(
+        literal
+        for literal in required_literals
+        if not any(literal in value for value in strings)
+    )
+    if missing_literals:
+        errors.append(f"tools/run.py contract literals missing: {missing_literals}")
+
+
+def validate_material_guard(
+    errors: list[str], project_root: Path = ROOT
+) -> None:
+    materials = project_root / "materials"
+    guard = materials / ".gitignore"
+    if materials.is_symlink():
+        errors.append("symlink forbidden: materials")
+        return
+    if guard.is_symlink():
+        errors.append("symlink forbidden: materials/.gitignore")
+        return
+    if not guard.is_file():
+        errors.append("materials/.gitignore missing")
+        return
+    try:
+        text = guard.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        errors.append(f"materials/.gitignore is not readable UTF-8: {error}")
+        return
+    if text != EXPECTED_MATERIALS_GITIGNORE:
+        errors.append("materials/.gitignore does not match the source-material guard")
+
+    nested_guards = sorted(
+        path
+        for path in materials.rglob(".gitignore")
+        if path != guard
+    )
+    for path in nested_guards:
+        errors.append(
+            "nested materials .gitignore forbidden: "
+            f"{path.relative_to(project_root).as_posix()}"
+        )
+
+
+def _allowed_material_index_path(path: str) -> bool:
+    reference = PurePosixPath(path)
+    if not reference.parts or reference.parts[0] != "materials":
+        return False
+    if path == "materials/.gitignore":
+        return True
+    return reference.name in {".gitkeep", "authorization.md"}
+
+
+def validate_material_index(
+    errors: list[str], project_root: Path = ROOT
+) -> None:
+    try:
+        result = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(project_root),
+                "ls-files",
+                "--cached",
+                "-z",
+                "--",
+                "materials",
+            ],
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+    except OSError as error:
+        errors.append(f"cannot inspect Git index for materials: {error}")
+        return
+    if result.returncode != 0:
+        detail = result.stderr.decode("utf-8", errors="replace").strip()
+        errors.append(f"cannot inspect Git index for materials: {detail}")
+        return
+
+    tracked = [
+        item.decode("utf-8", errors="surrogateescape")
+        for item in result.stdout.split(b"\0")
+        if item
+    ]
+    forbidden = sorted(
+        path for path in tracked if not _allowed_material_index_path(path)
+    )
+    for path in forbidden:
+        errors.append(f"tracked/staged material forbidden: {path}")
+
+
+def validate_t36_freeze_contract(errors: list[str]) -> None:
+    taskcard = ROOT / "taskcards/T3.6.md"
+    if not taskcard.is_file() or taskcard.is_symlink():
+        return
+    text = taskcard.read_text(encoding="utf-8")
+    required_text = {
+        "runs/T3.1/production-freeze.json",
+        "runs/T3.1/acceptance/acceptance-freeze.json",
+        "tools/run.py freeze runs/T3.1 --acceptance",
+        "product-verdicts.md",
+        "t3.1-freeze-receipt-sha256: <64 lowercase hex>",
+        "单写者",
+    }
+    missing = sorted(item for item in required_text if item not in text)
+    if missing:
+        errors.append(f"T3.6 two-freeze contract text missing: {missing}")
+
+
+def _run_materials_only(project_root: Path) -> int:
+    errors: list[str] = []
+    validate_material_guard(errors, project_root)
+    validate_material_index(errors, project_root)
+    if errors:
+        print("materials validation FAILED")
+        print("\n".join(errors))
+        return 1
+    print("materials validation PASSED")
+    return 0
+
+
 def main() -> int:
+    if "--check-materials-root" in sys.argv:
+        if len(sys.argv) != 3 or sys.argv[1] != "--check-materials-root":
+            print(
+                "usage: validate.py --check-materials-root <project-root>",
+                file=sys.stderr,
+            )
+            return 2
+        return _run_materials_only(Path(sys.argv[2]).resolve())
+
     if "--write-manifest" in sys.argv:
         MANIFEST.write_text(
             json.dumps(build_manifest(), ensure_ascii=False, indent=2) + "\n",
@@ -164,6 +378,11 @@ def main() -> int:
 
     for path in required_tree_symlinks():
         errors.append(f"symlink forbidden in required tree: {path.relative_to(ROOT)}")
+
+    validate_run_script(errors)
+    validate_material_guard(errors)
+    validate_material_index(errors)
+    validate_t36_freeze_contract(errors)
 
     expected_taskcards = {f"{task_id}.md" for task_id in TASK_IDS}
     taskcard_root = ROOT / "taskcards"
@@ -272,6 +491,13 @@ def main() -> int:
         errors.append("opaque .asset file found")
     if any("saturn" in path.lower() for path in all_paths):
         errors.append("product-owner rejected Saturn example was copied")
+    cache_paths = sorted(
+        path
+        for path in all_paths
+        if "__pycache__" in Path(path).parts or path.endswith((".pyc", ".pyo"))
+    )
+    if cache_paths:
+        errors.append(f"Python cache artifacts found: {cache_paths}")
 
     if errors:
         print("clean seed validation FAILED")
@@ -282,7 +508,8 @@ def main() -> int:
         "clean seed validation PASSED: "
         f"3 authority documents, 2 project entry documents, "
         f"{len(SUPPORT_DOCS)} derived support documents, {len(TASK_IDS)} taskcards, "
-        f"{len(example_files)} readable example files, "
+        f"{len(example_files)} readable example files, {len(RUNTIME_FILES)} runtime script, "
+        f"{len(MATERIAL_GUARD_FILES)} material guard, "
         "0 legacy paths, 0 opaque assets, internal-only manifest."
     )
     return 0

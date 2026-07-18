@@ -94,7 +94,7 @@ Writer 只接收锁定卡。一条陪读只能有一个焦点、一条解释线�
 - **T3.3 发现到知识卡**：先核验 M2→M1 链中 T1.2／T1.3／T1.4、T2.1 与 v2 的 hash，再读取对应冻结正文；随后在 `runs/T3.1/raw/knowledge-cards.md` 产卡、以 `runs/T3.1/raw/knowledge-card-self-check.md` 自检，卡携带稳定 `knowledge-card-id` 与 producer lineage。
 - **T3.4 独立审核**：写 `runs/T3.1/raw/review-outcomes.md`，将锁定卡隔离到 `runs/T3.1/locked/knowledge-cards.md`。
 - **T3.5 Writer 到 B2 组装**：写 `runs/T3.1/final/b2.md` 与 `runs/T3.1/final/T3.5-postflight.md`，原样传递 knowledge-card／producer lineage，并为每条陪读建立稳定 `b2-item-id`。
-- **T3.6 冻结、独立验收与产品判词**：先核验 M2→M1 链中冻结 T1.8、T2.1 与 baseline 的 hash，再读取对应正文；随后写 `runs/T3.1/final/freeze-receipt.md`、以 `b2-item-id` 为键并保留回链的 `runs/T3.1/acceptance/judge-predictions.md` 与 `runs/T3.1/acceptance/acceptance-report.md`，暂停给主控 M3；仅 M3 通过后才以同一键收产品负责人判词并写 `runs/T3.1/acceptance/product-verdicts.md`。这是 80 分交付验收点。
+- **T3.6 冻结、独立验收与产品判词**：先核验 M2→M1 链中冻结 T1.8、T2.1 与 baseline 的 hash，再读取对应正文；派生执行时序固定为 `runs/T3.1/freeze-receipt.md` → 写入并绑定它的 `runs/T3.1/final/freeze-receipt.md` → production freeze → 以 `b2-item-id` 为键并保留回链的 judge predictions／acceptance report → acceptance freeze → M3 → 产品判词与 `runs/T3.1/acceptance/product-verdicts.md`。这是 80 分交付验收点。
 
 ### 阶段 4：复盘与最小治理件
 
@@ -109,7 +109,7 @@ Writer 只接收锁定卡。一条陪读只能有一个焦点、一条解释线�
 - **M3 首次真实运行冻结**：T3.6 报告后、产品判词前，核验 execution／semantic；随后产品负责人判词。
 - **M4 复盘**：T4.1 receipt 冻结 ledger 后，核验 registry 与回填，并与产品负责人决定下一轮。
 
-波次依次为：T0.1；T0.2→T0.3；T1.1—T1.8 并行，随后 T1.9（在 T1.4 后）→M1；T2.1 后，隔离复合 T2.2 与 T2.3 并行→M2；T3.1→T3.6 严格串行，其中 T3.6 的生产冻结、预测和报告后先 M3，再收产品判词；T4.1→冻结 ledger receipt→T4.2→T4.3，由产品负责人与主控共同完成后 M4。
+波次依次为：T0.1；T0.2→T0.3；T1.1—T1.8 并行，随后 T1.9（在 T1.4 后）→M1；T2.1 后，隔离复合 T2.2 与 T2.3 并行→M2；T3.1→T3.6 严格串行，其中 T3.6 从 T3.1 根 receipt 开始，依次写 final receipt、冻结 production、写预测和报告、冻结 acceptance、通过 M3，再收产品判词；T4.1→冻结 ledger receipt→T4.2→T4.3，由产品负责人与主控共同完成后 M4。
 
 默认只允许读取 `AGENTS.md`、`PRODUCT-DECISIONS.md`、`ENGINEERING-LESSONS.md`、本路线图和自己的任务卡；`GOLD-STANDARDS.md`、`examples/`、`blueprints/PIPELINE-MAP.md`、合同、receipt、run 与其他交付物都必须由当前任务卡逐文件列出。金标与样张的读取例外不得跨任务继承；阶段 3 生产任务永远不得获得该例外。
 
