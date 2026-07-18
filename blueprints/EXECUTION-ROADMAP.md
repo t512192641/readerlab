@@ -33,13 +33,13 @@
 
 每张知识卡先写一句最小承重主张，并归类为机制、模型、方法、预测、权衡、可迁移关系、高手指点或跨行业视角之一，不得写“点评”。
 
-缩句差分探针（R01–R08）拦截原文直述、后文透支、明显推论和术语换名；它不得把上述八类合法增量收窄为只有“新机制／新关系”。探针只是诊断与预筛，不替代删除测试、整体判断或产品判词。删除测试仍要求回答：删掉这条，读者会失去哪个具体判断能力；答不出则淘汰。
+缩句差分探针（R01–R08）拦截原文直述、后文透支、明显推论和术语换名；它不得把上述八类合法增量收窄为只有“新机制／新关系”。探针只是诊断与预筛，不替代删除测试、整体判断或产品判词。删除测试仍要求回答：删掉这条，读者会失去哪个具体判断能力；答不出时，该候选不得扩写并从候选中剔除。独立审核此时尚未开始，不能提前把候选写成“淘汰”终局。
 
 专家合同的正向基准是紧扣原文承诺推出原文未明说但必需的内容，或把人物、书与概念组织成改变理解的一条解释线。每个锚点先廉价生成 N 条一句话候选，经探针、删除测试与去重筛选后，幸存者才扩写成完整知识卡；候选数量是当前任务冻结的参数。
 
 ### 呈现质量：Writer 单焦点合同
 
-Writer 只接收锁定卡。一条陪读只能有一个焦点、一条解释线，不得拼贴多主题；表达以两篇正例样张的成段讲课体为基准，不堆字段。输出用 `> [!note] AI 陪读｜标题` 的 Obsidian callout 就近插入原文。`tandem-comments` 的精确锚点字段为 `unknown`，在得到真实样例前不得猜测或冻结。呈现质量独立于内容增量验收。
+Writer 只接收锁定卡。一张卡只交付一条定稿标题和一份定稿正文，二者只能统一同一焦点、同一解释线的表达，不得拼贴多主题或添加事实、主张；表达仍以两篇正例样张的成段讲课体为阶段性基准，不堆字段。实际读取样张仍须由当前任务逐文件授权，该阶段基准不是长期产品 gate。同时原样携带来源锚点／位置关系绑定、`knowledge-card-id` 与 producer lineage，Writer 不选择插入位置。T1.7 只消费这一绑定，把定稿标题与正文按 `> [!note] AI 陪读｜标题` 的 Obsidian callout 就近组装到原文，不得补造标题、正文或锚点。`tandem-comments` 的精确锚点字段为 `unknown`，在得到真实样例前不得猜测或冻结。呈现质量独立于内容增量验收。
 
 ### 裁判无能：先考试、后上岗
 
@@ -72,13 +72,13 @@ Writer 只接收锁定卡。一条陪读只能有一个焦点、一条解释线�
 ### 阶段 1：图书线节点合同
 
 - **T1.1 材料进入与范围冻结合同**：来源确认、版权／授权、本次范围与材料哈希；无法确认即硬阻塞。
-- **T1.2 B1 原文合同**：按作者结构呈现一手正文，禁止总结替代；定义章节命名与段落锚点约定，锚点细节为 `unknown`。
-- **T1.3 发现合同**：从 B1 产出透视需求的最小结构（位置锚点、为何停下、期望增量类型）；允许零发现，禁止凑数。
-- **T1.4 专家与知识卡合同**：正式透镜与临时专家共用专家合同、生命周期不同；候选主张经诊断筛选后扩写；知识卡最小字段为稳定 `knowledge-card-id`、承重主张、增量类型、来源锚点、失效边界、证据状态，以及稳定的 `producer kind/id/version` lineage。
-- **T1.5 独立审核合同**：审核价值、事实、重复、边界；终局四态为锁定／淘汰／退回／待补证据；审核结果和 locked 集保留 `knowledge-card-id` 与 producer lineage，淘汰项不得被 Writer 捞回。
-- **T1.6 Writer 合同**：仅输入锁定卡，单焦点单解释线，不添承重事实、不选题，并原样传递 `knowledge-card-id` 与 producer lineage。
-- **T1.7 B2 组装合同**：就近 callout 插入，逐条有稳定 `b2-item-id`，并绑定 `knowledge-card-id`／producer；有惊艳／有用／平庸／废弃价值标签位，数量和长度不设配额。
-- **T1.8 独立验收合同**：五项语义标准的字段与定性判定语言；三层报告模板；不预设阈值。
+- **T1.2 B1 原文合同**：只承接同一已准入且可信的图书材料身份与冻结 scope，按作者结构呈现一手正文，禁止 Skills 材料、替换正文或总结替代；定义章节命名与段落锚点约定，锚点细节为 `unknown`。
+- **T1.3 发现合同**：从 B1 产出透视需求的最小结构（位置锚点、为何停下、期望增量类型），“为何停下”必须承载一个清楚、单一、值得深入的问题；每次强制完成一次受控偶遇探索，探索后允许零发现，禁止凑数。
+- **T1.4 专家与知识卡合同**：承接三字段透视需求，先按正式透镜优先／真实缺口才创建临时专家完成路由并建立稳定 `producer kind/id/version`，再让两类 producer 进入同一探索合同；候选主张经诊断筛选后扩写，且候选与知识卡持续绑定原需求；知识卡最小字段为稳定 `knowledge-card-id`、承重主张、增量类型、来源锚点、失效边界、证据状态，以及稳定 producer lineage。
+- **T1.5 独立审核合同**：七项知识卡责任完整才可开始审核；审核价值、事实、重复、边界，终局四态为锁定／淘汰／退回／待补证据；locked 集逐字复制整张原卡及 lineage，淘汰项不得被 Writer 捞回。
+- **T1.6 Writer 合同**：仅输入锁定卡，每卡输出一条定稿标题和一份定稿正文；二者保持单焦点单解释线，不添事实或主张、不选题、不选择插入位置，并原样传递来源锚点／位置关系绑定、`knowledge-card-id` 与 producer lineage。
+- **T1.7 B2 组装合同**：只消费 Writer 定稿及原样绑定并就近组装 callout，不补造标题、正文或锚点；逐条有稳定 `b2-item-id`，并绑定 `knowledge-card-id`／producer；有惊艳／有用／平庸／废弃价值标签位，数量和长度不设配额。
+- **T1.8 独立验收合同**：每个实际验收对象与一个既有冻结 B2 单元一一对应，execution／semantic／product 共用其 `b2-item-id`、冻结生产产物可信身份及内容 hash、固定 scope；五项语义标准与三层报告不预设阈值，产品判词记录的长期通用路径、schema 和编码保持 `unknown`。
 - **T1.9 种子透镜编译**：逆向工程三个正例与经典框架，编译 4–6 个包含四件套的种子透镜；仅透镜开发期可读取金标。
 
 ### 阶段 2：裁判先行校准
@@ -93,8 +93,8 @@ Writer 只接收锁定卡。一条陪读只能有一个焦点、一条解释线�
 - **T3.2 B1 生产**：在 `runs/T3.1/raw/b1.md` 呈现该章节原文，并写 `runs/T3.1/raw/T3.2-postflight.md`。
 - **T3.3 发现到知识卡**：先核验 M2→M1 链中 T1.2／T1.3／T1.4、T2.1 与 v2 的 hash，再读取对应冻结正文；随后在 `runs/T3.1/raw/knowledge-cards.md` 产卡、以 `runs/T3.1/raw/knowledge-card-self-check.md` 自检，卡携带稳定 `knowledge-card-id` 与 producer lineage。
 - **T3.4 独立审核**：写 `runs/T3.1/raw/review-outcomes.md`，将锁定卡隔离到 `runs/T3.1/locked/knowledge-cards.md`。
-- **T3.5 Writer 到 B2 组装**：写 `runs/T3.1/final/b2.md` 与 `runs/T3.1/final/T3.5-postflight.md`，原样传递 knowledge-card／producer lineage，并为每条陪读建立稳定 `b2-item-id`。
-- **T3.6 冻结、独立验收与产品判词**：先核验 M2→M1 链中冻结 T1.8、T2.1 与 baseline 的 hash，再读取对应正文；派生执行时序固定为 `runs/T3.1/freeze-receipt.md` → 写入并绑定它的 `runs/T3.1/final/freeze-receipt.md` → production freeze → 以 `b2-item-id` 为键并保留回链的 judge predictions／acceptance report → acceptance freeze → M3 → 产品判词与 `runs/T3.1/acceptance/product-verdicts.md`。这是 80 分交付验收点。
+- **T3.5 Writer 到 B2 组装**：Writer 先交付定稿标题、定稿正文并原样传递来源锚点／位置关系绑定、knowledge-card／producer lineage；T1.7 再写 `runs/T3.1/final/b2.md` 与 `runs/T3.1/final/T3.5-postflight.md`，并为每条陪读建立稳定 `b2-item-id`。
+- **T3.6 冻结、独立验收与产品判词**：先核验 M2→M1 链中冻结 T1.8、T2.1 与 baseline 的 hash，再读取对应正文；派生执行时序固定为 `runs/T3.1/freeze-receipt.md` → 写入并绑定它的 `runs/T3.1/final/freeze-receipt.md` → production freeze → 以既有冻结 B2 单元为一一验收对象，并让 judge predictions／acceptance report 共用其 `b2-item-id`、冻结生产产物可信身份及内容 hash、固定 scope → acceptance freeze → M3 → 产品负责人四级判词与 `runs/T3.1/acceptance/product-verdicts.md`。该 run-specific 记录绑定同一固定对象身份，不得写回生产 B2 的 `unknown` 标签位；其路径不外推为长期通用路径，长期 schema 与编码仍保持 `unknown`。这是 80 分交付验收点。
 
 ### 阶段 4：复盘与最小治理件
 
