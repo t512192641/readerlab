@@ -22,7 +22,7 @@
 
 - 当前阶段：阶段 2「裁判先行校准」。
 - 当前 gate：T2.2 裁判资格考试已执行但 `FAIL`，处于 M2 之前的硬阻塞。
-- 本轮总控复核输入 HEAD：`dc2e21d67ba8b5eb7c7f48048c670901d089d7a8`；该提交只新增 T2.2 恢复架构草案，T2.2 失败证据 commit 仍为 `909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
+- 本轮总控复核输入 HEAD：`575b317dec64a78054ab4bbb0e6b04b1a0f2cbb3`；该提交只新增 T2.2 恢复架构 v1 的前置审查报告，T2.2 失败证据 commit 仍为 `909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
 - M2 未建立；阶段 3 真实材料运行、生产 runtime 和产品验收均未开始。
 
 ### 2. 已经通过的内容
@@ -72,11 +72,17 @@
 ### 6. 恢复架构状态
 
 - `diagnostics/T2.2-recovery-architecture-v1.md` 已由架构会话新增并提交于 `dc2e21d67ba8b5eb7c7f48048c670901d089d7a8`，SHA-256 为 `b67e28b0f12d46c4c90b2c9064e975eb3ffe296ba16c043f89ceebed57e97648`。
-- 该文件状态为 `draft / long-term`：已 `implemented`，尚未 `integrated`，尚未经过独立前置审查，产品 `accepted` 为 `unknown`。
+- 该文件状态为 `draft / long-term`：已 `implemented`，尚未 `integrated`；独立前置审查结论为 `FAIL`，产品 `accepted` 为 `unknown`。
 - 架构草案提出 Route D：永久保留 v1 `FAIL` 证据与冻结 T1.8，以版本化适配合同、v2 原子夹具、对称来源上下文、明确处置映射、最小对照诊断和独立复考形成恢复链；不得把该建议当作现行任务授权。
 - 草案确认三个执行前 blocker：3 个 positive 缺少完整来源锚点；多对象样张缺少原子候选级产品判词边界；模型、调用次数与预算未获授权。产品负责人现在不需要补材料或作决定，须先完成技术前置审查。
-- 本轮总控另确认一个尚未解决的仓库集成冲突：草案建议新增的 `taskcards/T2.2-recovery-preflight-v1.md`、`taskcards/T2.2-contrast-diagnostic-v1.md`、`taskcards/T2.2-retest-v2.md` 与 `taskcards/T2.2-BLOCKER-v2.md` 不在 `validate.py` 的固定任务卡集合或允许例外中，直接创建会导致种子验证失败。
-- 本轮总控另确认一个 M2 路由冲突：路线图仍固定要求 M2 绑定 `diagnostics/T2.2-judge-baseline.md`，而该路径已永久记录 v1 `FAIL`；v2 通过证据如何成为活动 baseline 尚未落成可验证的路由。
+- 前置审查报告 `diagnostics/T2.2-recovery-architecture-v1-preflight-review.md` 已提交于 `575b317dec64a78054ab4bbb0e6b04b1a0f2cbb3`，SHA-256 为 `84d70747f0db290cd16d2d60d2745aa5d4c5f51a35f1cc27870c64235cd55acc`，结论为 `FAIL`。
+- 审查确认五项必须由技术架构修正的问题：
+  1. 四张建议任务卡会被现行验证器拒绝，16 个鲜会话对照也缺少合法路线入口；
+  2. v2 活动 baseline 尚未接入 M2，成功证据无法进入正式 gate；
+  3. adapter、brief、独立审查和对照结果的写 owner、冻结点与 hash 时序不闭合；
+  4. 当前最小对照不能支持其声称的单变量、16 次可复算因果结论；
+  5. 产品材料与原子判词缺口尚未通过先行技术 census 变成逐对象、可回答的最小请求。
+- 审查确认这些都是技术架构问题，当前不需要产品负责人补材料、补判词或授权模型调用；因此没有当前产品 blocker。
 
 ### 7. 必须保留的证据
 
@@ -121,13 +127,15 @@
 恢复设计：
 
 - `diagnostics/T2.2-recovery-architecture-v1.md`
+- `diagnostics/T2.2-recovery-architecture-v1-preflight-review.md`
 
 ### 8. 当前最后可信 commit
 
 - 当前最后可信项目证据 commit：`909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`（忠实记录 T2.2 `FAIL`，不是资格通过；其后的本次交接提交只更新状态快照与对应 manifest）。
 - 当前最后已通过 gate 的 commit：`dab61e73ef4b3cadfde2ae7d422c0023ed53a850`（M1）。
 - 恢复架构草案 commit：`dc2e21d67ba8b5eb7c7f48048c670901d089d7a8`（只证明设计文件存在，不证明已集成、已验证或已接受）。
-- 上一轮总控状态 commit：`1c9d2ad506cdd29df35aaa570647f51dfcfa85ae`。
+- 恢复架构前置审查 commit：`575b317dec64a78054ab4bbb0e6b04b1a0f2cbb3`（结论 `FAIL`，不授权执行）。
+- 上一轮总控状态 commit：`0aec2706331aef9bb77f3e85f4c9cd30e656dc2f`。
 
 ### 9. 当前未提交修改
 
@@ -136,12 +144,12 @@
 ### 10. 当前唯一下一步编排
 
 - 原路线现在不可继续：T2.2 资格为 `FAIL`，且 `diagnostics/M2-gate-receipt.md` 不存在；不得进入 M2 或阶段 3。
-- 紧接着只启动一个**前置审查角色**，会话名称为「ReaderLab M2｜T2.2 恢复架构前置审查」。
-- 该会话使用 Local 环境；审查目标只读，只允许新增 `diagnostics/T2.2-recovery-architecture-v1-preflight-review.md` 并形成一个独立本地 commit。
-- 审查必须独立核对：设计与产品／工程 owner 是否冲突；新任务卡命名与验证器固定集合的冲突；M2 活动 baseline 的版本接线；新适配合同的责任归属与 M1/T1.8 冻结边界；对照诊断的可证伪性、最小性和授权边界；产品材料／对象判词请求是否足够精确且没有提前执行。
-- 审查不得修改架构草案、任务卡、路线图、验证器、冻结证据或本状态文件；不得调用模型、补材料、运行复考、创建 M2 receipt、写生产代码或进入阶段 3。
-- 审查结果只能是 `PASS`、`FAIL` 或 `BLOCKED`。`PASS` 只表示该架构可被安全拆成后续任务，不授权执行；`FAIL` 必须给出带文件定位、后果和最小修正方向的发现；`BLOCKED` 只用于没有产品决定便无法评价架构的情况。
-- 审查 commit 完成后，产品负责人把结论、主要发现、commit SHA、验证结果和是否存在产品 blocker 回报总控；总控重新读取仓库后，才决定下一角色。
+- 紧接着只启动一个**架构角色**，会话名称为「ReaderLab M2｜T2.2 恢复架构 v2 修订」。
+- 该会话使用 Local 环境；既有文件只读，只允许新增 `diagnostics/T2.2-recovery-architecture-v2.md` 并形成一个独立本地 commit。
+- v2 必须逐项关闭前置审查 F-01 至 F-05：先给出合法任务入口和验证器／路线集成顺序；定义 v1 失败历史与 v2 活动 baseline 的 M2 版本接线；闭合逐文件写 owner、冻结点、receipt 与 hash 顺序；重做可证伪对照矩阵并按实际合法实验臂计算调用数；在产品 gate 前加入技术 census 和逐对象缺口清单。
+- 架构修订不得改写 v1 架构、前置审查、任务卡、路线图、验证器、冻结合同或失败证据；不得实际创建任务卡、执行 census、读取金标／样张、请求产品材料、调用模型、复考、创建 M2 receipt、写生产代码或进入阶段 3。
+- v2 必须明确列出下一轮独立前置审查的机械检查项，并分开已经闭合的技术路径、仍待未来任务验证的假设和需要未来产品决定的精确触发条件。
+- v2 commit 完成后，产品负责人把 commit SHA、验证结果、F-01 至 F-05 的关闭摘要和是否出现产品 blocker 回报总控；总控重新读取仓库后，才决定是否再次启动前置审查。
 
 ### 11. 下一会话读取顺序
 
@@ -162,8 +170,9 @@
 15. `diagnostics/T2.2-judge-baseline.md`
 16. `taskcards/T2.2-BLOCKER.md`
 17. `diagnostics/T2.2-recovery-architecture-v1.md`
+18. `diagnostics/T2.2-recovery-architecture-v1-preflight-review.md`
 
-本前置审查不继承透镜开发、诊断端或裁判端对 `GOLD-STANDARDS.md` 与 `examples/` 的读取授权；不得读取或依赖旧 ReaderLab 项目。
+本架构修订不继承透镜开发、诊断端或裁判端对 `GOLD-STANDARDS.md` 与 `examples/` 的读取授权；不得读取或依赖旧 ReaderLab 项目。
 
 ### 12. 硬停止条件
 
