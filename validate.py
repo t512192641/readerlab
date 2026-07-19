@@ -661,6 +661,35 @@ RECOVERY_HISTORICAL_MARKDOWN = {
 }
 RECOVERY_SELECTOR_PATH = "diagnostics/T2.2-material-gap-manifest-v2.md"
 M2_RECEIPT_PATH = "diagnostics/M2-gate-receipt.md"
+RECOVERY_R01_BLOCKER_PATH = "taskcards/T2.2-R01-BLOCKER.md"
+M2_RECEIPT_REQUIRED_KEYS = (
+    "m1-freeze-receipt-sha256",
+    "t1.8-independent-acceptance-sha256",
+    "t2.1-r01-r08-sha256",
+    "t2.3-seed-lenses-v2-sha256",
+    "t2.2-active-architecture-path",
+    "t2.2-active-architecture-sha256",
+    "t2.2-active-architecture-review-path",
+    "t2.2-active-architecture-review-sha256",
+    "t2.2-active-attempt-id",
+    "t2.2-active-attempt-manifest-path",
+    "t2.2-active-attempt-manifest-sha256",
+    "t2.2-active-baseline-path",
+    "t2.2-active-baseline-sha256",
+    "t2.2-active-postflight-review-path",
+    "t2.2-active-postflight-review-sha256",
+    "t2.2-active-result",
+    "t2.2-history-v1-baseline-path",
+    "t2.2-history-v1-baseline-sha256",
+    "t2.2-history-v1-baseline-result",
+    "t2.2-history-v1-blocker-path",
+    "t2.2-history-v1-blocker-sha256",
+    "t2.2-history-v2-architecture-path",
+    "t2.2-history-v2-architecture-sha256",
+    "t2.2-history-v2-review-path",
+    "t2.2-history-v2-review-sha256",
+    "t2.2-history-v2-review-result",
+)
 RECOVERY_SOURCE_PATHS = (
     "examples/book/positive/automatic-driving-safe-state.md",
     "examples/book/positive/civilization-lifecycle.md",
@@ -728,6 +757,48 @@ RECOVERY_M14_CALLS = (
     ("12", "E", "04", "full", "N1-r2"),
     ("13", "G", "05", "full", "P,N1"),
     ("14", "G", "06", "full", "N1,P"),
+)
+RECOVERY_FIXED_START_PATHS = (
+    "contracts/M1-freeze-receipt.md",
+    "contracts/T1.8-independent-acceptance.md",
+    "diagnostics/T2.2-blind-packet.md",
+    "diagnostics/T2.2-scoring-key.md",
+    "diagnostics/T2.2-judge-brief.md",
+    "diagnostics/T2.2-judge-answers.md",
+    "diagnostics/T2.2-judge-baseline.md",
+    "taskcards/T2.2-BLOCKER.md",
+)
+RECOVERY_CARD_COMMON_READ_PATHS = (
+    "AGENTS.md",
+    "PRODUCT-DECISIONS.md",
+    "ENGINEERING-LESSONS.md",
+    "blueprints/EXECUTION-ROADMAP.md",
+    *RECOVERY_FIXED_START_PATHS,
+)
+RECOVERY_ACTIVE_CONTROL_PATHS = (
+    "diagnostics/T2.2-recovery-architecture-v1.md",
+    "diagnostics/T2.2-recovery-architecture-v1-preflight-review.md",
+    "diagnostics/T2.2-recovery-architecture-v2.md",
+    "diagnostics/T2.2-recovery-architecture-v2-preflight-review.md",
+    "diagnostics/T2.2-recovery-architecture-v3.md",
+    "diagnostics/T2.2-recovery-architecture-v3-preflight-review.md",
+    "diagnostics/T2.2-recovery-architecture-v3-preflight-review-quality-audit.md",
+)
+RECOVERY_PREPARATION_READ_TASKS = {
+    "T2.2-R01",
+    "T2.2-R02",
+    "T2.2-R03",
+    "T2.2-R04",
+    "T2.2-R06",
+}
+RECOVERY_FULL_BRIEF_PATH = "diagnostics/T2.2-judge-brief-v2.md"
+RECOVERY_VARIANT_BRIEF_PATH = (
+    "diagnostics/T2.2-judge-brief-variant-v1-02.md"
+)
+RECOVERY_SCORING_KEY_PATH = "diagnostics/T2.2-scoring-key-v2.md"
+RECOVERY_CONTRAST_KEY_PATH = "diagnostics/T2.2-contrast-key-v1.md"
+RECOVERY_PACKAGE_REVIEW_PATH = (
+    "diagnostics/T2.2-package-preflight-review-v2.md"
 )
 RECOVERY_EXACT_HEADER = "---\nstatus: {status}\nscope: {scope}\n---\n"
 RECOVERY_BLOCKER_HEADER = "---\nstatus: blocked\nscope: run-only\n---\n"
@@ -875,6 +946,74 @@ def has_exact_taskcard_sections(text: str) -> bool:
     return (
         re.findall(r"^## .+$", text, flags=re.MULTILINE)
         == list(TASK_SECTION_HEADINGS)
+    )
+
+
+def _taskcard_section_bodies(text: str) -> dict[str, str]:
+    if not has_exact_taskcard_sections(text):
+        return {}
+    matches = list(
+        re.finditer(
+            r"^(" + "|".join(re.escape(item) for item in TASK_SECTION_HEADINGS) + r")$",
+            text,
+            flags=re.MULTILINE,
+        )
+    )
+    sections: dict[str, str] = {}
+    for index, match in enumerate(matches):
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+        sections[match.group(1)] = text[match.end() : end]
+    return sections
+
+
+def _material_slot_references(text: str) -> list[str]:
+    references = re.findall(
+        r"materials/T2\.2-v2/[^\s`|)>\],;，。]*",
+        text,
+        flags=re.IGNORECASE,
+    )
+    return [
+        reference
+        for reference in references
+        if reference != "materials/T2.2-v2/authorization.md"
+    ]
+
+
+def _taskcard_relative_path_references(text: str) -> list[str]:
+    references: list[str] = []
+    for token in re.findall(r"`([^`\n]+)`", text):
+        if (
+            token.endswith(
+                (".md", ".py", ".json", ".toml", ".yaml", ".yml", ".txt", ".bin")
+            )
+            or any(character in token for character in "*?[]<>{}")
+            or "/" in token
+        ):
+            references.append(token)
+    return references
+
+
+def _r05_has_expanded_material_authorization(
+    read_section: str, expected_policy_lines: set[str]
+) -> bool:
+    authorization_control_line = (
+        "- read-path: `materials/T2.2-v2/authorization.md`"
+    )
+    remaining = "\n".join(
+        line
+        for line in read_section.splitlines()
+        if line not in expected_policy_lines
+        and line != authorization_control_line
+    )
+    forbidden_patterns = (
+        r"runtime-open:",
+        r"(?:打开|读取|扫描|探测)(?:任一|全部|整个|所有).{0,12}(?:材料|slot|目录)?",
+        r"(?:允许|可以|可)(?:打开|读取|扫描|探测).{0,24}(?:任一|全部|整个|所有|目录|glob|材料|slot)",
+        r"\b(?:allow|open|read|scan|probe).{0,24}\b(?:all|any|directory|glob|material|slot)s?\b",
+    )
+    return any(
+        re.search(pattern, remaining, flags=re.IGNORECASE)
+        for pattern in forbidden_patterns
     )
 
 
@@ -1370,6 +1509,158 @@ def _expected_card_material_slot_lines(task_id: str) -> set[str]:
     }
 
 
+def _recovery_output_paths(*task_ids: str) -> set[str]:
+    expected = set(task_ids)
+    return {
+        path
+        for path, policy in RECOVERY_ARTIFACT_POLICY.items()
+        if policy["owner"].split()[0].split("/")[0] in expected
+    }
+
+
+def _prior_recovery_blocker_paths(task_id: str) -> set[str]:
+    task_number = int(task_id.removeprefix("T2.2-R"))
+    prior_ids = {
+        f"T2.2-R{index:02d}" for index in range(1, task_number)
+    }
+    return {
+        path
+        for path, policy in RECOVERY_BLOCKER_ARTIFACT_POLICY.items()
+        if policy["owner"] in prior_ids
+    }
+
+
+def _expected_card_read_paths(task_id: str) -> set[str]:
+    chain_dependencies = _recovery_chain_dependencies(
+        "SLOTS_REQUIRED", r01_product_blocker_present=True
+    )
+    paths = {
+        *RECOVERY_CARD_COMMON_READ_PATHS,
+        f"taskcards/{task_id}.md",
+        *_prior_recovery_blocker_paths(task_id),
+    }
+    if task_id in RECOVERY_PREPARATION_READ_TASKS:
+        paths.update({"GOLD-STANDARDS.md", *RECOVERY_SOURCE_PATHS})
+
+    if task_id == "T2.2-R02":
+        paths.update(_recovery_output_paths("T2.2-R01"))
+    elif task_id == "T2.2-R03":
+        paths.update(_recovery_output_paths("T2.2-R01", "T2.2-R02"))
+        paths.add("materials/T2.2-v2/authorization.md")
+    elif task_id == "T2.2-R04":
+        paths.update(
+            _recovery_output_paths("T2.2-R01", "T2.2-R02", "T2.2-R03")
+        )
+        paths.update(RECOVERY_RAW_BLOBS)
+    elif task_id == "T2.2-R05":
+        paths.update(
+            chain_dependencies[RECOVERY_ATTEMPT_MANIFEST_PATH]
+        )
+    elif task_id == "T2.2-R06":
+        paths.update(
+            _recovery_output_paths(
+                "T2.2-R01",
+                "T2.2-R02",
+                "T2.2-R03",
+                "T2.2-R04",
+                "T2.2-R05",
+            )
+        )
+        paths.update(RECOVERY_RAW_BLOBS)
+
+    adapter_path = "contracts/T2.2-historical-qualification-adapter-v1.md"
+    control_call = "diagnostics/T2.2-contrast-control-call-manifest-v1.md"
+    control_review = "diagnostics/T2.2-contrast-control-input-review-v1.md"
+    control_index = "diagnostics/T2.2-contrast-control-answers-index-v1.md"
+    control_result = "diagnostics/T2.2-contrast-control-results-v1.md"
+    diagnostic_call = "diagnostics/T2.2-contrast-diagnostic-call-manifest-v1.md"
+    diagnostic_review = "diagnostics/T2.2-contrast-diagnostic-input-review-v1.md"
+    diagnostic_index = "diagnostics/T2.2-contrast-diagnostic-answers-index-v1.md"
+    contrast_result = "diagnostics/T2.2-contrast-results-v1.md"
+    retest_call = "diagnostics/T2.2-retest-call-manifest-v2.md"
+    retest_review = "diagnostics/T2.2-retest-input-review-v2.md"
+    formal_index = "diagnostics/T2.2-judge-answers-index-v2.md"
+    baseline = "diagnostics/T2.2-judge-baseline-v2.md"
+    control_answers = tuple(
+        f"diagnostics/T2.2-contrast-answer-v1-{index:02d}.md"
+        for index in range(1, 5)
+    )
+    diagnostic_answers = tuple(
+        f"diagnostics/T2.2-contrast-answer-v1-{index:02d}.md"
+        for index in range(5, 15)
+    )
+    formal_answers = tuple(
+        f"diagnostics/T2.2-judge-answer-v2-{index:02d}.md"
+        for index in range(1, 15)
+    )
+    if task_id == "T2.2-R07":
+        paths.update(chain_dependencies[control_call])
+        paths.add(adapter_path)
+    elif task_id == "T2.2-R08":
+        paths.update({control_call, *chain_dependencies[control_call]})
+        paths.add(adapter_path)
+    elif task_id == "T2.2-R09":
+        paths.update(chain_dependencies[control_index])
+        for answer_path in control_answers:
+            paths.update(chain_dependencies[answer_path])
+        paths.add(adapter_path)
+    elif task_id == "T2.2-R10":
+        paths.update(chain_dependencies[control_result])
+    elif task_id == "T2.2-R11":
+        paths.update({control_result, *chain_dependencies[control_result]})
+    elif task_id == "T2.2-R12":
+        paths.update(chain_dependencies[diagnostic_call])
+        paths.add(adapter_path)
+    elif task_id == "T2.2-R13":
+        paths.update({diagnostic_call, *chain_dependencies[diagnostic_call]})
+        paths.add(adapter_path)
+    elif task_id == "T2.2-R14":
+        paths.update(chain_dependencies[diagnostic_index])
+        for answer_path in diagnostic_answers:
+            paths.update(chain_dependencies[answer_path])
+        paths.add(adapter_path)
+    elif task_id == "T2.2-R15":
+        paths.update(chain_dependencies[contrast_result])
+    elif task_id == "T2.2-R16":
+        paths.update({contrast_result, *chain_dependencies[contrast_result]})
+    elif task_id == "T2.2-R17":
+        paths.update(chain_dependencies[retest_call])
+        paths.add(adapter_path)
+    elif task_id == "T2.2-R18":
+        paths.update({retest_call, *chain_dependencies[retest_call]})
+        paths.add(adapter_path)
+    elif task_id == "T2.2-R19":
+        paths.update(chain_dependencies[formal_index])
+        for answer_path in formal_answers:
+            paths.update(chain_dependencies[answer_path])
+        paths.add(adapter_path)
+    elif task_id == "T2.2-R20":
+        paths.update(chain_dependencies[baseline])
+    elif task_id == "T2.2-R21":
+        paths.update(RECOVERY_ACTIVE_CONTROL_PATHS)
+        paths.update(
+            {
+                "diagnostics/T2.1-r01-r08.md",
+                "lenses/T2.3-seed-lenses-v2.md",
+            }
+        )
+        paths.update(
+            _recovery_output_paths(
+                *[f"T2.2-R{index:02d}" for index in range(1, 21)]
+            )
+        )
+        paths.discard("materials/T2.2-v2/authorization.md")
+        paths.update(RECOVERY_RAW_BLOBS)
+    return paths
+
+
+def _expected_card_read_path_lines(task_id: str) -> set[str]:
+    return {
+        f"- read-path: `{path}`"
+        for path in _expected_card_read_paths(task_id)
+    }
+
+
 def _validate_recovery_policy_invariants(errors: list[str]) -> None:
     if len(RECOVERY_ARTIFACT_POLICY) != 82:
         errors.append(
@@ -1390,6 +1681,59 @@ def _validate_recovery_policy_invariants(errors: list[str]) -> None:
         policy["owner"] for policy in RECOVERY_BLOCKER_ARTIFACT_POLICY.values()
     } != set(RECOVERY_TASK_IDS):
         errors.append("recovery blocker policy owner set must equal the 21 task IDs")
+    for task_id in RECOVERY_TASK_IDS:
+        read_paths = _expected_card_read_paths(task_id)
+        if f"taskcards/{task_id}.md" not in read_paths:
+            errors.append(f"recovery taskcard read projection omits itself: {task_id}")
+        preparation_paths = {"GOLD-STANDARDS.md", *RECOVERY_SOURCE_PATHS}
+        actual_preparation_paths = read_paths & preparation_paths
+        expected_preparation_paths = (
+            preparation_paths
+            if task_id in RECOVERY_PREPARATION_READ_TASKS
+            else set()
+        )
+        if actual_preparation_paths != expected_preparation_paths:
+            errors.append(
+                f"recovery preparation read isolation mismatch: {task_id}"
+            )
+        material_read_paths = {
+            path for path in read_paths if path.startswith("materials/")
+        }
+        if task_id == "T2.2-R05" and material_read_paths != {
+            "materials/T2.2-v2/authorization.md"
+        }:
+            errors.append(
+                "R05 read projection may contain only the authorization control file"
+            )
+        if (
+            int(task_id.removeprefix("T2.2-R")) >= 7
+            and material_read_paths
+        ):
+            errors.append(
+                f"post-preparation read projection must not open materials: {task_id}"
+            )
+    for consumer, inputs in _recovery_chain_dependencies(
+        "SLOTS_REQUIRED", r01_product_blocker_present=True
+    ).items():
+        owner = RECOVERY_ARTIFACT_POLICY[consumer]["owner"].split()[0]
+        owner = owner.split("/")[0]
+        missing_inputs = set(inputs) - _expected_card_read_paths(owner)
+        if missing_inputs:
+            errors.append(
+                f"recovery read projection misses hash dependencies: "
+                f"{owner}: {sorted(missing_inputs)}"
+            )
+    for review_path, subjects in RECOVERY_REVIEW_SUBJECTS.items():
+        review_policy = RECOVERY_ARTIFACT_POLICY.get(review_path)
+        if review_policy is None:
+            continue
+        reviewer = review_policy["owner"].split()[0].split("/")[0]
+        missing_subjects = set(subjects) - _expected_card_read_paths(reviewer)
+        if missing_subjects:
+            errors.append(
+                f"recovery reviewer read projection misses subjects: "
+                f"{reviewer}: {sorted(missing_subjects)}"
+            )
 
     review_subject_map: dict[str, str] = {}
     for review_path, subjects in RECOVERY_REVIEW_SUBJECTS.items():
@@ -1475,6 +1819,25 @@ def _validate_recovery_roadmap(
     missing = sorted(literal for literal in required_literals if literal not in roadmap)
     if missing:
         errors.append(f"recovery roadmap control literals missing: {missing}")
+    receipt_block = re.search(
+        r"未来 M2 receipt 的 T2\.2 机器字段必须恰好一次"
+        r".*?```text\n(?P<schema>.*?)```",
+        roadmap,
+        flags=re.DOTALL,
+    )
+    if receipt_block is None:
+        errors.append("recovery roadmap v3 receipt schema block missing")
+    else:
+        roadmap_keys = tuple(
+            line.split(":", 1)[0]
+            for line in receipt_block.group("schema").splitlines()
+            if line.strip()
+        )
+        if roadmap_keys != M2_RECEIPT_REQUIRED_KEYS:
+            errors.append(
+                "recovery roadmap receipt schema must exactly match "
+                "v3 section 13.2"
+            )
     if re.search(r"\blatest\b", roadmap, flags=re.IGNORECASE):
         errors.append("recovery roadmap must not use latest-path resolution")
 
@@ -1586,6 +1949,9 @@ def _recovery_taskcard_names(
                 errors.append(
                     f"recovery taskcard sections must match TEMPLATE.md: {relative_path}"
                 )
+            sections = _taskcard_section_bodies(text)
+            read_section = sections.get(TASK_SECTION_HEADINGS[2], "")
+            write_section = sections.get(TASK_SECTION_HEADINGS[3], "")
             expected_mode = (
                 "composite"
                 if task_id in RECOVERY_COMPOSITE_TASK_IDS
@@ -1607,13 +1973,52 @@ def _recovery_taskcard_names(
                 for line in text.splitlines()
                 if line.startswith("- artifact-policy:")
             ]
+            write_policy_lines = [
+                line
+                for line in write_section.splitlines()
+                if line.startswith("- artifact-policy:")
+            ]
             expected_policy_lines = _expected_card_policy_lines(task_id)
             if (
                 len(actual_policy_lines) != len(set(actual_policy_lines))
+                or actual_policy_lines != write_policy_lines
                 or set(actual_policy_lines) != expected_policy_lines
             ):
                 errors.append(
-                    f"recovery taskcard artifact-policy projection mismatch: "
+                    f"recovery taskcard write/artifact-policy projection mismatch: "
+                    f"{relative_path}"
+                )
+            actual_write_path_references = sorted(
+                _taskcard_relative_path_references(write_section)
+            )
+            expected_write_path_references = sorted(
+                _taskcard_relative_path_references(
+                    "\n".join(expected_policy_lines)
+                )
+            )
+            if actual_write_path_references != expected_write_path_references:
+                errors.append(
+                    f"recovery taskcard write whitelist path mismatch: "
+                    f"{relative_path}"
+                )
+            actual_read_lines = [
+                line
+                for line in text.splitlines()
+                if line.startswith("- read-path:")
+            ]
+            section_read_lines = [
+                line
+                for line in read_section.splitlines()
+                if line.startswith("- read-path:")
+            ]
+            expected_read_lines = _expected_card_read_path_lines(task_id)
+            if (
+                len(actual_read_lines) != len(set(actual_read_lines))
+                or actual_read_lines != section_read_lines
+                or set(actual_read_lines) != expected_read_lines
+            ):
+                errors.append(
+                    f"recovery taskcard read-path projection mismatch: "
                     f"{relative_path}"
                 )
             actual_material_lines = [
@@ -1621,14 +2026,74 @@ def _recovery_taskcard_names(
                 for line in text.splitlines()
                 if line.startswith("- material-slot-policy:")
             ]
+            read_material_lines = [
+                line
+                for line in read_section.splitlines()
+                if line.startswith("- material-slot-policy:")
+            ]
             expected_material_lines = _expected_card_material_slot_lines(task_id)
             if (
                 len(actual_material_lines) != len(set(actual_material_lines))
+                or actual_material_lines != read_material_lines
                 or set(actual_material_lines) != expected_material_lines
             ):
                 errors.append(
-                    f"recovery taskcard material-slot-policy projection mismatch: "
+                    f"recovery taskcard read/material-slot-policy projection mismatch: "
                     f"{relative_path}"
+                )
+            material_references = _material_slot_references(read_section)
+            expected_material_references = (
+                list(RECOVERY_MATERIAL_SLOTS)
+                if task_id
+                in {"T2.2-R03", "T2.2-R04", "T2.2-R05", "T2.2-R06"}
+                else []
+            )
+            if (
+                len(material_references) != len(set(material_references))
+                or set(material_references) != set(expected_material_references)
+            ):
+                errors.append(
+                    f"recovery taskcard material read whitelist mismatch: "
+                    f"{relative_path}"
+                )
+            actual_read_path_references = sorted(
+                _taskcard_relative_path_references(read_section)
+            )
+            expected_read_path_references = sorted(
+                {
+                    *_expected_card_read_paths(task_id),
+                    *expected_material_references,
+                }
+            )
+            if actual_read_path_references != expected_read_path_references:
+                errors.append(
+                    f"recovery taskcard complete read whitelist path mismatch: "
+                    f"{relative_path}"
+                )
+            runtime_values = re.findall(
+                r"runtime-open: ([a-z-]+)", read_section
+            )
+            expected_runtime = (
+                ["forbidden"] * 14
+                if task_id == "T2.2-R05"
+                else (
+                    ["selected-only"] * 14
+                    if task_id
+                    in {"T2.2-R03", "T2.2-R04", "T2.2-R06"}
+                    else []
+                )
+            )
+            if sorted(runtime_values) != sorted(expected_runtime):
+                errors.append(
+                    f"recovery taskcard material runtime-open contract mismatch: "
+                    f"{relative_path}"
+                )
+            if task_id == "T2.2-R05" and _r05_has_expanded_material_authorization(
+                read_section, expected_material_lines
+            ):
+                errors.append(
+                    "R05 read whitelist must forbid every material open, "
+                    f"directory, glob, or all-material authorization: {relative_path}"
                 )
     return formal_cards
 
@@ -1856,7 +2321,121 @@ def _validate_recovery_artifacts(
                 )
 
 
-def _recovery_chain_dependencies(selector_result: str | None) -> dict[str, tuple[str, ...]]:
+def _path_entry_exists(path: Path, errors: list[str]) -> bool:
+    try:
+        path.lstat()
+    except FileNotFoundError:
+        return False
+    except OSError as error:
+        errors.append(f"cannot inspect recovery blocker {path.name}: {error}")
+        return True
+    return True
+
+
+def _validate_recovery_blockers_for_m2(
+    errors: list[str], project_root: Path
+) -> bool:
+    for blocker_path in RECOVERY_BLOCKER_ARTIFACT_POLICY:
+        if blocker_path == RECOVERY_R01_BLOCKER_PATH:
+            continue
+        if _path_entry_exists(project_root / blocker_path, errors):
+            errors.append(
+                "M2 receipt forbidden while non-closable recovery blocker exists: "
+                f"{blocker_path}"
+            )
+
+    r01_path = project_root / RECOVERY_R01_BLOCKER_PATH
+    if not _path_entry_exists(r01_path, errors):
+        return False
+    blocker_content = read_regular_bytes(r01_path, errors, project_root)
+    if blocker_content is None:
+        return True
+    try:
+        blocker = blocker_content.decode("utf-8")
+    except UnicodeError as error:
+        errors.append(f"R01 blocker is not UTF-8: {error}")
+        return True
+    if not blocker.startswith(RECOVERY_BLOCKER_HEADER):
+        errors.append("R01 blocker must start with exact blocked/run-only header")
+    blocker_types = re.findall(
+        r"^blocker-type: ([a-z-]+)$", blocker, flags=re.MULTILINE
+    )
+    raw_blocker_type_lines = [
+        line for line in blocker.splitlines() if line.startswith("blocker-type:")
+    ]
+    if (
+        len(raw_blocker_type_lines) != len(blocker_types)
+        or blocker_types != ["product-request"]
+    ):
+        errors.append(
+            "R01 blocker can remain at M2 only as exact product-request type"
+        )
+    request_pattern = re.compile(
+        r"^- product-request-id: ([A-Za-z0-9][A-Za-z0-9._-]*)$",
+        flags=re.MULTILINE,
+    )
+    request_ids = request_pattern.findall(blocker)
+    raw_request_lines = [
+        line
+        for line in blocker.splitlines()
+        if line.startswith("- product-request-id:")
+    ]
+    if len(raw_request_lines) != len(request_ids):
+        errors.append("R01 blocker has malformed product request ID")
+    if not request_ids:
+        errors.append("R01 product-request blocker must contain at least one request ID")
+    if len(request_ids) != len(set(request_ids)):
+        errors.append("R01 product-request blocker request IDs must be unique")
+
+    resolution_path = "diagnostics/T2.2-fixture-resolution-v2.md"
+    resolution_content = _regular_file_content_if_present(
+        resolution_path, errors, project_root
+    )
+    if resolution_content is None:
+        errors.append("R01 product-request blocker requires R03 resolution")
+        return True
+    try:
+        resolution = resolution_content.decode("utf-8")
+    except UnicodeError as error:
+        errors.append(f"R03 resolution is not UTF-8: {error}")
+        return True
+    resolution_pattern = re.compile(
+        r"^- product-request-resolution: "
+        r"([A-Za-z0-9][A-Za-z0-9._-]*)"
+        r" \| status: (resolved|rejected|unresolved)$",
+        flags=re.MULTILINE,
+    )
+    resolution_records = resolution_pattern.findall(resolution)
+    raw_resolution_lines = [
+        line
+        for line in resolution.splitlines()
+        if line.startswith("- product-request-resolution:")
+    ]
+    if len(raw_resolution_lines) != len(resolution_records):
+        errors.append("R03 resolution has malformed product request resolution")
+    resolution_ids = [request_id for request_id, _ in resolution_records]
+    if len(resolution_ids) != len(set(resolution_ids)):
+        errors.append("R03 resolution product request IDs must be unique")
+    if set(resolution_ids) != set(request_ids):
+        errors.append(
+            "R01 blocker and R03 resolution request ID sets must be exactly equal"
+        )
+    nonresolved = [
+        (request_id, status)
+        for request_id, status in resolution_records
+        if status != "resolved"
+    ]
+    if nonresolved:
+        errors.append(
+            "R01 product-request blocker remains open unless every request is resolved"
+        )
+    return True
+
+
+def _recovery_chain_dependencies(
+    selector_result: str | None,
+    r01_product_blocker_present: bool = False,
+) -> dict[str, tuple[str, ...]]:
     control_answers = tuple(
         f"diagnostics/T2.2-contrast-answer-v1-{index:02d}.md"
         for index in range(1, 5)
@@ -1908,6 +2487,8 @@ def _recovery_chain_dependencies(selector_result: str | None) -> dict[str, tuple
         "diagnostics/T2.2-fixture-byte-review-v2.md",
         *RECOVERY_RAW_BLOBS,
     ]
+    if r01_product_blocker_present:
+        attempt_inputs.append(RECOVERY_R01_BLOCKER_PATH)
     if selector_result == "SLOTS_REQUIRED":
         attempt_inputs.append("materials/T2.2-v2/authorization.md")
 
@@ -2996,7 +3577,12 @@ def _validate_m2_chain(
     project_root: Path,
     selector_result: str | None,
     attempt_identities: dict[str, tuple[str, str, str]] | None = None,
+    r01_product_blocker_present: bool | None = None,
 ) -> None:
+    if r01_product_blocker_present is None:
+        r01_product_blocker_present = _path_entry_exists(
+            project_root / RECOVERY_R01_BLOCKER_PATH, errors
+        )
     result_requirements = (
         (
             RECOVERY_ATTEMPT_MANIFEST_PATH,
@@ -3036,7 +3622,8 @@ def _validate_m2_chain(
         errors, project_root, byte_items
     )
     for consumer, inputs in _recovery_chain_dependencies(
-        selector_result
+        selector_result,
+        r01_product_blocker_present=r01_product_blocker_present,
     ).items():
         _validate_hash_binding_set(
             consumer, "input-binding", inputs, errors, project_root
@@ -3058,26 +3645,71 @@ def _validate_m2_chain(
 def _receipt_field_values(
     text: str, required_keys: tuple[str, ...], errors: list[str]
 ) -> dict[str, str]:
+    header = RECOVERY_EXACT_HEADER.format(status="frozen", scope="long-term")
+    body = text[len(header) :] if text.startswith(header) else text
+    field_lines = [line for line in body.splitlines() if line]
+    observed_keys: list[str] = []
+    malformed_lines: list[str] = []
+    for line in field_lines:
+        match = re.fullmatch(r"([^:\s][^:]*): (.+)", line)
+        if match is None:
+            malformed_lines.append(line)
+        else:
+            observed_keys.append(match.group(1))
+    if (
+        malformed_lines
+        or len(observed_keys) != len(set(observed_keys))
+        or set(observed_keys) != set(required_keys)
+    ):
+        errors.append(
+            "M2 receipt key set must exactly equal v3 section 13.2: "
+            f"missing {sorted(set(required_keys) - set(observed_keys))}, "
+            f"unexpected {sorted(set(observed_keys) - set(required_keys))}, "
+            f"duplicates {sorted(key for key in set(observed_keys) if observed_keys.count(key) > 1)}, "
+            f"malformed {malformed_lines}"
+        )
     values: dict[str, str] = {}
     for key in required_keys:
         matches = re.findall(
-            rf"^{re.escape(key)}: (.+)$", text, flags=re.MULTILINE
+            rf"^{re.escape(key)}: (.+)$", body, flags=re.MULTILINE
         )
         if len(matches) != 1:
             errors.append(f"M2 receipt field must occur exactly once: {key}")
         else:
             values[key] = matches[0]
-    observed_t22_keys = set(
-        re.findall(r"^(t2\.2-[a-z0-9.-]+): .+$", text, flags=re.MULTILINE)
-    )
-    expected_t22_keys = {key for key in required_keys if key.startswith("t2.2-")}
-    if observed_t22_keys != expected_t22_keys:
-        errors.append(
-            "M2 receipt T2.2 key set mismatch: "
-            f"missing {sorted(expected_t22_keys - observed_t22_keys)}, "
-            f"unexpected {sorted(observed_t22_keys - expected_t22_keys)}"
-        )
     return values
+
+
+def _v3_receipt_schema_keys() -> tuple[str, ...]:
+    architecture = (
+        ROOT / RECOVERY_ARCHITECTURE_IDENTITIES["active-architecture"][0]
+    ).read_text(encoding="utf-8")
+    section_match = re.search(
+        r"^### 13\.2 M2 receipt 必填字段\n(?P<section>.*?)"
+        r"^### 13\.3 M2 必须不存在的条件$",
+        architecture,
+        flags=re.MULTILINE | re.DOTALL,
+    )
+    if section_match is None:
+        raise AssertionError("cannot locate v3 section 13.2 receipt schema")
+    block_match = re.search(
+        r"```text\n(?P<schema>.*?)```",
+        section_match.group("section"),
+        flags=re.DOTALL,
+    )
+    if block_match is None:
+        raise AssertionError("cannot locate v3 section 13.2 receipt code block")
+    keys = tuple(
+        line.split(":", 1)[0]
+        for line in block_match.group("schema").splitlines()
+        if line.strip()
+    )
+    if any(
+        not re.fullmatch(r"[a-z0-9][a-z0-9.-]*", key)
+        for key in keys
+    ):
+        raise AssertionError("invalid key in v3 section 13.2 receipt schema")
+    return keys
 
 
 def _validate_m2_receipt(
@@ -3109,75 +3741,21 @@ def _validate_m2_receipt(
     elif selector_result not in {"NO_SLOTS", "SLOTS_REQUIRED"}:
         errors.append("M2 receipt requires one valid non-blocked recovery selector")
 
-    required_keys = (
-        "m1-freeze-receipt-sha256",
-        "t1.8-independent-acceptance-sha256",
-        "t2.1-r01-r08-sha256",
-        "t2.3-seed-lenses-v2-sha256",
-        "t2.2-active-architecture-path",
-        "t2.2-active-architecture-commit",
-        "t2.2-active-architecture-sha256",
-        "t2.2-active-architecture-review-path",
-        "t2.2-active-architecture-review-commit",
-        "t2.2-active-architecture-review-sha256",
-        "t2.2-active-architecture-review-result",
-        "t2.2-quality-audit-path",
-        "t2.2-quality-audit-commit",
-        "t2.2-quality-audit-sha256",
-        "t2.2-quality-audit-result",
-        "t2.2-active-attempt-id",
-        "t2.2-active-attempt-manifest-path",
-        "t2.2-active-attempt-manifest-sha256",
-        "t2.2-active-baseline-path",
-        "t2.2-active-baseline-sha256",
-        "t2.2-active-postflight-review-path",
-        "t2.2-active-postflight-review-sha256",
-        "t2.2-active-result",
-        "t2.2-history-v1-baseline-path",
-        "t2.2-history-v1-baseline-sha256",
-        "t2.2-history-v1-baseline-result",
-        "t2.2-history-v1-blocker-path",
-        "t2.2-history-v1-blocker-sha256",
-        "t2.2-history-v2-architecture-path",
-        "t2.2-history-v2-architecture-commit",
-        "t2.2-history-v2-architecture-sha256",
-        "t2.2-history-v2-review-path",
-        "t2.2-history-v2-review-commit",
-        "t2.2-history-v2-review-sha256",
-        "t2.2-history-v2-review-result",
-    )
-    fields = _receipt_field_values(receipt, required_keys, errors)
+    fields = _receipt_field_values(receipt, M2_RECEIPT_REQUIRED_KEYS, errors)
 
     fixed_values = {
         "t2.2-active-architecture-path": RECOVERY_ARCHITECTURE_IDENTITIES[
             "active-architecture"
         ][0],
-        "t2.2-active-architecture-commit": RECOVERY_ARCHITECTURE_IDENTITIES[
-            "active-architecture"
-        ][1],
         "t2.2-active-architecture-sha256": RECOVERY_ARCHITECTURE_IDENTITIES[
             "active-architecture"
         ][2],
         "t2.2-active-architecture-review-path": RECOVERY_ARCHITECTURE_IDENTITIES[
             "active-architecture-review"
         ][0],
-        "t2.2-active-architecture-review-commit": RECOVERY_ARCHITECTURE_IDENTITIES[
-            "active-architecture-review"
-        ][1],
         "t2.2-active-architecture-review-sha256": RECOVERY_ARCHITECTURE_IDENTITIES[
             "active-architecture-review"
         ][2],
-        "t2.2-active-architecture-review-result": "PASS",
-        "t2.2-quality-audit-path": RECOVERY_ARCHITECTURE_IDENTITIES[
-            "quality-audit"
-        ][0],
-        "t2.2-quality-audit-commit": RECOVERY_ARCHITECTURE_IDENTITIES[
-            "quality-audit"
-        ][1],
-        "t2.2-quality-audit-sha256": RECOVERY_ARCHITECTURE_IDENTITIES[
-            "quality-audit"
-        ][2],
-        "t2.2-quality-audit-result": "CONFIRMED_PASS",
         "t2.2-active-attempt-id": "T2.2-QV2-A01",
         "t2.2-active-attempt-manifest-path": (
             "diagnostics/T2.2-qualification-attempt-manifest-v2.md"
@@ -3199,17 +3777,11 @@ def _validate_m2_receipt(
         "t2.2-history-v2-architecture-path": (
             "diagnostics/T2.2-recovery-architecture-v2.md"
         ),
-        "t2.2-history-v2-architecture-commit": (
-            "037f33b0893208a232efa4aaeb23866885ec5fd0"
-        ),
         "t2.2-history-v2-architecture-sha256": (
             "1154110c3a3bff65e4dc2ceb8244e724f0da60924c4e32ba4afa413600a2043a"
         ),
         "t2.2-history-v2-review-path": (
             "diagnostics/T2.2-recovery-architecture-v2-preflight-review.md"
-        ),
-        "t2.2-history-v2-review-commit": (
-            "4bc9feca20f41e9c41158885cad41683f4d227b2"
         ),
         "t2.2-history-v2-review-sha256": (
             "9d2c80e23e30018c4dc4283c56315ab2df2198344b98dda91cebae6755f92e13"
@@ -3252,12 +3824,9 @@ def _validate_m2_receipt(
     expected_cards = {f"{task_id}.md" for task_id in RECOVERY_TASK_IDS}
     if formal_cards != expected_cards:
         errors.append("M2 receipt forbidden before all 21 recovery cards are registered")
-    recovery_blockers = [
-        project_root / relative_path
-        for relative_path in RECOVERY_BLOCKER_ARTIFACT_POLICY
-    ]
-    if any(path.exists() for path in recovery_blockers):
-        errors.append("M2 receipt forbidden while any recovery blocker exists")
+    r01_product_blocker_present = _validate_recovery_blockers_for_m2(
+        errors, project_root
+    )
     if raw_blobs != set(RECOVERY_RAW_BLOBS):
         errors.append("M2 receipt requires the exact 28 raw blobs")
 
@@ -3279,6 +3848,7 @@ def _validate_m2_receipt(
         project_root,
         selector_result,
         attempt_identities=attempt_identities,
+        r01_product_blocker_present=r01_product_blocker_present,
     )
 
     attempt = _regular_file_content_if_present(
@@ -3489,19 +4059,22 @@ def _synthetic_recovery_card_text(task_id: str) -> str:
     ]
     lines[0] += f"\n\n`{task_id}`：synthetic"
     lines[1] += "\n\nsynthetic"
-    lines[2] += "\n\nsynthetic"
-    lines[3] += (
-        f"\n\n- recovery-execution-mode: {mode}\n"
-        + "\n".join(sorted(_expected_card_policy_lines(task_id)))
+    lines[2] += (
+        "\n\nsynthetic\n"
+        + "\n".join(sorted(_expected_card_read_path_lines(task_id)))
     )
     if task_id in {"T2.2-R03", "T2.2-R04", "T2.2-R05", "T2.2-R06"}:
         runtime_open = (
             "forbidden" if task_id == "T2.2-R05" else "selected-only"
         )
-        lines[3] += "\n" + "\n".join(
+        lines[2] += "\n" + "\n".join(
             f"- material-slot-policy: `{path}` | runtime-open: {runtime_open}"
             for path in RECOVERY_MATERIAL_SLOTS
         )
+    lines[3] += (
+        f"\n\n- recovery-execution-mode: {mode}\n"
+        + "\n".join(sorted(_expected_card_policy_lines(task_id)))
+    )
     lines[4] += "\n\nsynthetic"
     lines[5] += "\n\nsynthetic"
     return "\n\n".join(lines) + "\n"
@@ -3526,6 +4099,137 @@ def _self_test_recovery_card_projection() -> None:
         _recovery_taskcard_names(errors, project_root)
         if errors:
             raise AssertionError(f"legal 21-card registration failed: {errors}")
+
+        write_card = taskcard_root / "T2.2-R10.md"
+        write_original = write_card.read_text(encoding="utf-8")
+        write_card.write_text(
+            write_original.replace(
+                "## 5. 硬约束\n",
+                "- write-path: `diagnostics/T2.2-extra.md`\n\n"
+                "## 5. 硬约束\n",
+                1,
+            ),
+            encoding="utf-8",
+        )
+        errors = []
+        _recovery_taskcard_names(errors, project_root)
+        if not any("write whitelist path mismatch" in error for error in errors):
+            raise AssertionError("extra recovery write path was accepted")
+        write_card.write_text(write_original, encoding="utf-8")
+        write_card.write_text(
+            write_original.replace(
+                "## 5. 硬约束\n",
+                "- additional-authorized-output: `tools/run.py`\n\n"
+                "## 5. 硬约束\n",
+                1,
+            ),
+            encoding="utf-8",
+        )
+        errors = []
+        _recovery_taskcard_names(errors, project_root)
+        if not any("write whitelist path mismatch" in error for error in errors):
+            raise AssertionError("non-policy recovery write path was accepted")
+        write_card.write_text(write_original, encoding="utf-8")
+        write_card.write_text(
+            write_original.replace(
+                "## 5. 硬约束\n",
+                "- additional-authorized-output-prefix: `tools/`\n\n"
+                "## 5. 硬约束\n",
+                1,
+            ),
+            encoding="utf-8",
+        )
+        errors = []
+        _recovery_taskcard_names(errors, project_root)
+        if not any("write whitelist path mismatch" in error for error in errors):
+            raise AssertionError("recovery write directory prefix was accepted")
+        write_card.write_text(write_original, encoding="utf-8")
+
+        read_card = taskcard_root / "T2.2-R10.md"
+        read_original = read_card.read_text(encoding="utf-8")
+        read_line = next(
+            line
+            for line in read_original.splitlines()
+            if line.startswith("- read-path:")
+        )
+        read_card.write_text(
+            read_original.replace(read_line + "\n", "", 1),
+            encoding="utf-8",
+        )
+        errors = []
+        _recovery_taskcard_names(errors, project_root)
+        if not any("read-path projection mismatch" in error for error in errors):
+            raise AssertionError("missing recovery read path was accepted")
+        read_card.write_text(
+            read_original.replace(
+                read_line + "\n",
+                read_line + "\n" + read_line + "\n",
+                1,
+            ),
+            encoding="utf-8",
+        )
+        errors = []
+        _recovery_taskcard_names(errors, project_root)
+        if not any("read-path projection mismatch" in error for error in errors):
+            raise AssertionError("duplicate recovery read path was accepted")
+        read_card.write_text(
+            read_original.replace(read_line + "\n", "", 1).replace(
+                "## 4. 交付文件清单\n",
+                "## 4. 交付文件清单\n\n" + read_line + "\n",
+                1,
+            ),
+            encoding="utf-8",
+        )
+        errors = []
+        _recovery_taskcard_names(errors, project_root)
+        if not any("read-path projection mismatch" in error for error in errors):
+            raise AssertionError("recovery read path in wrong section was accepted")
+        read_card.write_text(
+            read_original.replace(
+                "## 4. 交付文件清单\n",
+                "- read-path: `GOLD-STANDARDS.md`\n\n"
+                "## 4. 交付文件清单\n",
+                1,
+            ),
+            encoding="utf-8",
+        )
+        errors = []
+        _recovery_taskcard_names(errors, project_root)
+        if not any(
+            "complete read whitelist path mismatch" in error for error in errors
+        ):
+            raise AssertionError("R10 unauthorized GOLD read path was accepted")
+        read_card.write_text(
+            read_original.replace(
+                "## 4. 交付文件清单\n",
+                "- additional-authorized-input: `tools/run.py`\n\n"
+                "## 4. 交付文件清单\n",
+                1,
+            ),
+            encoding="utf-8",
+        )
+        errors = []
+        _recovery_taskcard_names(errors, project_root)
+        if not any(
+            "complete read whitelist path mismatch" in error for error in errors
+        ):
+            raise AssertionError("non-policy recovery read path was accepted")
+        read_card.write_text(
+            read_original.replace(
+                "## 4. 交付文件清单\n",
+                "- additional-authorized-input-prefix: `tools/`\n\n"
+                "## 4. 交付文件清单\n",
+                1,
+            ),
+            encoding="utf-8",
+        )
+        errors = []
+        _recovery_taskcard_names(errors, project_root)
+        if not any(
+            "complete read whitelist path mismatch" in error for error in errors
+        ):
+            raise AssertionError("recovery read directory prefix was accepted")
+        read_card.write_text(read_original, encoding="utf-8")
 
         for task_id in ("T2.2-R03", "T2.2-R04", "T2.2-R05", "T2.2-R06"):
             card = taskcard_root / f"{task_id}.md"
@@ -3582,6 +4286,71 @@ def _self_test_recovery_card_projection() -> None:
                     f"{task_id} tampered material slot was not rejected"
                 )
             card.write_text(original, encoding="utf-8")
+            misplaced = original.replace(slot_line + "\n", "", 1).replace(
+                "## 4. 交付文件清单\n",
+                "## 4. 交付文件清单\n\n" + slot_line + "\n",
+                1,
+            )
+            card.write_text(misplaced, encoding="utf-8")
+            errors = []
+            _recovery_taskcard_names(errors, project_root)
+            if not any(
+                "read/material-slot-policy projection mismatch" in error
+                for error in errors
+            ):
+                raise AssertionError(
+                    f"{task_id} material policy in wrong section was accepted"
+                )
+            card.write_text(original, encoding="utf-8")
+
+        r05 = taskcard_root / "T2.2-R05.md"
+        r05_original = r05.read_text(encoding="utf-8")
+        r05_injections = (
+            (
+                "- read-path: `GOLD-STANDARDS.md`\n"
+                "- read-path: `examples/book/positive/"
+                "automatic-driving-safe-state.md`\n",
+                "R05 GOLD/examples read paths were accepted",
+            ),
+            (
+                "- read-path: `materials/T2.2-v2/*.md`\n",
+                "R05 material glob was accepted",
+            ),
+            (
+                "- read-path: `materials/T2.2-v2/source-15-full.md`\n",
+                "R05 extra material path was accepted",
+            ),
+            (
+                "- 打开全部材料\n",
+                "R05 all-material authorization was accepted",
+            ),
+        )
+        for injection, message in r05_injections:
+            r05.write_text(
+                r05_original.replace(
+                    "## 4. 交付文件清单\n",
+                    injection + "\n## 4. 交付文件清单\n",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+            errors = []
+            _recovery_taskcard_names(errors, project_root)
+            if not errors:
+                raise AssertionError(message)
+        r05.write_text(
+            r05_original.replace(
+                "runtime-open: forbidden",
+                "runtime-open: selected-only",
+                1,
+            ),
+            encoding="utf-8",
+        )
+        errors = []
+        _recovery_taskcard_names(errors, project_root)
+        if not any("runtime-open contract mismatch" in error for error in errors):
+            raise AssertionError("R05 non-forbidden runtime permission was accepted")
+        r05.write_text(r05_original, encoding="utf-8")
 
         originals = {
             task_id: (taskcard_root / f"{task_id}.md").read_text(
@@ -3897,6 +4666,7 @@ def _synthetic_write_packet(
 
 def _build_synthetic_recovery_chain(
     project_root: Path,
+    r01_requests: tuple[str, ...] = (),
 ) -> dict[str, tuple[str, str, str]]:
     _synthetic_git(project_root, "init")
     _synthetic_git(project_root, "config", "user.email", "readerlab@example.invalid")
@@ -3946,6 +4716,18 @@ def _build_synthetic_recovery_chain(
     )
     for relative_path in r01_subjects:
         _synthetic_write(project_root, relative_path, ("synthetic-r01: yes",))
+    if r01_requests:
+        r01_blocker = project_root / RECOVERY_R01_BLOCKER_PATH
+        r01_blocker.write_text(
+            RECOVERY_BLOCKER_HEADER
+            + "blocker-type: product-request\n"
+            + "\n".join(
+                f"- product-request-id: {request_id}"
+                for request_id in r01_requests
+            )
+            + "\n",
+            encoding="utf-8",
+        )
     r01_commit = _synthetic_commit(project_root, "synthetic R01")
     _synthetic_write_review(
         project_root,
@@ -3998,11 +4780,22 @@ def _build_synthetic_recovery_chain(
     _synthetic_write(
         project_root, RECOVERY_SELECTOR_PATH, tuple(selector_lines)
     )
-    for relative_path in (
+    _synthetic_write(
+        project_root,
         "diagnostics/T2.2-fixture-resolution-v2.md",
+        (
+            "synthetic-r03: yes",
+            *tuple(
+                f"- product-request-resolution: {request_id} | status: resolved"
+                for request_id in r01_requests
+            ),
+        ),
+    )
+    _synthetic_write(
+        project_root,
         "diagnostics/T2.2-fixture-admission-v2.md",
-    ):
-        _synthetic_write(project_root, relative_path, ("synthetic-r03: yes",))
+        ("synthetic-r03: yes",),
+    )
     byte_manifest_lines: list[str] = []
     raw_root = project_root / "diagnostics/T2.2-fixture-bytes-v2"
     raw_root.mkdir(parents=True)
@@ -4068,7 +4861,10 @@ def _build_synthetic_recovery_chain(
     )
     _synthetic_commit(project_root, "synthetic R04")
 
-    dependencies = _recovery_chain_dependencies("SLOTS_REQUIRED")
+    dependencies = _recovery_chain_dependencies(
+        "SLOTS_REQUIRED",
+        r01_product_blocker_present=bool(r01_requests),
+    )
     fixed_identity_lines = tuple(
         f"- fixed-identity: `{path}`"
         f" | commit: {commit}"
@@ -4354,24 +5150,11 @@ def _synthetic_receipt_fixed_values(
     review_path = RECOVERY_ARCHITECTURE_IDENTITIES[
         "active-architecture-review"
     ][0]
-    quality_path = RECOVERY_ARCHITECTURE_IDENTITIES["quality-audit"][0]
-    quality_commit = _synthetic_git(
-        project_root, "log", "-1", "--format=%H", "--", quality_path
-    )
     return {
         "t2.2-active-architecture-path": active_path,
-        "t2.2-active-architecture-commit": identities[active_path][0],
         "t2.2-active-architecture-sha256": identities[active_path][1],
         "t2.2-active-architecture-review-path": review_path,
-        "t2.2-active-architecture-review-commit": identities[review_path][0],
         "t2.2-active-architecture-review-sha256": identities[review_path][1],
-        "t2.2-active-architecture-review-result": "PASS",
-        "t2.2-quality-audit-path": quality_path,
-        "t2.2-quality-audit-commit": quality_commit,
-        "t2.2-quality-audit-sha256": hashlib.sha256(
-            (project_root / quality_path).read_bytes()
-        ).hexdigest(),
-        "t2.2-quality-audit-result": "CONFIRMED_PASS",
         "t2.2-active-attempt-id": "T2.2-QV2-A01",
         "t2.2-active-attempt-manifest-path": RECOVERY_ATTEMPT_MANIFEST_PATH,
         "t2.2-active-baseline-path": "diagnostics/T2.2-judge-baseline-v2.md",
@@ -4391,18 +5174,12 @@ def _synthetic_receipt_fixed_values(
         "t2.2-history-v2-architecture-path": (
             "diagnostics/T2.2-recovery-architecture-v2.md"
         ),
-        "t2.2-history-v2-architecture-commit": identities[
-            "diagnostics/T2.2-recovery-architecture-v2.md"
-        ][0],
         "t2.2-history-v2-architecture-sha256": identities[
             "diagnostics/T2.2-recovery-architecture-v2.md"
         ][1],
         "t2.2-history-v2-review-path": (
             "diagnostics/T2.2-recovery-architecture-v2-preflight-review.md"
         ),
-        "t2.2-history-v2-review-commit": identities[
-            "diagnostics/T2.2-recovery-architecture-v2-preflight-review.md"
-        ][0],
         "t2.2-history-v2-review-sha256": identities[
             "diagnostics/T2.2-recovery-architecture-v2-preflight-review.md"
         ][1],
@@ -4439,10 +5216,18 @@ def _synthetic_write_m2_receipt(
             for key, relative_path in hash_bindings.items()
         }
     )
+    schema_keys = _v3_receipt_schema_keys()
+    if (
+        schema_keys != M2_RECEIPT_REQUIRED_KEYS
+        or set(values) != set(schema_keys)
+    ):
+        raise AssertionError(
+            "synthetic M2 receipt values do not match v3 section 13.2"
+        )
     receipt = project_root / M2_RECEIPT_PATH
     receipt.write_text(
         RECOVERY_EXACT_HEADER.format(status="frozen", scope="long-term")
-        + "\n".join(f"{key}: {value}" for key, value in values.items())
+        + "\n".join(f"{key}: {values[key]}" for key in schema_keys)
         + "\n",
         encoding="utf-8",
     )
@@ -4499,6 +5284,24 @@ def _assert_chain_tamper_rejected(
 def _self_test_complete_m2_chain() -> None:
     with tempfile.TemporaryDirectory(prefix="readerlab-recovery-chain-") as directory:
         project_root = Path(directory)
+        schema_keys = _v3_receipt_schema_keys()
+        if schema_keys != M2_RECEIPT_REQUIRED_KEYS or len(schema_keys) != 26:
+            raise AssertionError(
+                "validator receipt schema does not exactly match the 26 v3 fields"
+            )
+        forbidden_private_keys = {
+            "t2.2-active-architecture-commit",
+            "t2.2-active-architecture-review-commit",
+            "t2.2-active-architecture-review-result",
+            "t2.2-quality-audit-path",
+            "t2.2-quality-audit-commit",
+            "t2.2-quality-audit-sha256",
+            "t2.2-quality-audit-result",
+            "t2.2-history-v2-architecture-commit",
+            "t2.2-history-v2-review-commit",
+        }
+        if forbidden_private_keys & set(schema_keys):
+            raise AssertionError("private C0 fields leaked into the v3 receipt schema")
         identities = _build_synthetic_recovery_chain(project_root)
         errors: list[str] = []
         _validate_m2_chain(
@@ -4525,6 +5328,30 @@ def _self_test_complete_m2_chain() -> None:
         )
         if errors:
             raise AssertionError(f"legal complete M2 receipt failed: {errors}")
+        receipt_path = project_root / M2_RECEIPT_PATH
+        receipt_text = receipt_path.read_text(encoding="utf-8")
+        receipt_schema_tampers = (
+            receipt_text.replace(
+                f"{schema_keys[0]}: ",
+                "removed-field: ",
+                1,
+            ).replace("removed-field: ", "", 1),
+            receipt_text
+            + f"{schema_keys[0]}: duplicate\n",
+            receipt_text + "private-extra-field: forbidden\n",
+            receipt_text + "任意额外字段: forbidden\n",
+        )
+        for tampered_receipt in receipt_schema_tampers:
+            schema_errors: list[str] = []
+            _receipt_field_values(
+                tampered_receipt,
+                M2_RECEIPT_REQUIRED_KEYS,
+                schema_errors,
+            )
+            if not schema_errors:
+                raise AssertionError(
+                    "missing, duplicate, or extra M2 receipt field was accepted"
+                )
 
         hash_tampers = (
             (
@@ -4680,7 +5507,6 @@ def _self_test_complete_m2_chain() -> None:
                 "patched final baseline masked an intermediate answer tamper"
             )
 
-        receipt_path = project_root / M2_RECEIPT_PATH
         receipt_original = receipt_path.read_bytes()
         answer_path.write_bytes(answer_original + b"receipt-only-tamper\n")
         _synthetic_write_m2_receipt(project_root, receipt_fixed_values)
@@ -4702,12 +5528,173 @@ def _self_test_complete_m2_chain() -> None:
             )
 
 
+def _self_test_r01_product_request_blocker() -> None:
+    with tempfile.TemporaryDirectory(prefix="readerlab-recovery-r01-") as directory:
+        project_root = Path(directory)
+        requests = ("REQUEST-01", "REQUEST-02")
+        identities = _build_synthetic_recovery_chain(
+            project_root, r01_requests=requests
+        )
+        fixed_values = _synthetic_receipt_fixed_values(project_root, identities)
+        _synthetic_write_m2_receipt(project_root, fixed_values)
+        blocker_path = project_root / RECOVERY_R01_BLOCKER_PATH
+        blocker_original = blocker_path.read_bytes()
+        errors: list[str] = []
+        _validate_m2_receipt(
+            errors,
+            project_root,
+            {f"{task_id}.md" for task_id in RECOVERY_TASK_IDS},
+            set(RECOVERY_RAW_BLOBS),
+            "SLOTS_REQUIRED",
+            attempt_identities=identities,
+            fixed_values_override=fixed_values,
+        )
+        if errors:
+            raise AssertionError(
+                f"legally closed R01 product blocker failed full M2: {errors}"
+            )
+        if not blocker_path.exists() or blocker_path.read_bytes() != blocker_original:
+            raise AssertionError("legal R01 closure modified or deleted the blocker")
+
+        resolution_path = (
+            project_root / "diagnostics/T2.2-fixture-resolution-v2.md"
+        )
+        resolution_original = resolution_path.read_bytes()
+
+        blocker_tampers = (
+            blocker_original.replace(
+                b"blocker-type: product-request",
+                b"blocker-type: technical",
+                1,
+            ),
+            blocker_original.replace(
+                b"- product-request-id: REQUEST-02\n",
+                b"",
+                1,
+            ),
+            blocker_original.replace(
+                b"- product-request-id: REQUEST-02\n",
+                b"- product-request-id: REQUEST-01\n",
+                1,
+            ),
+        )
+        for tampered in blocker_tampers:
+            blocker_path.write_bytes(tampered)
+            blocker_errors: list[str] = []
+            _validate_recovery_blockers_for_m2(blocker_errors, project_root)
+            if not blocker_errors:
+                raise AssertionError("invalid R01 blocker request contract was accepted")
+        blocker_path.write_bytes(blocker_original)
+
+        resolution_tampers = (
+            resolution_original.replace(
+                b"- product-request-resolution: REQUEST-02 | status: resolved\n",
+                b"",
+                1,
+            ),
+            resolution_original.replace(
+                b"REQUEST-02 | status: resolved",
+                b"REQUEST-99 | status: resolved",
+                1,
+            ),
+            resolution_original.replace(
+                b"REQUEST-02 | status: resolved",
+                b"REQUEST-01 | status: resolved",
+                1,
+            ),
+            resolution_original.replace(
+                b"REQUEST-01 | status: resolved",
+                b"REQUEST-01 | status: unresolved",
+                1,
+            ),
+            resolution_original.replace(
+                b"REQUEST-01 | status: resolved",
+                b"REQUEST-01 | status: rejected",
+                1,
+            ),
+        )
+        for tampered in resolution_tampers:
+            resolution_path.write_bytes(tampered)
+            resolution_errors: list[str] = []
+            _validate_recovery_blockers_for_m2(
+                resolution_errors, project_root
+            )
+            if not resolution_errors:
+                raise AssertionError(
+                    "missing, duplicate, unequal, unresolved, or rejected "
+                    "R03 resolution was accepted"
+                )
+        resolution_path.write_bytes(resolution_original)
+
+        for blocker_relative_path in RECOVERY_BLOCKER_ARTIFACT_POLICY:
+            if blocker_relative_path == RECOVERY_R01_BLOCKER_PATH:
+                continue
+            other_path = project_root / blocker_relative_path
+            other_path.write_text(
+                RECOVERY_BLOCKER_HEADER + "blocker-type: technical\n",
+                encoding="utf-8",
+            )
+            other_errors: list[str] = []
+            _validate_recovery_blockers_for_m2(other_errors, project_root)
+            other_path.unlink()
+            if not any(
+                "non-closable recovery blocker" in error
+                for error in other_errors
+            ):
+                raise AssertionError(
+                    f"non-R01 blocker did not reject M2: {blocker_relative_path}"
+                )
+
+        resolution_path.write_bytes(
+            resolution_original.replace(
+                b"REQUEST-01 | status: resolved",
+                b"REQUEST-01 | status: unresolved",
+                1,
+            )
+        )
+        chain_errors: list[str] = []
+        _validate_m2_chain(
+            chain_errors,
+            project_root,
+            "SLOTS_REQUIRED",
+            attempt_identities=identities,
+            r01_product_blocker_present=True,
+        )
+        resolution_path.write_bytes(resolution_original)
+        if not chain_errors:
+            raise AssertionError("tampered closed R01 resolution escaped attempt binding")
+
+        attempt_path = project_root / RECOVERY_ATTEMPT_MANIFEST_PATH
+        attempt_original = attempt_path.read_bytes()
+        attempt_path.write_bytes(
+            _replace_first_hash(
+                attempt_original.decode("utf-8"),
+                (
+                    "- input-binding: "
+                    "`diagnostics/T2.2-fixture-resolution-v2.md`"
+                ),
+            ).encode("utf-8")
+        )
+        chain_errors = []
+        _validate_m2_chain(
+            chain_errors,
+            project_root,
+            "SLOTS_REQUIRED",
+            attempt_identities=identities,
+            r01_product_blocker_present=True,
+        )
+        attempt_path.write_bytes(attempt_original)
+        if not chain_errors:
+            raise AssertionError("tampered R01 resolution attempt binding was accepted")
+
+
 def _run_recovery_self_test() -> int:
     try:
         _self_test_recovery_card_projection()
         _self_test_selector_and_filesystem_guards()
         _self_test_blocked_selector_rejects_m2()
         _self_test_complete_m2_chain()
+        _self_test_r01_product_request_blocker()
     except AssertionError as error:
         print("T2.2 recovery deterministic self-test FAILED")
         print(error)
