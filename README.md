@@ -16,14 +16,14 @@
 
 ## 当前项目状态（唯一交接入口）
 
-截至 2026-07-19，本 `README.md` 是仓库唯一的项目状态与跨会话交接入口。项目仍暂停执行；v3 恢复架构的 C0 控制面修复已完成实现与确定性回归，等待总控和独立后置审查，恢复任务尚未注册或执行。
+截至 2026-07-19，本 `README.md` 是仓库唯一的项目状态与跨会话交接入口。项目仍暂停执行；v3 恢复架构的首轮 C0 修复已提交，但总控完整规格复核仍为 `FAIL`，恢复任务尚未注册或执行。
 
 ### 1. 当前阶段与 gate
 
 - 当前阶段：阶段 2「裁判先行校准」。
 - 当前 gate：T2.2 裁判资格考试已执行但 `FAIL`，处于 M2 之前的硬阻塞。
 - C0 输入 HEAD：`fc7b6c01daaee8a7814e26e8d3b8ff8c1fb198d7`；T2.2 失败证据 commit 仍为 `909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
-- 当前控制状态：`A1_ARCHITECTURE_RELEASED`。C0 修复已 `implemented / integrated / verified`，但尚未经过总控和独立后置审查，不能认定 `A2_CONTROL_PLANE_INTEGRATED`；恢复卡数量：`0`。
+- 当前控制状态：`A1_ARCHITECTURE_RELEASED`。C0 修复候选已 `implemented / integrated`，自身确定性回归通过，但未通过总控 v3 Spec 复核，不能认定完整 `verified` 或 `A2_CONTROL_PLANE_INTEGRATED`；恢复卡数量：`0`。
 - T2.2 资格仍为 `FAIL`；M2 receipt 仍不存在；阶段 3 真实材料运行、生产 runtime 和产品验收均未开始。
 
 ### 2. 已经通过的内容
@@ -34,13 +34,13 @@
 - T2.3 失败案例诊断与种子透镜 v2 已 `implemented` 并通过确定性验证；v2 仍为 `draft`，尚未取得资格。
 - T2.2 的冻结盲包、评分键、judge brief、answers、哈希链、评分和失败留痕已按任务卡落库；本轮重新核对 14 项顺序、状态头、关键哈希、payload／源片段逐字节一致性和 `FAIL` 汇总均为 `PASS`。这只证明仓库内考试证据自洽，不代表裁判通过，也不补足仓库中缺失的 raw runtime 日志。
 - v3 architecture/review/quality audit 的固定身份分别通过 `PASS`／`CONFIRMED_PASS`，A1 `A1_ARCHITECTURE_RELEASED` 已成立。
-- C0 控制面已把 v3 身份、21 卡 0/21 原子闭集、3 张复合任务、82 个正常 Markdown 输出、11 个 direct review、R03—R06 四卡的 14-slot 静态投影、28 个 raw blobs、完整 M2 hash 链、M2 active/history schema 和 T3.6/T4.1 下游接线编译进现行验证器。临时 Git 仓库中的合法 21 卡与完整链正例通过，分层篡改、`BLOCKED` selector、部分注册、非法路径与文件类型反例均失败；这证明本次修复达到技术 `verified`，不替代 A2 后置审查。
+- C0 修复候选已经实现 `BLOCKED` selector 拒绝、主要 M2 hash 链复算及 R03—R06 四卡 14-slot 标记投影；其临时 Git 仓库自测和当前 0-card 验证通过。总控完整规格复核仍发现精确 receipt schema、任务卡实际读取白名单和 R01 已关闭 blocker 生命周期不符合 v3，因此尚未达到完整技术 `verified`。
 
 ### 3. 尚未通过的内容
 
 - T2.2 裁判资格未通过，裁判不得上岗。
 - M2 未通过且没有 receipt。
-- C0 修复尚未取得总控和独立后置审查结论，A2 尚未成立；不得注册 21 张恢复卡。
+- C0 修复未通过总控 v3 Spec 复核，A2 尚未成立；不得启动独立后置审查或注册 21 张恢复卡。
 - 21 张恢复卡尚未注册，R01—R21 均未执行；v2 active attempt/baseline/postflight 均不存在。
 - T2.1、未来 v2 active baseline/postflight、T2.3 v2 与 T1.8 尚未组成 M2 冻结集。
 - 图书线生产 runtime 未 `integrated`，未知材料能力和整体 semantic／product 质量未验证。
@@ -113,8 +113,12 @@
   1. P0：`selector-result: BLOCKED` 没有成为 M2 receipt 的硬拒绝条件，与 v3 §13.3“仍有 blocker 即禁止 M2”冲突；
   2. P0：M2 gate 没有重算完整 attempt/package/byte hash 链，只深验少量最终产物；中间 packet、key、manifest 或 review 被改动时仍可能错误放行；
   3. P1：任务卡注册投影只要求 R03 列出 14 个 material slots，未强制 v3 §7 要求的 R03、R04、R05、R06 四卡都静态列全。
-- 本次 C0 修复已关闭这三项缺口：M2 明确拒绝 `BLOCKED` selector；M2 重算 source/blob、byte manifest、direct review commit/hash、attempt、package payload、三段 call/input-review、answer/index/result、baseline/postflight 的完整单向链；R03—R06 四卡都必须逐项投影相同 14-slot 闭集，并分别固定 `selected-only/forbidden` runtime-open。确定性回归已覆盖合法完整链和逐层篡改反例。
-- A2 `A2_CONTROL_PLANE_INTEGRATED` 仍须由后续总控与独立后置审查决定。T2.2 资格仍为 `FAIL`，M2 receipt 仍不存在，21 张恢复卡仍为 0。
+- 首轮 C0 修复 commit `dd3f7c60cb6f5a350edd59dcbdb672603c70a9e0` 修改 `validate.py`、`README.md`、`blueprints/EXECUTION-ROADMAP.md` 和 `audit/manifest.json`。`python3 -B validate.py --self-test-recovery`、`python3 -B validate.py`、编译检查和 diff check 均通过；这证明实现自洽，不自动证明符合 v3。
+- 总控的 Standards 轴为 `PASS`，仅发现一个非阻断 P2：恢复图以大量路径字符串、元组和正则分组集中在 `validate.py`，存在 Primitive Obsession、Data Clumps 与未来 Shotgun Surgery 风险。v3 Spec 轴为 `FAIL`，最高 P0：
+  1. P0：v3 §13.2 声明 M2 receipt 的精确 key 集；验证器却把 architecture/review commit、review result、quality-audit 四字段及 v2 commit 等九个额外字段设为必填，自测正例也按该私有 schema 生成，导致符合 v3 的精确 receipt 被拒绝；
+  2. P0：R03—R06 只检查任意位置的 `material-slot-policy` 标记行，不检查六节任务卡中的实际“允许读取清单”。独立反例在 R05 允许读取清单加入 `materials/T2.2-v2/*.md` 和“打开全部材料”后仍得到零错误，R05 的运行时零材料读取没有机械闭合；
+  3. P1：M2 当前拒绝任何 recovery blocker；v3 §6.5、§11.2、§13.3 明确允许 R01 product-request blocker 在 R03 resolution 逐 request-id 关闭后永久留档。当前合法需产品答复路径会因此永久无法进入 M2，自测没有覆盖该必经历史 blocker。
+- `BLOCKED` selector 硬拒绝和主要 hash 链复算本身已关闭首轮相应缺口，但不足以成立 A2。当前仍为 A1，T2.2 资格仍为 `FAIL`，M2 receipt 不存在，21 张恢复卡为 0。
 - C0 不授权恢复卡、材料、模型调用、M2 receipt 或恢复执行；它也不创建任何恢复产物或阶段 3 入口。
 
 ### 7. 必须保留的证据
@@ -180,7 +184,8 @@
 - 恢复架构 v3 前置审查质量复核 commit：`e74221b85a8c750827c534e14d6df4079cb85c06`（`CONFIRMED_PASS`）。
 - C0 控制面集成基准 commit：`fc7b6c01daaee8a7814e26e8d3b8ff8c1fb198d7`。
 - C0 控制面候选 commit：`17b7feec50262e5447cd216a02e7f6dd83f4151f`（总控复核未通过，不授权 A2 或 21 卡注册）。
-- 上一轮总控状态 commit：`fc7b6c01daaee8a7814e26e8d3b8ff8c1fb198d7`。
+- 首轮 C0 修复 commit：`dd3f7c60cb6f5a350edd59dcbdb672603c70a9e0`（自身回归通过，但总控 v3 Spec 复核 `FAIL`，不授权 A2、后置审查或 21 卡注册）。
+- 上一轮总控状态 commit：`c839e9be66747089f0fb63f0e4ca1e1b22a2dcf8`。
 
 ### 9. 非交付工作树项
 
@@ -189,9 +194,9 @@
 ### 10. 当前唯一下一步编排
 
 - 原路线现在不可继续：T2.2 资格为 `FAIL`，且 `diagnostics/M2-gate-receipt.md` 不存在；不得进入 M2 或阶段 3。
-- C0 控制面修复已完成，但当前状态保持 `A1_ARCHITECTURE_RELEASED`，恢复卡数量：`0`，M2 receipt 仍不存在。
-- 下一角色只能是 ReaderLab M2 总控：重新读取修复提交、验证真实仓库与确定性回归，再决定是否启动独立 C0 后置审查。
-- 在总控和独立后置审查明确放行前，不得注册 `taskcards/T2.2-R01.md` 至 `taskcards/T2.2-R21.md`，不得派发 R01，不得请求或读取产品材料，不得创建 authorization/selector/blobs，不得调用模型，不得创建 M2 receipt，不得执行恢复 DAG，不得进入阶段 3。
+- 首轮 C0 控制面修复未通过总控完整规格复核；当前状态保持 `A1_ARCHITECTURE_RELEASED`，恢复卡数量：`0`，M2 receipt 仍不存在。
+- 下一角色只能是 T2.2 C0 控制面二次修复执行者：删除 receipt 私有必填 schema 偏差、把四卡 material slot 合同绑定到真实允许读取清单、实现 R01 product-request blocker 的逐 request-id 合法关闭，并补齐对应正反回归。
+- 二次修复完成后必须回到总控重新读取真实提交；在总控明确放行前，不得启动独立后置审查，不得注册 `taskcards/T2.2-R01.md` 至 `taskcards/T2.2-R21.md`，不得派发 R01，不得请求或读取产品材料，不得创建 authorization/selector/blobs，不得调用模型，不得创建 M2 receipt，不得执行恢复 DAG，不得进入阶段 3。
 
 ### 11. 下一会话读取顺序
 
