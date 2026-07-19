@@ -79,6 +79,589 @@ TASK_IDS = (
     "T4.2",
     "T4.3",
 )
+RECOVERY_TASK_IDS = (
+    "T2.2-R01",
+    "T2.2-R02",
+    "T2.2-R03",
+    "T2.2-R04",
+    "T2.2-R05",
+    "T2.2-R06",
+    "T2.2-R07",
+    "T2.2-R08",
+    "T2.2-R09",
+    "T2.2-R10",
+    "T2.2-R11",
+    "T2.2-R12",
+    "T2.2-R13",
+    "T2.2-R14",
+    "T2.2-R15",
+    "T2.2-R16",
+    "T2.2-R17",
+    "T2.2-R18",
+    "T2.2-R19",
+    "T2.2-R20",
+    "T2.2-R21",
+)
+RECOVERY_COMPOSITE_TASK_IDS = {
+    "T2.2-R09",
+    "T2.2-R14",
+    "T2.2-R19",
+}
+RECOVERY_ARCHITECTURE_IDENTITIES = {
+    "active-architecture": (
+        "diagnostics/T2.2-recovery-architecture-v3.md",
+        "a67f011d112e1e06022867cb3577110816064bd9",
+        "38025c0b2ebb26171e7f6ad8bef69b97bfeb2d88597a78e67b3dcdc48110d1e1",
+    ),
+    "active-architecture-review": (
+        "diagnostics/T2.2-recovery-architecture-v3-preflight-review.md",
+        "626562fa3fa6487200e953ca0b804a275ec3ef33",
+        "e5d450f019685fba6eed679e06ccedee10255591e9a4a65359ac6cfb918e06ec",
+    ),
+    "quality-audit": (
+        "diagnostics/T2.2-recovery-architecture-v3-preflight-review-quality-audit.md",
+        "e74221b85a8c750827c534e14d6df4079cb85c06",
+        "a81ded57546981d40b7c95d0d206ca0b627008fe509c32dfff1fb09abb415342",
+    ),
+}
+RECOVERY_MATERIAL_SLOTS = (
+    "materials/T2.2-v2/source-01-full.md",
+    "materials/T2.2-v2/source-02-full.md",
+    "materials/T2.2-v2/source-03-full.md",
+    "materials/T2.2-v2/source-04-full.md",
+    "materials/T2.2-v2/source-05-full.md",
+    "materials/T2.2-v2/source-06-full.md",
+    "materials/T2.2-v2/source-07-full.md",
+    "materials/T2.2-v2/source-08-full.md",
+    "materials/T2.2-v2/source-09-full.md",
+    "materials/T2.2-v2/source-10-full.md",
+    "materials/T2.2-v2/source-11-full.md",
+    "materials/T2.2-v2/source-12-full.md",
+    "materials/T2.2-v2/source-13-full.md",
+    "materials/T2.2-v2/source-14-full.md",
+)
+RECOVERY_RAW_BLOBS = (
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-01.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-01.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-02.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-02.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-03.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-03.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-04.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-04.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-05.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-05.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-06.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-06.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-07.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-07.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-08.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-08.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-09.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-09.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-10.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-10.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-11.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-11.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-12.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-12.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-13.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-13.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/candidate-14.bin",
+    "diagnostics/T2.2-fixture-bytes-v2/context-14.bin",
+)
+
+
+def _artifact_policy(
+    owner: str,
+    status: str,
+    scope: str,
+    direct_review_path: str = "none",
+    m2_active: str = "no",
+    attempt_local: str = "yes",
+    header_required: str = "yes",
+) -> dict[str, str]:
+    return {
+        "owner": owner,
+        "header-required": header_required,
+        "status": status,
+        "scope": scope,
+        "direct-review-path": direct_review_path,
+        "review-scope-inherits": (
+            "yes" if direct_review_path != "none" else "not-applicable"
+        ),
+        "m2-active": m2_active,
+        "attempt-local": attempt_local,
+    }
+
+
+RECOVERY_ARTIFACT_POLICY = {
+    "contracts/T2.2-historical-qualification-adapter-v1.md": _artifact_policy(
+        "T2.2-R01",
+        "frozen",
+        "long-term",
+        "diagnostics/T2.2-historical-qualification-adapter-v1-review.md",
+        "indirect",
+        "no",
+    ),
+    "diagnostics/T2.2-fixture-census-v2.md": _artifact_policy(
+        "T2.2-R01",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-fixture-census-review-v2.md",
+    ),
+    "diagnostics/T2.2-fixture-gap-list-v2.md": _artifact_policy(
+        "T2.2-R01",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-fixture-census-review-v2.md",
+    ),
+    "diagnostics/T2.2-historical-qualification-adapter-v1-review.md": _artifact_policy(
+        "T2.2-R02", "frozen", "long-term", m2_active="indirect", attempt_local="no"
+    ),
+    "diagnostics/T2.2-fixture-census-review-v2.md": _artifact_policy(
+        "T2.2-R02", "frozen", "run-only"
+    ),
+    "materials/T2.2-v2/authorization.md": _artifact_policy(
+        "T2.2-R03/product",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-fixture-byte-review-v2.md",
+    ),
+    "diagnostics/T2.2-material-gap-manifest-v2.md": _artifact_policy(
+        "T2.2-R03",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-fixture-byte-review-v2.md",
+    ),
+    "diagnostics/T2.2-fixture-resolution-v2.md": _artifact_policy(
+        "T2.2-R03",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-fixture-byte-review-v2.md",
+    ),
+    "diagnostics/T2.2-fixture-admission-v2.md": _artifact_policy(
+        "T2.2-R03",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-fixture-byte-review-v2.md",
+    ),
+    "diagnostics/T2.2-fixture-byte-manifest-v2.md": _artifact_policy(
+        "T2.2-R03",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-fixture-byte-review-v2.md",
+    ),
+    "diagnostics/T2.2-fixture-byte-review-v2.md": _artifact_policy(
+        "T2.2-R04", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-qualification-attempt-manifest-v2.md": _artifact_policy(
+        "T2.2-R05",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-package-preflight-review-v2.md",
+        "yes",
+    ),
+    "diagnostics/T2.2-blind-packet-v2.md": _artifact_policy(
+        "T2.2-R05",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-package-preflight-review-v2.md",
+        "indirect",
+    ),
+    "diagnostics/T2.2-scoring-key-v2.md": _artifact_policy(
+        "T2.2-R05",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-package-preflight-review-v2.md",
+        "indirect",
+    ),
+    "diagnostics/T2.2-judge-brief-v2.md": _artifact_policy(
+        "T2.2-R05",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-package-preflight-review-v2.md",
+        "indirect",
+    ),
+    "diagnostics/T2.2-judge-brief-variant-v1-02.md": _artifact_policy(
+        "T2.2-R05",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-package-preflight-review-v2.md",
+        "indirect",
+    ),
+    "diagnostics/T2.2-contrast-key-v1.md": _artifact_policy(
+        "T2.2-R05",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-package-preflight-review-v2.md",
+        "indirect",
+    ),
+    "diagnostics/T2.2-contrast-packet-v1-01.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-contrast-packet-v1-02.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-contrast-packet-v1-03.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-contrast-packet-v1-04.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-contrast-packet-v1-05.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-contrast-packet-v1-06.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-01.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-02.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-03.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-04.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-05.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-06.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-07.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-08.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-09.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-10.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-11.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-12.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-13.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-retest-packet-v2-14.md": _artifact_policy(
+        "T2.2-R05", "frozen", "run-only", "diagnostics/T2.2-package-preflight-review-v2.md", "indirect"
+    ),
+    "diagnostics/T2.2-package-manifest-v2.md": _artifact_policy(
+        "T2.2-R05",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-package-preflight-review-v2.md",
+        "indirect",
+    ),
+    "diagnostics/T2.2-package-preflight-review-v2.md": _artifact_policy(
+        "T2.2-R06", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-contrast-control-call-manifest-v1.md": _artifact_policy(
+        "T2.2-R07",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-contrast-control-input-review-v1.md",
+    ),
+    "diagnostics/T2.2-contrast-control-input-review-v1.md": _artifact_policy(
+        "T2.2-R08", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-01.md": _artifact_policy(
+        "T2.2-R09 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-02.md": _artifact_policy(
+        "T2.2-R09 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-03.md": _artifact_policy(
+        "T2.2-R09 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-04.md": _artifact_policy(
+        "T2.2-R09 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-control-answers-index-v1.md": _artifact_policy(
+        "T2.2-R09 controller", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-control-results-v1.md": _artifact_policy(
+        "T2.2-R10",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-contrast-control-postflight-review-v1.md",
+    ),
+    "diagnostics/T2.2-contrast-control-postflight-review-v1.md": _artifact_policy(
+        "T2.2-R11", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-diagnostic-call-manifest-v1.md": _artifact_policy(
+        "T2.2-R12",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-contrast-diagnostic-input-review-v1.md",
+    ),
+    "diagnostics/T2.2-contrast-diagnostic-input-review-v1.md": _artifact_policy(
+        "T2.2-R13", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-05.md": _artifact_policy(
+        "T2.2-R14 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-06.md": _artifact_policy(
+        "T2.2-R14 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-07.md": _artifact_policy(
+        "T2.2-R14 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-08.md": _artifact_policy(
+        "T2.2-R14 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-09.md": _artifact_policy(
+        "T2.2-R14 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-10.md": _artifact_policy(
+        "T2.2-R14 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-11.md": _artifact_policy(
+        "T2.2-R14 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-12.md": _artifact_policy(
+        "T2.2-R14 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-13.md": _artifact_policy(
+        "T2.2-R14 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-answer-v1-14.md": _artifact_policy(
+        "T2.2-R14 fresh judge", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-diagnostic-answers-index-v1.md": _artifact_policy(
+        "T2.2-R14 controller", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-contrast-results-v1.md": _artifact_policy(
+        "T2.2-R15",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-contrast-postflight-review-v1.md",
+    ),
+    "diagnostics/T2.2-contrast-postflight-review-v1.md": _artifact_policy(
+        "T2.2-R16", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-retest-call-manifest-v2.md": _artifact_policy(
+        "T2.2-R17",
+        "frozen",
+        "run-only",
+        "diagnostics/T2.2-retest-input-review-v2.md",
+    ),
+    "diagnostics/T2.2-retest-input-review-v2.md": _artifact_policy(
+        "T2.2-R18", "frozen", "run-only"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-01.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-02.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-03.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-04.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-05.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-06.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-07.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-08.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-09.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-10.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-11.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-12.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-13.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answer-v2-14.md": _artifact_policy(
+        "T2.2-R19 fresh judge", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-answers-index-v2.md": _artifact_policy(
+        "T2.2-R19 controller", "frozen", "run-only", m2_active="indirect"
+    ),
+    "diagnostics/T2.2-judge-baseline-v2.md": _artifact_policy(
+        "T2.2-R20",
+        "frozen",
+        "long-term",
+        "diagnostics/T2.2-postflight-review-v2.md",
+        "yes",
+        "no",
+    ),
+    "diagnostics/T2.2-postflight-review-v2.md": _artifact_policy(
+        "T2.2-R21", "frozen", "long-term", m2_active="yes", attempt_local="no"
+    ),
+}
+RECOVERY_BLOCKER_ARTIFACT_POLICY = {
+    "taskcards/T2.2-R01-BLOCKER.md": _artifact_policy(
+        "T2.2-R01", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R02-BLOCKER.md": _artifact_policy(
+        "T2.2-R02", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R03-BLOCKER.md": _artifact_policy(
+        "T2.2-R03", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R04-BLOCKER.md": _artifact_policy(
+        "T2.2-R04", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R05-BLOCKER.md": _artifact_policy(
+        "T2.2-R05", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R06-BLOCKER.md": _artifact_policy(
+        "T2.2-R06", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R07-BLOCKER.md": _artifact_policy(
+        "T2.2-R07", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R08-BLOCKER.md": _artifact_policy(
+        "T2.2-R08", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R09-BLOCKER.md": _artifact_policy(
+        "T2.2-R09", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R10-BLOCKER.md": _artifact_policy(
+        "T2.2-R10", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R11-BLOCKER.md": _artifact_policy(
+        "T2.2-R11", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R12-BLOCKER.md": _artifact_policy(
+        "T2.2-R12", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R13-BLOCKER.md": _artifact_policy(
+        "T2.2-R13", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R14-BLOCKER.md": _artifact_policy(
+        "T2.2-R14", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R15-BLOCKER.md": _artifact_policy(
+        "T2.2-R15", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R16-BLOCKER.md": _artifact_policy(
+        "T2.2-R16", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R17-BLOCKER.md": _artifact_policy(
+        "T2.2-R17", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R18-BLOCKER.md": _artifact_policy(
+        "T2.2-R18", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R19-BLOCKER.md": _artifact_policy(
+        "T2.2-R19", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R20-BLOCKER.md": _artifact_policy(
+        "T2.2-R20", "blocked", "run-only"
+    ),
+    "taskcards/T2.2-R21-BLOCKER.md": _artifact_policy(
+        "T2.2-R21", "blocked", "run-only"
+    ),
+}
+RECOVERY_CONTROL_ARTIFACT_POLICY = {
+    "diagnostics/T2.2-recovery-architecture-v3-preflight-review.md": (
+        _artifact_policy(
+            "independent-architecture-review",
+            "frozen",
+            "run-only",
+            m2_active="indirect",
+            attempt_local="no",
+        )
+    ),
+    "diagnostics/M2-gate-receipt.md": _artifact_policy(
+        "M2-controller",
+        "frozen",
+        "long-term",
+        m2_active="yes",
+        attempt_local="no",
+    ),
+}
+
+RECOVERY_REVIEW_SUBJECTS = {
+    "diagnostics/T2.2-recovery-architecture-v3-preflight-review.md": (
+        "diagnostics/T2.2-recovery-architecture-v3.md",
+    ),
+    "diagnostics/T2.2-historical-qualification-adapter-v1-review.md": (
+        "contracts/T2.2-historical-qualification-adapter-v1.md",
+    ),
+    "diagnostics/T2.2-fixture-census-review-v2.md": (
+        "diagnostics/T2.2-fixture-census-v2.md",
+        "diagnostics/T2.2-fixture-gap-list-v2.md",
+    ),
+    "diagnostics/T2.2-fixture-byte-review-v2.md": (
+        "materials/T2.2-v2/authorization.md",
+        "diagnostics/T2.2-material-gap-manifest-v2.md",
+        "diagnostics/T2.2-fixture-resolution-v2.md",
+        "diagnostics/T2.2-fixture-admission-v2.md",
+        "diagnostics/T2.2-fixture-byte-manifest-v2.md",
+        *RECOVERY_RAW_BLOBS,
+    ),
+    "diagnostics/T2.2-package-preflight-review-v2.md": tuple(
+        path
+        for path, policy in RECOVERY_ARTIFACT_POLICY.items()
+        if policy["owner"] == "T2.2-R05"
+    ),
+    "diagnostics/T2.2-contrast-control-input-review-v1.md": (
+        "diagnostics/T2.2-contrast-control-call-manifest-v1.md",
+    ),
+    "diagnostics/T2.2-contrast-control-postflight-review-v1.md": (
+        "diagnostics/T2.2-contrast-control-results-v1.md",
+    ),
+    "diagnostics/T2.2-contrast-diagnostic-input-review-v1.md": (
+        "diagnostics/T2.2-contrast-diagnostic-call-manifest-v1.md",
+    ),
+    "diagnostics/T2.2-contrast-postflight-review-v1.md": (
+        "diagnostics/T2.2-contrast-results-v1.md",
+    ),
+    "diagnostics/T2.2-retest-input-review-v2.md": (
+        "diagnostics/T2.2-retest-call-manifest-v2.md",
+    ),
+    "diagnostics/T2.2-postflight-review-v2.md": (
+        "diagnostics/T2.2-judge-baseline-v2.md",
+    ),
+}
+RECOVERY_HISTORICAL_MARKDOWN = {
+    "diagnostics/T2.2-blind-packet.md",
+    "diagnostics/T2.2-scoring-key.md",
+    "diagnostics/T2.2-judge-brief.md",
+    "diagnostics/T2.2-judge-answers.md",
+    "diagnostics/T2.2-judge-baseline.md",
+    "diagnostics/T2.2-recovery-architecture-v1.md",
+    "diagnostics/T2.2-recovery-architecture-v1-preflight-review.md",
+    "diagnostics/T2.2-recovery-architecture-v2.md",
+    "diagnostics/T2.2-recovery-architecture-v2-preflight-review.md",
+    "diagnostics/T2.2-recovery-architecture-v3.md",
+    "diagnostics/T2.2-recovery-architecture-v3-preflight-review.md",
+    "diagnostics/T2.2-recovery-architecture-v3-preflight-review-quality-audit.md",
+}
+RECOVERY_SELECTOR_PATH = "diagnostics/T2.2-material-gap-manifest-v2.md"
+M2_RECEIPT_PATH = "diagnostics/M2-gate-receipt.md"
+RECOVERY_EXACT_HEADER = "---\nstatus: {status}\nscope: {scope}\n---\n"
+RECOVERY_BLOCKER_HEADER = "---\nstatus: blocked\nscope: run-only\n---\n"
 TASK_SECTION_NAMES = (
     "任务编号与标题",
     "目标",
@@ -315,6 +898,26 @@ def validate_forbidden_text(
             errors.append(f"legacy reference {forbidden!r} in {label}")
 
 
+def _walk_files_pruned(root: Path) -> list[Path]:
+    files: list[Path] = []
+    for current, directory_names, file_names in os.walk(
+        root, topdown=True, followlinks=False
+    ):
+        current_path = Path(current)
+        if current_path == root:
+            directory_names[:] = [
+                name for name in directory_names if name != ".git"
+            ]
+        if current_path == root / "materials":
+            directory_names[:] = [
+                name for name in directory_names if name != "T2.2-v2"
+            ]
+        directory_names.sort()
+        file_names.sort()
+        files.extend(current_path / name for name in file_names)
+    return files
+
+
 def stateful_files() -> list[Path]:
     files: list[Path] = []
     for directory in STATEFUL_ROOTS:
@@ -332,7 +935,26 @@ def required_tree_symlinks() -> list[Path]:
             links.append(root)
             continue
         if root.is_dir():
-            links.extend(path for path in root.rglob("*") if path.is_symlink())
+            for current, directory_names, file_names in os.walk(
+                root, topdown=True, followlinks=False
+            ):
+                current_path = Path(current)
+                retained_directories: list[str] = []
+                for name in sorted(directory_names):
+                    path = current_path / name
+                    relative = path.relative_to(ROOT).as_posix()
+                    if path.is_symlink():
+                        links.append(path)
+                        continue
+                    if relative == "materials/T2.2-v2":
+                        continue
+                    retained_directories.append(name)
+                directory_names[:] = retained_directories
+                links.extend(
+                    current_path / name
+                    for name in sorted(file_names)
+                    if (current_path / name).is_symlink()
+                )
     return links
 
 
@@ -434,11 +1056,18 @@ def validate_material_guard(
     if text != EXPECTED_MATERIALS_GITIGNORE:
         errors.append("materials/.gitignore does not match the source-material guard")
 
-    nested_guards = sorted(
-        path
-        for path in materials.rglob(".gitignore")
-        if path != guard
-    )
+    nested_guards: list[Path] = []
+    for current, directory_names, file_names in os.walk(
+        materials, topdown=True, followlinks=False
+    ):
+        current_path = Path(current)
+        if current_path == materials:
+            directory_names[:] = [
+                name for name in directory_names if name != "T2.2-v2"
+            ]
+        if ".gitignore" in file_names and current_path / ".gitignore" != guard:
+            nested_guards.append(current_path / ".gitignore")
+    nested_guards.sort()
     for path in nested_guards:
         errors.append(
             "nested materials .gitignore forbidden: "
@@ -510,6 +1139,927 @@ def validate_t36_freeze_contract(errors: list[str]) -> None:
     missing = sorted(item for item in required_text if item not in text)
     if missing:
         errors.append(f"T3.6 two-freeze contract text missing: {missing}")
+
+
+def _regular_file_content_if_present(
+    relative_path: str, errors: list[str], project_root: Path
+) -> bytes | None:
+    path = project_root / relative_path
+    try:
+        path.lstat()
+    except FileNotFoundError:
+        return None
+    except OSError as error:
+        errors.append(f"cannot inspect recovery artifact {relative_path}: {error}")
+        return None
+    return read_regular_bytes(path, errors, project_root)
+
+
+def _validate_fixed_file_hash(
+    relative_path: str,
+    expected_hash: str,
+    errors: list[str],
+    project_root: Path,
+) -> bytes | None:
+    content = read_regular_bytes(project_root / relative_path, errors, project_root)
+    if content is not None:
+        actual_hash = hashlib.sha256(content).hexdigest()
+        if actual_hash != expected_hash:
+            errors.append(
+                f"fixed recovery identity hash mismatch: {relative_path}: "
+                f"{actual_hash} != {expected_hash}"
+            )
+    return content
+
+
+def _validate_commit_identity(
+    relative_path: str,
+    commit: str,
+    expected_hash: str,
+    errors: list[str],
+    project_root: Path,
+) -> None:
+    try:
+        ancestor = subprocess.run(
+            ["git", "-C", str(project_root), "merge-base", "--is-ancestor", commit, "HEAD"],
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        blob = subprocess.run(
+            ["git", "-C", str(project_root), "show", f"{commit}:{relative_path}"],
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+    except OSError as error:
+        errors.append(f"cannot verify recovery commit identity {commit}: {error}")
+        return
+    if ancestor.returncode != 0:
+        errors.append(f"recovery identity commit is not a HEAD ancestor: {commit}")
+    if blob.returncode != 0:
+        detail = blob.stderr.decode("utf-8", errors="replace").strip()
+        errors.append(
+            f"cannot read fixed recovery commit blob {commit}:{relative_path}: {detail}"
+        )
+    elif hashlib.sha256(blob.stdout).hexdigest() != expected_hash:
+        errors.append(
+            f"fixed recovery commit blob hash mismatch: {commit}:{relative_path}"
+        )
+
+
+def _format_artifact_policy_line(
+    relative_path: str, policy: dict[str, str]
+) -> str:
+    direct_review = policy["direct-review-path"]
+    direct_value = f"`{direct_review}`" if direct_review != "none" else "none"
+    return (
+        f"- artifact-policy: `{relative_path}`"
+        f" | owner: {policy['owner']}"
+        f" | header-required: {policy['header-required']}"
+        f" | status: {policy['status']}"
+        f" | scope: {policy['scope']}"
+        f" | direct-review-path: {direct_value}"
+        f" | review-scope-inherits: {policy['review-scope-inherits']}"
+        f" | m2-active: {policy['m2-active']}"
+        f" | attempt-local: {policy['attempt-local']}"
+    )
+
+
+def _recovery_blocker_policy(task_id: str) -> tuple[str, dict[str, str]]:
+    matches = [
+        (path, policy)
+        for path, policy in RECOVERY_BLOCKER_ARTIFACT_POLICY.items()
+        if policy["owner"] == task_id
+    ]
+    if len(matches) != 1:
+        raise RuntimeError(f"invalid blocker policy for {task_id}")
+    return matches[0]
+
+
+def _recovery_raw_policy() -> dict[str, str]:
+    return _artifact_policy(
+        "T2.2-R03",
+        "non-markdown",
+        "run-only",
+        "diagnostics/T2.2-fixture-byte-review-v2.md",
+        header_required="no",
+    )
+
+
+def _recovery_material_policy() -> dict[str, str]:
+    return _artifact_policy(
+        "T2.2-R03/product",
+        "raw-input",
+        "run-only",
+        header_required="no",
+    )
+
+
+def _expected_card_policy_lines(task_id: str) -> set[str]:
+    lines = {
+        _format_artifact_policy_line(path, policy)
+        for path, policy in RECOVERY_ARTIFACT_POLICY.items()
+        if policy["owner"].startswith(task_id)
+    }
+    if task_id == "T2.2-R03":
+        raw_policy = _recovery_raw_policy()
+        material_policy = _recovery_material_policy()
+        lines.update(
+            _format_artifact_policy_line(path, raw_policy)
+            for path in RECOVERY_RAW_BLOBS
+        )
+        lines.update(
+            _format_artifact_policy_line(path, material_policy)
+            for path in RECOVERY_MATERIAL_SLOTS
+        )
+    blocker_path, blocker_policy = _recovery_blocker_policy(task_id)
+    lines.add(_format_artifact_policy_line(blocker_path, blocker_policy))
+    return lines
+
+
+def _validate_recovery_policy_invariants(errors: list[str]) -> None:
+    if len(RECOVERY_ARTIFACT_POLICY) != 82:
+        errors.append(
+            "recovery artifact policy must contain exactly 82 normal Markdown outputs"
+        )
+    if len(RECOVERY_REVIEW_SUBJECTS) != 11:
+        errors.append("recovery direct-review map must contain exactly 11 relations")
+    stateful_policy_count = (
+        len(RECOVERY_ARTIFACT_POLICY)
+        + len(RECOVERY_BLOCKER_ARTIFACT_POLICY)
+        + len(RECOVERY_CONTROL_ARTIFACT_POLICY)
+    )
+    if stateful_policy_count != 105:
+        errors.append(
+            "recovery stateful artifact policy must contain exactly 105 paths"
+        )
+    if {
+        policy["owner"] for policy in RECOVERY_BLOCKER_ARTIFACT_POLICY.values()
+    } != set(RECOVERY_TASK_IDS):
+        errors.append("recovery blocker policy owner set must equal the 21 task IDs")
+
+    review_subject_map: dict[str, str] = {}
+    for review_path, subjects in RECOVERY_REVIEW_SUBJECTS.items():
+        for subject_path in subjects:
+            if subject_path in review_subject_map:
+                errors.append(
+                    f"recovery subject has multiple direct reviews: {subject_path}"
+                )
+            review_subject_map[subject_path] = review_path
+
+    for path, policy in RECOVERY_ARTIFACT_POLICY.items():
+        expected_review = review_subject_map.get(path, "none")
+        if policy["direct-review-path"] != expected_review:
+            errors.append(
+                f"artifact/direct-review map mismatch: {path}: "
+                f"{policy['direct-review-path']} != {expected_review}"
+            )
+
+    for path in RECOVERY_RAW_BLOBS:
+        if review_subject_map.get(path) != (
+            "diagnostics/T2.2-fixture-byte-review-v2.md"
+        ):
+            errors.append(f"raw blob direct-review mapping missing: {path}")
+
+    scopes = {
+        path: policy["scope"]
+        for path, policy in RECOVERY_ARTIFACT_POLICY.items()
+    }
+    scopes.update(
+        {
+            "diagnostics/T2.2-recovery-architecture-v3.md": "run-only",
+            "diagnostics/T2.2-recovery-architecture-v3-preflight-review.md": "run-only",
+        }
+    )
+    scopes.update({path: "run-only" for path in RECOVERY_RAW_BLOBS})
+    for review_path, subjects in RECOVERY_REVIEW_SUBJECTS.items():
+        review_scope = scopes.get(review_path)
+        if review_scope is None:
+            errors.append(f"review missing lifecycle policy: {review_path}")
+            continue
+        for subject_path in subjects:
+            if subject_path == "materials/T2.2-v2/authorization.md":
+                subject_scope = "run-only"
+            else:
+                subject_scope = scopes.get(subject_path)
+            if subject_scope != review_scope:
+                errors.append(
+                    f"review scope does not inherit subject scope: "
+                    f"{review_path} <- {subject_path}"
+                )
+
+
+def _validate_recovery_roadmap(
+    errors: list[str], project_root: Path
+) -> None:
+    roadmap_path = project_root / "blueprints/EXECUTION-ROADMAP.md"
+    roadmap = read_regular_utf8(roadmap_path, errors, project_root)
+    if roadmap is None:
+        return
+    roadmap_ids = set(re.findall(r"\bT2\.2-R\d{2}\b", roadmap))
+    expected_ids = set(RECOVERY_TASK_IDS)
+    if roadmap_ids != expected_ids:
+        errors.append(
+            "roadmap recovery ID set mismatch: "
+            f"missing {sorted(expected_ids - roadmap_ids)}, "
+            f"unexpected {sorted(roadmap_ids - expected_ids)}"
+        )
+    required_literals = {
+        "A2_CONTROL_PLANE_INTEGRATED",
+        "controller-only bootstrap seam",
+        "recovery-registration-cardinality: 0|21",
+        "recovery-composite-task-ids: T2.2-R09,T2.2-R14,T2.2-R19",
+        "recovery-normal-markdown-output-count: 82",
+        "recovery-stateful-path-universe-count: 105",
+        "recovery-direct-review-count: 11",
+        "recovery-material-slot-count: 14",
+        "recovery-raw-blob-count: 28",
+        "t2.2-active-baseline-path: diagnostics/T2.2-judge-baseline-v2.md",
+        "t2.2-active-postflight-review-path: diagnostics/T2.2-postflight-review-v2.md",
+        "t2.2-history-v1-baseline-result: FAIL",
+        "diagnostics/M2-gate-receipt.md",
+    }
+    missing = sorted(literal for literal in required_literals if literal not in roadmap)
+    if missing:
+        errors.append(f"recovery roadmap control literals missing: {missing}")
+    if re.search(r"\blatest\b", roadmap, flags=re.IGNORECASE):
+        errors.append("recovery roadmap must not use latest-path resolution")
+
+
+def _validate_recovery_document_wiring(
+    errors: list[str], project_root: Path
+) -> None:
+    requirements = {
+        "README.md": {
+            "A2_CONTROL_PLANE_INTEGRATED",
+            "恢复卡数量：`0`",
+            "T2.2 资格仍为 `FAIL`",
+            "M2 receipt 仍不存在",
+            "C0 不授权恢复卡、材料、模型调用、M2 receipt 或恢复执行",
+        },
+        "taskcards/T3.6.md": {
+            "diagnostics/T2.2-judge-baseline-v2.md",
+            "diagnostics/T2.2-postflight-review-v2.md",
+            "diagnostics/T2.2-judge-baseline.md",
+            "taskcards/T2.2-BLOCKER.md",
+            "无有效 `diagnostics/M2-gate-receipt.md` 即硬阻塞",
+            "禁止版本扫描、别名、回退或 latest 解析",
+        },
+        "taskcards/T4.1.md": {
+            "diagnostics/T2.2-judge-baseline-v2.md",
+            "diagnostics/T2.2-postflight-review-v2.md",
+            "diagnostics/T2.2-judge-baseline.md",
+            "taskcards/T2.2-BLOCKER.md",
+            "无有效 `diagnostics/M2-gate-receipt.md` 即硬阻塞",
+            "禁止版本扫描、别名、回退或 latest 解析",
+        },
+    }
+    for relative_path, literals in requirements.items():
+        text = read_regular_utf8(project_root / relative_path, errors, project_root)
+        if text is None:
+            continue
+        missing = sorted(literal for literal in literals if literal not in text)
+        if missing:
+            errors.append(
+                f"recovery downstream wiring missing in {relative_path}: {missing}"
+            )
+
+
+def _recovery_taskcard_names(
+    errors: list[str], project_root: Path
+) -> set[str]:
+    taskcard_root = project_root / "taskcards"
+    try:
+        entries = list(os.scandir(taskcard_root))
+    except OSError as error:
+        errors.append(f"cannot inspect recovery taskcards: {error}")
+        return set()
+
+    expected_cards = {f"{task_id}.md" for task_id in RECOVERY_TASK_IDS}
+    expected_blockers = {
+        PurePosixPath(path).name
+        for path in RECOVERY_BLOCKER_ARTIFACT_POLICY
+    }
+    recovery_like = {
+        entry.name
+        for entry in entries
+        if entry.name.casefold().startswith("t2.2-r")
+    }
+    formal_cards = recovery_like & expected_cards
+    blockers = recovery_like & expected_blockers
+    unexpected = recovery_like - expected_cards - expected_blockers
+    if unexpected:
+        errors.append(f"unexpected recovery taskcard/blocker names: {sorted(unexpected)}")
+
+    if len(formal_cards) not in {0, 21}:
+        errors.append(
+            "recovery taskcards must register atomically as 0 or 21: "
+            f"observed {len(formal_cards)}"
+        )
+    if formal_cards and formal_cards != expected_cards:
+        errors.append(
+            "recovery taskcard closed set mismatch: "
+            f"missing {sorted(expected_cards - formal_cards)}, "
+            f"unexpected {sorted(formal_cards - expected_cards)}"
+        )
+    if blockers and formal_cards != expected_cards:
+        errors.append("recovery blocker exists before the 21-card set is registered")
+
+    registered_ids = {name.removesuffix(".md") for name in formal_cards}
+    for blocker_name in blockers:
+        blocker_id = blocker_name.removesuffix("-BLOCKER.md")
+        if blocker_id not in registered_ids:
+            errors.append(
+                f"recovery blocker does not belong to a registered ID: {blocker_name}"
+            )
+        blocker = taskcard_root / blocker_name
+        content = read_regular_bytes(blocker, errors, project_root)
+        if content is not None and not content.startswith(
+            RECOVERY_BLOCKER_HEADER.encode("utf-8")
+        ):
+            errors.append(
+                f"recovery blocker header must be blocked/run-only at byte 0: "
+                f"taskcards/{blocker_name}"
+            )
+
+    if formal_cards == expected_cards:
+        for task_id in RECOVERY_TASK_IDS:
+            relative_path = f"taskcards/{task_id}.md"
+            path = project_root / relative_path
+            text = read_regular_utf8(path, errors, project_root)
+            if text is None:
+                continue
+            if not has_exact_taskcard_sections(text):
+                errors.append(
+                    f"recovery taskcard sections must match TEMPLATE.md: {relative_path}"
+                )
+            expected_mode = (
+                "composite"
+                if task_id in RECOVERY_COMPOSITE_TASK_IDS
+                else "single-session"
+            )
+            mode_lines = re.findall(
+                r"^- recovery-execution-mode: (.+)$",
+                text,
+                flags=re.MULTILINE,
+            )
+            if mode_lines != [expected_mode]:
+                errors.append(
+                    f"recovery composite/single-session mode mismatch: {relative_path}"
+                )
+            if text.count(f"`{task_id}`：") != 1:
+                errors.append(f"recovery task ID/title mismatch: {relative_path}")
+            actual_policy_lines = [
+                line
+                for line in text.splitlines()
+                if line.startswith("- artifact-policy:")
+            ]
+            expected_policy_lines = _expected_card_policy_lines(task_id)
+            if (
+                len(actual_policy_lines) != len(set(actual_policy_lines))
+                or set(actual_policy_lines) != expected_policy_lines
+            ):
+                errors.append(
+                    f"recovery taskcard artifact-policy projection mismatch: "
+                    f"{relative_path}"
+                )
+    return formal_cards
+
+
+def _validate_recovery_selector(
+    errors: list[str], project_root: Path
+) -> tuple[set[str], str | None]:
+    selector_content = _regular_file_content_if_present(
+        RECOVERY_SELECTOR_PATH, errors, project_root
+    )
+    if selector_content is None:
+        return set(), None
+    try:
+        selector = selector_content.decode("utf-8")
+    except UnicodeError as error:
+        errors.append(f"recovery selector is not UTF-8: {error}")
+        return set(), None
+
+    exact_header = RECOVERY_EXACT_HEADER.format(
+        status="frozen", scope="run-only"
+    )
+    if not selector.startswith(exact_header):
+        errors.append("recovery selector must start with exact frozen/run-only header")
+    if selector.count("slot-set-id: T2.2-V2-SOURCE-SLOTS-01-14") != 1:
+        errors.append("recovery selector slot-set-id missing or duplicated")
+
+    slot_members = re.findall(r"^slot-member: (.+)$", selector, flags=re.MULTILINE)
+    selected_lines = re.findall(
+        r"^selected-slot: ([^|]+) \| source-group: ([^|]+) \| request-id: (.+)$",
+        selector,
+        flags=re.MULTILINE,
+    )
+    selected = {path.strip() for path, _, _ in selected_lines}
+    unselected = set(
+        re.findall(r"^unselected-slot: (.+)$", selector, flags=re.MULTILINE)
+    )
+    allowed = set(RECOVERY_MATERIAL_SLOTS)
+    if len(slot_members) != 14 or set(slot_members) != allowed:
+        errors.append("recovery selector static slot-member set must equal the 14 literals")
+    if len(selected) != len(selected_lines):
+        errors.append("recovery selector selected-slot entries must be unique")
+    if selected - allowed or unselected - allowed:
+        errors.append(
+            "recovery selector contains slot outside the static 14-member whitelist"
+        )
+    if selected & unselected or selected | unselected != allowed:
+        errors.append(
+            "recovery selector selected/unselected sets must be disjoint complements"
+        )
+
+    count_matches = re.findall(
+        r"^selected-slot-count: ([0-9]+)$", selector, flags=re.MULTILINE
+    )
+    if count_matches != [str(len(selected))]:
+        errors.append("recovery selector selected-slot-count mismatch")
+    result_matches = re.findall(
+        r"^selector-result: (NO_SLOTS|SLOTS_REQUIRED|BLOCKED)$",
+        selector,
+        flags=re.MULTILINE,
+    )
+    selector_result = result_matches[0] if len(result_matches) == 1 else None
+    if selector_result is None:
+        errors.append("recovery selector-result missing, duplicated, or invalid")
+    elif selector_result == "NO_SLOTS" and selected:
+        errors.append("NO_SLOTS selector must have zero selected slots")
+    elif selector_result == "SLOTS_REQUIRED" and not selected:
+        errors.append("SLOTS_REQUIRED selector must select at least one slot")
+    if not re.search(r"^selection-reason: .+$", selector, flags=re.MULTILINE):
+        errors.append("recovery selector selection-reason missing")
+
+    for relative_path in sorted(selected & allowed):
+        content = read_regular_bytes(
+            project_root / relative_path, errors, project_root
+        )
+        if content is not None and content.startswith(b"---\nstatus:"):
+            errors.append(
+                f"selected raw material slot must not have Markdown header: "
+                f"{relative_path}"
+            )
+    return selected, selector_result
+
+
+def _validate_recovery_raw_blobs(
+    errors: list[str], project_root: Path
+) -> set[str]:
+    raw_root = project_root / "diagnostics/T2.2-fixture-bytes-v2"
+    try:
+        mode = raw_root.lstat().st_mode
+    except FileNotFoundError:
+        return set()
+    except OSError as error:
+        errors.append(f"cannot inspect recovery raw blob directory: {error}")
+        return set()
+    if stat.S_ISLNK(mode) or not stat.S_ISDIR(mode):
+        errors.append("recovery raw blob root must be a regular directory, not symlink")
+        return set()
+    try:
+        entries = list(os.scandir(raw_root))
+    except OSError as error:
+        errors.append(f"cannot scan recovery raw blob directory: {error}")
+        return set()
+    if not entries:
+        return set()
+
+    expected = set(RECOVERY_RAW_BLOBS)
+    observed = {
+        f"diagnostics/T2.2-fixture-bytes-v2/{entry.name}" for entry in entries
+    }
+    if observed != expected:
+        errors.append(
+            "recovery raw blobs must publish atomically as the exact 28-file set: "
+            f"missing {sorted(expected - observed)}, "
+            f"unexpected {sorted(observed - expected)}"
+        )
+    for relative_path in sorted(observed & expected):
+        content = read_regular_bytes(
+            project_root / relative_path, errors, project_root
+        )
+        if content is not None and content.startswith(b"---\nstatus:"):
+            errors.append(
+                f"recovery raw blob must not have Markdown header: {relative_path}"
+            )
+    return observed
+
+
+def _validate_recovery_artifacts(
+    errors: list[str], project_root: Path
+) -> None:
+    allowed_markdown = (
+        RECOVERY_HISTORICAL_MARKDOWN
+        | set(RECOVERY_ARTIFACT_POLICY)
+        | {M2_RECEIPT_PATH}
+    )
+    for root_name in ("contracts", "diagnostics", "lenses", "runs"):
+        root = project_root / root_name
+        if not root.is_dir() or root.is_symlink():
+            continue
+        for current, directory_names, file_names in os.walk(
+            root, topdown=True, followlinks=False
+        ):
+            current_path = Path(current)
+            if current_path == project_root / "diagnostics":
+                for name in directory_names:
+                    if (
+                        name.startswith("T2.2-")
+                        and name != "T2.2-fixture-bytes-v2"
+                    ):
+                        errors.append(
+                            "unexpected recovery artifact directory: "
+                            f"diagnostics/{name}"
+                        )
+                directory_names[:] = [
+                    name
+                    for name in directory_names
+                    if name != "T2.2-fixture-bytes-v2"
+                ]
+            for name in file_names:
+                relative_path = (current_path / name).relative_to(
+                    project_root
+                ).as_posix()
+                if (
+                    name.startswith("T2.2-")
+                    and relative_path not in allowed_markdown
+                ):
+                    errors.append(
+                        f"unexpected recovery artifact path: {relative_path}"
+                    )
+
+    for relative_path, policy in RECOVERY_ARTIFACT_POLICY.items():
+        content = _regular_file_content_if_present(
+            relative_path, errors, project_root
+        )
+        if content is None:
+            continue
+        expected_header = RECOVERY_EXACT_HEADER.format(
+            status=policy["status"], scope=policy["scope"]
+        ).encode("utf-8")
+        if not content.startswith(expected_header):
+            errors.append(
+                f"recovery artifact status/scope header mismatch: {relative_path}"
+            )
+
+    for review_path, subjects in RECOVERY_REVIEW_SUBJECTS.items():
+        review_content = _regular_file_content_if_present(
+            review_path, errors, project_root
+        )
+        if review_content is None:
+            continue
+        for subject_path in subjects:
+            if (
+                subject_path == "materials/T2.2-v2/authorization.md"
+                and not (project_root / subject_path).exists()
+            ):
+                continue
+            if _regular_file_content_if_present(
+                subject_path, errors, project_root
+            ) is None:
+                errors.append(
+                    f"direct review exists without its subject: "
+                    f"{review_path} <- {subject_path}"
+                )
+
+
+def _receipt_field_values(
+    text: str, required_keys: tuple[str, ...], errors: list[str]
+) -> dict[str, str]:
+    values: dict[str, str] = {}
+    for key in required_keys:
+        matches = re.findall(
+            rf"^{re.escape(key)}: (.+)$", text, flags=re.MULTILINE
+        )
+        if len(matches) != 1:
+            errors.append(f"M2 receipt field must occur exactly once: {key}")
+        else:
+            values[key] = matches[0]
+    observed_t22_keys = set(
+        re.findall(r"^(t2\.2-[a-z0-9.-]+): .+$", text, flags=re.MULTILINE)
+    )
+    expected_t22_keys = {key for key in required_keys if key.startswith("t2.2-")}
+    if observed_t22_keys != expected_t22_keys:
+        errors.append(
+            "M2 receipt T2.2 key set mismatch: "
+            f"missing {sorted(expected_t22_keys - observed_t22_keys)}, "
+            f"unexpected {sorted(observed_t22_keys - expected_t22_keys)}"
+        )
+    return values
+
+
+def _validate_m2_receipt(
+    errors: list[str],
+    project_root: Path,
+    formal_cards: set[str],
+    raw_blobs: set[str],
+    selector_result: str | None,
+) -> None:
+    receipt_content = _regular_file_content_if_present(
+        M2_RECEIPT_PATH, errors, project_root
+    )
+    if receipt_content is None:
+        return
+    expected_header = RECOVERY_EXACT_HEADER.format(
+        status="frozen", scope="long-term"
+    ).encode("utf-8")
+    if not receipt_content.startswith(expected_header):
+        errors.append("M2 receipt must start with exact frozen/long-term header")
+    try:
+        receipt = receipt_content.decode("utf-8")
+    except UnicodeError as error:
+        errors.append(f"M2 receipt is not UTF-8: {error}")
+        return
+
+    required_keys = (
+        "m1-freeze-receipt-sha256",
+        "t1.8-independent-acceptance-sha256",
+        "t2.1-r01-r08-sha256",
+        "t2.3-seed-lenses-v2-sha256",
+        "t2.2-active-architecture-path",
+        "t2.2-active-architecture-commit",
+        "t2.2-active-architecture-sha256",
+        "t2.2-active-architecture-review-path",
+        "t2.2-active-architecture-review-commit",
+        "t2.2-active-architecture-review-sha256",
+        "t2.2-active-architecture-review-result",
+        "t2.2-quality-audit-path",
+        "t2.2-quality-audit-commit",
+        "t2.2-quality-audit-sha256",
+        "t2.2-quality-audit-result",
+        "t2.2-active-attempt-id",
+        "t2.2-active-attempt-manifest-path",
+        "t2.2-active-attempt-manifest-sha256",
+        "t2.2-active-baseline-path",
+        "t2.2-active-baseline-sha256",
+        "t2.2-active-postflight-review-path",
+        "t2.2-active-postflight-review-sha256",
+        "t2.2-active-result",
+        "t2.2-history-v1-baseline-path",
+        "t2.2-history-v1-baseline-sha256",
+        "t2.2-history-v1-baseline-result",
+        "t2.2-history-v1-blocker-path",
+        "t2.2-history-v1-blocker-sha256",
+        "t2.2-history-v2-architecture-path",
+        "t2.2-history-v2-architecture-commit",
+        "t2.2-history-v2-architecture-sha256",
+        "t2.2-history-v2-review-path",
+        "t2.2-history-v2-review-commit",
+        "t2.2-history-v2-review-sha256",
+        "t2.2-history-v2-review-result",
+    )
+    fields = _receipt_field_values(receipt, required_keys, errors)
+
+    fixed_values = {
+        "t2.2-active-architecture-path": RECOVERY_ARCHITECTURE_IDENTITIES[
+            "active-architecture"
+        ][0],
+        "t2.2-active-architecture-commit": RECOVERY_ARCHITECTURE_IDENTITIES[
+            "active-architecture"
+        ][1],
+        "t2.2-active-architecture-sha256": RECOVERY_ARCHITECTURE_IDENTITIES[
+            "active-architecture"
+        ][2],
+        "t2.2-active-architecture-review-path": RECOVERY_ARCHITECTURE_IDENTITIES[
+            "active-architecture-review"
+        ][0],
+        "t2.2-active-architecture-review-commit": RECOVERY_ARCHITECTURE_IDENTITIES[
+            "active-architecture-review"
+        ][1],
+        "t2.2-active-architecture-review-sha256": RECOVERY_ARCHITECTURE_IDENTITIES[
+            "active-architecture-review"
+        ][2],
+        "t2.2-active-architecture-review-result": "PASS",
+        "t2.2-quality-audit-path": RECOVERY_ARCHITECTURE_IDENTITIES[
+            "quality-audit"
+        ][0],
+        "t2.2-quality-audit-commit": RECOVERY_ARCHITECTURE_IDENTITIES[
+            "quality-audit"
+        ][1],
+        "t2.2-quality-audit-sha256": RECOVERY_ARCHITECTURE_IDENTITIES[
+            "quality-audit"
+        ][2],
+        "t2.2-quality-audit-result": "CONFIRMED_PASS",
+        "t2.2-active-attempt-id": "T2.2-QV2-A01",
+        "t2.2-active-attempt-manifest-path": (
+            "diagnostics/T2.2-qualification-attempt-manifest-v2.md"
+        ),
+        "t2.2-active-baseline-path": "diagnostics/T2.2-judge-baseline-v2.md",
+        "t2.2-active-postflight-review-path": (
+            "diagnostics/T2.2-postflight-review-v2.md"
+        ),
+        "t2.2-active-result": "PASS",
+        "t2.2-history-v1-baseline-path": "diagnostics/T2.2-judge-baseline.md",
+        "t2.2-history-v1-baseline-sha256": (
+            "830f0758439ee72d549efe27296a444ccb9769c92c1298399dd9b5bebce0d4af"
+        ),
+        "t2.2-history-v1-baseline-result": "FAIL",
+        "t2.2-history-v1-blocker-path": "taskcards/T2.2-BLOCKER.md",
+        "t2.2-history-v1-blocker-sha256": (
+            "84c7a0dede0797c5667228398cc4be1b8a945d8a871dab7058737778bba1684b"
+        ),
+        "t2.2-history-v2-architecture-path": (
+            "diagnostics/T2.2-recovery-architecture-v2.md"
+        ),
+        "t2.2-history-v2-architecture-commit": (
+            "037f33b0893208a232efa4aaeb23866885ec5fd0"
+        ),
+        "t2.2-history-v2-architecture-sha256": (
+            "1154110c3a3bff65e4dc2ceb8244e724f0da60924c4e32ba4afa413600a2043a"
+        ),
+        "t2.2-history-v2-review-path": (
+            "diagnostics/T2.2-recovery-architecture-v2-preflight-review.md"
+        ),
+        "t2.2-history-v2-review-commit": (
+            "4bc9feca20f41e9c41158885cad41683f4d227b2"
+        ),
+        "t2.2-history-v2-review-sha256": (
+            "9d2c80e23e30018c4dc4283c56315ab2df2198344b98dda91cebae6755f92e13"
+        ),
+        "t2.2-history-v2-review-result": "FAIL",
+    }
+    for key, expected in fixed_values.items():
+        if fields.get(key) != expected:
+            errors.append(f"M2 receipt fixed field mismatch: {key}")
+
+    hash_bindings = {
+        "m1-freeze-receipt-sha256": "contracts/M1-freeze-receipt.md",
+        "t1.8-independent-acceptance-sha256": (
+            "contracts/T1.8-independent-acceptance.md"
+        ),
+        "t2.1-r01-r08-sha256": "diagnostics/T2.1-r01-r08.md",
+        "t2.3-seed-lenses-v2-sha256": "lenses/T2.3-seed-lenses-v2.md",
+        "t2.2-active-attempt-manifest-sha256": (
+            "diagnostics/T2.2-qualification-attempt-manifest-v2.md"
+        ),
+        "t2.2-active-baseline-sha256": "diagnostics/T2.2-judge-baseline-v2.md",
+        "t2.2-active-postflight-review-sha256": (
+            "diagnostics/T2.2-postflight-review-v2.md"
+        ),
+    }
+    for key, relative_path in hash_bindings.items():
+        content = read_regular_bytes(
+            project_root / relative_path, errors, project_root
+        )
+        if content is not None and fields.get(key) != hashlib.sha256(
+            content
+        ).hexdigest():
+            errors.append(f"M2 receipt actual hash mismatch: {key}")
+
+    expected_cards = {f"{task_id}.md" for task_id in RECOVERY_TASK_IDS}
+    if formal_cards != expected_cards:
+        errors.append("M2 receipt forbidden before all 21 recovery cards are registered")
+    recovery_blockers = [
+        project_root / relative_path
+        for relative_path in RECOVERY_BLOCKER_ARTIFACT_POLICY
+    ]
+    if any(path.exists() for path in recovery_blockers):
+        errors.append("M2 receipt forbidden while any recovery blocker exists")
+    if raw_blobs != set(RECOVERY_RAW_BLOBS):
+        errors.append("M2 receipt requires the exact 28 raw blobs")
+
+    for relative_path in RECOVERY_ARTIFACT_POLICY:
+        if (
+            relative_path == "materials/T2.2-v2/authorization.md"
+            and selector_result == "NO_SLOTS"
+        ):
+            continue
+        if _regular_file_content_if_present(
+            relative_path, errors, project_root
+        ) is None:
+            errors.append(
+                f"M2 receipt exists without required recovery artifact: {relative_path}"
+            )
+
+    attempt = _regular_file_content_if_present(
+        "diagnostics/T2.2-qualification-attempt-manifest-v2.md",
+        errors,
+        project_root,
+    )
+    if attempt is not None and b"attempt-id: T2.2-QV2-A01" not in attempt:
+        errors.append("active attempt manifest ID mismatch")
+    baseline = _regular_file_content_if_present(
+        "diagnostics/T2.2-judge-baseline-v2.md", errors, project_root
+    )
+    if baseline is not None and not re.search(
+        rb"^qualification-result: PASS$", baseline, flags=re.MULTILINE
+    ):
+        errors.append("active v2 baseline must record qualification-result: PASS")
+    postflight = _regular_file_content_if_present(
+        "diagnostics/T2.2-postflight-review-v2.md", errors, project_root
+    )
+    if postflight is not None and baseline is not None:
+        baseline_hash = hashlib.sha256(baseline).hexdigest()
+        required_postflight_lines = {
+            "review-result: PASS",
+            "subjects-unchanged-since-commit: yes",
+            "subject-path: diagnostics/T2.2-judge-baseline-v2.md",
+            "subject-owner-task: T2.2-R20",
+            f"subject-sha256: {baseline_hash}",
+        }
+        postflight_text = postflight.decode("utf-8", errors="replace")
+        missing = sorted(
+            line for line in required_postflight_lines if line not in postflight_text
+        )
+        if missing:
+            errors.append(
+                f"active v2 postflight review binding/result missing: {missing}"
+            )
+        commit_matches = re.findall(
+            r"^subject-commit: ([0-9a-f]{40})$",
+            postflight_text,
+            flags=re.MULTILINE,
+        )
+        if len(commit_matches) != 1:
+            errors.append(
+                "active v2 postflight review must bind one 40-hex subject commit"
+            )
+        else:
+            _validate_commit_identity(
+                "diagnostics/T2.2-judge-baseline-v2.md",
+                commit_matches[0],
+                baseline_hash,
+                errors,
+                project_root,
+            )
+
+
+def validate_recovery_control(
+    errors: list[str], project_root: Path = ROOT
+) -> None:
+    _validate_recovery_policy_invariants(errors)
+    _validate_recovery_roadmap(errors, project_root)
+    _validate_recovery_document_wiring(errors, project_root)
+
+    for relative_path, commit, expected_hash in (
+        RECOVERY_ARCHITECTURE_IDENTITIES.values()
+    ):
+        content = _validate_fixed_file_hash(
+            relative_path, expected_hash, errors, project_root
+        )
+        _validate_commit_identity(
+            relative_path, commit, expected_hash, errors, project_root
+        )
+        if content is not None:
+            if relative_path.endswith("-preflight-review.md") and (
+                "最终结论：`PASS`" not in content.decode("utf-8", errors="replace")
+            ):
+                errors.append("active recovery architecture review result is not PASS")
+            if relative_path.endswith("-quality-audit.md") and (
+                "质量结论：`CONFIRMED_PASS`"
+                not in content.decode("utf-8", errors="replace")
+            ):
+                errors.append("recovery quality audit result is not CONFIRMED_PASS")
+
+    _validate_fixed_file_hash(
+        "diagnostics/T2.2-judge-baseline.md",
+        "830f0758439ee72d549efe27296a444ccb9769c92c1298399dd9b5bebce0d4af",
+        errors,
+        project_root,
+    )
+    _validate_fixed_file_hash(
+        "taskcards/T2.2-BLOCKER.md",
+        "84c7a0dede0797c5667228398cc4be1b8a945d8a871dab7058737778bba1684b",
+        errors,
+        project_root,
+    )
+    _validate_fixed_file_hash(
+        "diagnostics/T2.2-recovery-architecture-v2.md",
+        "1154110c3a3bff65e4dc2ceb8244e724f0da60924c4e32ba4afa413600a2043a",
+        errors,
+        project_root,
+    )
+    _validate_commit_identity(
+        "diagnostics/T2.2-recovery-architecture-v2.md",
+        "037f33b0893208a232efa4aaeb23866885ec5fd0",
+        "1154110c3a3bff65e4dc2ceb8244e724f0da60924c4e32ba4afa413600a2043a",
+        errors,
+        project_root,
+    )
+    _validate_fixed_file_hash(
+        "diagnostics/T2.2-recovery-architecture-v2-preflight-review.md",
+        "9d2c80e23e30018c4dc4283c56315ab2df2198344b98dda91cebae6755f92e13",
+        errors,
+        project_root,
+    )
+    _validate_commit_identity(
+        "diagnostics/T2.2-recovery-architecture-v2-preflight-review.md",
+        "4bc9feca20f41e9c41158885cad41683f4d227b2",
+        "9d2c80e23e30018c4dc4283c56315ab2df2198344b98dda91cebae6755f92e13",
+        errors,
+        project_root,
+    )
+
+    formal_cards = _recovery_taskcard_names(errors, project_root)
+    _, selector_result = _validate_recovery_selector(errors, project_root)
+    raw_blobs = _validate_recovery_raw_blobs(errors, project_root)
+    _validate_recovery_artifacts(errors, project_root)
+    _validate_m2_receipt(
+        errors, project_root, formal_cards, raw_blobs, selector_result
+    )
 
 
 def validate_t0_3_contracts(
@@ -606,6 +2156,17 @@ def _run_t0_3_only(project_root: Path) -> int:
     return 0
 
 
+def _run_recovery_only(project_root: Path) -> int:
+    errors: list[str] = []
+    validate_recovery_control(errors, project_root)
+    if errors:
+        print("T2.2 recovery control validation FAILED")
+        print("\n".join(errors))
+        return 1
+    print("T2.2 recovery control validation PASSED")
+    return 0
+
+
 def main() -> int:
     if "--check-materials-root" in sys.argv:
         if len(sys.argv) != 3 or sys.argv[1] != "--check-materials-root":
@@ -624,6 +2185,15 @@ def main() -> int:
             )
             return 2
         return _run_t0_3_only(Path(sys.argv[2]).resolve())
+
+    if "--check-recovery-root" in sys.argv:
+        if len(sys.argv) != 3 or sys.argv[1] != "--check-recovery-root":
+            print(
+                "usage: validate.py --check-recovery-root <project-root>",
+                file=sys.stderr,
+            )
+            return 2
+        return _run_recovery_only(Path(sys.argv[2]).resolve())
 
     write_manifest = "--write-manifest" in sys.argv
     errors: list[str] = []
@@ -662,6 +2232,7 @@ def main() -> int:
     validate_material_guard(errors)
     validate_material_index(errors)
     validate_t36_freeze_contract(errors)
+    validate_recovery_control(errors)
 
     expected_taskcards = {f"{task_id}.md" for task_id in TASK_IDS}
     taskcard_root = ROOT / "taskcards"
@@ -674,8 +2245,20 @@ def main() -> int:
     )
     allowed_nonformal_taskcards = {"TEMPLATE.md"}
     allowed_nonformal_taskcards.update(f"{task_id}-BLOCKER.md" for task_id in TASK_IDS)
+    allowed_nonformal_taskcards.update(
+        PurePosixPath(path).name
+        for path in RECOVERY_BLOCKER_ARTIFACT_POLICY
+    )
     missing_taskcards = expected_taskcards - observed_taskcards
-    unexpected_taskcards = observed_taskcards - expected_taskcards - allowed_nonformal_taskcards
+    allowed_recovery_taskcards = {
+        f"{task_id}.md" for task_id in RECOVERY_TASK_IDS
+    }
+    unexpected_taskcards = (
+        observed_taskcards
+        - expected_taskcards
+        - allowed_recovery_taskcards
+        - allowed_nonformal_taskcards
+    )
     if missing_taskcards or unexpected_taskcards:
         errors.append(
             "taskcard set mismatch: "
@@ -764,7 +2347,7 @@ def main() -> int:
 
     all_paths = [
         path.relative_to(ROOT).as_posix()
-        for path in ROOT.rglob("*")
+        for path in _walk_files_pruned(ROOT)
         if path.is_file()
     ]
     if any(path.endswith(".asset") for path in all_paths):
@@ -807,6 +2390,7 @@ def main() -> int:
         "clean seed validation PASSED: "
         f"3 authority documents, 2 project entry documents, "
         f"{len(SUPPORT_DOCS)} derived support documents, {len(TASK_IDS)} taskcards, "
+        "T2.2 recovery control 0/21 atomic registration, "
         f"{len(T0_3_FILES)} T0.3 contract documents, "
         f"{len(example_files)} readable example files, {len(RUNTIME_FILES)} runtime script, "
         f"{len(MATERIAL_GUARD_FILES)} material guard, "

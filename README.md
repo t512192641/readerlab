@@ -16,14 +16,15 @@
 
 ## 当前项目状态（唯一交接入口）
 
-截至 2026-07-19，本 `README.md` 是仓库唯一的项目状态与跨会话交接入口。项目仍暂停执行；本节记录已验证事实、当前阻塞、恢复设计状态和唯一下一步，不授权执行恢复方案。
+截至 2026-07-19，本 `README.md` 是仓库唯一的项目状态与跨会话交接入口。项目仍暂停执行；v3 恢复架构已完成 C0 控制面集成，但恢复任务尚未注册或执行。
 
 ### 1. 当前阶段与 gate
 
 - 当前阶段：阶段 2「裁判先行校准」。
 - 当前 gate：T2.2 裁判资格考试已执行但 `FAIL`，处于 M2 之前的硬阻塞。
-- 本轮总控复核输入 HEAD：`e74221b85a8c750827c534e14d6df4079cb85c06`；该提交只新增 T2.2 恢复架构 v3 前置审查的质量复核报告，T2.2 失败证据 commit 仍为 `909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
-- M2 未建立；阶段 3 真实材料运行、生产 runtime 和产品验收均未开始。
+- C0 输入 HEAD：`fc7b6c01daaee8a7814e26e8d3b8ff8c1fb198d7`；T2.2 失败证据 commit 仍为 `909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
+- 当前控制状态：`A2_CONTROL_PLANE_INTEGRATED`。恢复卡数量：`0`。
+- T2.2 资格仍为 `FAIL`；M2 receipt 仍不存在；阶段 3 真实材料运行、生产 runtime 和产品验收均未开始。
 
 ### 2. 已经通过的内容
 
@@ -32,12 +33,15 @@
 - T2.1 缩句差分诊断方法卡已 `implemented` 并通过确定性验证，但尚未经过 M2 冻结。
 - T2.3 失败案例诊断与种子透镜 v2 已 `implemented` 并通过确定性验证；v2 仍为 `draft`，尚未取得资格。
 - T2.2 的冻结盲包、评分键、judge brief、answers、哈希链、评分和失败留痕已按任务卡落库；本轮重新核对 14 项顺序、状态头、关键哈希、payload／源片段逐字节一致性和 `FAIL` 汇总均为 `PASS`。这只证明仓库内考试证据自洽，不代表裁判通过，也不补足仓库中缺失的 raw runtime 日志。
+- v3 architecture/review/quality audit 的固定身份分别通过 `PASS`／`CONFIRMED_PASS`，A1 `A1_ARCHITECTURE_RELEASED` 已成立。
+- C0 已把 v3 身份、21 卡 0/21 原子闭集、3 张复合任务、82 个正常 Markdown 输出、11 个 direct review、14 个 material slots、28 个 raw blobs、M2 active/history schema 和 T3.6/T4.1 下游接线编译进现行控制面；A2 `A2_CONTROL_PLANE_INTEGRATED` 已成立。
 
 ### 3. 尚未通过的内容
 
 - T2.2 裁判资格未通过，裁判不得上岗。
 - M2 未通过且没有 receipt。
-- T2.1、T2.2 baseline、T2.3 v2 与 T1.8 尚未组成 M2 冻结集。
+- 21 张恢复卡尚未注册，R01—R21 均未执行；v2 active attempt/baseline/postflight 均不存在。
+- T2.1、未来 v2 active baseline/postflight、T2.3 v2 与 T1.8 尚未组成 M2 冻结集。
 - 图书线生产 runtime 未 `integrated`，未知材料能力和整体 semantic／product 质量未验证。
 - 产品 `accepted` 尚未发生。
 
@@ -65,8 +69,8 @@
 
 - judge 判断能力、对象合并、原文证据不对称分别造成多大比例的失败，当前没有独立对照。
 - 14 项单批是否造成注意力稀释或同向偏差，当前没有证据。
-- 恢复架构建议保留冻结 T1.8、引入历史资格夹具适配合同、重建原子级且证据对称的 v2 夹具，并先做最小对照诊断；这些仍是 `draft` 设计，不是获准执行方案。
-- 对照诊断是否足以区分输入、对象边界、操作程序与 judge 能力的影响，尚未经过独立审查或运行证明。
+- v3 恢复架构已通过独立前置审查和质量复核，并已编译进控制面；这只建立可验证的恢复合同，不是恢复执行授权。
+- 对照诊断是否足以区分输入、对象边界、操作程序与 judge 能力的影响，尚未经过真实运行证明。
 - 当前没有获准执行的复考版本、模型／调用授权、新通过线或产品材料补充。
 
 ### 6. 恢复架构状态
@@ -95,14 +99,15 @@
 - 当前没有产品 blocker，也不需要产品负责人补材料、补判词或授权模型调用；三个问题均应由新的技术架构版本修正。
 - `diagnostics/T2.2-recovery-architecture-v3.md` 已提交于 `a67f011d112e1e06022867cb3577110816064bd9`，SHA-256 为 `38025c0b2ebb26171e7f6ad8bef69b97bfeb2d88597a78e67b3dcdc48110d1e1`。
 - v3 状态头为 `frozen / run-only`，正文声明 supersede v2，成为唯一活动架构候选；v1、v2 与两轮失败审查继续作为历史证据。
-- v3 已 `implemented`；独立前置审查报告给出 `PASS`，但尚未 `integrated`，恢复路线尚未执行，产品 `accepted` 仍为 `unknown`。
+- v3 已 `implemented`；独立前置审查报告给出 `PASS`，C0 已把其静态合同 `integrated` 到现行控制面。恢复路线尚未执行，产品 `accepted` 仍为 `unknown`。
 - v3 独立前置审查报告 `diagnostics/T2.2-recovery-architecture-v3-preflight-review.md` 已提交于 `626562fa3fa6487200e953ca0b804a275ec3ef33`，SHA-256 为 `e5d450f019685fba6eed679e06ccedee10255591e9a4a65359ac6cfb918e06ec`。
 - 报告完整记录三项 blocker `CLOSED`、V01—V32 `32/32 PASS`、不回退 `14/14 PASS`，共 446 行；身份、提交范围、hash、V 项编号完整性、`python3 validate.py` 和 diff check 均由本轮总控复核通过，没有发现截断、占位或条件式 `PASS`。
 - 产品负责人报告该审查会话曾因模型调用问题中断。原会话过程仍无法由仓库证明，因此其“未调用模型”声明保持 `unknown`；该过程未知不再作为技术 `PASS` 的唯一依据。
 - 独立质量复核报告 `diagnostics/T2.2-recovery-architecture-v3-preflight-review-quality-audit.md` 已提交于 `e74221b85a8c750827c534e14d6df4079cb85c06`，SHA-256 为 `a81ded57546981d40b7c95d0d206ca0b627008fe509c32dfff1fb09abb415342`，结论为 `CONFIRMED_PASS`。
 - 质量复核重新执行三个 blocker、V01—V32、不回退、packet parser 反例及数字展开，确认 14 candidate、14 context、28 raw blobs、14 material slots、21 DAG nodes、3 composite tasks、11 direct reviews、105 stateful paths 与 M14 `C4/B4/E4/G2`。其 105 路径算法为 `1 preflight + 82 正常卡输出 + 21 blockers + 1 M2 receipt`。
 - 质量复核发现三个 P2：原报告未写 105 路径展开算法、不回退 14 项计数口径不透明、原会话“未调用模型”不可审计。三者均不形成架构死路、权限冲突或 C0 blocker。
-- 本轮总控接受 v3 架构级技术 `PASS`：三个 blocker 已关闭，F-02/F-04/F-05 与不回退项成立，A1「架构已释放」成立。T2.2 资格仍为 `FAIL`，M2 仍未建立；C0 尚未执行，21 张恢复卡仍为 0。
+- 本轮总控接受 v3 架构级技术 `PASS`：三个 blocker 已关闭，F-02/F-04/F-05 与不回退项成立，A1「架构已释放」成立。C0 又完成六文件控制面集成，A2 `A2_CONTROL_PLANE_INTEGRATED` 成立；验证器当前接受 0-card 状态，并会拒绝 1—20、越界 ID、错误 composite、错误 lifecycle、selector 越界、raw blob 部分发布和伪 M2 receipt。T2.2 资格仍为 `FAIL`，M2 receipt 仍不存在，21 张恢复卡仍为 0。
+- C0 不授权恢复卡、材料、模型调用、M2 receipt 或恢复执行；它也不创建任何恢复产物或阶段 3 入口。
 
 ### 7. 必须保留的证据
 
@@ -163,8 +168,9 @@
 - 恢复架构 v2 commit：`037f33b0893208a232efa4aaeb23866885ec5fd0`（只证明 v2 文件存在和身份稳定，不证明审查通过）。
 - 恢复架构 v2 独立前置审查 commit：`4bc9feca20f41e9c41158885cad41683f4d227b2`（结论 `FAIL`，不授权 C0 或执行）。
 - 恢复架构 v3 commit：`a67f011d112e1e06022867cb3577110816064bd9`（只证明 v3 文件存在和身份稳定，不证明审查通过）。
-- 恢复架构 v3 独立前置审查 commit：`626562fa3fa6487200e953ca0b804a275ec3ef33`（报告结论 `PASS`，但因会话中断疑虑尚未被总控释放为 C0 入口）。
-- 恢复架构 v3 前置审查质量复核 commit：`e74221b85a8c750827c534e14d6df4079cb85c06`（`CONFIRMED_PASS`，允许总控考虑精确授权 C0）。
+- 恢复架构 v3 独立前置审查 commit：`626562fa3fa6487200e953ca0b804a275ec3ef33`（报告结论 `PASS`，已由质量复核确认并作为 C0 固定输入）。
+- 恢复架构 v3 前置审查质量复核 commit：`e74221b85a8c750827c534e14d6df4079cb85c06`（`CONFIRMED_PASS`）。
+- C0 控制面集成基准 commit：`fc7b6c01daaee8a7814e26e8d3b8ff8c1fb198d7`；本 README 不自写 C0 最终 commit，以 Git 提交身份为准。
 - 上一轮总控状态 commit：`78b285ca2c18c0a5cc4de15ea694f6520c3a8033`。
 
 ### 9. 当前未提交修改
@@ -174,12 +180,10 @@
 ### 10. 当前唯一下一步编排
 
 - 原路线现在不可继续：T2.2 资格为 `FAIL`，且 `diagnostics/M2-gate-receipt.md` 不存在；不得进入 M2 或阶段 3。
-- 紧接着只启动一个**执行角色**，会话名称为「ReaderLab M2｜T2.2 恢复控制面 C0 集成」。
-- C0 是 v3 固定的 controller-only bootstrap seam，使用 Local 环境并允许写入；启动该会话即表示产品负责人只授权本次 C0 对六个既有路径作长期技术集成：`README.md`、`blueprints/EXECUTION-ROADMAP.md`、`validate.py`、`taskcards/T3.6.md`、`taskcards/T4.1.md`、`audit/manifest.json`。
-- C0 必须把 v3/review/quality-audit 身份、R01—R21 闭集、0/21 原子注册、复合任务闭集、artifact lifecycle、14 slots selector、28 raw blobs、M2 active/history schema 与 T3.6/T4.1 下游接线编译进现行控制面。
-- C0 不创建任何 `T2.2-R*` 任务卡，不读取金标／样张，不请求材料，不调用模型，不创建 M2 receipt，不进入恢复执行或阶段 3；完成后恢复卡数量必须仍为 0。
-- C0 只形成一个独立本地 commit。若六文件范围不足、设计与现行仓库冲突或无法在 0-card 状态通过验证，必须停止，不得扩权或顺带注册任务卡。
-- C0 commit 完成后，产品负责人把 commit SHA、六文件 diff、0-card 验证、负向验证结果、`python3 validate.py` 和 blocker 回报总控；总控重新读取仓库后才决定是否另行授权 21 卡原子注册。
+- C0 已完成，当前状态为 `A2_CONTROL_PLANE_INTEGRATED`；恢复卡数量：`0`，M2 receipt 仍不存在。
+- 下一角色只能是总控重新读取 C0 commit、六文件 diff、0-card 真实验证与负向验证证据，判断控制面是否符合 v3。
+- 若总控认为 C0 合格，仍须另行取得精确授权，才可把 `taskcards/T2.2-R01.md` 至 `taskcards/T2.2-R21.md` 从 0 一次性原子注册为 21；不得直接派发 R01，不得注册部分集合。
+- 在该新授权之前，不请求产品材料，不创建 authorization/selector/blobs，不调用模型，不创建 M2 receipt，不执行恢复 DAG，不进入阶段 3。
 
 ### 11. 下一会话读取顺序
 

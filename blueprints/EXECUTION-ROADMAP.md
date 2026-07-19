@@ -12,7 +12,7 @@
 
 - **确定性骨架**：Python 标准库的小脚本只负责 run 目录与材料身份哈希、`raw`／`locked`／`final` 目录隔离、冻结清单、以及 preflight／postflight。它不做状态机、数据库或调度。
 - **节点合同**：每个节点一份 Markdown 合同，说明输入、输出、硬阻塞、允许读取清单和终局状态；它是执行 Agent 的唯一指令来源。
-- **执行 Agent**：Codex 会话按合同完成语义工作。除 T2.2 的主控准备／评分侧加鲜会话 judge 的唯一隔离复合任务例外外，每项任务只用一个会话；所有跨会话状态必须写入任务卡列出的仓库文件，禁止口头传递。每项模型调用与调用粒度必须在当前任务明确获授权；“一次调用一张完整知识卡”只是可调整的起点参数。
+- **执行 Agent**：Codex 会话按合同完成语义工作。历史 T2.2 原始资格考试是主控准备／评分侧加鲜会话 judge 的已完成／失败隔离复合任务；恢复链只允许 T2.2-R09、T2.2-R14、T2.2-R19 为复合任务，其余十八张恢复卡和既有普通任务均为单会话。所有跨会话状态必须写入任务卡列出的仓库文件，禁止口头传递。每项模型调用与调用粒度必须在当前任务明确获授权；“一次调用一张完整知识卡”只是可调整的起点参数。
 
 生产／验收隔离由目录和合同共同实现。生产任务合同列出白名单，`GOLD-STANDARDS.md` 与 `examples/` 仅在裁判、透镜开发、诊断或回归任务被逐项授权时开放。
 
@@ -20,12 +20,172 @@
 
 ## 会话护栏
 
-- **任务卡制**：派发前写自包含任务卡，逐项列出目标、读取白名单、交付路径、具体约束引用和完成判据。会话无状态，仓库是唯一记忆；会话间不得口头传递状态。T2.2 的隔离复合例外只允许主控准备／评分侧与鲜会话 judge 通过 frozen packet、brief、answers、key 与 baseline 文件交接。
-- **状态头分层**：未来合同、透镜和执行方法卡应带 `status: draft|frozen` 与 `scope: long-term|run-only`。T0.3 术语表、T1 合同和种子透镜先以 `draft` 提交；M1 通过后，主控只在语义不变时改为 `frozen`，并创建 `contracts/M1-freeze-receipt.md` 的独立 gate commit。M1 receipt 必须逐文件绑定 `contracts/GLOSSARY.md`、所有冻结 T1 合同和 `lenses/T1.9-seed-lenses.md` v1 的 SHA-256；需语义修改则先返工；无 receipt 不得进入 T2。T2 完成后，M2 创建 `diagnostics/M2-gate-receipt.md`，记录实际 `contracts/M1-freeze-receipt.md` 的 SHA-256，并逐文件绑定 `diagnostics/T2.1-r01-r08.md`、`diagnostics/T2.2-judge-baseline.md`、`lenses/T2.3-seed-lenses-v2.md` 及冻结 T1.8 合同的 SHA-256。阶段 3 每张卡先核对 M2 所记 M1 receipt SHA-256 与实际 M1 receipt 一致，再用实际 M1 receipt 核对本卡所读 T1 合同 hash；T3.3／T3.6 再用 M2 receipt 核对所读 T2 正文 hash，最后才读取正文。receipt 只证明身份与 hash，不复制、引用或替代正文。只有产品事实变化才修改 `PRODUCT-DECISIONS.md`，并由产品负责人决定。临时方案只能活在 `runs/`。
+- **任务卡制**：派发前写自包含任务卡，逐项列出目标、读取白名单、交付路径、具体约束引用和完成判据。会话无状态，仓库是唯一记忆；会话间不得口头传递状态。历史 T2.2 的隔离复合任务只允许主控准备／评分侧与鲜会话 judge 通过 frozen packet、brief、answers、key 与 baseline 文件交接；恢复链的三个复合任务也只能通过各自任务卡列出的冻结文件交接。
+- **状态头分层**：未来合同、透镜和执行方法卡应带 `status: draft|frozen` 与 `scope: long-term|run-only`。T0.3 术语表、T1 合同和种子透镜先以 `draft` 提交；M1 通过后，主控只在语义不变时改为 `frozen`，并创建 `contracts/M1-freeze-receipt.md` 的独立 gate commit。M1 receipt 必须逐文件绑定 `contracts/GLOSSARY.md`、所有冻结 T1 合同和 `lenses/T1.9-seed-lenses.md` v1 的 SHA-256；需语义修改则先返工；无 receipt 不得进入 T2。T2.2 恢复后，M2 只能按下文精确 active/history schema 创建 `diagnostics/M2-gate-receipt.md`，不得继续引用失败的 v1 baseline 作为 active。阶段 3 每张卡先核对 M2 所记 M1 receipt SHA-256 与实际 M1 receipt 一致，再用实际 M1 receipt 核对本卡所读 T1 合同 hash；T3.3／T3.6 再用 M2 receipt 核对所读 T2 正文 hash，最后才读取正文。receipt 只证明身份与 hash，不复制、引用或替代正文。只有产品事实变化才修改 `PRODUCT-DECISIONS.md`，并由产品负责人决定。临时方案只能活在 `runs/`。
 - **一任务一提交**：每任务恰好一次本地提交；验收查看 diff。
 - **决议一致性检查**：主控对每项交付逐条核对相关产品决议。
 
 并行任务必须拥有不相交写入范围。T0.2 先完成运行脚本与验证器，再执行同样写验证器的 T0.3。T0.3 完成后，T1.1—T1.8 可独立并行；T1.9 读取 T1.4，因此只在 T1.4 后执行。组装一致性由验收侧审查。
+
+## T2.2 v3 恢复控制面
+
+### 当前状态与授权边界
+
+- 历史原始 T2.2 是已经完成且资格 `FAIL` 的复合任务；其 v1 baseline 与 blocker 永久保留为失败历史。
+- 活动恢复架构固定为 `diagnostics/T2.2-recovery-architecture-v3.md`，commit `a67f011d112e1e06022867cb3577110816064bd9`，SHA-256 `38025c0b2ebb26171e7f6ad8bef69b97bfeb2d88597a78e67b3dcdc48110d1e1`。
+- 活动架构审查固定为 `diagnostics/T2.2-recovery-architecture-v3-preflight-review.md`，commit `626562fa3fa6487200e953ca0b804a275ec3ef33`，SHA-256 `e5d450f019685fba6eed679e06ccedee10255591e9a4a65359ac6cfb918e06ec`，结果 `PASS`。
+- 独立质量复核固定为 `diagnostics/T2.2-recovery-architecture-v3-preflight-review-quality-audit.md`，commit `e74221b85a8c750827c534e14d6df4079cb85c06`，SHA-256 `a81ded57546981d40b7c95d0d206ca0b627008fe509c32dfff1fb09abb415342`，结果 `CONFIRMED_PASS`。
+- A1 `A1_ARCHITECTURE_RELEASED` 已通过；C0 是只修改控制面的 `controller-only bootstrap seam`，本次集成后状态为 `A2_CONTROL_PLANE_INTEGRATED`。
+- C0 不注册恢复卡、不读取材料、不调用模型、不创建 M2 receipt、不执行 R01，也不进入阶段 3。当前恢复卡数量仍为 0，T2.2 资格仍为 `FAIL`，M2 仍未建立。
+- 下一状态只能由总控重新读取并另行授权：21 张恢复卡从 0 一次性原子注册为 21。不得部分注册、额外注册或借 C0 自动创建 R01。
+
+### 恢复任务闭集与会话粒度
+
+recovery-registration-cardinality: 0|21
+
+恢复 ID 字面闭集恰为：
+
+`T2.2-R01`、`T2.2-R02`、`T2.2-R03`、`T2.2-R04`、`T2.2-R05`、`T2.2-R06`、`T2.2-R07`、`T2.2-R08`、`T2.2-R09`、`T2.2-R10`、`T2.2-R11`、`T2.2-R12`、`T2.2-R13`、`T2.2-R14`、`T2.2-R15`、`T2.2-R16`、`T2.2-R17`、`T2.2-R18`、`T2.2-R19`、`T2.2-R20`、`T2.2-R21`。
+
+recovery-composite-task-ids: T2.2-R09,T2.2-R14,T2.2-R19
+
+这三张卡是仅有的恢复复合任务；其余十八张必须声明 `single-session`。未注册 ID、不同大小写或补零、R22、额外 `T2.2-R*` 路径及任意 1—20 张部分集合都必须由验证器拒绝。每张未来卡必须沿用六节模板，并逐行内嵌验证器给出的完整 artifact-policy 投影；少路径、多路径、范围缩写、owner/status/scope 或 review 关系不同均禁止派发。恢复 blocker 只允许使用已注册 ID 的 `taskcards/T2.2-RNN-BLOCKER.md`，精确为 `blocked/run-only`。
+
+### Artifact 生命周期与直接审查
+
+recovery-normal-markdown-output-count: 82
+
+recovery-stateful-path-universe-count: 105
+
+105 的静态路径宇宙由 `1` 份 v3 preflight review、`82` 份正常 Markdown 输出、`21` 份可能的逐卡 blocker 和 `1` 份 M2 receipt 构成。`validate.py` 的字面 artifact-policy map 对每个未来路径固定 owner、是否需要 header、status、scope、direct review、M2 关系与 attempt-local 关系。R01 的 adapter 为 `frozen/long-term`，census/gap 为 `frozen/run-only`；R02 分别写同 scope 的两份 review；R03 的 authorization/selector/resolution/admission/byte manifest 为 `frozen/run-only`；R04—R19 的 Markdown 输出均为 `frozen/run-only`；R20 baseline 与 R21 postflight 均为 `frozen/long-term`。28 个 blobs 和 14 个 raw slots 不带 Markdown header。
+
+recovery-direct-review-count: 11
+
+直接审查闭集恰为：
+
+1. v3 preflight review → v3 architecture，`run-only`；
+2. historical adapter review → adapter，`long-term`；
+3. fixture census review → census + gap list，`run-only`；
+4. fixture byte review → 按固定存在规则的 authorization + selector + resolution + admission + byte manifest + 28 blobs，`run-only`；
+5. package preflight review → R05 的 attempt manifest + package 闭集 + package manifest，`run-only`；
+6. control input review → control call manifest，`run-only`；
+7. control postflight review → control results，`run-only`；
+8. diagnostic input review → diagnostic call manifest，`run-only`；
+9. contrast postflight review → contrast results，`run-only`；
+10. retest input review → retest call manifest，`run-only`；
+11. postflight review → v2 baseline，`long-term`。
+
+每一行都要求 review scope 等于 subject scope。R02 的 mixed scope 必须拆成两份 review；R21 与 baseline 都必须是 long-term；除此闭集外不得临时增加 direct reviewer。
+
+### 14 个材料 slot 与 selector
+
+recovery-material-slot-count: 14
+
+材料最大允许宇宙是以下静态字面路径，不表示全部必需：
+
+```text
+materials/T2.2-v2/source-01-full.md
+materials/T2.2-v2/source-02-full.md
+materials/T2.2-v2/source-03-full.md
+materials/T2.2-v2/source-04-full.md
+materials/T2.2-v2/source-05-full.md
+materials/T2.2-v2/source-06-full.md
+materials/T2.2-v2/source-07-full.md
+materials/T2.2-v2/source-08-full.md
+materials/T2.2-v2/source-09-full.md
+materials/T2.2-v2/source-10-full.md
+materials/T2.2-v2/source-11-full.md
+materials/T2.2-v2/source-12-full.md
+materials/T2.2-v2/source-13-full.md
+materials/T2.2-v2/source-14-full.md
+```
+
+唯一 selector 是 `diagnostics/T2.2-material-gap-manifest-v2.md`。它必须逐行记录固定 `slot-set-id: T2.2-V2-SOURCE-SLOTS-01-14`、十四行 `slot-member`、`selected-slot-count`、选中行 `selected-slot: <literal> | source-group: <id> | request-id: <id>`、未选中行 `unselected-slot: <literal>`、`selection-reason` 与 `selector-result: NO_SLOTS|SLOTS_REQUIRED|BLOCKED`。selector 不存在时，对十四个 raw slot 的恢复专用检查为零 filesystem 操作；存在时只允许对 selected 字面成员执行 `lstat/open/hash`。selected/unselected 必须是不相交补集；selected 缺失只报告该字面路径；unselected 不得被探测、列目录、读取或 hash。`materials/T2.2-v2/authorization.md` 是固定 control file，不是 raw slot。所有通用树扫描必须在该 raw 目录入口剪枝。
+
+### 28 个 raw blobs
+
+recovery-raw-blob-count: 28
+
+R03 达到 byte gate 时只能原子发布下列 regular、非 symlink、无 Markdown header 的字面闭集，不接受部分集合或第 29 个 `.bin`：
+
+```text
+diagnostics/T2.2-fixture-bytes-v2/candidate-01.bin
+diagnostics/T2.2-fixture-bytes-v2/context-01.bin
+diagnostics/T2.2-fixture-bytes-v2/candidate-02.bin
+diagnostics/T2.2-fixture-bytes-v2/context-02.bin
+diagnostics/T2.2-fixture-bytes-v2/candidate-03.bin
+diagnostics/T2.2-fixture-bytes-v2/context-03.bin
+diagnostics/T2.2-fixture-bytes-v2/candidate-04.bin
+diagnostics/T2.2-fixture-bytes-v2/context-04.bin
+diagnostics/T2.2-fixture-bytes-v2/candidate-05.bin
+diagnostics/T2.2-fixture-bytes-v2/context-05.bin
+diagnostics/T2.2-fixture-bytes-v2/candidate-06.bin
+diagnostics/T2.2-fixture-bytes-v2/context-06.bin
+diagnostics/T2.2-fixture-bytes-v2/candidate-07.bin
+diagnostics/T2.2-fixture-bytes-v2/context-07.bin
+diagnostics/T2.2-fixture-bytes-v2/candidate-08.bin
+diagnostics/T2.2-fixture-bytes-v2/context-08.bin
+diagnostics/T2.2-fixture-bytes-v2/candidate-09.bin
+diagnostics/T2.2-fixture-bytes-v2/context-09.bin
+diagnostics/T2.2-fixture-bytes-v2/candidate-10.bin
+diagnostics/T2.2-fixture-bytes-v2/context-10.bin
+diagnostics/T2.2-fixture-bytes-v2/candidate-11.bin
+diagnostics/T2.2-fixture-bytes-v2/context-11.bin
+diagnostics/T2.2-fixture-bytes-v2/candidate-12.bin
+diagnostics/T2.2-fixture-bytes-v2/context-12.bin
+diagnostics/T2.2-fixture-bytes-v2/candidate-13.bin
+diagnostics/T2.2-fixture-bytes-v2/context-13.bin
+diagnostics/T2.2-fixture-bytes-v2/candidate-14.bin
+diagnostics/T2.2-fixture-bytes-v2/context-14.bin
+```
+
+这些 bytes 的唯一 writer 是 R03，并必须与 byte manifest、owner、R03/R04/R05/R06 的 copy/review 责任一致。
+
+### M2 active/history 精确 schema
+
+活动资格候选固定为 v2 attempt；v1 baseline/blocker 是固定 `FAIL` 历史，v2 architecture/review 是固定失败架构历史。M1 receipt、T1.8、T2.1 与 T2.3 继续承担原有 gate 身份。没有 `diagnostics/M2-gate-receipt.md` 时，未来 active 文件均不因此被要求存在，阶段 3 仍被硬阻塞；receipt 一旦存在，验证器必须重算所有实际 hash、结果、路径与历史身份，禁止别名、版本扫描、路径回退或软链接替代。
+
+未来 M2 receipt 的 T2.2 机器字段必须恰好一次，并与下列 schema 一致：
+
+```text
+m1-freeze-receipt-sha256: <actual hash>
+t1.8-independent-acceptance-sha256: <actual hash>
+t2.1-r01-r08-sha256: <actual hash>
+t2.3-seed-lenses-v2-sha256: <actual hash>
+t2.2-active-architecture-path: diagnostics/T2.2-recovery-architecture-v3.md
+t2.2-active-architecture-commit: a67f011d112e1e06022867cb3577110816064bd9
+t2.2-active-architecture-sha256: 38025c0b2ebb26171e7f6ad8bef69b97bfeb2d88597a78e67b3dcdc48110d1e1
+t2.2-active-architecture-review-path: diagnostics/T2.2-recovery-architecture-v3-preflight-review.md
+t2.2-active-architecture-review-commit: 626562fa3fa6487200e953ca0b804a275ec3ef33
+t2.2-active-architecture-review-sha256: e5d450f019685fba6eed679e06ccedee10255591e9a4a65359ac6cfb918e06ec
+t2.2-active-architecture-review-result: PASS
+t2.2-quality-audit-path: diagnostics/T2.2-recovery-architecture-v3-preflight-review-quality-audit.md
+t2.2-quality-audit-commit: e74221b85a8c750827c534e14d6df4079cb85c06
+t2.2-quality-audit-sha256: a81ded57546981d40b7c95d0d206ca0b627008fe509c32dfff1fb09abb415342
+t2.2-quality-audit-result: CONFIRMED_PASS
+t2.2-active-attempt-id: T2.2-QV2-A01
+t2.2-active-attempt-manifest-path: diagnostics/T2.2-qualification-attempt-manifest-v2.md
+t2.2-active-attempt-manifest-sha256: <actual hash>
+t2.2-active-baseline-path: diagnostics/T2.2-judge-baseline-v2.md
+t2.2-active-baseline-sha256: <actual hash>
+t2.2-active-postflight-review-path: diagnostics/T2.2-postflight-review-v2.md
+t2.2-active-postflight-review-sha256: <actual hash>
+t2.2-active-result: PASS
+t2.2-history-v1-baseline-path: diagnostics/T2.2-judge-baseline.md
+t2.2-history-v1-baseline-sha256: 830f0758439ee72d549efe27296a444ccb9769c92c1298399dd9b5bebce0d4af
+t2.2-history-v1-baseline-result: FAIL
+t2.2-history-v1-blocker-path: taskcards/T2.2-BLOCKER.md
+t2.2-history-v1-blocker-sha256: 84c7a0dede0797c5667228398cc4be1b8a945d8a871dab7058737778bba1684b
+t2.2-history-v2-architecture-path: diagnostics/T2.2-recovery-architecture-v2.md
+t2.2-history-v2-architecture-commit: 037f33b0893208a232efa4aaeb23866885ec5fd0
+t2.2-history-v2-architecture-sha256: 1154110c3a3bff65e4dc2ceb8244e724f0da60924c4e32ba4afa413600a2043a
+t2.2-history-v2-review-path: diagnostics/T2.2-recovery-architecture-v2-preflight-review.md
+t2.2-history-v2-review-commit: 4bc9feca20f41e9c41158885cad41683f4d227b2
+t2.2-history-v2-review-sha256: 9d2c80e23e30018c4dc4283c56315ab2df2198344b98dda91cebae6755f92e13
+t2.2-history-v2-review-result: FAIL
+```
+
+v2 baseline 必须机器记录 `qualification-result: PASS`；R21 postflight 必须机器记录 `review-result: PASS`、`subjects-unchanged-since-commit: yes`，并以精确 path、owner、40 位 subject commit 和实际 SHA-256 绑定 R20 baseline。缺一项、hash 改变、仍有 recovery blocker、21 卡未完整注册或 28 blobs 未完整发布，都禁止 M2 receipt。
 
 ## 三个痛点的针对性设计
 
@@ -61,7 +221,7 @@ Writer 只接收锁定卡。一张卡只交付一条定稿标题和一份定稿�
 
 ## 任务分解
 
-除 T2.2 的隔离复合例外外，每个任务保持单会话粒度，并分别报告 `implemented`、`integrated`、`verified`、`accepted`。
+历史 T2.2 原始资格考试已按隔离复合任务完成并失败；恢复链仅 R09、R14、R19 为复合任务，其余任务保持单会话粒度，并分别报告 `implemented`、`integrated`、`verified`、`accepted`。
 
 ### 阶段 0：开发基座
 
@@ -84,7 +244,7 @@ Writer 只接收锁定卡。一张卡只交付一条定稿标题和一份定稿�
 ### 阶段 2：裁判先行校准
 
 - **T2.1 缩句差分诊断探针**：将 R01–R08 写成 `diagnostics/` 方法卡和操作步骤，供生产自检及资格通过后的裁判诊断使用；它不是资格考试输入或产品 gate。
-- **T2.2 裁判资格考试**：唯一隔离复合任务。主控准备侧从 3 正、8 负、3 book reference 共 14 个对象逐段无改写提取候选实物，若边界不能无歧义提取即 blocker；写 frozen blind packet、scoring key 和 judge brief。鲜会话 judge 唯一读取 `AGENTS.md`、冻结 T1.8、frozen packet、frozen brief，写 frozen answers；评分侧最后按 key 写 draft baseline。packet 只含随机中性 ID 与候选实物段；key 保存 ID 到源相对路径、源 SHA-256、定位／片段 SHA-256、payload SHA-256 与预期类别；brief 仅转写中性绝对判断指令并绑定 T1.8／packet hash。所有调用须有当前明确模型与粒度授权；无授权即 blocker。失败也保留 baseline 和 blocker，由主控另发版本化合同修订／复考任务；本卡不原位改写冻结 T1.8。
+- **T2.2 裁判资格考试（历史已完成／失败）**：原始隔离复合任务已写 frozen blind packet、scoring key、judge brief、answers、draft baseline 与 blocker，资格结果固定为 `FAIL`。这些 v1 字节永久保留为历史，不能原位改写或作为 active 通过证据。恢复控制面以本路线的 v3 恢复闭集另行推进；当前只有 A2，不授权 21 卡注册、R01、材料、模型调用、M2 receipt 或恢复执行。
 - **T2.3 种子透镜试射（诊断）**：读取 T1.9 v1，在已揭晓失败章节试射并创建精确 v2 路径，避免已否决复述模式；旧版保留，失败回填为新版本的懒惰反例；不读取 T2.1，不作资格证明。
 
 ### 阶段 3：首次真实运行（《今日简史》新章节）
@@ -94,22 +254,22 @@ Writer 只接收锁定卡。一张卡只交付一条定稿标题和一份定稿�
 - **T3.3 发现到知识卡**：先核验 M2→M1 链中 T1.2／T1.3／T1.4、T2.1 与 v2 的 hash，再读取对应冻结正文；随后在 `runs/T3.1/raw/knowledge-cards.md` 产卡、以 `runs/T3.1/raw/knowledge-card-self-check.md` 自检，卡携带稳定 `knowledge-card-id` 与 producer lineage。
 - **T3.4 独立审核**：写 `runs/T3.1/raw/review-outcomes.md`，将锁定卡隔离到 `runs/T3.1/locked/knowledge-cards.md`。
 - **T3.5 Writer 到 B2 组装**：Writer 先交付定稿标题、定稿正文并原样传递来源锚点／位置关系绑定、knowledge-card／producer lineage；T1.7 再写 `runs/T3.1/final/b2.md` 与 `runs/T3.1/final/T3.5-postflight.md`，并为每条陪读建立稳定 `b2-item-id`。
-- **T3.6 冻结、独立验收与产品判词**：先核验 M2→M1 链中冻结 T1.8、T2.1 与 baseline 的 hash，再读取对应正文；派生执行时序固定为 `runs/T3.1/freeze-receipt.md` → 写入并绑定它的 `runs/T3.1/final/freeze-receipt.md` → production freeze → 以既有冻结 B2 单元为一一验收对象，并让 judge predictions／acceptance report 共用其 `b2-item-id`、冻结生产产物可信身份及内容 hash、固定 scope → acceptance freeze → M3 → 产品负责人四级判词与 `runs/T3.1/acceptance/product-verdicts.md`。该 run-specific 记录绑定同一固定对象身份，不得写回生产 B2 的 `unknown` 标签位；其路径不外推为长期通用路径，长期 schema 与编码仍保持 `unknown`。这是 80 分交付验收点。
+- **T3.6 冻结、独立验收与产品判词**：无有效 M2 receipt 立即硬阻塞。先按 M2→M1 链核验冻结 T1.8、T2.1，并只从 receipt 的字面 active 字段核验 `diagnostics/T2.2-judge-baseline-v2.md` 与 `diagnostics/T2.2-postflight-review-v2.md` 的实际 hash 和 `PASS`；v1 baseline/blocker 只核验为固定 `FAIL` 历史，不得回退为 active。随后才读取对应正文。派生执行时序固定为 `runs/T3.1/freeze-receipt.md` → 写入并绑定它的 `runs/T3.1/final/freeze-receipt.md` → production freeze → 以既有冻结 B2 单元为一一验收对象，并让 judge predictions／acceptance report 共用其 `b2-item-id`、冻结生产产物可信身份及内容 hash、固定 scope → acceptance freeze → M3 → 产品负责人四级判词与 `runs/T3.1/acceptance/product-verdicts.md`。该 run-specific 记录绑定同一固定对象身份，不得写回生产 B2 的 `unknown` 标签位；其路径不外推为长期通用路径，长期 schema 与编码仍保持 `unknown`。这是 80 分交付验收点。
 
 ### 阶段 4：复盘与最小治理件
 
-- **T4.1 判词回填与分歧挖掘**：按对象、scope、判断权威和哈希写 `runs/T3.1/acceptance/gold-candidates.md`，只作候选而不修改金标 owner；将分歧加入考卷，利用 `b2-item-id`、knowledge-card 与 producer lineage 按透镜／专家归账。构建 ledger 前按 M2→M1 链核验 T1.8、v1、baseline 与 v2；ledger 为每个 lens 逐字列出未来 registry 相对路径、source lens 相对路径及可信 source lens SHA-256。主控技术核验后冻结 ledger，并写 `diagnostics/T4.1-freeze-receipt.md` 绑定 ledger hash。
+- **T4.1 判词回填与分歧挖掘**：按对象、scope、判断权威和哈希写 `runs/T3.1/acceptance/gold-candidates.md`，只作候选而不修改金标 owner；将分歧加入考卷，利用 `b2-item-id`、knowledge-card 与 producer lineage 按透镜／专家归账。无有效 M2 receipt 立即硬阻塞；构建 ledger 前按 M2→M1 链核验 T1.8、v1 lens、v2 lens，并只从 receipt 的字面 active 字段核验 `diagnostics/T2.2-judge-baseline-v2.md` 与 `diagnostics/T2.2-postflight-review-v2.md` 的实际 hash 和 `PASS`；v1 T2.2 baseline/blocker 只作固定 `FAIL` 历史。ledger 为每个 lens 逐字列出未来 registry 相对路径、source lens 相对路径及可信 source lens SHA-256。主控技术核验后冻结 ledger，并写 `diagnostics/T4.1-freeze-receipt.md` 绑定 ledger hash。
 - **T4.2 透镜登记册最小实现**：读取冻结 ledger 与 receipt，只写唯一根 `lenses/registry/index.md` 及 ledger 逐字枚举的版本文件；创建前逐项核对 source lens 相对路径和 SHA-256。禁止 glob 推断、额外文件或原位覆盖。记录结果与合格／质疑／失败原因，只提出建议。
 - **T4.3 复盘决定下一轮**：选择继续本书、换新书或启动 Skills 线复用骨架。
 
 ## 里程碑、波次与卡壳协议
 
 - **M1 基座与合同组装**：阶段 0、1 提交后，核验术语、合同衔接和决议一致性。通过时主控仅冻结语义未变的 `contracts/GLOSSARY.md`、T1 合同与种子透镜，写 `contracts/M1-freeze-receipt.md` 并逐文件记录 `contracts/GLOSSARY.md`、所有 T1 合同及 T1.9 v1 的 SHA-256，然后独立提交；需语义改动先返工。无 receipt 不得进阶段 2。
-- **M2 裁判上岗**：T2.1、T2.2、T2.3 完成后，核验盲测、绝对判断与成绩。通过时主控写 `diagnostics/M2-gate-receipt.md`，记录实际 M1 receipt 的 SHA-256，并逐文件绑定并冻结 T2.1、T2.2 baseline、T2.3 v2 与冻结 T1.8 合同的 SHA-256；无 receipt 不得进阶段 3。
+- **M2 裁判上岗**：当前未建立。只有 21 卡原子注册、完整恢复 DAG、v2 active baseline `PASS`、R21 postflight `PASS`、所有 recovery blocker 关闭且现行验证器通过后，总控才能在新的明确授权下按本路线精确 schema 写 `diagnostics/M2-gate-receipt.md`。receipt 绑定 M1、T1.8、T2.1、T2.3、v3 architecture/review/quality audit、v2 active attempt/baseline/postflight 及 v1/v2 固定失败历史；无 receipt 不得进阶段 3。
 - **M3 首次真实运行冻结**：T3.6 报告后、产品判词前，核验 execution／semantic；随后产品负责人判词。
 - **M4 复盘**：T4.1 receipt 冻结 ledger 后，核验 registry 与回填，并与产品负责人决定下一轮。
 
-波次依次为：T0.1；T0.2→T0.3；T1.1—T1.8 并行，随后 T1.9（在 T1.4 后）→M1；T2.1 后，隔离复合 T2.2 与 T2.3 并行→M2；T3.1→T3.6 严格串行，其中 T3.6 从 T3.1 根 receipt 开始，依次写 final receipt、冻结 production、写预测和报告、冻结 acceptance、通过 M3，再收产品判词；T4.1→冻结 ledger receipt→T4.2→T4.3，由产品负责人与主控共同完成后 M4。
+波次依次为：T0.1；T0.2→T0.3；T1.1—T1.8 并行，随后 T1.9（在 T1.4 后）→M1；T2.1、历史 T2.2 `FAIL` 与 T2.3 后停在 M2 前；v3 A1 → C0/A2 → 总控另行决定是否原子注册 21 卡/A3 → R01 至 R21 严格按 DAG → 总控另行创建 M2 receipt/A12；其后才允许 T3.1→T3.6 严格串行，其中 T3.6 从 T3.1 根 receipt 开始，依次写 final receipt、冻结 production、写预测和报告、冻结 acceptance、通过 M3，再收产品判词；T4.1→冻结 ledger receipt→T4.2→T4.3，由产品负责人与主控共同完成后 M4。
 
 默认只允许读取 `AGENTS.md`、`PRODUCT-DECISIONS.md`、`ENGINEERING-LESSONS.md`、本路线图和自己的任务卡；`GOLD-STANDARDS.md`、`examples/`、`blueprints/PIPELINE-MAP.md`、合同、receipt、run 与其他交付物都必须由当前任务卡逐文件列出。金标与样张的读取例外不得跨任务继承；阶段 3 生产任务永远不得获得该例外。
 
