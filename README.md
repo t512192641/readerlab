@@ -22,7 +22,7 @@
 
 - 当前阶段：阶段 2「裁判先行校准」。
 - 当前 gate：T2.2 裁判资格考试已执行但 `FAIL`，处于 M2 之前的硬阻塞。
-- 本轮总控复核输入 HEAD：`626562fa3fa6487200e953ca0b804a275ec3ef33`；该提交只新增 T2.2 恢复架构 v3 的独立前置审查报告，T2.2 失败证据 commit 仍为 `909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
+- 本轮总控复核输入 HEAD：`e74221b85a8c750827c534e14d6df4079cb85c06`；该提交只新增 T2.2 恢复架构 v3 前置审查的质量复核报告，T2.2 失败证据 commit 仍为 `909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
 - M2 未建立；阶段 3 真实材料运行、生产 runtime 和产品验收均未开始。
 
 ### 2. 已经通过的内容
@@ -98,8 +98,11 @@
 - v3 已 `implemented`；独立前置审查报告给出 `PASS`，但尚未 `integrated`，恢复路线尚未执行，产品 `accepted` 仍为 `unknown`。
 - v3 独立前置审查报告 `diagnostics/T2.2-recovery-architecture-v3-preflight-review.md` 已提交于 `626562fa3fa6487200e953ca0b804a275ec3ef33`，SHA-256 为 `e5d450f019685fba6eed679e06ccedee10255591e9a4a65359ac6cfb918e06ec`。
 - 报告完整记录三项 blocker `CLOSED`、V01—V32 `32/32 PASS`、不回退 `14/14 PASS`，共 446 行；身份、提交范围、hash、V 项编号完整性、`python3 validate.py` 和 diff check 均由本轮总控复核通过，没有发现截断、占位或条件式 `PASS`。
-- 产品负责人报告该审查会话曾因模型调用问题中断。仓库没有该会话的 raw runtime 日志，无法证明中断后是否完整重读，也无法验证报告“未调用模型”的过程声明具体指模型任务还是外部 judge 调用。因此本轮总控把该 `PASS` 记为**结构完整但过程可信度待复核**，暂不释放 C0。
-- 当前没有已证实的新架构缺陷，也没有产品 blocker；当前新增的是审查质量风险。必须由新的独立后置审查从原始仓库证据重新复算关键结论，不得只审文字完整性。
+- 产品负责人报告该审查会话曾因模型调用问题中断。原会话过程仍无法由仓库证明，因此其“未调用模型”声明保持 `unknown`；该过程未知不再作为技术 `PASS` 的唯一依据。
+- 独立质量复核报告 `diagnostics/T2.2-recovery-architecture-v3-preflight-review-quality-audit.md` 已提交于 `e74221b85a8c750827c534e14d6df4079cb85c06`，SHA-256 为 `a81ded57546981d40b7c95d0d206ca0b627008fe509c32dfff1fb09abb415342`，结论为 `CONFIRMED_PASS`。
+- 质量复核重新执行三个 blocker、V01—V32、不回退、packet parser 反例及数字展开，确认 14 candidate、14 context、28 raw blobs、14 material slots、21 DAG nodes、3 composite tasks、11 direct reviews、105 stateful paths 与 M14 `C4/B4/E4/G2`。其 105 路径算法为 `1 preflight + 82 正常卡输出 + 21 blockers + 1 M2 receipt`。
+- 质量复核发现三个 P2：原报告未写 105 路径展开算法、不回退 14 项计数口径不透明、原会话“未调用模型”不可审计。三者均不形成架构死路、权限冲突或 C0 blocker。
+- 本轮总控接受 v3 架构级技术 `PASS`：三个 blocker 已关闭，F-02/F-04/F-05 与不回退项成立，A1「架构已释放」成立。T2.2 资格仍为 `FAIL`，M2 仍未建立；C0 尚未执行，21 张恢复卡仍为 0。
 
 ### 7. 必须保留的证据
 
@@ -149,6 +152,7 @@
 - `diagnostics/T2.2-recovery-architecture-v2-preflight-review.md`
 - `diagnostics/T2.2-recovery-architecture-v3.md`
 - `diagnostics/T2.2-recovery-architecture-v3-preflight-review.md`
+- `diagnostics/T2.2-recovery-architecture-v3-preflight-review-quality-audit.md`
 
 ### 8. 当前最后可信 commit
 
@@ -160,7 +164,8 @@
 - 恢复架构 v2 独立前置审查 commit：`4bc9feca20f41e9c41158885cad41683f4d227b2`（结论 `FAIL`，不授权 C0 或执行）。
 - 恢复架构 v3 commit：`a67f011d112e1e06022867cb3577110816064bd9`（只证明 v3 文件存在和身份稳定，不证明审查通过）。
 - 恢复架构 v3 独立前置审查 commit：`626562fa3fa6487200e953ca0b804a275ec3ef33`（报告结论 `PASS`，但因会话中断疑虑尚未被总控释放为 C0 入口）。
-- 上一轮总控状态 commit：`8f93e97f30f5742874f94d3dc7ea17a560362e6c`。
+- 恢复架构 v3 前置审查质量复核 commit：`e74221b85a8c750827c534e14d6df4079cb85c06`（`CONFIRMED_PASS`，允许总控考虑精确授权 C0）。
+- 上一轮总控状态 commit：`78b285ca2c18c0a5cc4de15ea694f6520c3a8033`。
 
 ### 9. 当前未提交修改
 
@@ -169,13 +174,12 @@
 ### 10. 当前唯一下一步编排
 
 - 原路线现在不可继续：T2.2 资格为 `FAIL`，且 `diagnostics/M2-gate-receipt.md` 不存在；不得进入 M2 或阶段 3。
-- 紧接着只启动一个**后置审查角色**，会话名称为「ReaderLab M2｜T2.2 v3 前置审查质量复核」。
-- 该会话使用 Local 环境；所有输入只读，只允许新增 `diagnostics/T2.2-recovery-architecture-v3-preflight-review-quality-audit.md` 并形成一个独立本地 commit。
-- 质量复核必须从 v3 与 owner 文件重新复算 V01—V32、三个 blocker、不回退项和高风险路径；原前置审查报告只能最后读取，用于比较结论和证据覆盖，不能作为证明来源。
-- 复核必须特别检查原报告的数字断言（28 raw blobs、14 slots、105 stateful paths、11 direct reviews、21 DAG nodes、M14 4/4/4/2）和过程声明可验证边界；无法由仓库证明的运行过程必须标为 `unknown`，但不能仅因未知自动否定技术结论。
-- 后置审查不得修改 v3 或原报告，不得执行 C0、注册任务卡、读取金标／样张、请求材料、调用 judge、复考、创建 M2 receipt、写生产代码或进入阶段 3。
-- 复核结果只能是：`CONFIRMED_PASS`（独立复算支持原 PASS）、`REJECTED_PASS`（发现技术缺陷）或 `INCONCLUSIVE`（证据不足）。只有 `CONFIRMED_PASS` 才允许总控下一轮考虑是否请求 C0 授权；本会话不授权 C0。
-- 复核 commit 完成后，产品负责人把质量结论、差异发现、V01—V32 复算、三个 blocker、数字复算、commit SHA 和验证结果回报总控；总控重新读取仓库后才决定下一角色。
+- 紧接着只启动一个**执行角色**，会话名称为「ReaderLab M2｜T2.2 恢复控制面 C0 集成」。
+- C0 是 v3 固定的 controller-only bootstrap seam，使用 Local 环境并允许写入；启动该会话即表示产品负责人只授权本次 C0 对六个既有路径作长期技术集成：`README.md`、`blueprints/EXECUTION-ROADMAP.md`、`validate.py`、`taskcards/T3.6.md`、`taskcards/T4.1.md`、`audit/manifest.json`。
+- C0 必须把 v3/review/quality-audit 身份、R01—R21 闭集、0/21 原子注册、复合任务闭集、artifact lifecycle、14 slots selector、28 raw blobs、M2 active/history schema 与 T3.6/T4.1 下游接线编译进现行控制面。
+- C0 不创建任何 `T2.2-R*` 任务卡，不读取金标／样张，不请求材料，不调用模型，不创建 M2 receipt，不进入恢复执行或阶段 3；完成后恢复卡数量必须仍为 0。
+- C0 只形成一个独立本地 commit。若六文件范围不足、设计与现行仓库冲突或无法在 0-card 状态通过验证，必须停止，不得扩权或顺带注册任务卡。
+- C0 commit 完成后，产品负责人把 commit SHA、六文件 diff、0-card 验证、负向验证结果、`python3 validate.py` 和 blocker 回报总控；总控重新读取仓库后才决定是否另行授权 21 卡原子注册。
 
 ### 11. 下一会话读取顺序
 
@@ -205,8 +209,12 @@
 24. `diagnostics/T2.2-recovery-architecture-v2-preflight-review.md`
 25. `diagnostics/T2.2-recovery-architecture-v3.md`
 26. `diagnostics/T2.2-recovery-architecture-v3-preflight-review.md`
+27. `diagnostics/T2.2-recovery-architecture-v3-preflight-review-quality-audit.md`
+28. `taskcards/TEMPLATE.md`
+29. `materials/.gitignore`
+30. `audit/manifest.json`
 
-本后置审查不继承透镜开发、诊断端或裁判端对 `GOLD-STANDARDS.md` 与 `examples/` 的读取授权；不得读取或依赖旧 ReaderLab 项目。
+本 C0 集成不继承透镜开发、诊断端或裁判端对 `GOLD-STANDARDS.md` 与 `examples/` 的读取授权；不得读取或依赖旧 ReaderLab 项目。
 
 ### 12. 硬停止条件
 
