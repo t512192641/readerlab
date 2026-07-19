@@ -22,7 +22,7 @@
 
 - 当前阶段：阶段 2「裁判先行校准」。
 - 当前 gate：T2.2 裁判资格考试已执行但 `FAIL`，处于 M2 之前的硬阻塞。
-- 本次交接核实基准 HEAD：`909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
+- 本轮总控复核输入 HEAD：`378306fa804dba47fb3316932aaf8b3f839f585b`；该提交只更新上一轮状态快照与对应 manifest，T2.2 证据 HEAD 仍为 `909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
 - M2 未建立；阶段 3 真实材料运行、生产 runtime 和产品验收均未开始。
 
 ### 2. 已经通过的内容
@@ -31,7 +31,7 @@
 - T1.1—T1.9 合同与种子透镜 v1 已完成，M1 审核 `PASS`；冻结身份以 `contracts/M1-freeze-receipt.md` 为准。
 - T2.1 缩句差分诊断方法卡已 `implemented` 并通过确定性验证，但尚未经过 M2 冻结。
 - T2.3 失败案例诊断与种子透镜 v2 已 `implemented` 并通过确定性验证；v2 仍为 `draft`，尚未取得资格。
-- T2.2 的隔离、盲包、单次 judge 调用、哈希链、评分和失败留痕已按任务卡执行；其 Standards 与 Spec／机械复核为 `PASS`。这只证明考试被正确执行，不代表裁判通过。
+- T2.2 的冻结盲包、评分键、judge brief、answers、哈希链、评分和失败留痕已按任务卡落库；本轮重新核对 14 项顺序、状态头、关键哈希、payload／源片段逐字节一致性和 `FAIL` 汇总均为 `PASS`。这只证明仓库内考试证据自洽，不代表裁判通过，也不补足仓库中缺失的 raw runtime 日志。
 
 ### 3. 尚未通过的内容
 
@@ -43,8 +43,8 @@
 
 ### 4. T2.2 当前失败结果
 
-- 授权配置：`gpt-5.6-terra / high`。
-- 调用粒度：`single fresh isolated judge turn / one 14-item batch`；无追问、无第二次 judge 调用。
+- 冻结 answers 记录的授权配置：`gpt-5.6-terra / high`。
+- 冻结 answers 记录的调用粒度：`single fresh isolated judge turn / one 14-item batch`；既有执行记录称无追问、无第二次 judge 调用。
 - 8 个 `negative`：要求 8/8 `拦截`，实际 0/8 `拦截`，全部被 `放行`。
 - 3 个 `positive`：要求 3/3 `放行`，实际 0/3 `放行`，全部被判为 `边缘`。
 - 3 个 `reference`：实际为 `边缘`、`放行`、`放行`，不参与硬门。
@@ -55,7 +55,7 @@
 已确认：
 
 - 14/14 源文件 hash、提取片段 hash 与 blind packet payload hash 已复算一致，源片段与 payload 逐字节相同。
-- judge 上下文没有 scoring key、源路径、类别标签或产品判词泄漏。
+- 既有执行记录确认 judge 按四文件白名单运行；仓库可独立复核 blind packet、brief 与 answers 没有 scoring key、源路径、类别标签或产品判词泄漏。仓库没有 raw runtime 日志，因此不能只靠仓库重放完整实时上下文。
 - blind packet 的 14 个中性 ID 均没有 T1.8 要求的既有 `b2-item-id`、冻结生产产物可信身份／内容 hash 和固定 scope；多个 ID 实际合并了整页或多条 AI 陪读，未满足 T1.8“一对象对应一个既有冻结 B2 单元”的对象边界。
 - 8/8 negative 带有正文上下文；3/3 positive 缺少同粒度、可追溯的完整原文锚点，输入证据不对称。
 - judge 对 8 个 negative 系统性把原文明说关系的机制化措辞、换名或页内局部强片段判为实质增量；对 3 个 positive 的内容增量和原文关联均因证据不足判为 `unknown`。
@@ -112,12 +112,22 @@
 
 - 当前最后可信项目证据 commit：`909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`（忠实记录 T2.2 `FAIL`，不是资格通过；其后的本次交接提交只更新状态快照与对应 manifest）。
 - 当前最后已通过 gate 的 commit：`dab61e73ef4b3cadfde2ae7d422c0023ed53a850`（M1）。
+- 上一轮状态快照 commit：`378306fa804dba47fb3316932aaf8b3f839f585b`。
 
 ### 8. 当前未提交修改
 
 - 当前未提交修改只有仓库根目录未跟踪的 `.DS_Store`；它不属于项目交付，本次不处理。
 
-### 9. 下一会话读取顺序
+### 9. 当前唯一下一步编排
+
+- 原路线现在不可继续：T2.2 资格为 `FAIL`，且 `diagnostics/M2-gate-receipt.md` 不存在；不得进入 M2 或阶段 3。
+- 紧接着只启动一个**架构角色**，会话名称为「ReaderLab M2｜T2.2 版本化恢复架构」。
+- 该会话使用 Local 环境，只设计可验证、版本化的恢复／复考路线；不得执行 judge、改写既有冻结证据、创建 M2 receipt、写生产代码或进入阶段 3。
+- 为保证仓库仍是唯一记忆，该架构会话只允许新增 `diagnostics/T2.2-recovery-architecture-v1.md`，并在验证通过后形成一个独立本地 commit；不得修改其他文件。
+- 架构产物必须分开已确认事实、因果假设与 `unknown`，给出后续前置审查所需的完整技术边界，但不得替产品负责人作产品决策。
+- 架构 commit 完成后，产品负责人只需把 commit SHA、验证结果和是否出现产品 blocker 回报总控；总控重新读取仓库后，才决定是否启动前置审查。
+
+### 10. 下一会话读取顺序
 
 1. `AGENTS.md`
 2. `README.md`
@@ -137,7 +147,7 @@
 
 只有需要核对阶段 2 其他已完成草案时，再读取 `diagnostics/T2.1-r01-r08.md`、`diagnostics/T2.3-seed-lens-diagnostic.md` 与 `lenses/T2.3-seed-lenses-v2.md`。不得读取或依赖旧 ReaderLab 项目。
 
-### 10. 硬停止条件
+### 11. 硬停止条件
 
 **在 T2.2 恢复并重新通过资格验证前，不得进入 M2。**
 
