@@ -22,7 +22,7 @@
 
 - 当前阶段：阶段 2「裁判先行校准」。
 - 当前 gate：T2.2 裁判资格考试已执行但 `FAIL`，处于 M2 之前的硬阻塞。
-- 本轮总控复核输入 HEAD：`4bc9feca20f41e9c41158885cad41683f4d227b2`；该提交只新增 T2.2 恢复架构 v2 的独立前置审查报告，T2.2 失败证据 commit 仍为 `909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
+- 本轮总控复核输入 HEAD：`a67f011d112e1e06022867cb3577110816064bd9`；该提交只新增 T2.2 恢复架构 v3，T2.2 失败证据 commit 仍为 `909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
 - M2 未建立；阶段 3 真实材料运行、生产 runtime 和产品验收均未开始。
 
 ### 2. 已经通过的内容
@@ -93,6 +93,10 @@
   2. P0：21 张卡必须在 R03 前静态原子注册，但 R06 白名单要求只列 R05 后才知道的实际 material slots；
   3. P1：未来 stateful artifacts 缺少逐路径 `scope: long-term|run-only` 决议，会把生命周期选择留给执行者或触发验证器失败。
 - 当前没有产品 blocker，也不需要产品负责人补材料、补判词或授权模型调用；三个问题均应由新的技术架构版本修正。
+- `diagnostics/T2.2-recovery-architecture-v3.md` 已提交于 `a67f011d112e1e06022867cb3577110816064bd9`，SHA-256 为 `38025c0b2ebb26171e7f6ad8bef69b97bfeb2d88597a78e67b3dcdc48110d1e1`。
+- v3 状态头为 `frozen / run-only`，正文声明 supersede v2，成为唯一活动架构候选；v1、v2 与两轮失败审查继续作为历史证据。
+- v3 已 `implemented`；尚未通过独立前置审查，尚未 `integrated`，恢复路线未 `verified`，产品 `accepted` 仍为 `unknown`。
+- 本轮总控只确认 v3 审查准入条件齐备：指定 commit 与 HEAD 一致、commit 只新增 v3、v2 审查 hash 未变、`python3 validate.py` 与 commit diff check 通过。v3 自述的三个 blocker 关闭和不回退证明仍须由独立审查验证。
 
 ### 7. 必须保留的证据
 
@@ -140,6 +144,7 @@
 - `diagnostics/T2.2-recovery-architecture-v1-preflight-review.md`
 - `diagnostics/T2.2-recovery-architecture-v2.md`
 - `diagnostics/T2.2-recovery-architecture-v2-preflight-review.md`
+- `diagnostics/T2.2-recovery-architecture-v3.md`
 
 ### 8. 当前最后可信 commit
 
@@ -149,7 +154,8 @@
 - 恢复架构前置审查 commit：`575b317dec64a78054ab4bbb0e6b04b1a0f2cbb3`（结论 `FAIL`，不授权执行）。
 - 恢复架构 v2 commit：`037f33b0893208a232efa4aaeb23866885ec5fd0`（只证明 v2 文件存在和身份稳定，不证明审查通过）。
 - 恢复架构 v2 独立前置审查 commit：`4bc9feca20f41e9c41158885cad41683f4d227b2`（结论 `FAIL`，不授权 C0 或执行）。
-- 上一轮总控状态 commit：`0ab44417310310134ca8350b283fc5e20731bd07`。
+- 恢复架构 v3 commit：`a67f011d112e1e06022867cb3577110816064bd9`（只证明 v3 文件存在和身份稳定，不证明审查通过）。
+- 上一轮总控状态 commit：`639d2a31362117d061507176b386f453b3c388ad`。
 
 ### 9. 当前未提交修改
 
@@ -158,12 +164,12 @@
 ### 10. 当前唯一下一步编排
 
 - 原路线现在不可继续：T2.2 资格为 `FAIL`，且 `diagnostics/M2-gate-receipt.md` 不存在；不得进入 M2 或阶段 3。
-- 紧接着只启动一个**架构角色**，会话名称为「ReaderLab M2｜T2.2 恢复架构 v3 修订」。
-- 该会话使用 Local 环境；既有文件只读，只允许新增 `diagnostics/T2.2-recovery-architecture-v3.md` 并形成一个独立本地 commit。
-- v3 必须保留 v2 已通过的 F-02、F-04、F-05、DAG、M14 与 M2 接线，不得回退；只以最小完整改动关闭两个 P0 和一个 P1 blocker。
-- v3 必须明确：R03 冻结完整 candidate 与 `SOURCE-CONTEXT` raw bytes、R04 复核、R05 逐字复制的数据合同；R06 对 14 个预命名 slot 的静态闭集与 frozen manifest 选择机制，或另一条完整合法的二阶段卡编译机制；所有未来 stateful artifact 的逐路径 `status/scope` 表及验证规则。
-- 架构修订不得修改 v2、两轮审查、路线图、验证器、任务卡、合同或失败证据；不得执行 C0、注册任务卡、读取金标／样张、请求材料、调用模型、复考、创建 M2 receipt、写生产代码或进入阶段 3。
-- v3 commit 完成后，产品负责人把 commit SHA、三个 blocker 的关闭摘要、保留项未回退证明、验证结果和是否出现产品 blocker 回报总控；总控重新读取仓库后，才决定是否启动 v3 独立前置审查。
+- 紧接着只启动一个**前置审查角色**，会话名称为「ReaderLab M2｜T2.2 恢复架构 v3 独立前置审查」。
+- 该会话使用 Local 环境；所有被审文件只读，只允许新增 `diagnostics/T2.2-recovery-architecture-v3-preflight-review.md` 并形成一个独立本地 commit。
+- 审查必须独立执行 v3 第 16 节 V01—V32，重点验证：28 个 raw blobs 的逐字节数据链、14 个静态 material slots 与 selector 无探测规则、全部 stateful artifact 的 status/scope 生命周期，以及 v2 已通过部分没有回退。
+- 审查不得把 v3 自述当作证明，不得修改 v3、路线图、验证器、任务卡、合同、README 或失败证据；不得读取金标／样张、执行 C0、注册任务卡、请求材料、调用模型、复考、创建 M2 receipt、写生产代码或进入阶段 3。
+- 审查结论只能是 `PASS`、`FAIL` 或 `BLOCKED`。`PASS` 只释放总控未来另行决定是否请求 C0 授权，不授权 C0；`FAIL` 返回新的版本化架构修订；`BLOCKED` 必须指出无法由现有技术 owner 解决的最小产品问题。
+- 审查 commit 完成后，产品负责人把结论、V01—V32 汇总、三个 blocker 关闭判断、不回退判断、commit SHA、验证结果和 blocker 回报总控；总控重新读取仓库后，才决定下一角色。
 
 ### 11. 下一会话读取顺序
 
@@ -191,8 +197,9 @@
 22. `diagnostics/T2.1-r01-r08.md`
 23. `lenses/T2.3-seed-lenses-v2.md`
 24. `diagnostics/T2.2-recovery-architecture-v2-preflight-review.md`
+25. `diagnostics/T2.2-recovery-architecture-v3.md`
 
-本架构修订不继承透镜开发、诊断端或裁判端对 `GOLD-STANDARDS.md` 与 `examples/` 的读取授权；不得读取或依赖旧 ReaderLab 项目。
+本前置审查不继承透镜开发、诊断端或裁判端对 `GOLD-STANDARDS.md` 与 `examples/` 的读取授权；不得读取或依赖旧 ReaderLab 项目。
 
 ### 12. 硬停止条件
 
