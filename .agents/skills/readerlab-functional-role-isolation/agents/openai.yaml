@@ -1,0 +1,4 @@
+interface:
+  display_name: "ReaderLab 功能性角色隔离"
+  short_description: "用两个全新 Agent 冻结候选、独立判断并机械复核"
+  default_prompt: "使用 $readerlab-functional-role-isolation 对虚构材料运行 producer-judge 功能性隔离检查。"
