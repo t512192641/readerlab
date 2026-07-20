@@ -16,7 +16,7 @@
     },
     {
       "path": "PRODUCT-DECISIONS.md",
-      "sha256": "5f3dac7d449855540bb3ffaaa125e3faae254acc5affe314b7f0161ba8c6038c"
+      "sha256": "e0bcc45e30a93062cc3dfce5686803738afdf9ca368359bc0ad8d8290023a592"
     },
     {
       "path": "README.md",
@@ -24,11 +24,11 @@
     },
     {
       "path": "blueprints/EXECUTION-ROADMAP.md",
-      "sha256": "9ef3d32ba9b78f5275a8c82afe7cd55593e477c18641f417cfc72b05d9664c7c"
+      "sha256": "6f260f44f4d22aaefb9c813e4a90a0aff2dd1fa3e3572d1dabdb59fb1e0c0a68"
     },
     {
       "path": "blueprints/PIPELINE-MAP.md",
-      "sha256": "02120e6a39599b9cc5b1c7e4462b504d4863ce12be94028e89dddfeff48c3729"
+      "sha256": "a5615116e6419ccbedb16358e168977a184bcb7c7d23a86539ca6134993d4e10"
     },
     {
       "path": "contracts/GLOSSARY.md",
