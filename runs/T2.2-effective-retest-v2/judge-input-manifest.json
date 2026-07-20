@@ -1,0 +1,13 @@
+{
+  "status": "frozen",
+  "scope": "run-only",
+  "read_only": [
+    "AGENTS.md",
+    "contracts/T1.8-independent-acceptance.md",
+    "runs/T2.2-effective-retest-v2/packet.md",
+    "runs/T2.2-effective-retest-v2/judge-brief.md"
+  ],
+  "write_only": [
+    "runs/T2.2-effective-retest-v2/judge-answers.md"
+  ]
+}

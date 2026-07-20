@@ -1,0 +1,231 @@
+{
+  "status": "frozen",
+  "scope": "run-only",
+  "created_at_utc": "2026-07-20T13:39:54Z",
+  "created_after_answers_sha256": "66933ee7a2640383420e5fa7f052ab12b450b2c02ec483b826699579cfa6979b",
+  "gate": {
+    "positive_required": "2/2 放行",
+    "negative_required": "8/8 拦截",
+    "reference_policy": "只记录，不参与硬门",
+    "non_exact_policy": "positive 或 negative 的边缘、unknown 或相反处置均未命中"
+  },
+  "cases": [
+    {
+      "index": 1,
+      "id": "CASE-K7M2Q",
+      "expected_category": "positive",
+      "expected_disposition": "放行",
+      "source": {
+        "path": "examples/book/negative/phase4-centralized-rejected.md",
+        "file_sha256": "cda357e619321d8649669c3f404e0ff13e784a9f91792872d2629bc2060cbcf7",
+        "lines": [125, 125],
+        "extraction_sha256": "cfdccb6683867e9567a9460180002f9cec9d1a9bbda7b6cf4f8cfa333ee7d719"
+      },
+      "candidate": {
+        "path": "examples/book/positive/automatic-driving-safe-state.md",
+        "file_sha256": "61c4962cddbedaf201cefc69b3925a292b9f38b147c3cb88d6cd673f8ba965da",
+        "lines": [7, 7],
+        "extraction_sha256": "4cd03ef04484d778fb4733780ac20ab1bf9a266e7e0c3e22d3a52cc413b5a6d8"
+      }
+    },
+    {
+      "index": 2,
+      "id": "CASE-C2F6P",
+      "expected_category": "negative",
+      "expected_disposition": "拦截",
+      "source": {
+        "path": "examples/book/negative/innovation-failure-rejected.md",
+        "file_sha256": "d7e6507ef8eedf4ad0b80d0a50a1aae77d18f3bbf0975c2f115bcabe446de977",
+        "lines": [11, 25],
+        "extraction_sha256": "b323d01419b9641145ebe604ddef1428f88359dccdc6cce98136ca00633b54a7"
+      },
+      "candidate": {
+        "path": "examples/book/negative/innovation-failure-rejected.md",
+        "file_sha256": "d7e6507ef8eedf4ad0b80d0a50a1aae77d18f3bbf0975c2f115bcabe446de977",
+        "lines": [27, 30],
+        "extraction_sha256": "f3319e78ea65497b09b53d6e4f28207dda59019471964967994d3948df9c3591"
+      }
+    },
+    {
+      "index": 3,
+      "id": "CASE-J9W4D",
+      "expected_category": "negative",
+      "expected_disposition": "拦截",
+      "source": {
+        "path": "examples/book/negative/lens-core-e1-rejected.md",
+        "file_sha256": "49fb54d32afc9a42fd11146668609c3809b33429afd0a23264ed9c2c907e3662",
+        "lines": [23, 23],
+        "extraction_sha256": "1444bd2a67463028d24010c613526010300a58245d8d191d3e782f3db1f0f382"
+      },
+      "candidate": {
+        "path": "examples/book/negative/lens-core-e1-rejected.md",
+        "file_sha256": "49fb54d32afc9a42fd11146668609c3809b33429afd0a23264ed9c2c907e3662",
+        "lines": [25, 27],
+        "extraction_sha256": "3e4bff82810f49894ce7e55c0568fcbc0ae201b17a88748ccba2fc577ddac168"
+      }
+    },
+    {
+      "index": 4,
+      "id": "CASE-B9Q5J",
+      "expected_category": "reference",
+      "expected_disposition": null,
+      "source": {
+        "path": "examples/book/reference/r01-r08-borderline.md",
+        "file_sha256": "cf5f7e01e02d2c68bd5f14fde1773d4b9cd0b100a38417b243fc5fed92520238",
+        "lines": [6, 6],
+        "extraction_sha256": "eba92155c4c4120ca3bdad9d2d2241dc822e017fe8c55e5621ea5089d08e3a26"
+      },
+      "candidate": {
+        "path": "examples/book/reference/r01-r08-borderline.md",
+        "file_sha256": "cf5f7e01e02d2c68bd5f14fde1773d4b9cd0b100a38417b243fc5fed92520238",
+        "lines": [9, 15],
+        "extraction_sha256": "84be856b8319ca742d5aa320394eb7637a5ee823080c25352e4536689b2011a8"
+      }
+    },
+    {
+      "index": 5,
+      "id": "CASE-M5A8S",
+      "expected_category": "negative",
+      "expected_disposition": "拦截",
+      "source": {
+        "path": "examples/book/negative/lens-core-e2-rejected.md",
+        "file_sha256": "af022f6b3a5b57c8d6e4ebc91d8ae473fe27f1ba96a4ff6c69bf3b342d7aeaf1",
+        "lines": [7, 11],
+        "extraction_sha256": "7d946c73f067b064a13446ce86e381af28626542c104fda68d23a08726961545"
+      },
+      "candidate": {
+        "path": "examples/book/negative/lens-core-e2-rejected.md",
+        "file_sha256": "af022f6b3a5b57c8d6e4ebc91d8ae473fe27f1ba96a4ff6c69bf3b342d7aeaf1",
+        "lines": [13, 15],
+        "extraction_sha256": "670c2bc1e58531bb7881bfc8a07235da4b6b9dd84185ce62cf53b376ddee17cf"
+      }
+    },
+    {
+      "index": 6,
+      "id": "CASE-V8H3L",
+      "expected_category": "positive",
+      "expected_disposition": "放行",
+      "hidden_product_rationale": "引入原文没有的“需求池化”概念，并补出“少量大车负责家庭出行、大量小车负责单人通勤”的车型与运力结构。",
+      "source": {
+        "path": "examples/book/negative/phase4-centralized-rejected.md",
+        "file_sha256": "cda357e619321d8649669c3f404e0ff13e784a9f91792872d2629bc2060cbcf7",
+        "lines": [129, 133],
+        "extraction_sha256": "955f626344a0c5bbc501c1d994852c5321d4f10a2f44642878148893ec3daf28"
+      },
+      "candidate": {
+        "path": "examples/book/positive/demand-pooling.md",
+        "file_sha256": "925cdd81638fdd398802083efe739e1b6b024b7abbdde7e58d3e753c0b59f1be",
+        "lines": [7, 15],
+        "extraction_sha256": "278e2554462069e283631e6d0f2acd38bd42388f8868af40925cb1b92c9bac91"
+      }
+    },
+    {
+      "index": 7,
+      "id": "CASE-Q3L7X",
+      "expected_category": "negative",
+      "expected_disposition": "拦截",
+      "source": {
+        "path": "examples/book/negative/lens-core-e3-rejected.md",
+        "file_sha256": "7ae512ada094005cf24a0943faab00f39b8000ac54dbe83d2517b13f6d9f89a5",
+        "lines": [23, 27],
+        "extraction_sha256": "26f95ee9f1c264bf1f3441fe8960eaf298c27d34840a3441bf07fbee7dc9b5d2"
+      },
+      "candidate": {
+        "path": "examples/book/negative/lens-core-e3-rejected.md",
+        "file_sha256": "7ae512ada094005cf24a0943faab00f39b8000ac54dbe83d2517b13f6d9f89a5",
+        "lines": [29, 31],
+        "extraction_sha256": "085a18423f49088ec54e4d49dab1ced0f4a686dbe0db8fefe034b70d340a965d"
+      }
+    },
+    {
+      "index": 8,
+      "id": "CASE-H6N2B",
+      "expected_category": "negative",
+      "expected_disposition": "拦截",
+      "source": {
+        "path": "examples/book/negative/fresh-demo-five-rejected.md",
+        "file_sha256": "6e52141085602851e644be4f8841abd4fbb1305e8e56ead32efa1083c234303b",
+        "lines": [11, 17],
+        "extraction_sha256": "163ea61be8d1d32012c62cb1ba48ea2b76f5130270b3e5f9b9a9a9264853458b"
+      },
+      "candidate": {
+        "path": "examples/book/negative/fresh-demo-five-rejected.md",
+        "file_sha256": "6e52141085602851e644be4f8841abd4fbb1305e8e56ead32efa1083c234303b",
+        "lines": [21, 27],
+        "extraction_sha256": "8aa8d0721b297741a499e44684340e4d11ffdabd8bec80e03e3613d747482539"
+      }
+    },
+    {
+      "index": 9,
+      "id": "CASE-L3E7W",
+      "expected_category": "reference",
+      "expected_disposition": null,
+      "source": {
+        "path": "examples/book/reference/book-kernel-h3-borderline.md",
+        "file_sha256": "07078e3627ac2ea24b98f2d62c8fff58fc1b578499f3427b0235ad1effe4d0d7",
+        "lines": [23, 27],
+        "extraction_sha256": "7e9d635734cc6cf2cc69c30628bdd01dedf1bfae9f7a0cb02a14f42c0614e7b0"
+      },
+      "candidate": {
+        "path": "examples/book/reference/book-kernel-h3-borderline.md",
+        "file_sha256": "07078e3627ac2ea24b98f2d62c8fff58fc1b578499f3427b0235ad1effe4d0d7",
+        "lines": [29, 31],
+        "extraction_sha256": "41a31120daad3dfb8298fd7f96b97cce3dae138dd479647f34a69a01fd0b6f0a"
+      }
+    },
+    {
+      "index": 10,
+      "id": "CASE-T8C5R",
+      "expected_category": "negative",
+      "expected_disposition": "拦截",
+      "source": {
+        "path": "examples/book/negative/harari-chapter01-rejected.md",
+        "file_sha256": "f6e050611f578aa62ceb2c0beaf18fbb53bc476bb6df6259f7ffbdc6cb04866c",
+        "lines": [6, 6],
+        "extraction_sha256": "eba92155c4c4120ca3bdad9d2d2241dc822e017fe8c55e5621ea5089d08e3a26"
+      },
+      "candidate": {
+        "path": "examples/book/negative/harari-chapter01-rejected.md",
+        "file_sha256": "f6e050611f578aa62ceb2c0beaf18fbb53bc476bb6df6259f7ffbdc6cb04866c",
+        "lines": [8, 10],
+        "extraction_sha256": "30e54d7c4b05c13a7c86804c28e3c7dffffb98a4f239f74fd6c506aff533d4dc"
+      }
+    },
+    {
+      "index": 11,
+      "id": "CASE-D4V9K",
+      "expected_category": "negative",
+      "expected_disposition": "拦截",
+      "source": {
+        "path": "examples/book/negative/phase4-centralized-rejected.md",
+        "file_sha256": "cda357e619321d8649669c3f404e0ff13e784a9f91792872d2629bc2060cbcf7",
+        "lines": [11, 29],
+        "extraction_sha256": "f7b5e4e28ad089c003bdda2313f97852b023c5f2f9779761a1f186a0e9e2c65f"
+      },
+      "candidate": {
+        "path": "examples/book/negative/phase4-centralized-rejected.md",
+        "file_sha256": "cda357e619321d8649669c3f404e0ff13e784a9f91792872d2629bc2060cbcf7",
+        "lines": [295, 297],
+        "extraction_sha256": "8afdab4a6d24664d3ae5e119892eb7f9f6bb2501326f94f3ad940c3f68280d83"
+      }
+    },
+    {
+      "index": 12,
+      "id": "CASE-P7G3M",
+      "expected_category": "negative",
+      "expected_disposition": "拦截",
+      "source": {
+        "path": "examples/book/negative/phase4-nearby-rejected.md",
+        "file_sha256": "c41f24aa9efefce0814cdc29bb4b7fd2f63f6d29adb6030e4b193dd37a9b13a1",
+        "lines": [11, 29],
+        "extraction_sha256": "f7b5e4e28ad089c003bdda2313f97852b023c5f2f9779761a1f186a0e9e2c65f"
+      },
+      "candidate": {
+        "path": "examples/book/negative/phase4-nearby-rejected.md",
+        "file_sha256": "c41f24aa9efefce0814cdc29bb4b7fd2f63f6d29adb6030e4b193dd37a9b13a1",
+        "lines": [31, 33],
+        "extraction_sha256": "3cb3ef142e492970c36582a08557ddef1613498ff2eb2bd65d87e9e9aae7cee0"
+      }
+    }
+  ]
+}

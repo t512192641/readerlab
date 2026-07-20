@@ -1,0 +1,103 @@
+{
+  "run_id": "T2.2-effective-retest-v2",
+  "status": "frozen",
+  "scope": "run-only",
+  "created_at_utc": "2026-07-20T13:44:07Z",
+  "base": "c9988591b97ed472d2341f0747316d4ea650c9b7",
+  "branch": "codex/readerlab-book-t2-2-effective-retest-v2",
+  "execution_status": "COMPLETE",
+  "exam_result": "FAIL",
+  "case_order": [
+    "CASE-K7M2Q",
+    "CASE-C2F6P",
+    "CASE-J9W4D",
+    "CASE-B9Q5J",
+    "CASE-M5A8S",
+    "CASE-V8H3L",
+    "CASE-Q3L7X",
+    "CASE-H6N2B",
+    "CASE-L3E7W",
+    "CASE-T8C5R",
+    "CASE-D4V9K",
+    "CASE-P7G3M"
+  ],
+  "extraction_hashes": {
+    "CASE-K7M2Q": {
+      "source": "cfdccb6683867e9567a9460180002f9cec9d1a9bbda7b6cf4f8cfa333ee7d719",
+      "candidate": "4cd03ef04484d778fb4733780ac20ab1bf9a266e7e0c3e22d3a52cc413b5a6d8"
+    },
+    "CASE-C2F6P": {
+      "source": "b323d01419b9641145ebe604ddef1428f88359dccdc6cce98136ca00633b54a7",
+      "candidate": "f3319e78ea65497b09b53d6e4f28207dda59019471964967994d3948df9c3591"
+    },
+    "CASE-J9W4D": {
+      "source": "1444bd2a67463028d24010c613526010300a58245d8d191d3e782f3db1f0f382",
+      "candidate": "3e4bff82810f49894ce7e55c0568fcbc0ae201b17a88748ccba2fc577ddac168"
+    },
+    "CASE-B9Q5J": {
+      "source": "eba92155c4c4120ca3bdad9d2d2241dc822e017fe8c55e5621ea5089d08e3a26",
+      "candidate": "84be856b8319ca742d5aa320394eb7637a5ee823080c25352e4536689b2011a8"
+    },
+    "CASE-M5A8S": {
+      "source": "7d946c73f067b064a13446ce86e381af28626542c104fda68d23a08726961545",
+      "candidate": "670c2bc1e58531bb7881bfc8a07235da4b6b9dd84185ce62cf53b376ddee17cf"
+    },
+    "CASE-V8H3L": {
+      "source": "955f626344a0c5bbc501c1d994852c5321d4f10a2f44642878148893ec3daf28",
+      "candidate": "278e2554462069e283631e6d0f2acd38bd42388f8868af40925cb1b92c9bac91"
+    },
+    "CASE-Q3L7X": {
+      "source": "26f95ee9f1c264bf1f3441fe8960eaf298c27d34840a3441bf07fbee7dc9b5d2",
+      "candidate": "085a18423f49088ec54e4d49dab1ced0f4a686dbe0db8fefe034b70d340a965d"
+    },
+    "CASE-H6N2B": {
+      "source": "163ea61be8d1d32012c62cb1ba48ea2b76f5130270b3e5f9b9a9a9264853458b",
+      "candidate": "8aa8d0721b297741a499e44684340e4d11ffdabd8bec80e03e3613d747482539"
+    },
+    "CASE-L3E7W": {
+      "source": "7e9d635734cc6cf2cc69c30628bdd01dedf1bfae9f7a0cb02a14f42c0614e7b0",
+      "candidate": "41a31120daad3dfb8298fd7f96b97cce3dae138dd479647f34a69a01fd0b6f0a"
+    },
+    "CASE-T8C5R": {
+      "source": "eba92155c4c4120ca3bdad9d2d2241dc822e017fe8c55e5621ea5089d08e3a26",
+      "candidate": "30e54d7c4b05c13a7c86804c28e3c7dffffb98a4f239f74fd6c506aff533d4dc"
+    },
+    "CASE-D4V9K": {
+      "source": "f7b5e4e28ad089c003bdda2313f97852b023c5f2f9779761a1f186a0e9e2c65f",
+      "candidate": "8afdab4a6d24664d3ae5e119892eb7f9f6bb2501326f94f3ad940c3f68280d83"
+    },
+    "CASE-P7G3M": {
+      "source": "f7b5e4e28ad089c003bdda2313f97852b023c5f2f9779761a1f186a0e9e2c65f",
+      "candidate": "3cb3ef142e492970c36582a08557ddef1613498ff2eb2bd65d87e9e9aae7cee0"
+    }
+  },
+  "frozen_hashes": {
+    "t1_8": "7d8b60170669637ca7aa004e27df6fb301739d1a7009bc6f59e22dd2a48f5093",
+    "packet": "e09ce22554cfc693b358348ab85eca794023a9b6df9e6f6e5b339c31668869d0",
+    "judge_brief": "9002771d3c98094fea8c65b30ec87fdb4a9e1909ae69433fcff568c8aed7620d",
+    "judge_answers": "66933ee7a2640383420e5fa7f052ab12b450b2c02ec483b826699579cfa6979b"
+  },
+  "judge": {
+    "agent_id": "/root/t2_2_v2_fresh_judge",
+    "fork_turns": "none",
+    "model": "gpt-5.6-terra",
+    "reasoning": "high",
+    "calls": 1,
+    "objects_in_call": 12,
+    "completed_at_utc": "2026-07-20T13:37:35Z",
+    "input_manifest": "runs/T2.2-effective-retest-v2/judge-input-manifest.json"
+  },
+  "key_timing": {
+    "answers_completed_at_utc": "2026-07-20T13:37:35Z",
+    "key_created_at_utc": "2026-07-20T13:39:54Z",
+    "key_created_after_answers": true
+  },
+  "route_boundaries": {
+    "historical_v1_modified": false,
+    "registered_21_cards": false,
+    "created_m2_receipt": false,
+    "entered_t3": false,
+    "root_validator_run": false,
+    "root_validator_reason": "其活动路线仍为已暂停的 21 卡恢复控制面"
+  }
+}

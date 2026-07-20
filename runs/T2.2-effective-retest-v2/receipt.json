@@ -1,0 +1,71 @@
+{
+  "status": "frozen",
+  "scope": "run-only",
+  "generated_at_utc": "2026-07-20T13:45:14Z",
+  "execution_status": "COMPLETE",
+  "exam_result": "FAIL",
+  "branch": "codex/readerlab-book-t2-2-effective-retest-v2",
+  "base": "c9988591b97ed472d2341f0747316d4ea650c9b7",
+  "judge": {
+    "agent_id": "/root/t2_2_v2_fresh_judge",
+    "fork_turns": "none",
+    "model": "gpt-5.6-terra",
+    "reasoning": "high",
+    "calls": 1,
+    "objects_in_call": 12
+  },
+  "hashes": {
+    "t1_8": "7d8b60170669637ca7aa004e27df6fb301739d1a7009bc6f59e22dd2a48f5093",
+    "packet": "e09ce22554cfc693b358348ab85eca794023a9b6df9e6f6e5b339c31668869d0",
+    "judge_brief": "9002771d3c98094fea8c65b30ec87fdb4a9e1909ae69433fcff568c8aed7620d",
+    "judge_answers": "66933ee7a2640383420e5fa7f052ab12b450b2c02ec483b826699579cfa6979b",
+    "judge_input_manifest": "16b5d39b81a8de6f116e6c4407e49fbbb3b7e06f944d781a309dc18565ab93d9",
+    "scoring_key": "c577848f88fda6727f250f06a8b3d61cc28803515aa98596bb651b093b48cbfb",
+    "run_manifest": "dd3f72bee24e90051a1446edfd101763e67106b84256befdc706e2711e285de2",
+    "verify_py": "ce76bca76b49bc0bce26b9d8763af91b060d432440752278d2e54915ad6c51ac"
+  },
+  "key_timing": {
+    "answers_completed_at_utc": "2026-07-20T13:37:35Z",
+    "key_created_at_utc": "2026-07-20T13:39:54Z",
+    "key_created_after_answers": true
+  },
+  "scoring": {
+    "positive": {
+      "hits": 2,
+      "total": 2
+    },
+    "negative": {
+      "hits": 1,
+      "total": 8
+    },
+    "references": [
+      {
+        "id": "CASE-B9Q5J",
+        "disposition": "放行"
+      },
+      {
+        "id": "CASE-L3E7W",
+        "disposition": "拦截"
+      }
+    ]
+  },
+  "verify": {
+    "command": "python3 -B runs/T2.2-effective-retest-v2/verify.py",
+    "result": "PASS"
+  },
+  "boundaries": {
+    "only_run_directory_created": true,
+    "historical_v1_modified": false,
+    "registered_21_cards": false,
+    "created_m2_receipt": false,
+    "entered_t3": false,
+    "network_or_external_write": false,
+    "pushed": false
+  },
+  "states": {
+    "implemented": true,
+    "integrated": true,
+    "verified": true,
+    "accepted": "unknown"
+  }
+}
