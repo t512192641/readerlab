@@ -1,0 +1,101 @@
+{
+  "schema": "readerlab-t2.2-v4-scoring-key/v1",
+  "run_id": "T2.2-sufficiency-calibration-v4",
+  "status": "frozen",
+  "scope": "run-only",
+  "created_at_utc": "2026-07-20T16:12:00Z",
+  "created_after_final_judgment_sha256": "6631998651e400f5571624a98399417189096e71264750a83f9715f8d1459eea",
+  "gate": {
+    "positive_required": "2/2 allow",
+    "hard_negative_required": "5/5 block",
+    "non_pass_borderline_required": "3/3 borderline or block",
+    "reference_policy": "record only",
+    "calibration_pass": "all three hard-gated groups pass and every disposition matches mechanical aggregation"
+  },
+  "cases": [
+    {
+      "index": 1,
+      "id": "CASE-K7M2Q",
+      "category": "positive",
+      "allowed_dispositions": ["allow"],
+      "hard_gate": true
+    },
+    {
+      "index": 2,
+      "id": "CASE-C2F6P",
+      "category": "hard_negative",
+      "allowed_dispositions": ["block"],
+      "hard_gate": true
+    },
+    {
+      "index": 3,
+      "id": "CASE-J9W4D",
+      "category": "hard_negative",
+      "allowed_dispositions": ["block"],
+      "hard_gate": true
+    },
+    {
+      "index": 4,
+      "id": "CASE-B9Q5J",
+      "category": "reference",
+      "allowed_dispositions": ["allow", "block", "borderline"],
+      "hard_gate": false
+    },
+    {
+      "index": 5,
+      "id": "CASE-M5A8S",
+      "category": "non_pass_borderline",
+      "allowed_dispositions": ["borderline", "block"],
+      "hard_gate": true
+    },
+    {
+      "index": 6,
+      "id": "CASE-V8H3L",
+      "category": "positive",
+      "allowed_dispositions": ["allow"],
+      "hard_gate": true
+    },
+    {
+      "index": 7,
+      "id": "CASE-Q3L7X",
+      "category": "hard_negative",
+      "allowed_dispositions": ["block"],
+      "hard_gate": true
+    },
+    {
+      "index": 8,
+      "id": "CASE-H6N2B",
+      "category": "hard_negative",
+      "allowed_dispositions": ["block"],
+      "hard_gate": true
+    },
+    {
+      "index": 9,
+      "id": "CASE-L3E7W",
+      "category": "reference",
+      "allowed_dispositions": ["allow", "block", "borderline"],
+      "hard_gate": false
+    },
+    {
+      "index": 10,
+      "id": "CASE-T8C5R",
+      "category": "hard_negative",
+      "allowed_dispositions": ["block"],
+      "hard_gate": true
+    },
+    {
+      "index": 11,
+      "id": "CASE-D4V9K",
+      "category": "non_pass_borderline",
+      "allowed_dispositions": ["borderline", "block"],
+      "hard_gate": true
+    },
+    {
+      "index": 12,
+      "id": "CASE-P7G3M",
+      "category": "non_pass_borderline",
+      "allowed_dispositions": ["borderline", "block"],
+      "hard_gate": true
+    }
+  ]
+}

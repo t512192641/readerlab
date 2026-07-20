@@ -1,0 +1,52 @@
+{
+  "schema": "readerlab-t2.2-v4-role-input-manifest/v1",
+  "run_id": "T2.2-sufficiency-calibration-v4",
+  "role": "skeptical_reader",
+  "status": "frozen",
+  "created_at_utc": "2026-07-20T15:55:13Z",
+  "invocation": {
+    "model": "gpt-5.6-terra",
+    "reasoning": "high",
+    "fork_turns": "none",
+    "calls": 1,
+    "objects_in_call": 12
+  },
+  "allowed_reads": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "2db26cb8800acfe1220958d5cace4f937a17e0541797c8d89d5105de0090dd6a"
+    },
+    {
+      "path": "contracts/T1.8-independent-acceptance.md",
+      "sha256": "7d8b60170669637ca7aa004e27df6fb301739d1a7009bc6f59e22dd2a48f5093"
+    },
+    {
+      "path": "runs/T2.2-sufficiency-calibration-v4/packet.md",
+      "sha256": "e09ce22554cfc693b358348ab85eca794023a9b6df9e6f6e5b339c31668869d0"
+    },
+    {
+      "path": "runs/T2.2-sufficiency-calibration-v4/product-standard-excerpt.md",
+      "sha256": "0e199ad969a4e2e6ae2916d638a38ade45c891c94f0d1c5c47f90427b1b3fb27"
+    },
+    {
+      "path": "runs/T2.2-sufficiency-calibration-v4/v4-calibration-contract.md",
+      "sha256": "9c3437f6cac789ab5f9305a5c4f7844acc9725a4d2a63fffc62b165c5d50cf3f"
+    },
+    {
+      "path": "runs/T2.2-sufficiency-calibration-v4/skeptical-reader-brief.md",
+      "sha256": "d2bb9a5138ddf90c57b8adb8370fd3e99b23e6ca4b2ffec5de41a881352e300a"
+    }
+  ],
+  "allowed_writes": [
+    "runs/T2.2-sufficiency-calibration-v4/objection-sheet.json"
+  ],
+  "forbidden_context": [
+    "scoring key",
+    "product per-case dispositions",
+    "case categories or category counts",
+    "GOLD-STANDARDS.md",
+    "examples/",
+    "historical judge answers",
+    "executor prompt or conversation"
+  ]
+}

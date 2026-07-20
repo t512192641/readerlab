@@ -1,0 +1,213 @@
+{
+  "schema": "readerlab-t2.2-v4-objection-sheet/v1",
+  "run_id": "T2.2-sufficiency-calibration-v4",
+  "status": "frozen",
+  "completed_at_utc": "2026-07-20T00:00:00Z",
+  "agent": {"id": "/root/t2_2_v4_skeptical_reader", "model": "gpt-5.6-terra", "reasoning": "high", "fork_turns": "none", "calls": 1},
+  "cases": [
+    {
+      "id": "CASE-K7M2Q",
+      "strongest_objection": {"claim": "候选把获批的“真正的自动-驾驶”改写成“部分自动驾驶”和需要乘员接手，承重分析的前提不在原文中。", "weight": "load_bearing", "source_quotes": ["当真正的自动-驾驶获监管批准后", "你可在前往目的地途中睡觉、阅读或做任何事"], "candidate_quotes": ["从‘部分自动驾驶’到‘乘员可以睡觉、阅读’", "而需要人来接手"]},
+      "source_quotes": ["当真正的自动-驾驶获监管批准后", "睡觉、阅读或做任何事"],
+      "candidate_quotes": ["日常操控被系统接走后，乘员可能更少练习驾驶", "最难的时刻就可能交给一个已经脱离驾驶情境的人"],
+      "veto_checks": {
+        "common_sense_small_step": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["系统需要自行处理异常，直到车辆进入安全状态"], "reason": "候选提出的是异常接管责任，而非只换词的下一小步。"},
+        "relabel_or_reorganize": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["不能把异常时临时由乘员救场当作最后依靠"], "reason": "候选没有仅重组原文措辞。"},
+        "external_not_self_contained": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["日常操控被系统接走后，乘员可能更少练习驾驶"], "reason": "没有以未解释的外部案例或术语承担主张。"},
+        "load_bearing_direction_miss": {"status": "present", "weight": "load_bearing", "source_quotes": ["真正的自动-驾驶获监管批准"], "candidate_quotes": ["从‘部分自动驾驶’到", "而需要人来接手"], "reason": "候选找不到原文支持其部分自动驾驶与人工接手前提。"},
+        "unsupported_causal_link": {"status": "present", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["乘员可能更少练习驾驶，也更难一直把握道路", "最难的时刻就可能交给一个已经脱离驾驶情境的人"], "reason": "候选写出连锁推论，但没有在 candidate 中给出这些关系为何会成立的支持。"},
+        "critical_explanation_gap": {"status": "present", "weight": "load_bearing", "source_quotes": ["睡觉、阅读或做任何事"], "candidate_quotes": ["系统需要自行处理异常"], "reason": "候选没有说明为什么原文的获批自动驾驶仍须以其设定的人工接手问题为承重条件。"},
+        "substantive_unknown": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["乘员可以睡觉或阅读"], "reason": "当前 objection 可依据文本具体提出，不需把缺口标为 unknown。"}
+      },
+      "unsupported_links": [{"id": "K7M2Q-L1", "claim": "日常操控被接走会使乘员在复杂边界来临时无法可靠接手。", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["乘员可能更少练习驾驶", "常常正是在系统碰到复杂边界的时候"], "missing_support": "candidate 中找不到支持两段情形必然相连的机制或条件。"}],
+      "judge_must_not_supply": [{"id": "K7M2Q-J1", "claim": "获批的真正自动驾驶仍会要求脱离驾驶情境的乘员接手。", "weight": "load_bearing", "candidate_quotes": [], "missing_from_candidate": "candidate 中找不到此与原文前提相容的说明。"}]
+    },
+    {
+      "id": "CASE-C2F6P",
+      "strongest_objection": {"claim": "候选将原文已经明说的激励、惩罚、薪酬与风险回报重新组织为“组织设计问题”，未显示额外的承重认识。", "weight": "load_bearing", "source_quotes": ["必须审视组织的激励结构", "若对失败惩罚过重，人们便会相应调整行为", "薪酬结构必须体现这一导向"], "candidate_quotes": ["不是一句宽容口号", "把创新放回组织制度里看", "组织到底奖励什么、惩罚什么"]},
+      "source_quotes": ["激励结构", "过度惩罚性措施", "风险-回报必须倾向于采取大胆行动"],
+      "candidate_quotes": ["允许失败首先是组织设计问题", "选择保守就不是个人胆小，而是人在制度下作出的理性反应"],
+      "veto_checks": {
+        "common_sense_small_step": {"status": "present", "weight": "load_bearing", "source_quotes": ["若对失败惩罚过重，人们便会相应调整行为"], "candidate_quotes": ["选择保守就不是个人胆小"], "reason": "候选的核心推论是原文已给出的惩罚改变行为的直接表述。"},
+        "relabel_or_reorganize": {"status": "present", "weight": "load_bearing", "source_quotes": ["激励结构", "薪酬结构"], "candidate_quotes": ["组织设计问题", "组织到底奖励什么、惩罚什么"], "reason": "candidate 主要以“组织设计”换名并整理原文现成要点。"},
+        "external_not_self_contained": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "candidate 未依赖外部案例或未解释术语。"},
+        "load_bearing_direction_miss": {"status": "absent", "weight": "non_load_bearing", "source_quotes": ["激励创新", "失败成本可控"], "candidate_quotes": ["大胆探索和责任边界同时成立"], "reason": "候选仍围绕原文的创新激励与责任边界。"},
+        "unsupported_causal_link": {"status": "absent", "weight": "non_load_bearing", "source_quotes": ["人们便会相应调整行为"], "candidate_quotes": ["人在制度下作出的理性反应"], "reason": "候选的行为—惩罚关系可由原文直接核对。"},
+        "critical_explanation_gap": {"status": "absent", "weight": "non_load_bearing", "source_quotes": ["有能力、勤勉", "无法围绕核心使命自我激励"], "candidate_quotes": ["被保护的是有能力、勤勉、围绕核心使命全力探索时发生的失败"], "reason": "候选明确保留了原文的责任边界。"},
+        "substantive_unknown": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "当前问题是增量不足，不是文本证据无法判断。"}
+      },
+      "unsupported_links": [],
+      "judge_must_not_supply": [{"id": "C2F6P-J1", "claim": "“组织设计问题”在原文之外还有何种具体、非显然的增量。", "weight": "load_bearing", "candidate_quotes": [], "missing_from_candidate": "candidate 中找不到超出原文激励与惩罚关系的具体新机制。"}]
+    },
+    {
+      "id": "CASE-J9W4D",
+      "strongest_objection": {"claim": "候选从“接管情境不同”得到该指标不能等同真实安全性的结论，但这一提醒是正常读者面对单一计数指标可直接想到的小步。", "weight": "load_bearing", "source_quotes": ["核心指标在于延长每次人工干预之间的行驶里程"], "candidate_quotes": ["一次高速接管和一次低速保守接管的风险不同", "不能直接等同于真实安全性"]},
+      "source_quotes": ["核心指标", "每日见证‘每次干预行驶里程’数据的攀升"],
+      "candidate_quotes": ["这个指标直观", "但它不能直接等同于真实安全性"],
+      "veto_checks": {
+        "common_sense_small_step": {"status": "present", "weight": "load_bearing", "source_quotes": ["每次人工干预之间的行驶里程"], "candidate_quotes": ["一次高速接管和一次低速保守接管的风险不同"], "reason": "候选只提示同一计数未含情境差异，未展开新的判断框架。"},
+        "relabel_or_reorganize": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["更像工程管理指标"], "reason": "候选并非仅复述原文的激励功能。"},
+        "external_not_self_contained": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["disengagement：系统开不下去、判断不稳，或安全员出于安全顾虑接管"], "reason": "candidate 在文内给出了该术语的含义。"},
+        "load_bearing_direction_miss": {"status": "absent", "weight": "non_load_bearing", "source_quotes": ["若训练人工智能驾驶，我们应聚焦何种优化目标？"], "candidate_quotes": ["但它不能直接等同于真实安全性"], "reason": "候选仍直接讨论原文所举优化指标。"},
+        "unsupported_causal_link": {"status": "absent", "weight": "non_load_bearing", "source_quotes": ["每日见证…数据的攀升，持续激发着团队动力"], "candidate_quotes": ["团队每天都能看到模型是否少犯需要人救场的错误"], "reason": "候选对日常可见性的说明可由原文的每日数据核对。"},
+        "critical_explanation_gap": {"status": "present", "weight": "load_bearing", "source_quotes": ["核心指标"], "candidate_quotes": ["这个指标直观", "更像工程管理指标"], "reason": "candidate 中找不到解释该单一指标为何足以作为工程管理指标的机制或使用边界。"},
+        "substantive_unknown": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "候选文本足以定位其小步与解释缺口。"}
+      },
+      "unsupported_links": [{"id": "J9W4D-L1", "claim": "每日增加的干预里程能显示模型更少犯需要人救场的错误。", "weight": "load_bearing", "source_quotes": ["每日见证…数据的攀升"], "candidate_quotes": ["模型是否少犯需要人救场的错误"], "missing_support": "candidate 中找不到说明该计数如何区分错误、保守接管或不同情境。"}],
+      "judge_must_not_supply": [{"id": "J9W4D-J1", "claim": "该指标在什么条件下可代表改进，而非只代表接管次数变化。", "weight": "load_bearing", "candidate_quotes": [], "missing_from_candidate": "candidate 中找不到这种条件或测量机制。"}]
+    },
+    {
+      "id": "CASE-B9Q5J",
+      "strongest_objection": {"claim": "候选为自由主义补入一整套过去、现在、未来的具体叙事，并用它推出国家“站在历史前进方向上”的判断；这些承重内容不在原文中。", "weight": "load_bearing", "source_quotes": ["自由主义故事就成为人类了解过去的主要指南、未来无法取代的使用手册"], "candidate_quotes": ["把过去讲成暴虐、封闭和受传统束缚的时代", "加入自由化、全球化进程的国家被看作站在历史前进方向上"]},
+      "source_quotes": ["三大故事", "至少在全球某些精英的眼里是这样"],
+      "candidate_quotes": ["民主、人权、自由市场、机场、桥梁、全球贸易", "方向感、主角、敌人和终点"],
+      "veto_checks": {
+        "common_sense_small_step": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["它给复杂历史提供了方向感、主角、敌人和终点"], "reason": "候选试图提出叙事组成方式，不只是换词。"},
+        "relabel_or_reorganize": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["把不同层面的事…放进同一条进步路线"], "reason": "候选加入了原文没有列出的具体结构。"},
+        "external_not_self_contained": {"status": "present", "weight": "load_bearing", "source_quotes": ["自由主义故事"], "candidate_quotes": ["它把过去讲成暴虐、封闭和受传统束缚的时代", "走向流动、选择和开放"], "reason": "candidate 用未由原文或自身论证的自由主义叙事内容承担解释，读者无法在文本内核对其归属。"},
+        "load_bearing_direction_miss": {"status": "present", "weight": "load_bearing", "source_quotes": ["至少在全球某些精英的眼里是这样"], "candidate_quotes": ["加入自由化、全球化进程的国家被看作站在历史前进方向上"], "reason": "候选把原文对部分精英观点的描述扩展成具体国家判断，candidate 中找不到相应范围说明。"},
+        "unsupported_causal_link": {"status": "present", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["这种故事的力量在于降低理解成本", "故事越简单，行动越容易协调"], "reason": "candidate 中找不到支撑叙事简化会带来协调效果的关系说明。"},
+        "critical_explanation_gap": {"status": "present", "weight": "load_bearing", "source_quotes": ["主要指南、未来无法取代的使用手册"], "candidate_quotes": ["个人、思想、商品和制度逐步获得自由的过程"], "reason": "candidate 中找不到从原文的“使用手册”到这套具体内容的解释链。"},
+        "substantive_unknown": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "候选的缺口可被具体定位。"}
+      },
+      "unsupported_links": [{"id": "B9Q5J-L1", "claim": "自由主义故事会把多种制度和基础设施放进同一条历史进步路线。", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["民主、人权、自由市场、机场、桥梁、全球贸易", "放进同一条进步路线"], "missing_support": "candidate 中找不到该归纳的文本内支持或范围。"}],
+      "judge_must_not_supply": [{"id": "B9Q5J-J1", "claim": "自由主义历史故事的具体过去—现在—未来内容及其适用社会范围。", "weight": "load_bearing", "candidate_quotes": [], "missing_from_candidate": "candidate 断言这些内容，却找不到其由原文推出的支持。"}]
+    },
+    {
+      "id": "CASE-M5A8S",
+      "strongest_objection": {"claim": "候选以“臭鼬工厂”和 P-80 的外部组织案例承担“小而强团队”机制，但未在文本内说明该案例为何能证明原文的特种部队比喻。", "weight": "load_bearing", "source_quotes": ["‘特种部队’式管理哲学", "最低达标标准是卓越"], "candidate_quotes": ["洛克希德‘臭鼬工厂’做 P-80 早期喷气机时的组织方式", "小而强的团队更容易快速看见真实问题"]},
+      "source_quotes": ["顶尖人才不愿加盟，平庸之辈又毫无价值", "最聪明、最有干劲的人才流向何处"],
+      "candidate_quotes": ["少数精选工程师", "减少层级，缩短决策链"],
+      "veto_checks": {
+        "common_sense_small_step": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["平庸人员会放大沟通和返工"], "reason": "candidate 至少提出了组织运作关系，不只是直接同义改写。"},
+        "relabel_or_reorganize": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["减少层级，缩短决策链"], "reason": "candidate 新增了组织设计表述。"},
+        "external_not_self_contained": {"status": "present", "weight": "load_bearing", "source_quotes": ["‘特种部队’式管理哲学"], "candidate_quotes": ["洛克希德‘臭鼬工厂’做 P-80 早期喷气机时"], "reason": "候选把外部历史案例作为对照，却没有在 candidate 中提供其与原文判断可核对的证据。"},
+        "load_bearing_direction_miss": {"status": "absent", "weight": "non_load_bearing", "source_quotes": ["最聪明、最有干劲的人才", "卓越"], "candidate_quotes": ["少数精选工程师"], "reason": "候选仍围绕原文的人才与团队主题。"},
+        "unsupported_causal_link": {"status": "present", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["平庸人员会放大沟通和返工", "小而强的团队更容易快速看见真实问题"], "reason": "candidate 中找不到说明这些组织因果关系的机制、条件或证据。"},
+        "critical_explanation_gap": {"status": "present", "weight": "load_bearing", "source_quotes": ["企业获得成功必须培育的文化内核"], "candidate_quotes": ["马斯克强调的不是招聘崇拜"], "reason": "候选没有解释为何原文的卓越人才文化应被读成其所述的层级与决策链设计。"},
+        "substantive_unknown": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "当前反对理由是可定位的外部依赖与解释缺环。"}
+      },
+      "unsupported_links": [{"id": "M5A8S-L1", "claim": "平庸人员会放大沟通和返工，因而少而强团队更快看见真实问题。", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["平庸人员会放大沟通和返工", "小而强的团队更容易快速看见真实问题"], "missing_support": "candidate 中找不到这两个因果判断的文本内支撑。"}],
+      "judge_must_not_supply": [{"id": "M5A8S-J1", "claim": "臭鼬工厂案例的事实、以及它与原文特种部队哲学相同的机制。", "weight": "load_bearing", "candidate_quotes": [], "missing_from_candidate": "candidate 中找不到可让裁判补足该外部对照有效性的说明。"}]
+    },
+    {
+      "id": "CASE-V8H3L",
+      "strongest_objection": {"claim": "候选将共享车队的承重价值落在“人数足够多后需求会稳定”的需求池化关系上，但没有在文本内说明这一稳定性为何成立或在何种条件下成立。", "weight": "load_bearing", "source_quotes": ["自动驾驶汽车将形成共享自动驾驶车队", "车辆利用率大幅提升"], "candidate_quotes": ["人数足够多以后，整体上每天需要多少小车、多少大车，反而会逐渐稳定", "需求池化"]},
+      "source_quotes": ["普通乘用车每周使用时长约十至十二小时", "自动驾驶汽车每周可使用五十至六十小时"],
+      "candidate_quotes": ["每个人都要为自己偶尔出现的最大需求长期准备", "重复备用能力"],
+      "veto_checks": {
+        "common_sense_small_step": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["把许多不同时间出现的需求汇集起来，共享同一批备用能力"], "reason": "candidate 提出了原文未写出的容量汇集机制。"},
+        "relabel_or_reorganize": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["少量大车负责家庭出行，大量小车负责单人通勤"], "reason": "candidate 未仅重组利用率数字。"},
+        "external_not_self_contained": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["这在运筹学里叫‘需求池化’：把许多不同时间出现的需求汇集起来"], "reason": "candidate 在文内定义了术语和所指机制。"},
+        "load_bearing_direction_miss": {"status": "absent", "weight": "non_load_bearing", "source_quotes": ["共享自动驾驶车队", "车辆利用率大幅提升"], "candidate_quotes": ["共享车队可以把这些偶发需求合在一起"], "reason": "候选直接回应共享与利用率的关系。"},
+        "unsupported_causal_link": {"status": "present", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["人数足够多以后…会逐渐稳定", "软件更深层的价值，是把每个人不可预测的出行，变成整个车队相对可预测的需求结构"], "reason": "candidate 中找不到需求汇集如何产生稳定预测的解释或边界。"},
+        "critical_explanation_gap": {"status": "present", "weight": "load_bearing", "source_quotes": ["车辆利用率大幅提升"], "candidate_quotes": ["整体上每天需要多少小车、多少大车，反而会逐渐稳定"], "reason": "候选的容量减少结论依赖稳定性，却没有在 candidate 中讲清该承重关系。"},
+        "substantive_unknown": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "文本中有明确可核对的关系主张。"}
+      },
+      "unsupported_links": [{"id": "V8H3L-L1", "claim": "多个家庭需求汇集后，车队所需车型数量会稳定并减少重复备用能力。", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["人数足够多以后…会逐渐稳定", "减少了过去分散在每辆私家车里的重复备用能力"], "missing_support": "candidate 中找不到从需求汇集到稳定车型组合和容量减少的完整链条。"}],
+      "judge_must_not_supply": [{"id": "V8H3L-J1", "claim": "需求池化在何种需求结构、时间分布或车型替代条件下成立。", "weight": "load_bearing", "candidate_quotes": [], "missing_from_candidate": "candidate 中找不到这些承重条件。"}]
+    },
+    {
+      "id": "CASE-Q3L7X",
+      "strongest_objection": {"claim": "候选声称“原文强调‘迅速且完整’”，但给定原文没有这句话；其外部燃料箱与翻新细节也承担了核心解释。", "weight": "load_bearing", "source_quotes": ["航天飞机曾尝试实现部分可重用性", "最终单次飞行成本反而超过"], "candidate_quotes": ["外部燃料箱是一次性消耗", "原文强调‘迅速且完整’"]},
+      "source_quotes": ["不能仅凭一个例子就构建出完整的理论体系"],
+      "candidate_quotes": ["可回收离快速复用还很远", "高成本翻新"],
+      "veto_checks": {
+        "common_sense_small_step": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["可回收离快速复用还很远"], "reason": "候选试图用成本机制解释部分复用的局限。"},
+        "relabel_or_reorganize": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["成本被这些流程吃掉后"], "reason": "candidate 新增了流程成本说明。"},
+        "external_not_self_contained": {"status": "present", "weight": "load_bearing", "source_quotes": ["航天飞机曾尝试实现部分可重用性"], "candidate_quotes": ["外部燃料箱是一次性消耗", "返回后的可用部件还要经历高成本翻新"], "reason": "候选以原文未给出的航天飞机细节承担成本结论，candidate 中找不到其来源或可核对支持。"},
+        "load_bearing_direction_miss": {"status": "present", "weight": "load_bearing", "source_quotes": ["不能仅凭一个例子就构建出完整的理论体系"], "candidate_quotes": ["原文强调‘迅速且完整’"], "reason": "candidate 将原文描述为强调一段不存在于给定 source 的话。"},
+        "unsupported_causal_link": {"status": "present", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["成本被这些流程吃掉后，部分复用就很难体现优势"], "reason": "candidate 中找不到外部消耗与翻新如何足以解释成本结果的支持。"},
+        "critical_explanation_gap": {"status": "present", "weight": "load_bearing", "source_quotes": ["单次飞行成本反而超过"], "candidate_quotes": ["可回收离‘快速复用’还很远"], "reason": "候选没有在文本内建立从给定航天飞机反例到“快速复用”判断的完整关系。"},
+        "substantive_unknown": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "候选的错引和缺少的支持可以具体识别。"}
+      },
+      "unsupported_links": [{"id": "Q3L7X-L1", "claim": "外部燃料箱与翻新流程导致部分复用无法体现成本优势。", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["外部燃料箱是一次性消耗", "成本被这些流程吃掉后"], "missing_support": "candidate 中找不到这些外部细节和成本结论之间的文本内支撑。"}],
+      "judge_must_not_supply": [{"id": "Q3L7X-J1", "claim": "“迅速且完整”是原文的表述，以及航天飞机翻新细节的来源与适用性。", "weight": "load_bearing", "candidate_quotes": [], "missing_from_candidate": "candidate 中找不到可让裁判补写这两个承重事实的材料。"}]
+    },
+    {
+      "id": "CASE-H6N2B",
+      "strongest_objection": {"claim": "候选把“运营隧道建成”解释为“能够进入真实环境运行”，并据此搭建逐级验证链，但给定原文未说明运营表现或该结论的证据。", "weight": "load_bearing", "source_quotes": ["拉斯维加斯首条运营隧道建成", "质疑声仍未平息"], "candidate_quotes": ["它能够进入真实环境运行", "一次逐级验证"]},
+      "source_quotes": ["隧道能让人轻松穿梭各地，从而极大改善生活质量"],
+      "candidate_quotes": ["能够运营，也不等于已经缓解城市拥堵、具备规模经济，或获得社会认可"],
+      "veto_checks": {
+        "common_sense_small_step": {"status": "present", "weight": "non_load_bearing", "source_quotes": ["试验隧道", "运营隧道建成"], "candidate_quotes": ["试验、运营与公共价值是三件事"], "reason": "候选把明显不同的试验、运营和价值阶段作了常识性区分，未给出更具体的判别方法。"},
+        "relabel_or_reorganize": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["先确认痛点是否真实，再确认东西能否造出来、能否运行"], "reason": "candidate 提出了一套原文未明示的验证顺序。"},
+        "external_not_self_contained": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "candidate 未依赖外部案例或术语。"},
+        "load_bearing_direction_miss": {"status": "absent", "weight": "non_load_bearing", "source_quotes": ["运营之后质疑仍未平息"], "candidate_quotes": ["从技术展示走到公共价值兑现，中间还有很长的证据链"], "reason": "候选仍回应原文的运营主张与持续质疑。"},
+        "unsupported_causal_link": {"status": "present", "weight": "load_bearing", "source_quotes": ["运营隧道建成"], "candidate_quotes": ["它能够进入真实环境运行"], "reason": "candidate 中找不到从“建成”到已在真实环境运行的支持。"},
+        "critical_explanation_gap": {"status": "present", "weight": "load_bearing", "source_quotes": ["拉斯维加斯首条运营隧道建成"], "candidate_quotes": ["每一步只能证明它实际回答的问题"], "reason": "候选没有界定各步骤可证明什么，尤其未说明其为何可把“建成”读成运行证据。"},
+        "substantive_unknown": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "候选自己的运营断言可被具体质疑。"}
+      },
+      "unsupported_links": [{"id": "H6N2B-L1", "claim": "运营隧道建成证明其能够进入真实环境运行。", "weight": "load_bearing", "source_quotes": ["首条运营隧道建成"], "candidate_quotes": ["它能够进入真实环境运行"], "missing_support": "candidate 中找不到运营表现或从建成到运行的说明。"}],
+      "judge_must_not_supply": [{"id": "H6N2B-J1", "claim": "拉斯维加斯隧道的实际运行状态，以及各验证阶段的具体判据。", "weight": "load_bearing", "candidate_quotes": [], "missing_from_candidate": "candidate 中找不到这些事实或判据。"}]
+    },
+    {
+      "id": "CASE-L3E7W",
+      "strongest_objection": {"claim": "候选以美国海军核动力体系的外部例子替代对原文招聘判断的解释，并把“品性”改写为压力与规则下的可靠运行，未说明两者为何相同。", "weight": "load_bearing", "source_quotes": ["人品是否正直至关重要", "观察其朋友及交往对象的品性"], "candidate_quotes": ["美国海军核动力体系提供了一个高风险工程里的对照", "在压力和规则面前维护可靠运行"]},
+      "source_quotes": ["招聘时需寻觅心态端正者，技能可以后天培养"],
+      "candidate_quotes": ["心态端正…可以落到可观察的纪律上", "Rickover 会亲自面试候选人"],
+      "veto_checks": {
+        "common_sense_small_step": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["可观察的纪律"], "reason": "candidate 提出了不同于原文交往对象法的观察角度。"},
+        "relabel_or_reorganize": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["工程化程序、密切监督、团队备份、审查和反馈机制"], "reason": "候选加入了原文未列出的运行机制。"},
+        "external_not_self_contained": {"status": "present", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["美国海军核动力体系", "Rickover 会亲自面试候选人"], "reason": "候选使用外部体系与人物事实承担对照，但没有在 candidate 中给出可核对的支持。"},
+        "load_bearing_direction_miss": {"status": "present", "weight": "load_bearing", "source_quotes": ["观察其朋友及交往对象的品性", "通过交往对象可判断其人品"], "candidate_quotes": ["高压、非常规提问观察他们在压力下是否镇定"], "reason": "候选改用压力面试与运行监督，candidate 中找不到其回应原文交往对象判断法的说明。"},
+        "unsupported_causal_link": {"status": "present", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["作者从智力转向品性，是因为聪明本身不够，关键是这个人能不能在压力和规则面前维护可靠运行"], "reason": "candidate 中找不到从作者的品性判断到可靠运行的因果支持。"},
+        "critical_explanation_gap": {"status": "present", "weight": "load_bearing", "source_quotes": ["人品是否正直至关重要"], "candidate_quotes": ["心态端正…可观察的纪律"], "reason": "candidate 没有定义或论证品性、纪律与可靠运行之间的承重关系。"},
+        "substantive_unknown": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "存在可指明的外部依赖和概念跳跃。"}
+      },
+      "unsupported_links": [{"id": "L3E7W-L1", "claim": "候选人在压力下守规则的表现足以解释原文为什么应在招聘中重视品性。", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["在压力和规则面前维护可靠运行"], "missing_support": "candidate 中找不到品性、压力表现与原文招聘结论的完整关系。"}],
+      "judge_must_not_supply": [{"id": "L3E7W-J1", "claim": "海军核动力体系的事实有效性，以及它与原文交往对象判断法之间的桥梁。", "weight": "load_bearing", "candidate_quotes": [], "missing_from_candidate": "candidate 中找不到可让裁判补写该外部类比适用性的说明。"}]
+    },
+    {
+      "id": "CASE-T8C5R",
+      "strongest_objection": {"claim": "候选把原文“故事越简单越好”的观察延伸为简单故事会协调行动、也会排除不合身事实；这些承重关系没有在 candidate 中展开支持。", "weight": "load_bearing", "source_quotes": ["故事越简单越好", "号称能够解释人类过去、预测全球未来"], "candidate_quotes": ["故事越简单，行动越容易协调，但遗漏也可能越多"]},
+      "source_quotes": ["每个人、每个团体、每个国家，都有自己的故事和神话"],
+      "candidate_quotes": ["一种压缩现实的工具", "把哪些不合身的事实压到故事外面"],
+      "veto_checks": {
+        "common_sense_small_step": {"status": "present", "weight": "load_bearing", "source_quotes": ["故事越简单越好"], "candidate_quotes": ["故事越简单，行动越容易协调，但遗漏也可能越多"], "reason": "候选仅给出故事简化的直觉性利弊，未提供更具体的判断工具或展开。"},
+        "relabel_or_reorganize": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["一种压缩现实的工具"], "reason": "candidate 增加了原文未用的压缩模型表述。"},
+        "external_not_self_contained": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "candidate 未依赖外部案例或事实。"},
+        "load_bearing_direction_miss": {"status": "absent", "weight": "non_load_bearing", "source_quotes": ["故事和神话", "解释人类过去、预测全球未来"], "candidate_quotes": ["让人知道该记住什么、期待什么、支持什么"], "reason": "候选仍处理故事如何组织理解这一原文主题。"},
+        "unsupported_causal_link": {"status": "present", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["故事越简单，行动越容易协调", "遗漏也可能越多"], "reason": "candidate 中找不到为何简化会产生协调或遗漏的解释链。"},
+        "critical_explanation_gap": {"status": "present", "weight": "load_bearing", "source_quotes": ["故事越简单越好"], "candidate_quotes": ["它帮我们看见了哪些关系，又把哪些不合身的事实压到故事外面？"], "reason": "候选提出问题，但没有说明怎样据此辨别关系或遗漏，承重判断未展开。"},
+        "substantive_unknown": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "候选的概念跳跃可以具体核对。"}
+      },
+      "unsupported_links": [{"id": "T8C5R-L1", "claim": "更简单的宏大故事会让行动更容易协调，同时压出更多不合身事实。", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["故事越简单，行动越容易协调，但遗漏也可能越多"], "missing_support": "candidate 中找不到两端因果关系的机制或条件。"}],
+      "judge_must_not_supply": [{"id": "T8C5R-J1", "claim": "读者可以如何用候选的两个问题实际辨别故事的关系与遗漏。", "weight": "load_bearing", "candidate_quotes": [], "missing_from_candidate": "candidate 中找不到可操作的辨别方法或判断条件。"}]
+    },
+    {
+      "id": "CASE-D4V9K",
+      "strongest_objection": {"claim": "候选堆入经合组织、阿马蒂亚·森和联合国环境规划署的外部主张，却没有逐一讲清这些权威与原文“劳动力是核心制约”的论证关系。", "weight": "load_bearing", "source_quotes": ["经济的核心制约因素就是劳动力", "商品与服务将永不枯竭"], "candidate_quotes": ["经合组织做增长核算时", "诺奖经济学家阿马蒂亚·森研究饥荒时", "联合国环境规划署则提醒"]},
+      "source_quotes": ["全民富足", "一个没有贫困的未来"],
+      "candidate_quotes": ["产得出来‘买得到’和‘活得好’是三件不同的事"],
+      "veto_checks": {
+        "common_sense_small_step": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["机器人能解除一处瓶颈，却会让下一处瓶颈更快显形"], "reason": "候选尝试提出多重瓶颈的反向框架。"},
+        "relabel_or_reorganize": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["产得出来‘买得到’和‘活得好’是三件不同的事"], "reason": "candidate 加入了原文没有明说的区分。"},
+        "external_not_self_contained": {"status": "present", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["管理、组织、知识和网络效应带来的效率变化", "收入、价格和制度资格", "材料、能源和生态承载力约束"], "reason": "这些外部概念与机构结论承担反驳，却没有在 candidate 中逐项说明其机制、与机器人推论的关系及适用边界。"},
+        "load_bearing_direction_miss": {"status": "absent", "weight": "non_load_bearing", "source_quotes": ["没有贫困的未来"], "candidate_quotes": ["‘产得出来’‘买得到’和‘活得好’是三件不同的事"], "reason": "候选直接回应原文从生产到全民富足的承重主张。"},
+        "unsupported_causal_link": {"status": "present", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["机器人能解除一处瓶颈，却会让下一处瓶颈更快显形"], "reason": "candidate 中找不到为什么劳动力扩充会令其他瓶颈更快显形的关系说明。"},
+        "critical_explanation_gap": {"status": "present", "weight": "load_bearing", "source_quotes": ["劳动力不再是经济的制约因素", "没有贫困的未来"], "candidate_quotes": ["资本以及管理、组织、知识和网络效应", "收入、价格和制度资格"], "reason": "候选列举多个外部方向，但没有形成可跟随的、从这些方向到原文结论限制的完整解释链。"},
+        "substantive_unknown": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "文本内可明确定位外部依赖与缺少的链条。"}
+      },
+      "unsupported_links": [{"id": "D4V9K-L1", "claim": "机器人放大劳动力后，其他生产或分配瓶颈会更快显形并限制全民富足。", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["机器人能解除一处瓶颈，却会让下一处瓶颈更快显形"], "missing_support": "candidate 中找不到从其列举的事实到该总体结论的完整关系。"}],
+      "judge_must_not_supply": [{"id": "D4V9K-J1", "claim": "所列机构和研究的具体事实、机制及其如何限制机器人带来的富足。", "weight": "load_bearing", "candidate_quotes": [], "missing_from_candidate": "candidate 中找不到可让裁判代为补足的外部论证。"}]
+    },
+    {
+      "id": "CASE-P7G3M",
+      "strongest_objection": {"claim": "候选用一个关于食物的历史案例推出机器人不能保证所有商品与服务的普遍可得和“没有贫困”，但没有说明该案例如何承载这一更宽的未来结论。", "weight": "load_bearing", "source_quotes": ["商品与服务将向所有需求者开放", "一个没有贫困的未来"], "candidate_quotes": ["1974 年孟加拉洪水推高价格，又减少农业工作", "机器人可以回答‘能生产多少’，却不能单独保证收入、价格和制度资格"]},
+      "source_quotes": ["真正的经济是实物——商品与服务", "商品与服务将不再受限"],
+      "candidate_quotes": ["总供给存在，并不等于每个人都有购买和获得的通路", "多了一整道分配问题"],
+      "veto_checks": {
+        "common_sense_small_step": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["个人能不能取得食物", "收入、价格和制度资格"], "reason": "candidate 给出了具体历史链条，而非只作无内容提醒。"},
+        "relabel_or_reorganize": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["洪水推高价格，又减少农业工作，农业工人的实际收入因此骤降"], "reason": "candidate 增加了原文未有的分配案例与机制。"},
+        "external_not_self_contained": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": ["总供给存在，并不等于每个人都有购买和获得的通路"], "reason": "candidate 在文内描述了案例及价格、工作、收入的关系。"},
+        "load_bearing_direction_miss": {"status": "absent", "weight": "non_load_bearing", "source_quotes": ["没有贫困的未来", "全民基本收入"], "candidate_quotes": ["‘没有贫困’比‘没有劳动力短缺’多了一整道分配问题"], "reason": "候选直接处理原文从生产能力到贫困消失的主张。"},
+        "unsupported_causal_link": {"status": "present", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["机器人…不能单独保证收入、价格和制度资格会把商品送到每个需要者手里"], "reason": "candidate 中找不到从机器人生产能力到这些分配条件不会被保证的机制或边界。"},
+        "critical_explanation_gap": {"status": "present", "weight": "load_bearing", "source_quotes": ["商品与服务", "没有贫困的未来"], "candidate_quotes": ["社会有没有食物", "机器人可以回答‘能生产多少’"], "reason": "候选没有说明一个食物案例为何足以支撑对所有商品与服务及未来贫困的限制。"},
+        "substantive_unknown": {"status": "absent", "weight": "non_load_bearing", "source_quotes": [], "candidate_quotes": [], "reason": "候选的案例范围与总体结论之间存在可定位的缺环。"}
+      },
+      "unsupported_links": [{"id": "P7G3M-L1", "claim": "历史上的食物取得问题足以表明机器人生产扩张不能保证未来所有商品与服务的普遍可得。", "weight": "load_bearing", "source_quotes": [], "candidate_quotes": ["问题不只在社会有没有食物", "机器人可以回答‘能生产多少’"], "missing_support": "candidate 中找不到从该食物案例到广泛商品服务和未来情境的桥接条件。"}],
+      "judge_must_not_supply": [{"id": "P7G3M-J1", "claim": "食物取得案例可以外推至所有商品、服务与机器人未来的范围条件。", "weight": "load_bearing", "candidate_quotes": [], "missing_from_candidate": "candidate 中找不到这一外推的文本内论证。"}]
+    }
+  ]
+}
