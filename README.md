@@ -16,14 +16,14 @@
 
 ## 当前项目状态（唯一交接入口）
 
-截至 2026-07-19，本 `README.md` 是仓库唯一的项目状态与跨会话交接入口。项目仍暂停执行；v3 恢复架构的 C0 二次修复已提交，但总控发现 R05 读取隔离仍与冻结架构冲突，恢复任务尚未注册或执行。
+截至 2026-07-19，本 `README.md` 是仓库唯一的项目状态与跨会话交接入口。项目仍暂停执行；v3 恢复架构的 C0 读取隔离修复已完成实现、接线与确定性回归，等待总控基于真实提交重新复核，恢复任务尚未注册或执行。
 
 ### 1. 当前阶段与 gate
 
 - 当前阶段：阶段 2「裁判先行校准」。
 - 当前 gate：T2.2 裁判资格考试已执行但 `FAIL`，处于 M2 之前的硬阻塞。
 - C0 输入 HEAD：`fc7b6c01daaee8a7814e26e8d3b8ff8c1fb198d7`；T2.2 失败证据 commit 仍为 `909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
-- 当前控制状态：`A1_ARCHITECTURE_RELEASED`。C0 二次修复已 `implemented / integrated` 且自身回归通过，但未通过总控 v3 Spec 复核，不能认定完整 `verified` 或 `A2_CONTROL_PLANE_INTEGRATED`；恢复卡数量：`0`。
+- 当前控制状态：`A1_ARCHITECTURE_RELEASED`。C0 读取隔离修复已 `implemented / integrated / verified`，但尚未经过总控基于真实提交的复核，不能认定 `A2_CONTROL_PLANE_INTEGRATED`；恢复卡数量：`0`。
 - T2.2 资格仍为 `FAIL`；M2 receipt 仍不存在；阶段 3 真实材料运行、生产 runtime 和产品验收均未开始。
 
 ### 2. 已经通过的内容
@@ -34,13 +34,13 @@
 - T2.3 失败案例诊断与种子透镜 v2 已 `implemented` 并通过确定性验证；v2 仍为 `draft`，尚未取得资格。
 - T2.2 的冻结盲包、评分键、judge brief、answers、哈希链、评分和失败留痕已按任务卡落库；本轮重新核对 14 项顺序、状态头、关键哈希、payload／源片段逐字节一致性和 `FAIL` 汇总均为 `PASS`。这只证明仓库内考试证据自洽，不代表裁判通过，也不补足仓库中缺失的 raw runtime 日志。
 - v3 architecture/review/quality audit 的固定身份分别通过 `PASS`／`CONFIRMED_PASS`，A1 `A1_ARCHITECTURE_RELEASED` 已成立。
-- C0 二次修复已经把 M2 receipt 恢复为 v3 §13.2 的 26 字段精确 schema，并实现 R01 product-request blocker 的逐 request-id 合法关闭；两部分由总控复核通过。21 卡读写白名单的章节、集合和 glob 约束也已实现，但 R05 的实际允许集合仍超出 v3 copy-only 边界，因此该部分尚未通过。
+- C0 读取隔离修复保留已通过的 M2 receipt 26 字段精确 schema、R01 product-request blocker 合法关闭、`BLOCKED` selector 拒绝与完整 M2 hash 链；进一步把 21 卡 read whitelist 从控制面 hash 依赖中解耦，按单一发布责任机械锁定逐卡业务闭集。R05 业务输入由旧 55 路径收窄为 28 blobs、byte manifest、admission 与 R04 byte review 共 31 路径；加四份治理文件与自身任务卡后，完整 read-path 由旧 60 路径收窄为 36。census/gap、selector/resolution、authorization、adapter、历史证据、架构正文和 prior blocker 均已移除。R09/R14/R19 每个 fresh judge 也被单独锁定为五文件白名单。
 
 ### 3. 尚未通过的内容
 
 - T2.2 裁判资格未通过，裁判不得上岗。
 - M2 未通过且没有 receipt。
-- C0 二次修复未通过总控 v3 Spec 复核，A2 尚未成立；不得启动独立后置审查或注册 21 张恢复卡。
+- C0 读取隔离修复尚未经过总控基于真实提交的复核，A2 尚未成立；不得启动独立后置审查或注册 21 张恢复卡。
 - 21 张恢复卡尚未注册，R01—R21 均未执行；v2 active attempt/baseline/postflight 均不存在。
 - T2.1、未来 v2 active baseline/postflight、T2.3 v2 与 T1.8 尚未组成 M2 冻结集。
 - 图书线生产 runtime 未 `integrated`，未知材料能力和整体 semantic／product 质量未验证。
@@ -120,7 +120,8 @@
   3. P1：M2 当前拒绝任何 recovery blocker；v3 §6.5、§11.2、§13.3 明确允许 R01 product-request blocker 在 R03 resolution 逐 request-id 关闭后永久留档。当前合法需产品答复路径会因此永久无法进入 M2，自测没有覆盖该必经历史 blocker。
 - 二次修复 commit `cf8262587ce22453114954e7bd8546cdd1cb7a6d` 只修改 C0 六文件；`python3 -B validate.py --self-test-recovery`、`python3 -B validate.py`、编译检查和 diff check 均通过。总控独立确认 receipt 文档/实现均为 26 字段且集合相等，R05 material glob 注入被拒绝，R01 blocker 合法关闭与反例回归存在。
 - Standards 轴为 `PASS`，仅保留静态图大量路径字符串和长分支造成的非阻断 P2 维护风险。v3 Spec 轴仍为 `FAIL`，最高 P0：v3 §8.8 明确规定 R05 copy-only 只能读取 R03 的 28 blobs、byte manifest/admission 并核验 R04 review；当前 `_expected_card_read_paths("T2.2-R05")` 却从完整 attempt dependency 生成 60 个允许路径，额外包含 census/gap/selector/resolution、authorization、adapter/review、v1/v2/v3 历史证据和先前 blocker。路线图又把该扩权写成现行合同，自测只证明 raw slot/glob 等注入失败，没有证明 R05 的冻结最小允许集合。
-- receipt schema 与 R01 blocker 生命周期已关闭，但 R05 read isolation 未关闭，因而不足以成立 A2。当前仍为 A1，T2.2 资格仍为 `FAIL`，M2 receipt 不存在，21 张恢复卡为 0。
+- 本次读取隔离修复不再从 `_recovery_chain_dependencies` 反推执行角色权限，而是建立 21 卡显式业务读取投影。R05 的 §8.8 业务闭集精确相等、31 项合法输入逐项缺失反例、census/gap/selector/resolution/authorization/adapter/历史 key/answers/baseline/prior blocker 逐项越权反例、14 slots 静态登记与运行时 `forbidden`、21 卡逐卡越权注入，以及 R09/R14/R19 每个 fresh judge 五文件闭集均通过确定性回归。
+- 这只建立 C0 读取隔离修复的技术 `verified`，不替代总控复核或 A2 判定。当前仍为 A1，T2.2 资格仍为 `FAIL`，M2 receipt 不存在，21 张恢复卡为 0。
 - C0 不授权恢复卡、材料、模型调用、M2 receipt 或恢复执行；它也不创建任何恢复产物或阶段 3 入口。
 
 ### 7. 必须保留的证据
@@ -197,9 +198,9 @@
 ### 10. 当前唯一下一步编排
 
 - 原路线现在不可继续：T2.2 资格为 `FAIL`，且 `diagnostics/M2-gate-receipt.md` 不存在；不得进入 M2 或阶段 3。
-- C0 二次修复未通过总控完整规格复核；当前状态保持 `A1_ARCHITECTURE_RELEASED`，恢复卡数量：`0`，M2 receipt 仍不存在。
-- 下一角色只能是 T2.2 C0 读取隔离修复执行者：把全部 21 卡的实际 read whitelist 重新按 v3 最小职责复核并收窄，首先关闭 R05 §8.8 copy-only P0，同时补充“冻结允许集合相等”和相邻角色越权反例。
-- 读取隔离修复完成后必须回到总控重新读取真实提交；在总控明确放行前，不得启动独立后置审查，不得注册 `taskcards/T2.2-R01.md` 至 `taskcards/T2.2-R21.md`，不得派发 R01，不得请求或读取产品材料，不得创建 authorization/selector/blobs，不得调用模型，不得创建 M2 receipt，不得执行恢复 DAG，不得进入阶段 3。
+- C0 读取隔离修复已完成，但当前状态保持 `A1_ARCHITECTURE_RELEASED`，恢复卡数量：`0`，M2 receipt 仍不存在。
+- 下一角色只能是 ReaderLab M2 总控：重新读取本次真实提交与确定性回归证据，复核 21 卡 read whitelist 和 R05 §8.8 copy-only 闭集，再决定是否启动独立 C0 后置审查。
+- 在总控明确放行前，不得启动独立后置审查，不得注册 `taskcards/T2.2-R01.md` 至 `taskcards/T2.2-R21.md`，不得派发 R01，不得请求或读取产品材料，不得创建 authorization/selector/blobs，不得调用模型，不得创建 M2 receipt，不得执行恢复 DAG，不得进入阶段 3。
 
 ### 11. 下一会话读取顺序
 

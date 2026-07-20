@@ -20,11 +20,11 @@
     },
     {
       "path": "README.md",
-      "sha256": "94b881ac1b89cee90e7c59bd1c48a514ce503d177800cfb31eb2f1b347344586"
+      "sha256": "94902521b3ab70ae3d731d5dbe591b0f8c29cd50281ffe24f1596a8822ec7b64"
     },
     {
       "path": "blueprints/EXECUTION-ROADMAP.md",
-      "sha256": "985d3f69bb957be717da00222369dba9ff05ff2b4d6e2c8a531d30dfb7189371"
+      "sha256": "9ef3d32ba9b78f5275a8c82afe7cd55593e477c18641f417cfc72b05d9664c7c"
     },
     {
       "path": "blueprints/PIPELINE-MAP.md",

@@ -768,12 +768,11 @@ RECOVERY_FIXED_START_PATHS = (
     "diagnostics/T2.2-judge-baseline.md",
     "taskcards/T2.2-BLOCKER.md",
 )
-RECOVERY_CARD_COMMON_READ_PATHS = (
+RECOVERY_CARD_GOVERNANCE_READ_PATHS = (
     "AGENTS.md",
     "PRODUCT-DECISIONS.md",
     "ENGINEERING-LESSONS.md",
     "blueprints/EXECUTION-ROADMAP.md",
-    *RECOVERY_FIXED_START_PATHS,
 )
 RECOVERY_ACTIVE_CONTROL_PATHS = (
     "diagnostics/T2.2-recovery-architecture-v1.md",
@@ -800,6 +799,41 @@ RECOVERY_CONTRAST_KEY_PATH = "diagnostics/T2.2-contrast-key-v1.md"
 RECOVERY_PACKAGE_REVIEW_PATH = (
     "diagnostics/T2.2-package-preflight-review-v2.md"
 )
+RECOVERY_CONTROL_ANSWER_PATHS = tuple(
+    f"diagnostics/T2.2-contrast-answer-v1-{index:02d}.md"
+    for index in range(1, 5)
+)
+RECOVERY_DIAGNOSTIC_ANSWER_PATHS = tuple(
+    f"diagnostics/T2.2-contrast-answer-v1-{index:02d}.md"
+    for index in range(5, 15)
+)
+RECOVERY_FORMAL_ANSWER_PATHS = tuple(
+    f"diagnostics/T2.2-judge-answer-v2-{index:02d}.md"
+    for index in range(1, 15)
+)
+RECOVERY_CARD_BUSINESS_READ_COUNTS = {
+    "T2.2-R01": 17,
+    "T2.2-R02": 20,
+    "T2.2-R03": 21,
+    "T2.2-R04": 53,
+    "T2.2-R05": 31,
+    "T2.2-R06": 83,
+    "T2.2-R07": 6,
+    "T2.2-R08": 7,
+    "T2.2-R09": 11,
+    "T2.2-R10": 8,
+    "T2.2-R11": 9,
+    "T2.2-R12": 13,
+    "T2.2-R13": 14,
+    "T2.2-R14": 22,
+    "T2.2-R15": 20,
+    "T2.2-R16": 21,
+    "T2.2-R17": 20,
+    "T2.2-R18": 21,
+    "T2.2-R19": 33,
+    "T2.2-R20": 19,
+    "T2.2-R21": 145,
+}
 RECOVERY_EXACT_HEADER = "---\nstatus: {status}\nscope: {scope}\n---\n"
 RECOVERY_BLOCKER_HEADER = "---\nstatus: blocked\nscope: run-only\n---\n"
 TASK_SECTION_NAMES = (
@@ -980,17 +1014,13 @@ def _material_slot_references(text: str) -> list[str]:
 
 
 def _taskcard_relative_path_references(text: str) -> list[str]:
-    references: list[str] = []
-    for token in re.findall(r"`([^`\n]+)`", text):
-        if (
-            token.endswith(
-                (".md", ".py", ".json", ".toml", ".yaml", ".yml", ".txt", ".bin")
-            )
-            or any(character in token for character in "*?[]<>{}")
-            or "/" in token
-        ):
-            references.append(token)
-    return references
+    path_component = r"[A-Za-z0-9_.?*\[\]{}<>-]+"
+    path_token = re.compile(
+        r"(?<![A-Za-z0-9_.-])"
+        rf"((?:{path_component}/)+(?:{path_component})?"
+        rf"|{path_component}\.(?:md|py|json|toml|yaml|yml|txt|bin))"
+    )
+    return [match.group(1) for match in path_token.finditer(text)]
 
 
 def _r05_has_expanded_material_authorization(
@@ -1518,140 +1548,271 @@ def _recovery_output_paths(*task_ids: str) -> set[str]:
     }
 
 
-def _prior_recovery_blocker_paths(task_id: str) -> set[str]:
-    task_number = int(task_id.removeprefix("T2.2-R"))
-    prior_ids = {
-        f"T2.2-R{index:02d}" for index in range(1, task_number)
-    }
-    return {
-        path
-        for path, policy in RECOVERY_BLOCKER_ARTIFACT_POLICY.items()
-        if policy["owner"] in prior_ids
-    }
+def _expected_card_business_read_paths(task_id: str) -> set[str]:
+    """Return the role's direct business inputs, never controller hash dependencies."""
+    if task_id not in RECOVERY_TASK_IDS:
+        raise ValueError(f"unknown recovery task ID: {task_id}")
 
+    m1_receipt = "contracts/M1-freeze-receipt.md"
+    t18 = "contracts/T1.8-independent-acceptance.md"
+    adapter = "contracts/T2.2-historical-qualification-adapter-v1.md"
+    preparation_sources = {"GOLD-STANDARDS.md", *RECOVERY_SOURCE_PATHS}
+    r01_outputs = _recovery_output_paths("T2.2-R01")
+    r02_outputs = _recovery_output_paths("T2.2-R02")
+    r03_outputs = _recovery_output_paths("T2.2-R03")
+    r04_outputs = _recovery_output_paths("T2.2-R04")
+    r05_outputs = _recovery_output_paths("T2.2-R05")
 
-def _expected_card_read_paths(task_id: str) -> set[str]:
-    chain_dependencies = _recovery_chain_dependencies(
-        "SLOTS_REQUIRED", r01_product_blocker_present=True
-    )
-    paths = {
-        *RECOVERY_CARD_COMMON_READ_PATHS,
-        f"taskcards/{task_id}.md",
-        *_prior_recovery_blocker_paths(task_id),
-    }
-    if task_id in RECOVERY_PREPARATION_READ_TASKS:
-        paths.update({"GOLD-STANDARDS.md", *RECOVERY_SOURCE_PATHS})
-
-    if task_id == "T2.2-R02":
-        paths.update(_recovery_output_paths("T2.2-R01"))
-    elif task_id == "T2.2-R03":
-        paths.update(_recovery_output_paths("T2.2-R01", "T2.2-R02"))
-        paths.add("materials/T2.2-v2/authorization.md")
-    elif task_id == "T2.2-R04":
-        paths.update(
-            _recovery_output_paths("T2.2-R01", "T2.2-R02", "T2.2-R03")
-        )
-        paths.update(RECOVERY_RAW_BLOBS)
-    elif task_id == "T2.2-R05":
-        paths.update(
-            chain_dependencies[RECOVERY_ATTEMPT_MANIFEST_PATH]
-        )
-    elif task_id == "T2.2-R06":
-        paths.update(
-            _recovery_output_paths(
-                "T2.2-R01",
-                "T2.2-R02",
-                "T2.2-R03",
-                "T2.2-R04",
-                "T2.2-R05",
-            )
-        )
-        paths.update(RECOVERY_RAW_BLOBS)
-
-    adapter_path = "contracts/T2.2-historical-qualification-adapter-v1.md"
+    byte_manifest = "diagnostics/T2.2-fixture-byte-manifest-v2.md"
+    admission = "diagnostics/T2.2-fixture-admission-v2.md"
+    byte_review = "diagnostics/T2.2-fixture-byte-review-v2.md"
     control_call = "diagnostics/T2.2-contrast-control-call-manifest-v1.md"
     control_review = "diagnostics/T2.2-contrast-control-input-review-v1.md"
     control_index = "diagnostics/T2.2-contrast-control-answers-index-v1.md"
     control_result = "diagnostics/T2.2-contrast-control-results-v1.md"
+    control_postflight = (
+        "diagnostics/T2.2-contrast-control-postflight-review-v1.md"
+    )
     diagnostic_call = "diagnostics/T2.2-contrast-diagnostic-call-manifest-v1.md"
     diagnostic_review = "diagnostics/T2.2-contrast-diagnostic-input-review-v1.md"
     diagnostic_index = "diagnostics/T2.2-contrast-diagnostic-answers-index-v1.md"
     contrast_result = "diagnostics/T2.2-contrast-results-v1.md"
+    contrast_postflight = "diagnostics/T2.2-contrast-postflight-review-v1.md"
     retest_call = "diagnostics/T2.2-retest-call-manifest-v2.md"
     retest_review = "diagnostics/T2.2-retest-input-review-v2.md"
     formal_index = "diagnostics/T2.2-judge-answers-index-v2.md"
-    baseline = "diagnostics/T2.2-judge-baseline-v2.md"
-    control_answers = tuple(
-        f"diagnostics/T2.2-contrast-answer-v1-{index:02d}.md"
-        for index in range(1, 5)
-    )
-    diagnostic_answers = tuple(
-        f"diagnostics/T2.2-contrast-answer-v1-{index:02d}.md"
-        for index in range(5, 15)
-    )
-    formal_answers = tuple(
-        f"diagnostics/T2.2-judge-answer-v2-{index:02d}.md"
+    control_packets = {
+        "diagnostics/T2.2-contrast-packet-v1-01.md",
+        "diagnostics/T2.2-contrast-packet-v1-02.md",
+    }
+    diagnostic_packets = {
+        f"diagnostics/T2.2-contrast-packet-v1-{index:02d}.md"
+        for index in range(1, 7)
+    }
+    formal_packets = {
+        f"diagnostics/T2.2-retest-packet-v2-{index:02d}.md"
         for index in range(1, 15)
+    }
+
+    r07_inputs = {
+        adapter,
+        RECOVERY_PACKAGE_MANIFEST_PATH,
+        RECOVERY_PACKAGE_REVIEW_PATH,
+        RECOVERY_FULL_BRIEF_PATH,
+        *control_packets,
+    }
+    r10_inputs = {
+        *RECOVERY_CONTROL_ANSWER_PATHS,
+        control_index,
+        RECOVERY_CONTRAST_KEY_PATH,
+        control_call,
+        control_review,
+    }
+    r12_inputs = {
+        adapter,
+        RECOVERY_PACKAGE_MANIFEST_PATH,
+        RECOVERY_PACKAGE_REVIEW_PATH,
+        control_result,
+        control_postflight,
+        RECOVERY_FULL_BRIEF_PATH,
+        RECOVERY_VARIANT_BRIEF_PATH,
+        *diagnostic_packets,
+    }
+    r15_inputs = {
+        *RECOVERY_CONTROL_ANSWER_PATHS,
+        *RECOVERY_DIAGNOSTIC_ANSWER_PATHS,
+        control_result,
+        control_postflight,
+        diagnostic_index,
+        diagnostic_call,
+        diagnostic_review,
+        RECOVERY_CONTRAST_KEY_PATH,
+    }
+    r17_inputs = {
+        adapter,
+        RECOVERY_PACKAGE_MANIFEST_PATH,
+        RECOVERY_PACKAGE_REVIEW_PATH,
+        contrast_result,
+        contrast_postflight,
+        RECOVERY_FULL_BRIEF_PATH,
+        *formal_packets,
+    }
+    r20_inputs = {
+        RECOVERY_ATTEMPT_MANIFEST_PATH,
+        RECOVERY_SCORING_KEY_PATH,
+        *RECOVERY_FORMAL_ANSWER_PATHS,
+        formal_index,
+        retest_call,
+        retest_review,
+    }
+    r21_inputs = {
+        *RECOVERY_FIXED_START_PATHS,
+        *RECOVERY_ACTIVE_CONTROL_PATHS,
+        "diagnostics/T2.1-r01-r08.md",
+        "lenses/T2.3-seed-lenses-v2.md",
+        *_recovery_output_paths(
+            *[f"T2.2-R{index:02d}" for index in range(1, 21)]
+        ),
+        *RECOVERY_RAW_BLOBS,
+        *tuple(
+            path
+            for path, policy in RECOVERY_BLOCKER_ARTIFACT_POLICY.items()
+            if policy["owner"] != "T2.2-R21"
+        ),
+    }
+    r21_inputs.discard("materials/T2.2-v2/authorization.md")
+
+    business_paths = {
+        "T2.2-R01": {m1_receipt, t18, *preparation_sources},
+        "T2.2-R02": {
+            m1_receipt,
+            t18,
+            *preparation_sources,
+            *r01_outputs,
+        },
+        "T2.2-R03": {
+            *preparation_sources,
+            *r01_outputs,
+            *r02_outputs,
+            "materials/T2.2-v2/authorization.md",
+        },
+        "T2.2-R04": {
+            *preparation_sources,
+            *r01_outputs,
+            *r02_outputs,
+            *r03_outputs,
+            *RECOVERY_RAW_BLOBS,
+        },
+        "T2.2-R05": {
+            *RECOVERY_RAW_BLOBS,
+            byte_manifest,
+            admission,
+            byte_review,
+        },
+        "T2.2-R06": {
+            m1_receipt,
+            t18,
+            *preparation_sources,
+            *r01_outputs,
+            *r02_outputs,
+            *r03_outputs,
+            *r04_outputs,
+            *r05_outputs,
+            *RECOVERY_RAW_BLOBS,
+        },
+        "T2.2-R07": r07_inputs,
+        "T2.2-R08": {control_call, *r07_inputs},
+        "T2.2-R09": {
+            t18,
+            adapter,
+            RECOVERY_FULL_BRIEF_PATH,
+            *control_packets,
+            control_call,
+            control_review,
+            *RECOVERY_CONTROL_ANSWER_PATHS,
+        },
+        "T2.2-R10": r10_inputs,
+        "T2.2-R11": {control_result, *r10_inputs},
+        "T2.2-R12": r12_inputs,
+        "T2.2-R13": {diagnostic_call, *r12_inputs},
+        "T2.2-R14": {
+            t18,
+            adapter,
+            RECOVERY_FULL_BRIEF_PATH,
+            RECOVERY_VARIANT_BRIEF_PATH,
+            *diagnostic_packets,
+            diagnostic_call,
+            diagnostic_review,
+            *RECOVERY_DIAGNOSTIC_ANSWER_PATHS,
+        },
+        "T2.2-R15": r15_inputs,
+        "T2.2-R16": {contrast_result, *r15_inputs},
+        "T2.2-R17": r17_inputs,
+        "T2.2-R18": {retest_call, *r17_inputs},
+        "T2.2-R19": {
+            t18,
+            adapter,
+            RECOVERY_FULL_BRIEF_PATH,
+            *formal_packets,
+            retest_call,
+            retest_review,
+            *RECOVERY_FORMAL_ANSWER_PATHS,
+        },
+        "T2.2-R20": r20_inputs,
+        "T2.2-R21": r21_inputs,
+    }
+    return set(business_paths[task_id])
+
+
+def _expected_card_read_paths(task_id: str) -> set[str]:
+    return {
+        *RECOVERY_CARD_GOVERNANCE_READ_PATHS,
+        f"taskcards/{task_id}.md",
+        *_expected_card_business_read_paths(task_id),
+    }
+
+
+def _expected_fresh_judge_read_paths(
+    task_id: str,
+) -> dict[str, tuple[str, ...]]:
+    common = (
+        "AGENTS.md",
+        "contracts/T1.8-independent-acceptance.md",
+        "contracts/T2.2-historical-qualification-adapter-v1.md",
     )
-    if task_id == "T2.2-R07":
-        paths.update(chain_dependencies[control_call])
-        paths.add(adapter_path)
-    elif task_id == "T2.2-R08":
-        paths.update({control_call, *chain_dependencies[control_call]})
-        paths.add(adapter_path)
-    elif task_id == "T2.2-R09":
-        paths.update(chain_dependencies[control_index])
-        for answer_path in control_answers:
-            paths.update(chain_dependencies[answer_path])
-        paths.add(adapter_path)
-    elif task_id == "T2.2-R10":
-        paths.update(chain_dependencies[control_result])
-    elif task_id == "T2.2-R11":
-        paths.update({control_result, *chain_dependencies[control_result]})
-    elif task_id == "T2.2-R12":
-        paths.update(chain_dependencies[diagnostic_call])
-        paths.add(adapter_path)
-    elif task_id == "T2.2-R13":
-        paths.update({diagnostic_call, *chain_dependencies[diagnostic_call]})
-        paths.add(adapter_path)
-    elif task_id == "T2.2-R14":
-        paths.update(chain_dependencies[diagnostic_index])
-        for answer_path in diagnostic_answers:
-            paths.update(chain_dependencies[answer_path])
-        paths.add(adapter_path)
-    elif task_id == "T2.2-R15":
-        paths.update(chain_dependencies[contrast_result])
-    elif task_id == "T2.2-R16":
-        paths.update({contrast_result, *chain_dependencies[contrast_result]})
-    elif task_id == "T2.2-R17":
-        paths.update(chain_dependencies[retest_call])
-        paths.add(adapter_path)
-    elif task_id == "T2.2-R18":
-        paths.update({retest_call, *chain_dependencies[retest_call]})
-        paths.add(adapter_path)
-    elif task_id == "T2.2-R19":
-        paths.update(chain_dependencies[formal_index])
-        for answer_path in formal_answers:
-            paths.update(chain_dependencies[answer_path])
-        paths.add(adapter_path)
-    elif task_id == "T2.2-R20":
-        paths.update(chain_dependencies[baseline])
-    elif task_id == "T2.2-R21":
-        paths.update(RECOVERY_ACTIVE_CONTROL_PATHS)
-        paths.update(
-            {
-                "diagnostics/T2.1-r01-r08.md",
-                "lenses/T2.3-seed-lenses-v2.md",
-            }
-        )
-        paths.update(
-            _recovery_output_paths(
-                *[f"T2.2-R{index:02d}" for index in range(1, 21)]
+    if task_id == "T2.2-R09":
+        packet_by_call = {"01": "01", "02": "01", "03": "02", "04": "02"}
+        return {
+            call_id: (
+                *common,
+                RECOVERY_FULL_BRIEF_PATH,
+                f"diagnostics/T2.2-contrast-packet-v1-{packet}.md",
             )
-        )
-        paths.discard("materials/T2.2-v2/authorization.md")
-        paths.update(RECOVERY_RAW_BLOBS)
-    return paths
+            for call_id, packet in packet_by_call.items()
+        }
+    if task_id == "T2.2-R14":
+        packet_by_call = {
+            "05": "01",
+            "06": "01",
+            "07": "02",
+            "08": "02",
+            "09": "03",
+            "10": "03",
+            "11": "04",
+            "12": "04",
+            "13": "05",
+            "14": "06",
+        }
+        return {
+            call_id: (
+                *common,
+                (
+                    RECOVERY_VARIANT_BRIEF_PATH
+                    if int(call_id) <= 8
+                    else RECOVERY_FULL_BRIEF_PATH
+                ),
+                f"diagnostics/T2.2-contrast-packet-v1-{packet}.md",
+            )
+            for call_id, packet in packet_by_call.items()
+        }
+    if task_id == "T2.2-R19":
+        return {
+            f"{index:02d}": (
+                *common,
+                RECOVERY_FULL_BRIEF_PATH,
+                f"diagnostics/T2.2-retest-packet-v2-{index:02d}.md",
+            )
+            for index in range(1, 15)
+        }
+    return {}
+
+
+def _expected_fresh_judge_read_path_lines(task_id: str) -> set[str]:
+    return {
+        f"- fresh-judge-read-path: {call_id} | `{path}`"
+        for call_id, paths in _expected_fresh_judge_read_paths(task_id).items()
+        for path in paths
+    }
 
 
 def _expected_card_read_path_lines(task_id: str) -> set[str]:
@@ -1681,12 +1842,31 @@ def _validate_recovery_policy_invariants(errors: list[str]) -> None:
         policy["owner"] for policy in RECOVERY_BLOCKER_ARTIFACT_POLICY.values()
     } != set(RECOVERY_TASK_IDS):
         errors.append("recovery blocker policy owner set must equal the 21 task IDs")
+    r05_business_inputs = {
+        *RECOVERY_RAW_BLOBS,
+        "diagnostics/T2.2-fixture-byte-manifest-v2.md",
+        "diagnostics/T2.2-fixture-admission-v2.md",
+        "diagnostics/T2.2-fixture-byte-review-v2.md",
+    }
+    if _expected_card_business_read_paths("T2.2-R05") != r05_business_inputs:
+        errors.append(
+            "R05 business read set must exactly equal v3 section 8.8 copy-only inputs"
+        )
+    if set(RECOVERY_CARD_BUSINESS_READ_COUNTS) != set(RECOVERY_TASK_IDS):
+        errors.append("recovery business read count map must cover exactly 21 cards")
     for task_id in RECOVERY_TASK_IDS:
         read_paths = _expected_card_read_paths(task_id)
+        business_paths = _expected_card_business_read_paths(task_id)
+        if len(business_paths) != RECOVERY_CARD_BUSINESS_READ_COUNTS[task_id]:
+            errors.append(
+                f"recovery business read count mismatch: {task_id}: "
+                f"{len(business_paths)} != "
+                f"{RECOVERY_CARD_BUSINESS_READ_COUNTS[task_id]}"
+            )
         if f"taskcards/{task_id}.md" not in read_paths:
             errors.append(f"recovery taskcard read projection omits itself: {task_id}")
         preparation_paths = {"GOLD-STANDARDS.md", *RECOVERY_SOURCE_PATHS}
-        actual_preparation_paths = read_paths & preparation_paths
+        actual_preparation_paths = business_paths & preparation_paths
         expected_preparation_paths = (
             preparation_paths
             if task_id in RECOVERY_PREPARATION_READ_TASKS
@@ -1697,13 +1877,11 @@ def _validate_recovery_policy_invariants(errors: list[str]) -> None:
                 f"recovery preparation read isolation mismatch: {task_id}"
             )
         material_read_paths = {
-            path for path in read_paths if path.startswith("materials/")
+            path for path in business_paths if path.startswith("materials/")
         }
-        if task_id == "T2.2-R05" and material_read_paths != {
-            "materials/T2.2-v2/authorization.md"
-        }:
+        if task_id == "T2.2-R05" and material_read_paths:
             errors.append(
-                "R05 read projection may contain only the authorization control file"
+                "R05 business read projection must not contain material control/input files"
             )
         if (
             int(task_id.removeprefix("T2.2-R")) >= 7
@@ -1712,17 +1890,55 @@ def _validate_recovery_policy_invariants(errors: list[str]) -> None:
             errors.append(
                 f"post-preparation read projection must not open materials: {task_id}"
             )
-    for consumer, inputs in _recovery_chain_dependencies(
-        "SLOTS_REQUIRED", r01_product_blocker_present=True
-    ).items():
-        owner = RECOVERY_ARTIFACT_POLICY[consumer]["owner"].split()[0]
-        owner = owner.split("/")[0]
-        missing_inputs = set(inputs) - _expected_card_read_paths(owner)
-        if missing_inputs:
+        forbidden_historical_inputs = (
+            set(RECOVERY_FIXED_START_PATHS)
+            - {
+                "contracts/M1-freeze-receipt.md",
+                "contracts/T1.8-independent-acceptance.md",
+            }
+        )
+        if (
+            task_id != "T2.2-R21"
+            and business_paths & forbidden_historical_inputs
+        ):
             errors.append(
-                f"recovery read projection misses hash dependencies: "
-                f"{owner}: {sorted(missing_inputs)}"
+                f"non-postflight task inherited historical qualification inputs: "
+                f"{task_id}"
             )
+        if (
+            task_id != "T2.2-R21"
+            and business_paths & set(RECOVERY_ACTIVE_CONTROL_PATHS)
+        ):
+            errors.append(
+                f"non-postflight task inherited architecture/control inputs: "
+                f"{task_id}"
+            )
+        prior_blocker_inputs = (
+            business_paths & set(RECOVERY_BLOCKER_ARTIFACT_POLICY)
+        )
+        if task_id != "T2.2-R21" and prior_blocker_inputs:
+            errors.append(
+                f"business task inherited prior recovery blockers: {task_id}"
+            )
+        fresh_judge_sets = _expected_fresh_judge_read_paths(task_id)
+        expected_fresh_count = {
+            "T2.2-R09": 4,
+            "T2.2-R14": 10,
+            "T2.2-R19": 14,
+        }.get(task_id, 0)
+        if len(fresh_judge_sets) != expected_fresh_count:
+            errors.append(f"fresh judge call projection count mismatch: {task_id}")
+        for call_id, fresh_paths in fresh_judge_sets.items():
+            if len(fresh_paths) != 5 or len(set(fresh_paths)) != 5:
+                errors.append(
+                    f"fresh judge must have exactly five unique read paths: "
+                    f"{task_id}:{call_id}"
+                )
+            if set(fresh_paths) - read_paths:
+                errors.append(
+                    f"fresh judge read path missing from parent card projection: "
+                    f"{task_id}:{call_id}"
+                )
     for review_path, subjects in RECOVERY_REVIEW_SUBJECTS.items():
         review_policy = RECOVERY_ARTIFACT_POLICY.get(review_path)
         if review_policy is None:
@@ -1811,6 +2027,11 @@ def _validate_recovery_roadmap(
         "recovery-direct-review-count: 11",
         "recovery-material-slot-count: 14",
         "recovery-raw-blob-count: 28",
+        "recovery-r05-previous-business-read-count: 55",
+        "recovery-r05-business-read-count: 31",
+        "fresh-judge-read-count: 5",
+        "控制面验证器的完整 hash 重算权限不等于任务执行者的读取权限",
+        "R05 不重读历史正文或材料准备过程",
         "t2.2-active-baseline-path: diagnostics/T2.2-judge-baseline-v2.md",
         "t2.2-active-postflight-review-path: diagnostics/T2.2-postflight-review-v2.md",
         "t2.2-history-v1-baseline-result: FAIL",
@@ -2021,6 +2242,30 @@ def _recovery_taskcard_names(
                     f"recovery taskcard read-path projection mismatch: "
                     f"{relative_path}"
                 )
+            actual_fresh_judge_lines = [
+                line
+                for line in text.splitlines()
+                if line.startswith("- fresh-judge-read-path:")
+            ]
+            section_fresh_judge_lines = [
+                line
+                for line in read_section.splitlines()
+                if line.startswith("- fresh-judge-read-path:")
+            ]
+            expected_fresh_judge_lines = (
+                _expected_fresh_judge_read_path_lines(task_id)
+            )
+            if (
+                len(actual_fresh_judge_lines)
+                != len(set(actual_fresh_judge_lines))
+                or actual_fresh_judge_lines != section_fresh_judge_lines
+                or set(actual_fresh_judge_lines)
+                != expected_fresh_judge_lines
+            ):
+                errors.append(
+                    f"recovery taskcard fresh-judge read projection mismatch: "
+                    f"{relative_path}"
+                )
             actual_material_lines = [
                 line
                 for line in text.splitlines()
@@ -2060,10 +2305,17 @@ def _recovery_taskcard_names(
                 _taskcard_relative_path_references(read_section)
             )
             expected_read_path_references = sorted(
-                {
-                    *_expected_card_read_paths(task_id),
-                    *expected_material_references,
-                }
+                _taskcard_relative_path_references(
+                    "\n".join(
+                        sorted(
+                            {
+                                *_expected_card_read_path_lines(task_id),
+                                *expected_material_lines,
+                                *expected_fresh_judge_lines,
+                            }
+                        )
+                    )
+                )
             )
             if actual_read_path_references != expected_read_path_references:
                 errors.append(
@@ -4063,6 +4315,9 @@ def _synthetic_recovery_card_text(task_id: str) -> str:
         "\n\nsynthetic\n"
         + "\n".join(sorted(_expected_card_read_path_lines(task_id)))
     )
+    fresh_judge_lines = _expected_fresh_judge_read_path_lines(task_id)
+    if fresh_judge_lines:
+        lines[2] += "\n" + "\n".join(sorted(fresh_judge_lines))
     if task_id in {"T2.2-R03", "T2.2-R04", "T2.2-R05", "T2.2-R06"}:
         runtime_open = (
             "forbidden" if task_id == "T2.2-R05" else "selected-only"
@@ -4083,6 +4338,7 @@ def _synthetic_recovery_card_text(task_id: str) -> str:
 def _self_test_recovery_card_projection() -> None:
     with tempfile.TemporaryDirectory(prefix="readerlab-recovery-cards-") as directory:
         project_root = Path(directory)
+        _synthetic_git(project_root, "init")
         taskcard_root = project_root / "taskcards"
         taskcard_root.mkdir()
         empty_errors: list[str] = []
@@ -4231,6 +4487,33 @@ def _self_test_recovery_card_projection() -> None:
             raise AssertionError("recovery read directory prefix was accepted")
         read_card.write_text(read_original, encoding="utf-8")
 
+        for task_id in RECOVERY_TASK_IDS:
+            card = taskcard_root / f"{task_id}.md"
+            original = card.read_text(encoding="utf-8")
+            unauthorized_path = (
+                f"diagnostics/T2.2-unauthorized-{task_id.removeprefix('T2.2-')}.md"
+            )
+            card.write_text(
+                original.replace(
+                    "## 4. 交付文件清单\n",
+                    f"- read-path: `{unauthorized_path}`\n\n"
+                    "## 4. 交付文件清单\n",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+            errors = []
+            _recovery_taskcard_names(errors, project_root)
+            card.write_text(original, encoding="utf-8")
+            if not any(
+                "read-path projection mismatch" in error
+                or "complete read whitelist path mismatch" in error
+                for error in errors
+            ):
+                raise AssertionError(
+                    f"{task_id} unauthorized read path was accepted"
+                )
+
         for task_id in ("T2.2-R03", "T2.2-R04", "T2.2-R05", "T2.2-R06"):
             card = taskcard_root / f"{task_id}.md"
             original = card.read_text(encoding="utf-8")
@@ -4305,12 +4588,46 @@ def _self_test_recovery_card_projection() -> None:
 
         r05 = taskcard_root / "T2.2-R05.md"
         r05_original = r05.read_text(encoding="utf-8")
+        r05_expected_business_inputs = {
+            *RECOVERY_RAW_BLOBS,
+            "diagnostics/T2.2-fixture-byte-manifest-v2.md",
+            "diagnostics/T2.2-fixture-admission-v2.md",
+            "diagnostics/T2.2-fixture-byte-review-v2.md",
+        }
+        if (
+            _expected_card_business_read_paths("T2.2-R05")
+            != r05_expected_business_inputs
+        ):
+            raise AssertionError("R05 v3 section 8.8 business read set drifted")
+        if r05_expected_business_inputs & set(RECOVERY_MATERIAL_SLOTS):
+            raise AssertionError("R05 raw material slots leaked into business reads")
+        if set(RECOVERY_MATERIAL_SLOTS) & _expected_card_read_paths("T2.2-R05"):
+            raise AssertionError("R05 material slots leaked into read-path projection")
+        for input_path in sorted(r05_expected_business_inputs):
+            input_line = f"- read-path: `{input_path}`"
+            r05.write_text(
+                r05_original.replace(input_line + "\n", "", 1),
+                encoding="utf-8",
+            )
+            errors = []
+            _recovery_taskcard_names(errors, project_root)
+            if not any(
+                "read-path projection mismatch" in error for error in errors
+            ):
+                raise AssertionError(
+                    f"R05 missing legal direct input was accepted: {input_path}"
+                )
+        r05.write_text(r05_original, encoding="utf-8")
         r05_injections = (
             (
                 "- read-path: `GOLD-STANDARDS.md`\n"
                 "- read-path: `examples/book/positive/"
                 "automatic-driving-safe-state.md`\n",
                 "R05 GOLD/examples read paths were accepted",
+            ),
+            (
+                "允许读取 diagnostics/T2.2-fixture-census-v2.md\n",
+                "R05 unquoted census read path was accepted",
             ),
             (
                 "- read-path: `materials/T2.2-v2/*.md`\n",
@@ -4323,6 +4640,47 @@ def _self_test_recovery_card_projection() -> None:
             (
                 "- 打开全部材料\n",
                 "R05 all-material authorization was accepted",
+            ),
+            (
+                "- read-path: `diagnostics/T2.2-fixture-census-v2.md`\n",
+                "R05 census read path was accepted",
+            ),
+            (
+                "- read-path: `diagnostics/T2.2-fixture-gap-list-v2.md`\n",
+                "R05 gap read path was accepted",
+            ),
+            (
+                "- read-path: `diagnostics/T2.2-material-gap-manifest-v2.md`\n",
+                "R05 selector read path was accepted",
+            ),
+            (
+                "- read-path: `diagnostics/T2.2-fixture-resolution-v2.md`\n",
+                "R05 resolution read path was accepted",
+            ),
+            (
+                "- read-path: `materials/T2.2-v2/authorization.md`\n",
+                "R05 authorization read path was accepted",
+            ),
+            (
+                "- read-path: "
+                "`contracts/T2.2-historical-qualification-adapter-v1.md`\n",
+                "R05 adapter read path was accepted",
+            ),
+            (
+                "- read-path: `diagnostics/T2.2-scoring-key.md`\n",
+                "R05 historical scoring key read path was accepted",
+            ),
+            (
+                "- read-path: `diagnostics/T2.2-judge-answers.md`\n",
+                "R05 historical answers read path was accepted",
+            ),
+            (
+                "- read-path: `diagnostics/T2.2-judge-baseline.md`\n",
+                "R05 historical baseline read path was accepted",
+            ),
+            (
+                "- read-path: `taskcards/T2.2-R01-BLOCKER.md`\n",
+                "R05 prior blocker read path was accepted",
             ),
         )
         for injection, message in r05_injections:
@@ -4351,6 +4709,67 @@ def _self_test_recovery_card_projection() -> None:
         if not any("runtime-open contract mismatch" in error for error in errors):
             raise AssertionError("R05 non-forbidden runtime permission was accepted")
         r05.write_text(r05_original, encoding="utf-8")
+
+        for task_id in RECOVERY_COMPOSITE_TASK_IDS:
+            card = taskcard_root / f"{task_id}.md"
+            original = card.read_text(encoding="utf-8")
+            fresh_line = next(
+                line
+                for line in original.splitlines()
+                if line.startswith("- fresh-judge-read-path:")
+            )
+            card.write_text(
+                original.replace(fresh_line + "\n", "", 1),
+                encoding="utf-8",
+            )
+            errors = []
+            _recovery_taskcard_names(errors, project_root)
+            if not any(
+                "fresh-judge read projection mismatch" in error
+                for error in errors
+            ):
+                raise AssertionError(
+                    f"{task_id} missing fresh-judge whitelist path was accepted"
+                )
+            card.write_text(
+                original.replace(
+                    "## 4. 交付文件清单\n",
+                    "- fresh-judge-read-path: 99 | `GOLD-STANDARDS.md`\n\n"
+                    "## 4. 交付文件清单\n",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+            errors = []
+            _recovery_taskcard_names(errors, project_root)
+            card.write_text(original, encoding="utf-8")
+            if not any(
+                "fresh-judge read projection mismatch" in error
+                for error in errors
+            ):
+                raise AssertionError(
+                    f"{task_id} expanded fresh-judge whitelist was accepted"
+                )
+            card.write_text(
+                original.replace(
+                    "## 4. 交付文件清单\n",
+                    "fresh judge 还可读取 "
+                    "diagnostics/T2.2-contrast-call-v1.md\n\n"
+                    "## 4. 交付文件清单\n",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+            errors = []
+            _recovery_taskcard_names(errors, project_root)
+            card.write_text(original, encoding="utf-8")
+            if not any(
+                "complete read whitelist path mismatch" in error
+                for error in errors
+            ):
+                raise AssertionError(
+                    f"{task_id} unquoted fresh-judge read expansion was accepted"
+                )
 
         originals = {
             task_id: (taskcard_root / f"{task_id}.md").read_text(
@@ -4409,6 +4828,7 @@ def _self_test_recovery_card_projection() -> None:
 def _self_test_selector_and_filesystem_guards() -> None:
     with tempfile.TemporaryDirectory(prefix="readerlab-recovery-guards-") as directory:
         project_root = Path(directory)
+        _synthetic_git(project_root, "init")
         selector = project_root / RECOVERY_SELECTOR_PATH
         selector.parent.mkdir(parents=True)
         selected_path = RECOVERY_MATERIAL_SLOTS[0]
@@ -4547,6 +4967,7 @@ def _self_test_selector_and_filesystem_guards() -> None:
 def _self_test_blocked_selector_rejects_m2() -> None:
     with tempfile.TemporaryDirectory(prefix="readerlab-recovery-blocked-") as directory:
         project_root = Path(directory)
+        _synthetic_git(project_root, "init")
         receipt = project_root / M2_RECEIPT_PATH
         receipt.parent.mkdir(parents=True)
         receipt.write_text(

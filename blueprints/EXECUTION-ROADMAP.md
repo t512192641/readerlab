@@ -49,7 +49,54 @@ recovery-registration-cardinality: 0|21
 
 recovery-composite-task-ids: T2.2-R09,T2.2-R14,T2.2-R19
 
-这三张卡是仅有的恢复复合任务；其余十八张必须声明 `single-session`。未注册 ID、不同大小写或补零、R22、额外 `T2.2-R*` 路径及任意 1—20 张部分集合都必须由验证器拒绝。每张未来卡必须沿用六节模板，在 `## 3. 允许读取清单` 逐行内嵌验证器从 v3 §2.3、§4.4、§5—§11 与实际 hash dependency 闭集编译出的完整 `read-path` 投影，并在 `## 4. 交付文件清单` 逐行内嵌完整 artifact-policy 写投影。两侧均执行字面集合相等检查；少路径、多路径、重复、范围、glob、前缀、大小写变化或放错章节均禁止派发。读投影只给 R01/R02/R03/R04/R06 金标与十四份样张权限；R05 为 attempt 绑定读取已发布的 adapter/census/review/selector/resolution/admission/byte chain，且在需要产品输入时可读取固定控制文件 `materials/T2.2-v2/authorization.md`，但不得含十四个 raw slot、其他材料路径、`GOLD-STANDARDS.md` 或 `examples/` 读路径；R07—R21 不得含金标、样张或材料读路径。R09/R14/R19 的控制会话读投影包含同卡 fresh judges 写出的答案，供主控冻结 index；它不扩大 fresh judge 的权限，fresh judge 仍由 call manifest 逐次收窄为 v3 §10.1 的三份固定文件、一个 brief 和一个 packet。R21 另须逐路径读取 T2.1 与 T2.3 的现行 gate 文件，仅用于 hash 身份核验。
+这三张卡是仅有的恢复复合任务；其余十八张必须声明 `single-session`。未注册 ID、不同大小写或补零、R22、额外 `T2.2-R*` 路径及任意 1—20 张部分集合都必须由验证器拒绝。
+
+每张未来卡必须沿用六节模板，在 `## 3. 允许读取清单` 逐行内嵌验证器按 v3 单一发布责任编译出的完整 `read-path` 投影，并在 `## 4. 交付文件清单` 逐行内嵌完整 artifact-policy 写投影。两侧均执行字面集合相等检查；少路径、多路径、重复、范围、glob、前缀、大小写变化或放错章节均禁止派发。读取章节出现的任何路径字面量都纳入完整白名单比较，不能用去掉反引号、改写为自然语言或省略 `read-path` 前缀绕过机械闭集。
+
+读取投影严格分成两层：
+
+1. 所有卡都可读取四份项目治理文件与自身任务卡；
+2. 恢复业务输入只按本卡单一发布责任、direct subject 和完成独立复核所需的已发布证据逐路径授予。
+
+控制面验证器的完整 hash 重算权限不等于任务执行者的读取权限。验证器可以在派发前、写后和 M2 gate 独立重算完整仓库身份、历史链和 blocker 状态，但不得把这份全局可见性转授给 R01—R21。上游文件要求下游记录的固定身份、commit/hash 或历史坐标，必须从冻结任务合同、允许读取的 manifest/review 或已发布证明忠实传递；不能仅因 `_recovery_chain_dependencies` 最终会重算该文件，就把正文加入执行角色 `read-path`。prior blocker gate 由控制面先判断，也不自动给业务角色增加 blocker 或 blocker 之外的历史正文读取权。
+
+recovery-r05-previous-business-read-count: 55
+
+recovery-r05-business-read-count: 31
+
+二次 C0 的旧实现中，R05 业务读取为 55 路径；加四份治理文件与自身任务卡后，完整 `read-path` 为 60 路径。修复后的业务读取闭集严格等于 v3 §8.8：28 个 R03 raw blobs、`diagnostics/T2.2-fixture-byte-manifest-v2.md`、`diagnostics/T2.2-fixture-admission-v2.md`、`diagnostics/T2.2-fixture-byte-review-v2.md`，共 31 路径；加上四份治理文件和自身任务卡后，完整 `read-path` 投影为 36 路径。R05 不读取 authorization、census/gap、selector/resolution、adapter、历史 packet/key/brief/answers/baseline、prior blocker、v1/v2/v3 架构或审查正文；attempt 中的固定身份只从固定任务合同或允许的上游证明传递。R05 不重读历史正文或材料准备过程。
+
+全部 21 卡的业务读取投影审计如下；括号内为展开后的业务路径数，不含四份治理文件和自身任务卡：
+
+| 卡 | 最小业务读取闭集 |
+|---|---|
+| R01（17） | M1 receipt、T1.8、GOLD 与 14 个固定 source groups |
+| R02（20） | R01 三个 subjects，加 R01 的上述证据 |
+| R03（21） | R01/R02 已发布 subjects/reviews、GOLD 与 14 source groups、条件式 authorization 控制文件 |
+| R04（53） | R01—R03 已发布 subjects/reviews、GOLD 与 14 source groups、28 blobs |
+| R05（31） | 28 blobs、byte manifest、admission、R04 byte review |
+| R06（83） | R05 package direct subjects，以及完成端到端 package 独立复核所需的 R01—R04 已发布证明、28 blobs、M1/T1.8、GOLD 与 14 source groups |
+| R07（6） | adapter、package manifest/review、full brief、control packets 01—02 |
+| R08（7） | R07 call manifest 及 R07 的六项已发布输入 |
+| R09（11） | control call/review、answers 01—04、T1.8、adapter、full brief、packets 01—02 |
+| R10（8） | answers 01—04、control index、contrast key、control call/review |
+| R11（9） | control result 作为 direct subject，加 R10 的八项复算证据 |
+| R12（13） | adapter、package manifest/review、control result/postflight、full/variant briefs、packets 01—06 |
+| R13（14） | diagnostic call manifest 作为 direct subject，加 R12 的十三项证据 |
+| R14（22） | diagnostic call/review、answers 05—14、T1.8、adapter、full/variant briefs、packets 01—06 |
+| R15（20） | control/diagnostic answers、control result/postflight、diagnostic call/review/index、contrast key |
+| R16（21） | contrast result 作为 direct subject，加 R15 的二十项证据 |
+| R17（20） | adapter、package manifest/review、contrast result/postflight、full brief、14 formal packets |
+| R18（21） | retest call manifest 作为 direct subject，加 R17 的二十项证据 |
+| R19（33） | retest call/review、14 formal answers、T1.8、adapter、full brief、14 formal packets |
+| R20（19） | attempt manifest、scoring key、14 formal answers、formal index、retest call/review |
+| R21（145） | baseline direct subject与完整 attempt 复算证据：固定 v1/v2/v3 身份、R01—R20 已发布产物、28 blobs、先前 blockers、T2.1/T2.3；明确排除 GOLD、examples、authorization 与 14 material slots |
+
+读投影只给 R01/R02/R03/R04/R06 金标与十四份样张权限；R07—R21 不得继承金标、样张或 material slot 权限。reviewer 只读明确 direct subject 与完成独立复核所需的已发布证据；write owner 不因此自动成为其他角色的 read consumer。
+
+fresh-judge-read-count: 5
+
+R09/R14/R19 的控制会话读投影包含同卡 fresh judges 写出的答案，供主控冻结 index；它不扩大 fresh judge 的权限。验证器必须为每个独立 call 在任务卡同一读取章节机械锁定恰好五个 `fresh-judge-read-path`：`AGENTS.md`、冻结 T1.8、冻结 adapter、该 call 的一个 frozen brief、该 call 的一个 frozen packet。缺一项、多一项、重复、换成 call manifest/review/key/其他答案或把父控制会话权限继承给 judge，均禁止派发。
 
 R03、R04、R05、R06 还必须在 `## 3. 允许读取清单` 各自逐行内嵌完整 material-slot-policy 投影：R03/R04/R06 为 `runtime-open: selected-only`，R05 为 `runtime-open: forbidden`。这十四行对 R05 只登记静态路径宇宙，不构成 `read-path` 或打开权限。十四个 slot 的缺失、重复、额外路径、范围、glob、前缀、大小写变化或章节错位都失败；R05 同节不得另行授权打开任一 slot、材料目录、glob 或全部材料。恢复 blocker 只允许使用已注册 ID 的 `taskcards/T2.2-RNN-BLOCKER.md`，精确为 `blocked/run-only`。
 
