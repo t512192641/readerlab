@@ -1,0 +1,29 @@
+{
+  "status": "frozen",
+  "scope": "run-only",
+  "frozen_at_utc": "2026-07-20T15:17:05Z",
+  "read_only": [
+    "AGENTS.md",
+    "runs/T2.2-sufficiency-calibration-v3/product-standard-excerpt.md",
+    "contracts/T1.8-independent-acceptance.md",
+    "runs/T2.2-sufficiency-calibration-v3/packet.md",
+    "runs/T2.2-sufficiency-calibration-v3/judge-brief.md"
+  ],
+  "write_only": [
+    "runs/T2.2-sufficiency-calibration-v3/judge-answers.md"
+  ],
+  "input_hashes": {
+    "AGENTS.md": "2db26cb8800acfe1220958d5cace4f937a17e0541797c8d89d5105de0090dd6a",
+    "runs/T2.2-sufficiency-calibration-v3/product-standard-excerpt.md": "0e199ad969a4e2e6ae2916d638a38ade45c891c94f0d1c5c47f90427b1b3fb27",
+    "contracts/T1.8-independent-acceptance.md": "7d8b60170669637ca7aa004e27df6fb301739d1a7009bc6f59e22dd2a48f5093",
+    "runs/T2.2-sufficiency-calibration-v3/packet.md": "e09ce22554cfc693b358348ab85eca794023a9b6df9e6f6e5b339c31668869d0",
+    "runs/T2.2-sufficiency-calibration-v3/judge-brief.md": "cb873e315d5e0ec9d7569667a812837ba8b000dc398c626ae643da3fd6738c88"
+  },
+  "judge_config": {
+    "fork_turns": "none",
+    "model": "gpt-5.6-terra",
+    "reasoning": "high",
+    "calls_allowed": 1,
+    "objects_in_call": 12
+  }
+}
