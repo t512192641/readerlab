@@ -1,0 +1,2 @@
+candidate_id: C-01
+p1_status: WORTH_EXPANDING

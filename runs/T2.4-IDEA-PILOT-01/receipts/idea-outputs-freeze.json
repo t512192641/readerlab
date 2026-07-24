@@ -1,0 +1,25 @@
+{
+  "schema": "readerlab-t24-idea-outputs-freeze/v1",
+  "outputs": {
+    "mainline-01": "595fcd4d22df9e386f979e77b5f16a01aac6c54d46bd62c1c3f9aafb14e0ba9c",
+    "mainline-02": "d4e7995b0775539b81305ed0882949d0d425b52db3ea5a049d166b4400cae352",
+    "open-01": "ed1667483d619d0a6c782e977abc7f33516331445b55d3a81f8de3834242b584",
+    "open-02": "171b6c960abc17567b00a44777a750952005f9e824befff668932792b31697cb",
+    "generic-control": "7bea6d6b78345d65d39b0b932a9102e52e70f47156d8e7b93bb542a9cb505c59"
+  },
+  "mechanical_filter": {
+    "input_count": 10,
+    "valid_count": 7,
+    "invalid": [],
+    "duplicate_group": {
+      "semantic_key": "同一词承载宇宙奥秘与秩序制定者而发生规范性跳跃",
+      "representative": "generic-control:0",
+      "excluded": [
+        "mainline-01:0",
+        "open-01:0",
+        "open-02:0"
+      ],
+      "selection_method": "组内随机保留一项；仅作明显重复过滤，不作价值判断"
+    }
+  }
+}

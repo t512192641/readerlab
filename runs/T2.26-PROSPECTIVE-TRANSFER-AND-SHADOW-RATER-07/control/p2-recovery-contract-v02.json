@@ -1,0 +1,41 @@
+{
+  "allowed_added_text": [
+    "fixed_title",
+    "fixed_usage_instructions",
+    "object_separators",
+    "sha_and_provenance_metadata"
+  ],
+  "axis": "contract",
+  "candidate_outside_workspace": true,
+  "candidate_validation": "PASS",
+  "control_candidate_hashes": {
+    "scripts/t226_p2_recovery.py": "245254d8c13342556050962ae7c0e74d719ec7313800623f49dee5e2368940ba",
+    "taskcards/T2.26-v07-p2-recovery.md": "d4872c3bf408ead3954ad92cb8f0b3a2b52ae6dee3f404e4d51c4d131aa60651",
+    "tests/test_t226_p2_recovery.py": "653255016a6fe5ef83160281937dc4172b7ec7c64f2a51679f2b918d47b80f38"
+  },
+  "git_identity": {
+    "branch": "codex/readerlab-book-lens-original-goal-v1",
+    "head": "d63118fd057e0b9a8aadc05b2fae244035c02891",
+    "status": "PASS"
+  },
+  "p2_downstream_artifacts": 0,
+  "package_exact_deterministic_bytes": true,
+  "parent_taskcard": {
+    "modified": false,
+    "path": "taskcards/T2.26-v07.md",
+    "sha256": "a655eb1c8e98f26b6d6353a8aa626f24315b6f04b7304a498d6f95dc3fb079dc"
+  },
+  "preserved_v01": {
+    "p1_registry_sha256": "2250f94fed0fdd931d36877e31f51207f82494aee9fbadebaffe909961495189",
+    "p2_registry_sha256": "968ed7d7ab82546b3445635a3f9c3f178424ddf712adff46c1c6c8ce27b48add",
+    "package_sha256": "576e44bc0be1c728c171143a5fb451a2db4ecd770b10f716ee878fffd935b4be"
+  },
+  "product_judgment": "NOT_EVALUATED",
+  "production_group_ledger_unchanged_sha256": "6be028150eb37d72841d271f767f5d411ccda32ef5f69c1f98af1552b21ab28d",
+  "promotion": "BYTE_IDENTICAL_O_EXCL_FIRST_WRITE_REQUIRED",
+  "root_registry_created": false,
+  "semantic_model_calls_during_recovery": 0,
+  "stage": "LESSONS_FROZEN_AWAITING_VALID_P2_PACKAGE",
+  "status": "PASS",
+  "usage_ledger_unchanged_sha256": "94b1cf13de253a4f8c81f62f99e863350e0d670ec4112c1fc0f7189726f6d791"
+}

@@ -1,0 +1,16 @@
+{
+  "allowed_product_verdicts": [
+    "WORTH_PUBLISHING",
+    "REJECT"
+  ],
+  "axis": "product_ready",
+  "contract_status": "PASS",
+  "downstream": "BLOCKED_PENDING_PRODUCT_REVIEW",
+  "p2_gates": "NOT_CREATED",
+  "package_path": "runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-07/review/p2-product-review-v02.md",
+  "package_sha256": "88ebb0bfe6874260c4b3306c0df04e5a1fe5ee486e5bc100c0c3e9d65d2877ff",
+  "product_verdict": "NOT_MADE",
+  "provenance_status": "PASS",
+  "registry_claim_scope": "INTEGRITY_ONLY",
+  "status": "READY_FOR_PRODUCT_REVIEW"
+}

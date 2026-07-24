@@ -1,0 +1,19 @@
+{
+  "experiment_id": "T2.11-NON-BERGER-STUDY-NOTES-PROTOTYPE-01",
+  "object_ids": [
+    "object-01",
+    "object-02"
+  ],
+  "research_sha256": {
+    "object-01": "a08151a22992d79115981688de513ecd096384e6751faa45b600a90056052d08",
+    "object-02": "2c2d6032c87f5579754146c86c9d4715d3d9cdd538e0e0427f33727a2b31d1fa"
+  },
+  "raw_sha256": {
+    "object-01": "1fbcb1335a8fa4e9906daf9a24eb288715535adc997609e40013fb5eff45118f",
+    "object-02": "a57120f6ea82088c0edc02c84acf5d9cc29957a6a40f586df2a47038b614b670"
+  },
+  "review_output": "review/study-notes-v01.md",
+  "production_mode": "manual-parallel-samples",
+  "network_scope": "public-source-verification-only",
+  "actual_read_set": "research-agent-reported"
+}

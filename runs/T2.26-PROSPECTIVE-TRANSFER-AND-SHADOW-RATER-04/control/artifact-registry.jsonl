@@ -1,0 +1,11 @@
+{"kind":"artifact","path":"control/contract-manifest.md","sha256":"8db3a3091b0491c6c30cb5b4a4a9031f53bbb268e69a0d595659a9ec2e3be907","status":"frozen"}
+{"kind":"artifact","path":"control/human-local-review-form-v01.md","sha256":"39ab14946796639a18c8872b8d51407801e6ceb6bea723443061f92e0853e50e","status":"frozen"}
+{"kind":"artifact","path":"control/issue-schema-v01.json","sha256":"10835f77876c6801a1948d5b619aeca3cc3c9bf57b539a3597691e7d8e4941a4","status":"frozen"}
+{"kind":"artifact","path":"control/production-group-ledger.jsonl","sha256":"eb68b3e44a9ebbcd88d110bf5ce03ff3c283e7e2e80b33fd67d44a806f5e6f23","status":"frozen"}
+{"kind":"artifact","path":"control/reader-quality-rubric-v01.md","sha256":"834b514d5ea09859c8a36ff83fda3632017e828401c48505633ccf95a6b13259","status":"frozen"}
+{"kind":"artifact","path":"control/target-reader-contract-v01.md","sha256":"f4673f6426bbd57b27cee6ac51c93db3d12199791ecdc4a44a5761149942b5b1","status":"frozen"}
+{"kind":"artifact","path":"control/usage-ledger.jsonl","sha256":"b0c1b344e81b06b9bf2523e4fc0301a159d596a96b9f3edf353d05981c8a1da7","status":"frozen"}
+{"kind":"artifact","path":"control/writer-contract-v1.3.md","sha256":"9a7a3bcaaf4d81cdc2936a2217ea9a147ea91b2edccf5ee0d83fd06a60462ffe","status":"frozen"}
+{"kind":"artifact","path":"receipts/deterministic-receipt-v01.md","sha256":"e9e8a5100c5cf74ca2f24eac6293fae4919d716a8670c6446c14ab920ff80557","status":"frozen"}
+{"kind":"artifact","path":"review/usage-summary.md","sha256":"96644ab0579473866eb520b3b0e98d9c27b131cdf117193321e87d2b3d3936da","status":"frozen"}
+{"kind":"artifact_registry","path":"control/artifact-registry.jsonl","reason":"registry cannot hash its own final bytes","sha256":null,"status":"self_exempt"}

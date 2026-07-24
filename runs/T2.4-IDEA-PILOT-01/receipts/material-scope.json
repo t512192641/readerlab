@@ -1,0 +1,10 @@
+{
+  "schema": "readerlab-t24-material-scope/v1",
+  "experiment_id": "T2.4-IDEA-PILOT-01",
+  "source_path": "materials/T2.4-IDEA-PILOT-01/source.epub",
+  "source_sha256": "3baf9932c92412f0e7d0ccae993182f55f62e2fab5ec46a3882d675476288664",
+  "member": "text/part0019.html",
+  "member_sha256": "c72b2e794266b7eb0d2589045328ea98c9511d8a56aa4037d924e036d1fac891",
+  "scope_sha256": "216f3a01176e10084ee7a011da7f85cd8bb6e6f1558546db6414f9a285b05dad",
+  "scope_bytes": 13337
+}

@@ -1,0 +1,9 @@
+{"path":"control/material-selection-manifest.md","sha256":"c41603e621e89f7a096e489413296be06e74c5cfd9837ca212b8283ea0c09355","kind":"control","status":"frozen"}
+{"path":"inputs/chapter-scope.xhtml","sha256":"845ffeb07a73f3cd248b25f9fc19609d1c8757cbd478b8f72371401dc3b12dda","kind":"material","bytes":34318,"status":"first-write-verified"}
+{"path":"control/writer-contract-v1.3.md","sha256":"3ebba0266f5883b99c25f7beec4ae7d2c6d1476c3d57024cf06ae784c8e6dc61","kind":"contract","status":"frozen"}
+{"path":"control/target-reader-contract-v01.md","sha256":"e1d126a0ee078620fb61f8c95f991694a54727c9f2cee021c5ff026576cbe7ed","kind":"contract","status":"frozen"}
+{"path":"control/reader-quality-rubric-v01.md","sha256":"575e25ab3f41573370606c73b4fb0f81ac7d64942cf6016212c8c7e775f9fce3","kind":"contract","status":"frozen"}
+{"path":"control/human-local-review-form-v01.md","sha256":"c8bed01f25a23fd230f9203202977706647e2611414b1f405586ae123050cb8e","kind":"contract","status":"frozen"}
+{"path":"control/issue-schema-v01.json","sha256":"96b80dfe31a9f2313c306c95cdbaea5d918dfb8b7789329fd9389dac579f71c6","kind":"contract","status":"frozen"}
+{"path":"control/contract-manifest.md","sha256":"59825d61c4de749441a7fef43319294890ede4d191cd2d73b39706e70311f28c","kind":"control","status":"frozen"}
+{"path":"working/candidate-pool-v01.md","sha256":"1d0c5b73f68766a3bbb20b3e86cf740f8ddcba169cb49f875eca62d9cbdbbcab","kind":"semantic","status":"frozen"}

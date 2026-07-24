@@ -1,0 +1,33 @@
+{
+  "experiment_id": "T2.9-BERGER-STUDY-NOTES-PROTOTYPE-01",
+  "backend_model_identity": "unknown",
+  "actual_read_set": "unknown",
+  "ordering_evidence": "controller-observed",
+  "timing": {
+    "started_at_utc": "2026-07-22T06:09:28Z",
+    "completed_at_utc": "2026-07-22T06:16:48Z",
+    "total_wall_clock_seconds": 440,
+    "brief_to_raw_including_validator_update_seconds": 271,
+    "page_assembly_and_deterministic_check_seconds": 116,
+    "source_fidelity_diff_seconds": 53,
+    "measurement_note": "Controller-observed elapsed time from frozen v03 brief to completed lightweight fidelity diff; phase values use file write times and are approximate."
+  },
+  "calls": [
+    {
+      "sequence": 1,
+      "phase": "expression-v03",
+      "task": "/root/t29_berger_notes_v03",
+      "fork_turns": "none",
+      "network": "forbidden",
+      "output": "raw/v03.json"
+    },
+    {
+      "sequence": 2,
+      "phase": "source-fidelity-diff-v03",
+      "task": "/root/t29_source_fidelity_diff_v03",
+      "fork_turns": "none",
+      "network": "forbidden",
+      "output": "notification-only: SOURCE_FIDELITY_DIFF PASS"
+    }
+  ]
+}

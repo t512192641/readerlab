@@ -1,0 +1,12 @@
+{
+  "experiment_id": "T2.10-BERGER-INLINE-READING-PROTOTYPE-01",
+  "source_scope_sha256": "216f3a01176e10084ee7a011da7f85cd8bb6e6f1558546db6414f9a285b05dad",
+  "accepted_knowledge_sha256": "52e42bcfb8cbd32cad76288e0564540b4c4406bc4ed14ccaa3b4a12b2ba4b428",
+  "anchor_after_paragraph": 4,
+  "anchor_occurrences_in_scope": 1,
+  "anchor_text": "至于“宇宙奥秘”要怎么变成世俗的“秩序制定者”，常常都是通过某本神圣的经典来完成连接。在这本经典里会写出鸡毛蒜皮的规定，但号称一切都是为了宇宙的奥秘。据说这本书的编写者创造了空间和时间，但他不惜屈尊降贵为我们带来启发，只不过主要管的就是该做什么神秘的寺庙仪式，饮食上该有什么禁忌。事实上，并没有任何证据证明《圣经》《摩门经》《吠陀经》或其他神圣经典背后的编写者，就是那个决定了E=mc2、质子的质量为电子的1837倍的神秘力量。就目前所知的科学知识而言，所有这些神圣经典文本都是由富有想象力的智人写成的，它们都是祖先发明的故事，目的是让各种社会规范和政治结构合法化。",
+  "anchor_text_sha256": "582c11ce910192a76c50f900fc25e417396b0c9622dd57be3187ea6994c41976",
+  "assembly_mode": "single-collapsible-editorial-inset",
+  "semantic_edit": "none",
+  "output": "review/inline-reading-v01.html"
+}

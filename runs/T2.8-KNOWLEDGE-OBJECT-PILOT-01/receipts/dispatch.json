@@ -1,0 +1,38 @@
+{
+  "experiment_id": "T2.8-KNOWLEDGE-OBJECT-PILOT-01",
+  "comparison_configuration": {
+    "t27_and_t28_controller_dispatch": "same",
+    "agent_type": "worker",
+    "reasoning_effort": "high",
+    "model_override": null,
+    "backend_model_identity": "unknown"
+  },
+  "evidence_limits": {
+    "fork_turns": "controller-observed",
+    "read_whitelist": "instructed-not-independently-observed",
+    "backend_model_identity": "not-exposed-for-persistent-verification"
+  },
+  "calls": [
+    {
+      "expert_id": "E01",
+      "discipline": "社会学",
+      "task": "/root/t28_sociology",
+      "fork_turns": "none",
+      "output": "raw/experts/E01.json"
+    },
+    {
+      "expert_id": "E02",
+      "discipline": "历史学",
+      "task": "/root/t28_history",
+      "fork_turns": "none",
+      "output": "raw/experts/E02.json"
+    },
+    {
+      "expert_id": "E03",
+      "discipline": "制度经济学",
+      "task": "/root/t28_institutional_econ",
+      "fork_turns": "none",
+      "output": "raw/experts/E03.json"
+    }
+  ]
+}

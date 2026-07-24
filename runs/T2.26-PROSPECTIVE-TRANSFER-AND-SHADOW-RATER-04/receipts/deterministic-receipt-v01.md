@@ -1,0 +1,1 @@
+# Synthetic deterministic closeout receipt

@@ -1,0 +1,8 @@
+{"path":"control/material-selection-manifest.md","kind":"control_manifest","status":"frozen","sha256":"PENDING_SELF_READBACK","read_set":"source.epub:toc.ncx+zip-metadata only"}
+{"path":"control/material-selection-manifest.md","kind":"control_manifest","event":"readback_verified","sha256":"7a12b62a9ccf19fbbc38b51db4b0fd69c4cdcc4cae5c483ee0cd7384c1f44ad0"}
+{"path":"inputs/chapter-scope.xhtml","kind":"material_scope","status":"first_write_verified","sha256":"934624eacafabf192b930519ff19a0c004fb12d8fc477c04922e5835cdaf69c6","bytes":82260}
+{"path":"control/writer-contract-v1.3.md","kind":"control_contract","status":"first_write_verified","sha256":"9a7a3bcaaf4d81cdc2936a2217ea9a147ea91b2edccf5ee0d83fd06a60462ffe","bytes":6003}
+{"path":"control/target-reader-contract-v01.md","kind":"control_contract","status":"first_write_verified","sha256":"f4673f6426bbd57b27cee6ac51c93db3d12199791ecdc4a44a5761149942b5b1"}
+{"path":"control/reader-quality-rubric-v01.md","kind":"control_contract","status":"first_write_verified","sha256":"e73a8aae7c093f9841eb1762e3754b01c635cafae400b7e03480aab85fbda4dd"}
+{"path":"control/human-local-review-form-v01.md","kind":"control_contract","status":"invalid_first_write","sha256":"00eeb01106d9a1e64ca97505a08cb329c54bf364081ca96f5a90885759f5307f","reason":"missing required per-Reader comparable fields"}
+{"path":"control/issue-schema-v01.json","kind":"control_contract","status":"first_write_verified","sha256":"10835f77876c6801a1948d5b619aeca3cc3c9bf57b539a3597691e7d8e4941a4"}

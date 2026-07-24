@@ -1,0 +1,44 @@
+{
+  "assembly_method": "deterministic_fixed_wrapper_plus_frozen_bytes",
+  "axis": "provenance",
+  "package": {
+    "bytes": 16240,
+    "path": "runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-07/review/p2-product-review-v02.md",
+    "sha256": "88ebb0bfe6874260c4b3306c0df04e5a1fe5ee486e5bc100c0c3e9d65d2877ff"
+  },
+  "product_judgment": "NOT_EVALUATED",
+  "semantic_model_calls": 0,
+  "sources_in_fixed_order": [
+    {
+      "candidate_id": "C-01",
+      "lesson": {
+        "bytes": 9705,
+        "complete_original_byte_occurrences": 1,
+        "path": "runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-07/review/C-01-lesson-v01.md",
+        "sha256": "d29cb70326af589216bfbcfb329aaf8cbeeefd7f33c243a8a12a25d09175ea78"
+      },
+      "neutral_p1_gate": {
+        "candidate_id": "C-01",
+        "p1_status": "WORTH_EXPANDING",
+        "path": "runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-07/control/C-01-p1-gate.txt",
+        "sha256": "3dc51d9dcfb0879d04adc887558ff7bc50e9000c1f63080c08f9d084fb63ea88"
+      }
+    },
+    {
+      "candidate_id": "C-03",
+      "lesson": {
+        "bytes": 5415,
+        "complete_original_byte_occurrences": 1,
+        "path": "runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-07/review/C-03-lesson-v01.md",
+        "sha256": "d2912187d518be5ae3dec1f3d290771f7d644d4da90ae41e0257e2b1de28efbc"
+      },
+      "neutral_p1_gate": {
+        "candidate_id": "C-03",
+        "p1_status": "WORTH_EXPANDING",
+        "path": "runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-07/control/C-03-p1-gate.txt",
+        "sha256": "e7993540c8251216d74a6a01dca85c8c8b6eda2b6c2977d4d87a70313e69cc3d"
+      }
+    }
+  ],
+  "status": "PASS"
+}

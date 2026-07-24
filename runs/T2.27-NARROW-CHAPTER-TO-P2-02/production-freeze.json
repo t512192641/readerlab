@@ -1,0 +1,42 @@
+{
+  "directories": [
+    "final",
+    "locked",
+    "raw"
+  ],
+  "files": [
+    {
+      "bytes": 8075,
+      "path": "final/C-01-lesson.md",
+      "sha256": "cc261ca2137bf009cfc10031d8dca968b96ef526820a160adca0cb2bd7ecd7fb"
+    },
+    {
+      "bytes": 7607,
+      "path": "final/C-02-lesson.md",
+      "sha256": "df6117b07c9e7039e44bfeb35bbecb0054cea5fbab8090124ba1845f290a97ab"
+    },
+    {
+      "bytes": 85471,
+      "path": "locked/chapter-scope.xhtml",
+      "sha256": "6af84ea79ccb0853eefbb47dcb8dc948f4fa7f7ba08d2183cee951d7769f7e64"
+    },
+    {
+      "bytes": 18,
+      "path": "locked/p1-gate.md",
+      "sha256": "f36bb3708013723063100ee1cc57c5a62933c1805fcaee7fb99fa876807627d4"
+    },
+    {
+      "bytes": 6365,
+      "path": "raw/p1-candidates.md",
+      "sha256": "ce43dc97fb31ee21a5bd93afb71bb3581288deadce090863838276fa0773cc63"
+    },
+    {
+      "bytes": 635,
+      "path": "run.json",
+      "sha256": "60390ec7b6682ff95b5d5933a7ce7ec2503b875ff5450aa018ebaf434b714ad9"
+    }
+  ],
+  "run_schema": "readerlab-run/v2",
+  "schema": "readerlab-production-freeze/v1",
+  "scope": "production"
+}

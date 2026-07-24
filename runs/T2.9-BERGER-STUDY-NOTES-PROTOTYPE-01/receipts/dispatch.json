@@ -1,0 +1,32 @@
+{
+  "experiment_id": "T2.9-BERGER-STUDY-NOTES-PROTOTYPE-01",
+  "backend_model_identity": "unknown",
+  "actual_read_set": "unknown",
+  "ordering_evidence": "controller-observed",
+  "calls": [
+    {
+      "sequence": 1,
+      "phase": "research",
+      "task": "/root/t29_berger_research",
+      "fork_turns": "none",
+      "network": "public-static-only",
+      "output": "research/berger-source-audit.md"
+    },
+    {
+      "sequence": 2,
+      "phase": "expression-v01",
+      "task": "/root/t29_berger_notes_v01",
+      "fork_turns": "none",
+      "network": "forbidden",
+      "output": "raw/v01.json"
+    },
+    {
+      "sequence": 3,
+      "phase": "source-fidelity-review",
+      "task": "/root/t29_source_fidelity_review",
+      "fork_turns": "none",
+      "network": "forbidden",
+      "output": "notification-only: SOURCE_FIDELITY PASS"
+    }
+  ]
+}

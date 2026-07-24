@@ -1,0 +1,10 @@
+{
+  "schema": "readerlab-t24-material-analysis-freeze/v1",
+  "analysis_sha256": "9b9af0e73c3c78f50925dab7fe2cf5497e272d3a16f31a2b93bf5477b5a1d380",
+  "profiles": {
+    "mainline-01": "f73c1184e4bae0408710bd2dd34c81e82f108aeb2562b85d81869f9396c25e09",
+    "mainline-02": "2f210f95ff4888df070362b211a586d53f29ca6c1e689ca5a6552a452493aa06",
+    "open-01": "a2bd8e94d007cf6eadc62fe65081cd2227405e44f08f3dbaa436618f378ee93e",
+    "open-02": "645a2368d2c07d77d40f4c1f8435be751c033c1e125de623174b690aac42cb41"
+  }
+}

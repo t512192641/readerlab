@@ -1,0 +1,16 @@
+{"kind":"artifact","path":"control/contract-manifest.md","sha256":"8db3a3091b0491c6c30cb5b4a4a9031f53bbb268e69a0d595659a9ec2e3be907","status":"frozen"}
+{"kind":"artifact","path":"control/human-local-review-form-v01.md","sha256":"39ab14946796639a18c8872b8d51407801e6ceb6bea723443061f92e0853e50e","status":"frozen"}
+{"kind":"artifact","path":"control/issue-schema-v01.json","sha256":"10835f77876c6801a1948d5b619aeca3cc3c9bf57b539a3597691e7d8e4941a4","status":"frozen"}
+{"kind":"artifact","path":"control/material-selection-manifest.md","sha256":"490ab5898c47f7876a065a62b6c7d39da4958105168b173364de4cf44fcc7350","status":"frozen"}
+{"kind":"artifact","path":"control/production-group-ledger.jsonl","sha256":"97740cc8ede1d6b084037aac0754d6686942b4412d7a994ab4be0c3d96641bcb","status":"frozen"}
+{"kind":"artifact","path":"control/reader-quality-rubric-v01.md","sha256":"834b514d5ea09859c8a36ff83fda3632017e828401c48505633ccf95a6b13259","status":"frozen"}
+{"kind":"artifact","path":"control/target-reader-contract-v01.md","sha256":"f4673f6426bbd57b27cee6ac51c93db3d12199791ecdc4a44a5761149942b5b1","status":"frozen"}
+{"kind":"artifact","path":"control/usage-ledger.jsonl","sha256":"54a547581809d1a6b5fd526357704402d6ed4adce0ff79d5cf7261873e43ed05","status":"frozen"}
+{"kind":"artifact","path":"control/writer-contract-v1.3.md","sha256":"9a7a3bcaaf4d81cdc2936a2217ea9a147ea91b2edccf5ee0d83fd06a60462ffe","status":"frozen"}
+{"kind":"artifact","path":"diagnostics/candidate-breadth-v01.md","sha256":"2d9a8af686dabf67df58a8a977bbd23e4817b28aeb3e653686f3446eb903ef5f","status":"frozen"}
+{"kind":"artifact","path":"inputs/chapter-scope.xhtml","sha256":"934624eacafabf192b930519ff19a0c004fb12d8fc477c04922e5835cdaf69c6","status":"frozen"}
+{"kind":"artifact","path":"review/comparison-v01.md","sha256":"bee24a7ffa52e52318dda42e863dd7ad8ef2b70f64ca11b64dcf6772ea3a6add","status":"frozen"}
+{"kind":"artifact","path":"review/p1-product-review-v01.md","sha256":"3d82891122ef9503af82b23d37c0962216e7c2db9f7268a1ce80583fc8ca08b3","status":"frozen"}
+{"kind":"artifact","path":"review/usage-summary.md","sha256":"0e7b30afc3f9229a625d233736f1b97a1a106fcb8f1cecae257b3caa3b0ba50e","status":"frozen"}
+{"kind":"artifact","path":"working/candidate-pool-v01.md","sha256":"9e27e225159c1c8e3aa8bfbf4e5166a285a04204b5c9583187d8fd10814458aa","status":"frozen"}
+{"kind":"artifact_registry","path":"control/artifact-registry-p1-v01.jsonl","reason":"registry cannot hash its own final bytes","sha256":null,"status":"self_exempt"}

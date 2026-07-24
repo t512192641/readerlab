@@ -1,0 +1,20 @@
+{
+  "directories": {
+    "acceptance": "acceptance",
+    "production": [
+      "raw",
+      "locked",
+      "final"
+    ]
+  },
+  "material": {
+    "bytes": 672638,
+    "path": "materials/T2.4-IDEA-PILOT-01/source.epub",
+    "sha256": "3baf9932c92412f0e7d0ccae993182f55f62e2fab5ec46a3882d675476288664"
+  },
+  "root_from_run": "../..",
+  "route": "book",
+  "schema": "readerlab-run/v2",
+  "scope": "chapter 3 text/part0007.html through unique </html>",
+  "source": "T2.27 chapter 3 narrow experiment"
+}

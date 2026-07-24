@@ -1,0 +1,34 @@
+{
+  "experiment_id": "T2.9-BERGER-STUDY-NOTES-PROTOTYPE-01",
+  "backend_model_identity": "unknown",
+  "actual_read_set": "unknown",
+  "ordering_evidence": "controller-observed",
+  "timing": {
+    "started_at_utc": "2026-07-22T05:56:16Z",
+    "completed_at_utc": "2026-07-22T06:02:36Z",
+    "total_wall_clock_seconds": 380,
+    "governance_brief_and_validator_prep_seconds": 122,
+    "expression_seconds": 74,
+    "page_assembly_and_deterministic_check_seconds": 108,
+    "source_fidelity_diff_seconds": 76,
+    "measurement_note": "Controller-observed elapsed time; phase boundaries use the frozen brief, raw and page write times, so phase values are approximate and sum to the exact total wall clock."
+  },
+  "calls": [
+    {
+      "sequence": 1,
+      "phase": "expression-v02",
+      "task": "/root/t29_berger_notes_v02",
+      "fork_turns": "none",
+      "network": "forbidden",
+      "output": "raw/v02.json"
+    },
+    {
+      "sequence": 2,
+      "phase": "source-fidelity-diff-v02",
+      "task": "/root/t29_source_fidelity_diff_v02",
+      "fork_turns": "none",
+      "network": "forbidden",
+      "output": "notification-only: SOURCE_FIDELITY_DIFF PASS"
+    }
+  ]
+}
