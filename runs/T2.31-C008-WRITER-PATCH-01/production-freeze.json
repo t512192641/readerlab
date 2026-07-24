@@ -1,0 +1,62 @@
+{
+  "directories": [
+    "final",
+    "locked",
+    "raw"
+  ],
+  "files": [
+    {
+      "bytes": 22004,
+      "path": "final/chapter-with-callouts-v02.md",
+      "sha256": "8bf59cef5606b9a1e33186f9850a9fe1730706f401715affea78d3a4acea8772"
+    },
+    {
+      "bytes": 25893,
+      "path": "locked/C-008-expert-v02.md",
+      "sha256": "4024b00db50e9213a1adc61f3127087485107c73b1735067755d6abeccbe21ef"
+    },
+    {
+      "bytes": 3290,
+      "path": "locked/C-008-p2-gate.md",
+      "sha256": "8deeb5b4e6a54cacde5e99e78e5af29cb8798d5d730ee71f701545164a72780a"
+    },
+    {
+      "bytes": 8723,
+      "path": "locked/C-008-reader-v01.md",
+      "sha256": "64c331a0a74600ed2213873c0d50749c657fe88cb28261bbbba438ff9ad48a26"
+    },
+    {
+      "bytes": 17492,
+      "path": "locked/chapter-scope.xhtml",
+      "sha256": "4d20227000ed3df217831d931d8c70db0579f7dc482d925c95b9cad90122021a"
+    },
+    {
+      "bytes": 1256,
+      "path": "locked/writer-patch-brief.md",
+      "sha256": "50a6140d6429fe6b137cc9cfba7344446ff312a9e197c72fa2cdc779f252f7d7"
+    },
+    {
+      "bytes": 10648,
+      "path": "locked/writer-style-guide-v1.3.md",
+      "sha256": "f58f4c8fd29cae2ba7276273a7f57e028e439e9916ac6bc8579707e85f85616a"
+    },
+    {
+      "bytes": 10518,
+      "path": "raw/C-008-fidelity-v02.md",
+      "sha256": "8e5bc88e89255a26b940c5ca1ce47837fea0f50574a5766a16b29d56d60a09d5"
+    },
+    {
+      "bytes": 7075,
+      "path": "raw/C-008-reader-v02.md",
+      "sha256": "34f7ec48055eb649699465eba1190342d550740980877a69a0acf6b00d9aa49f"
+    },
+    {
+      "bytes": 514,
+      "path": "run.json",
+      "sha256": "9c03e77944c8770a5783ec98f217e1188fac89cc85a5a93ad8ef622caf22d992"
+    }
+  ],
+  "run_schema": "readerlab-run/v2",
+  "schema": "readerlab-production-freeze/v1",
+  "scope": "production"
+}

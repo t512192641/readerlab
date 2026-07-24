@@ -1,3 +1,6 @@
+# macOS metadata must stay out of every run/archive nesting level.
+.DS_Store
+
 # Historical run payloads stay local by default. Git keeps only compact
 # control evidence; already tracked historical files remain tracked.
 runs/*/**
