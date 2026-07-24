@@ -1,0 +1,97 @@
+{
+  "directories": [
+    "final",
+    "locked",
+    "raw"
+  ],
+  "files": [
+    {
+      "bytes": 44103,
+      "path": "final/chapter-with-callouts.md",
+      "sha256": "d29ad5d79c38ffa26afae80914933ceca1e400017ddbc1e7bf38d2a16670eeb7"
+    },
+    {
+      "bytes": 34512,
+      "path": "locked/chapter-scope.xhtml",
+      "sha256": "0f4af98ac9beb82cea8d4ad708191bf28aa7758645249e0640d6c1d9d5c4f88a"
+    },
+    {
+      "bytes": 1767,
+      "path": "locked/p2-gate.md",
+      "sha256": "687e51ff516db20a2a016bb896d62e9bd12492b90138af49fdd7aa0bbde07173"
+    },
+    {
+      "bytes": 1415,
+      "path": "locked/selected-candidate.md",
+      "sha256": "5f9ea8ba56f57e4ba4e802053585d65d45fcd1644da61c0bf801501643d8f65f"
+    },
+    {
+      "bytes": 2156,
+      "path": "locked/selected-comparison.md",
+      "sha256": "d72bbb696ad95b6de31caffe8a4cfe85669645a8e43e87c93b17b077b3367123"
+    },
+    {
+      "bytes": 12100,
+      "path": "locked/writer-style-guide-v1.3.md",
+      "sha256": "ad8beb17d7d180428981a3962ec8cf0f6f3de604dd9a053c4ea587dbdf0b4f03"
+    },
+    {
+      "bytes": 21681,
+      "path": "raw/comparison.md",
+      "sha256": "ad025d5c5f4f962d0a5bce1d61cfc3e7da0346aeb41d8cbf8b87093bae9c73cc"
+    },
+    {
+      "bytes": 33160,
+      "path": "raw/expert-v01.md",
+      "sha256": "028097f47fa3a33cb5fe7077232cde6af3a8c01ef99f4e7c72d7b9d995e13a0e"
+    },
+    {
+      "bytes": 36819,
+      "path": "raw/expert-v02.md",
+      "sha256": "62c5b4899622c8711b0c106b3b0651eaa94a766398f64d7d4918fdac9760d605"
+    },
+    {
+      "bytes": 18303,
+      "path": "raw/fidelity-v01.md",
+      "sha256": "63580a1f241c5f6de237bfb8a18ad1df2aaf5bea59399168c57d8944dae4285c"
+    },
+    {
+      "bytes": 9284,
+      "path": "raw/fidelity-v02.md",
+      "sha256": "25a4f96ab0e10387bc07268caaa3456dff5f2017f7a721b6b9dc6508d847271a"
+    },
+    {
+      "bytes": 38864,
+      "path": "raw/p1-candidates.md",
+      "sha256": "8d90085aedf089ee5b1876fed1d2bf3a74b529f65eab464739806febe510d8f2"
+    },
+    {
+      "bytes": 14109,
+      "path": "raw/reader-v01.md",
+      "sha256": "9420d204039a60f641aff9ffda459c0bda1ee0cec2e5b9e0fb1f6bd449424866"
+    },
+    {
+      "bytes": 14842,
+      "path": "raw/reader-v02.md",
+      "sha256": "9da8dfd4f9882708b7eeb80e45239e58407185c0a2785301aa2967a2dc91a795"
+    },
+    {
+      "bytes": 31824,
+      "path": "raw/source-audit-v01.md",
+      "sha256": "31455c667fb072fa7ec602c1be027550941daba5bdfd9097be7b60b95ebcb81c"
+    },
+    {
+      "bytes": 19952,
+      "path": "raw/source-audit-v02.md",
+      "sha256": "3095fe7f36a1cb84b9e37c209493a15778ddccdb5462ffe0f338404437c572b3"
+    },
+    {
+      "bytes": 565,
+      "path": "run.json",
+      "sha256": "e21a81e36bc2c7756f509b52fcdb08a2262e9dd60eb58cd3bd58da2477883546"
+    }
+  ],
+  "run_schema": "readerlab-run/v2",
+  "schema": "readerlab-production-freeze/v1",
+  "scope": "production"
+}
