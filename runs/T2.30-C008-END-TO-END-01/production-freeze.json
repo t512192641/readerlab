@@ -1,0 +1,77 @@
+{
+  "directories": [
+    "final",
+    "locked",
+    "raw"
+  ],
+  "files": [
+    {
+      "bytes": 23652,
+      "path": "final/chapter-with-callouts-v01.md",
+      "sha256": "43d67f8200027bf236959182b3f4451d6075928ce29434ec74c797ca378b57a6"
+    },
+    {
+      "bytes": 1479,
+      "path": "locked/C-008-candidate.md",
+      "sha256": "602757321db826948829b6027eca48a24d09ca70ca1f35d58740113ba316d374"
+    },
+    {
+      "bytes": 2151,
+      "path": "locked/C-008-comparison.md",
+      "sha256": "429dfd3c56991e9ec9081f477bbb1770f836f10033a774e77aecdc3947d6a7d9"
+    },
+    {
+      "bytes": 3290,
+      "path": "locked/C-008-p2-gate.md",
+      "sha256": "8deeb5b4e6a54cacde5e99e78e5af29cb8798d5d730ee71f701545164a72780a"
+    },
+    {
+      "bytes": 17492,
+      "path": "locked/chapter-scope.xhtml",
+      "sha256": "4d20227000ed3df217831d931d8c70db0579f7dc482d925c95b9cad90122021a"
+    },
+    {
+      "bytes": 9854,
+      "path": "locked/writer-style-guide-v1.3.md",
+      "sha256": "5c7ad9c9f1c07b07e40ed9d651710be341596cfcea418adcea81d33fa705e986"
+    },
+    {
+      "bytes": 19118,
+      "path": "raw/C-008-expert-v01.md",
+      "sha256": "2d96a2ab84153dadbd498a0a37f2f8755377093859856299a04de2643f47ca5b"
+    },
+    {
+      "bytes": 25893,
+      "path": "raw/C-008-expert-v02.md",
+      "sha256": "4024b00db50e9213a1adc61f3127087485107c73b1735067755d6abeccbe21ef"
+    },
+    {
+      "bytes": 7748,
+      "path": "raw/C-008-fidelity-v01.md",
+      "sha256": "9fcc299e6c4805c685e4aad39db9d19ce099a257d90b87adeb00532e8a68be90"
+    },
+    {
+      "bytes": 8723,
+      "path": "raw/C-008-reader-v01.md",
+      "sha256": "64c331a0a74600ed2213873c0d50749c657fe88cb28261bbbba438ff9ad48a26"
+    },
+    {
+      "bytes": 15055,
+      "path": "raw/C-008-source-audit-v01.md",
+      "sha256": "78f184bedbfa3c6b26c7bc55bcf4c2e0046234998d26962f20b79122d0703f7c"
+    },
+    {
+      "bytes": 11843,
+      "path": "raw/C-008-source-audit-v02.md",
+      "sha256": "45e35003b96eaf9d6a2280554017a780460f9b2073de3b34c1712e6f435b8827"
+    },
+    {
+      "bytes": 576,
+      "path": "run.json",
+      "sha256": "872620a4ae60a53b04532ea1e12e734eae0ee6485da909350afda144402fad8d"
+    }
+  ],
+  "run_schema": "readerlab-run/v2",
+  "schema": "readerlab-production-freeze/v1",
+  "scope": "production"
+}
