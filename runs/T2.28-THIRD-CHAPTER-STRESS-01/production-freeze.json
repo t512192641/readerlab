@@ -1,0 +1,82 @@
+{
+  "directories": [
+    "final",
+    "locked",
+    "raw"
+  ],
+  "files": [
+    {
+      "bytes": 12601,
+      "path": "final/C-01-expert-lesson.md",
+      "sha256": "297c0ed9bb54b767c4dde7adad7eb4ec33cd930a9c98ef5db17551298fbcd8b2"
+    },
+    {
+      "bytes": 5946,
+      "path": "final/C-01-reader-v02.md",
+      "sha256": "ce13089ae0c0bbb1c5f974cef5401230e8db9ed2e23d6a7fbea8d84ec688c490"
+    },
+    {
+      "bytes": 1753,
+      "path": "final/assembly-receipt-v02.json",
+      "sha256": "cc933a0dc9b7d2baff04313422df217d25ae11d010e208174cef9364eb86566e"
+    },
+    {
+      "bytes": 24133,
+      "path": "final/chapter-with-callouts-v02.md",
+      "sha256": "d9762921c3e77a47f4bfb8af2e82a338773bf59ee2c0eb9d643bede24bf4c1d3"
+    },
+    {
+      "bytes": 16007,
+      "path": "locked/C-01-source-frozen-expert-lesson.md",
+      "sha256": "8798f18f820e3dc708b5c8ea35eeaa611a1a2684573db6e055c5150c4e4567a9"
+    },
+    {
+      "bytes": 21297,
+      "path": "locked/chapter-scope.xhtml",
+      "sha256": "27a0ef436b8d6e57ca9e6cb0cf4b43babe76f6852857edad0c2b6ae30bcf9e04"
+    },
+    {
+      "bytes": 499,
+      "path": "locked/p2-gate.md",
+      "sha256": "06cb331c3afd5af373ff432d557ae1c317d1813bda00b593ff712fba5685d0e2"
+    },
+    {
+      "bytes": 2980,
+      "path": "raw/C-01-fidelity-v02.md",
+      "sha256": "5a1f41c81a283e2a426f17164024f15f73974add46a111a651cd74070343f423"
+    },
+    {
+      "bytes": 11760,
+      "path": "raw/C-01-source-audit.md",
+      "sha256": "ab621317485e24e68e442028bd2e7357d896efbf34699aef09186478c784221a"
+    },
+    {
+      "bytes": 4192,
+      "path": "raw/C-01-writer-ledger-v02.md",
+      "sha256": "74fba80e8560b8219a391aee0ce477818fd7da8782103cb8ddf3f18186406095"
+    },
+    {
+      "bytes": 1493,
+      "path": "raw/candidate-level-observation.md",
+      "sha256": "55e086dc5915f086add504f5c60bcabe04d2f794b0da6c355aaa58d22b5d9a66"
+    },
+    {
+      "bytes": 2190,
+      "path": "raw/comparison.md",
+      "sha256": "727db57b676b172937a45f1ae2d2d844345b6e00bdb2bb449d3bf5e214be9840"
+    },
+    {
+      "bytes": 2298,
+      "path": "raw/p1-candidates.md",
+      "sha256": "912f6a6294f73407ac49053e62f3bfdafd8ad55a613eb1dd0365aafe47624c54"
+    },
+    {
+      "bytes": 635,
+      "path": "run.json",
+      "sha256": "865e0e597180b20e6953f888221c5b991efe332ab05bd8ca045478dca7f48cc2"
+    }
+  ],
+  "run_schema": "readerlab-run/v2",
+  "schema": "readerlab-production-freeze/v1",
+  "scope": "production"
+}

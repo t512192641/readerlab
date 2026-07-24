@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import ast
 import hashlib
+import io
 import json
 import os
 import re
@@ -12,11 +13,17 @@ import stat
 import subprocess
 import sys
 import tempfile
+import zipfile
+from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 
 
 ROOT = Path(__file__).resolve().parent
 MANIFEST = ROOT / "audit/manifest.json"
+T211_MANIFEST_PROJECT_PATHS = (
+    "README.md",
+    "blueprints/EXECUTION-ROADMAP.md",
+)
 TOP_DOCS = {
     "AGENTS.md",
     "README.md",
@@ -70,6 +77,14 @@ TASK_IDS = (
     "T2.1",
     "T2.2",
     "T2.3",
+    "T2.4",
+    "T2.5",
+    "T2.6",
+    "T2.7",
+    "T2.8",
+    "T2.9",
+    "T2.10",
+    "T2.11",
     "T3.1",
     "T3.2",
     "T3.3",
@@ -1081,6 +1096,2984 @@ def build_manifest(errors: list[str]) -> dict[str, object] | None:
     }
 
 
+def validate_t24_experiment_boundary(errors: list[str]) -> None:
+    pilot_path = ROOT / "taskcards/T2.4.md"
+    agents_path = ROOT / "AGENTS.md"
+    product_path = ROOT / "PRODUCT-DECISIONS.md"
+    pipeline_path = ROOT / "blueprints/PIPELINE-MAP.md"
+
+    pilot = read_regular_utf8(pilot_path, errors, ROOT)
+    agents = read_regular_utf8(agents_path, errors, ROOT)
+    product = read_regular_utf8(product_path, errors, ROOT)
+    pipeline = read_regular_utf8(pipeline_path, errors, ROOT)
+    if pilot is None or agents is None or product is None or pipeline is None:
+        return
+
+    required_product_text = (
+        "图书长文和工程材料（Skills）是两条独立产品线",
+        "专家认知、知识审核与 Writer",
+        "只有通过内容审核的初稿才交给 Writer",
+        "数量、长度和专家背景都由价值与复杂度决定，不设配额",
+    )
+    for literal in required_product_text:
+        if literal not in product:
+            errors.append(f"long-term product owner missing invariant: {literal}")
+
+    required_pipeline_text = (
+        "一次性任务卡不得改写本图",
+        "不预先决定它们是否成为独立 Skill",
+        "新上下文、逐项输入白名单与冻结文件交接",
+        "具体实验的晋级和停止顺序只由当前任务卡拥有",
+    )
+    for literal in required_pipeline_text:
+        if literal not in pipeline:
+            errors.append(f"long-term pipeline map missing invariant: {literal}")
+
+    experiment_match = re.search(r"^experiment-id: (\S+)$", pilot, re.MULTILINE)
+    if experiment_match is None:
+        errors.append("T2.4 pilot card missing experiment-id")
+        return
+    experiment_id = experiment_match.group(1)
+
+    state_match = re.search(r"^current-state: (\S+)$", pilot, re.MULTILINE)
+    allowed_states = {
+        "AUTHORIZED_READY_TO_DISPATCH",
+        "IN_PROGRESS",
+        "AWAITING_PRODUCT_VERDICT",
+        "COMPLETE",
+        "STOPPED",
+    }
+    if state_match is None or state_match.group(1) not in allowed_states:
+        errors.append("T2.4 pilot card has an invalid execution state")
+        return
+    current_state = state_match.group(1)
+
+    table_rows: list[tuple[str, str, str, str, str, str]] = []
+    in_parameter_table = False
+    for line in pilot.splitlines():
+        if line.startswith("| 临时参数 | 本次取值 | 实验编号 |"):
+            in_parameter_table = True
+            continue
+        if not in_parameter_table:
+            continue
+        if line.startswith("|---"):
+            continue
+        if not line.startswith("|"):
+            break
+        cells = tuple(cell.strip() for cell in line.strip("|").split("|"))
+        if len(cells) != 6:
+            errors.append("T2.4 parameter row must have exactly six populated columns")
+            continue
+        if any(not cell for cell in cells):
+            errors.append("T2.4 parameter row contains an empty field")
+            continue
+        table_rows.append(cells)
+
+    if not table_rows:
+        errors.append("T2.4 pilot card has no registered temporary parameters")
+        return
+    parameter_names = [row[0] for row in table_rows]
+    if len(parameter_names) != len(set(parameter_names)):
+        errors.append("T2.4 temporary parameter names must be unique")
+    for name, _value, row_experiment_id, _reason, _expiry, _forbidden in table_rows:
+        if row_experiment_id != experiment_id:
+            errors.append(
+                f"T2.4 parameter {name} is not bound to experiment-id {experiment_id}"
+            )
+
+    long_term_paths = (
+        "AGENTS.md",
+        "PRODUCT-DECISIONS.md",
+        "README.md",
+        "blueprints/PIPELINE-MAP.md",
+        "blueprints/EXECUTION-ROADMAP.md",
+    )
+    for relative in long_term_paths:
+        text = read_regular_utf8(ROOT / relative, errors, ROOT)
+        if text is None:
+            continue
+        for name, value, _row_id, _reason, _expiry, _forbidden in table_rows:
+            if len(value) >= 4:
+                leaked = value in text
+            else:
+                leaked = re.search(
+                    re.escape(name) + r".{0,80}" + re.escape(value),
+                    text,
+                    flags=re.DOTALL,
+                ) is not None
+            if leaked:
+                errors.append(
+                    f"temporary T2.4 parameter leaked into long-term document: "
+                    f"{relative}: {name}={value}"
+                )
+
+        for forbidden_role in ("生产小组长", "小组长 → 组员", "产品负责人 → 总控"):
+            if forbidden_role in text:
+                errors.append(
+                    f"temporary experiment organization leaked into long-term document: "
+                    f"{relative}: {forbidden_role}"
+                )
+        if "PRODUCTION-WORKFLOW.md" in text:
+            errors.append(
+                f"retired workflow owner still referenced by current document: {relative}"
+            )
+
+    required_pilot_text = (
+        "**一次性实验参数，不是正式运营规则。**",
+        "experiment-id: T2.4-IDEA-PILOT-01",
+        "所有参数在以下任一事件发生时自动失效",
+        "不能引用“T2.4 已经允许”",
+        "本轮实验编排者",
+        "材料分析与选角调用",
+        "全新且彼此隔离的上下文中运行",
+        '`fork_turns="none"`',
+        "不属于 ReaderLab 长期架构",
+        "无论结果如何都停止，不自动进入完整专家稿、来源核验、Writer、Assembler 或 Judge",
+    )
+    for literal in required_pilot_text:
+        if literal not in pilot:
+            errors.append(f"T2.4 pilot card missing temporary boundary: {literal}")
+
+    required_scope_text = (
+        "672638",
+        "3baf9932c92412f0e7d0ccae993182f55f62e2fab5ec46a3882d675476288664",
+        "materials/T2.4-IDEA-PILOT-01/source.epub",
+        "text/part0019.html",
+        "第13章 神：不要妄称神的名",
+        "c72b2e794266b7eb0d2589045328ea98c9511d8a56aa4037d924e036d1fac891",
+        "216f3a01176e10084ee7a011da7f85cd8bb6e6f1558546db6414f9a285b05dad",
+        "13337",
+        "4174",
+        "18 个正文段落",
+        "世俗主义，就能为我们提供所需的所有价值。",
+        "runs/T2.4-IDEA-PILOT-01/inputs/material-analysis-brief.md",
+        "runs/T2.4-IDEA-PILOT-01/inputs/common-idea-contract.md",
+        "runs/T2.4-IDEA-PILOT-01/raw/material-analysis.json",
+        "runs/T2.4-IDEA-PILOT-01/raw/ideas/generic-control.json",
+        "runs/T2.4-IDEA-PILOT-01/review/anonymous-ideas.json",
+        "runs/T2.4-IDEA-PILOT-01/review/anonymous-ideas.html",
+        "runs/T2.4-IDEA-PILOT-01/review/reveal-map.json",
+        "runs/T2.4-IDEA-PILOT-01/acceptance/product-verdicts.md",
+        "最多60000 tokens",
+        "最多11500 tokens",
+        "AUTHORIZED_READY_TO_DISPATCH",
+    )
+    for literal in required_scope_text:
+        if literal not in pilot:
+            errors.append(f"T2.4 pilot card missing frozen scope or path: {literal}")
+
+    for profile_id in ("mainline-01", "mainline-02", "open-01", "open-02"):
+        profile_path = f"runs/T2.4-IDEA-PILOT-01/inputs/profiles/{profile_id}.md"
+        output_path = f"runs/T2.4-IDEA-PILOT-01/raw/ideas/{profile_id}.json"
+        if profile_path not in pilot:
+            errors.append(f"T2.4 profile whitelist missing: {profile_path}")
+        if output_path not in pilot:
+            errors.append(f"T2.4 fixed Idea output missing: {output_path}")
+
+    role_section_match = re.search(
+        r"### 派发阶段逐角色输入白名单\n\n(?P<body>.*?)\n\n## 4\. 交付文件清单",
+        pilot,
+        flags=re.DOTALL,
+    )
+    if role_section_match is None:
+        errors.append("T2.4 role whitelist section is missing or misplaced")
+    else:
+        role_section = role_section_match.group("body")
+        role_bullets = [
+            line for line in role_section.splitlines() if line.startswith("- ")
+        ]
+        expected_role_bullets = [
+            '- 材料分析与选角调用只能读取：上述 EPUB 的冻结片段、`runs/T2.4-IDEA-PILOT-01/inputs/material-analysis-brief.md`；只能写 `runs/T2.4-IDEA-PILOT-01/raw/material-analysis.json` 与下列四份逐项登记的 profile。四份画像是该调用的同批输出，不另增调用；实验编排者只做 schema／路径／hash 检查并冻结，不改写内容。',
+            '- 主线画像 `mainline-01` 只能读取：冻结片段、`runs/T2.4-IDEA-PILOT-01/inputs/common-idea-contract.md`、`runs/T2.4-IDEA-PILOT-01/inputs/profiles/mainline-01.md`；只能写 `runs/T2.4-IDEA-PILOT-01/raw/ideas/mainline-01.json`。',
+            '- 主线画像 `mainline-02` 只能读取：冻结片段、`runs/T2.4-IDEA-PILOT-01/inputs/common-idea-contract.md`、`runs/T2.4-IDEA-PILOT-01/inputs/profiles/mainline-02.md`；只能写 `runs/T2.4-IDEA-PILOT-01/raw/ideas/mainline-02.json`。',
+            '- 开放画像 `open-01` 只能读取：冻结片段、`runs/T2.4-IDEA-PILOT-01/inputs/common-idea-contract.md`、`runs/T2.4-IDEA-PILOT-01/inputs/profiles/open-01.md`；只能写 `runs/T2.4-IDEA-PILOT-01/raw/ideas/open-01.json`。',
+            '- 开放画像 `open-02` 只能读取：冻结片段、`runs/T2.4-IDEA-PILOT-01/inputs/common-idea-contract.md`、`runs/T2.4-IDEA-PILOT-01/inputs/profiles/open-02.md`；只能写 `runs/T2.4-IDEA-PILOT-01/raw/ideas/open-02.json`。',
+            '- 无画像通用对照 `generic-control` 只能读取：冻结片段和 `runs/T2.4-IDEA-PILOT-01/inputs/common-idea-contract.md`，不得读取任何 profile；只能写 `runs/T2.4-IDEA-PILOT-01/raw/ideas/generic-control.json`。',
+            '- 五个 Idea 调用均不得读取 `material-analysis.json`、其他配置 profile、其他配置输出、匿名包、揭示映射、产品判词、本卡以外的 owner、金标、样张、旧 run 或主控会话历史。每个调用必须使用 `fork_turns="none"`。',
+            '- 实验编排者只能在五个输出全部冻结后读取它们，做机械无效项过滤、去身份和随机排列；不得改写 Idea 内容或提前作产品价值淘汰。',
+        ]
+        if role_bullets != expected_role_bullets:
+            errors.append("T2.4 exact role-to-input/output whitelist mapping mismatch")
+        if role_section.count("只能读取：") != 6 or role_section.count("只能写") != 6:
+            errors.append("T2.4 must register exactly six read/write call boundaries")
+        required_role_text = (
+            "四份画像是该调用的同批输出，不另增调用",
+            "不得读取任何 profile",
+            "五个 Idea 调用均不得读取 `material-analysis.json`",
+            "其他配置 profile、其他配置输出、匿名包、揭示映射、产品判词",
+            '`fork_turns="none"`',
+            "不得改写 Idea 内容或提前作产品价值淘汰",
+        )
+        for literal in required_role_text:
+            if literal not in role_section:
+                errors.append(f"T2.4 role whitelist missing boundary: {literal}")
+
+    expected_run_paths = {
+        "runs/T2.4-IDEA-PILOT-01/inputs/material-analysis-brief.md",
+        "runs/T2.4-IDEA-PILOT-01/inputs/common-idea-contract.md",
+        "runs/T2.4-IDEA-PILOT-01/inputs/profiles/mainline-01.md",
+        "runs/T2.4-IDEA-PILOT-01/inputs/profiles/mainline-02.md",
+        "runs/T2.4-IDEA-PILOT-01/inputs/profiles/open-01.md",
+        "runs/T2.4-IDEA-PILOT-01/inputs/profiles/open-02.md",
+        "runs/T2.4-IDEA-PILOT-01/raw/material-analysis.json",
+        "runs/T2.4-IDEA-PILOT-01/raw/ideas/mainline-01.json",
+        "runs/T2.4-IDEA-PILOT-01/raw/ideas/mainline-02.json",
+        "runs/T2.4-IDEA-PILOT-01/raw/ideas/open-01.json",
+        "runs/T2.4-IDEA-PILOT-01/raw/ideas/open-02.json",
+        "runs/T2.4-IDEA-PILOT-01/raw/ideas/generic-control.json",
+        "runs/T2.4-IDEA-PILOT-01/receipts/material-scope.json",
+        "runs/T2.4-IDEA-PILOT-01/receipts/material-analysis-freeze.json",
+        "runs/T2.4-IDEA-PILOT-01/receipts/idea-outputs-freeze.json",
+        "runs/T2.4-IDEA-PILOT-01/review/anonymous-ideas.json",
+        "runs/T2.4-IDEA-PILOT-01/review/anonymous-ideas.html",
+        "runs/T2.4-IDEA-PILOT-01/review/reveal-map.json",
+        "runs/T2.4-IDEA-PILOT-01/acceptance/product-verdicts.md",
+        "runs/T2.4-IDEA-PILOT-01/final/experiment-report.md",
+    }
+    observed_run_paths = set(
+        re.findall(r"`(runs/T2\.4-IDEA-PILOT-01/[^`]+)`", pilot)
+    )
+    observed_run_paths.discard("runs/T2.4-IDEA-PILOT-01/")
+    if observed_run_paths != expected_run_paths:
+        errors.append(
+            "T2.4 run-path closure mismatch: "
+            f"missing {sorted(expected_run_paths - observed_run_paths)}, "
+            f"unexpected {sorted(observed_run_paths - expected_run_paths)}"
+        )
+
+    material_path = ROOT / "materials/T2.4-IDEA-PILOT-01/source.epub"
+    material = read_regular_bytes(material_path, errors, ROOT)
+    if material is not None:
+        if len(material) != 672638:
+            errors.append("T2.4 EPUB byte size mismatch")
+        if hashlib.sha256(material).hexdigest() != (
+            "3baf9932c92412f0e7d0ccae993182f55f62e2fab5ec46a3882d675476288664"
+        ):
+            errors.append("T2.4 EPUB SHA-256 mismatch")
+        try:
+            with zipfile.ZipFile(io.BytesIO(material)) as epub:
+                member = epub.read("text/part0019.html")
+        except (KeyError, zipfile.BadZipFile, OSError) as error:
+            errors.append(f"T2.4 frozen EPUB member unreadable: {error}")
+        else:
+            start_marker = b'<h2 class="calibre15"'
+            end_marker = b'<ol class="duokan-footnote-content1">'
+            if len(member) != 15941 or hashlib.sha256(member).hexdigest() != (
+                "c72b2e794266b7eb0d2589045328ea98c9511d8a56aa4037d924e036d1fac891"
+            ):
+                errors.append("T2.4 frozen EPUB member identity mismatch")
+            if member.count(start_marker) != 1 or member.count(end_marker) != 1:
+                errors.append("T2.4 frozen XHTML scope markers must each occur once")
+            else:
+                scope = member[member.index(start_marker) : member.index(end_marker)]
+                if len(scope) != 13337 or hashlib.sha256(scope).hexdigest() != (
+                    "216f3a01176e10084ee7a011da7f85cd8bb6e6f1558546db6414f9a285b05dad"
+                ):
+                    errors.append("T2.4 frozen XHTML scope identity mismatch")
+                if scope.count(b'<p class="fn">') != 18:
+                    errors.append("T2.4 frozen XHTML paragraph count mismatch")
+                if "世俗主义，就能为我们提供所需的所有价值。".encode() not in scope:
+                    errors.append("T2.4 frozen XHTML final sentence missing")
+
+    predispatch_root = ROOT / "runs/T2.4-IDEA-PILOT-01"
+    if predispatch_root.is_symlink():
+        errors.append("T2.4 run root symlink forbidden")
+    elif current_state == "AUTHORIZED_READY_TO_DISPATCH" and predispatch_root.exists():
+        errors.append(
+            "T2.4 pre-dispatch output root must not exist while state is "
+            "AUTHORIZED_READY_TO_DISPATCH: "
+            "runs/T2.4-IDEA-PILOT-01"
+        )
+    elif current_state in {
+        "IN_PROGRESS",
+        "AWAITING_PRODUCT_VERDICT",
+        "COMPLETE",
+        "STOPPED",
+    }:
+        if current_state == "STOPPED" and not predispatch_root.exists():
+            pass
+        elif not predispatch_root.is_dir():
+            errors.append(f"T2.4 state {current_state} requires a regular run directory")
+        else:
+            actual_run_paths: set[str] = set()
+            for path in predispatch_root.rglob("*"):
+                relative = path.relative_to(ROOT).as_posix()
+                if path.is_symlink():
+                    errors.append(f"T2.4 run symlink forbidden: {relative}")
+                elif path.is_file():
+                    actual_run_paths.add(relative)
+            extra_paths = actual_run_paths - expected_run_paths
+            if extra_paths:
+                errors.append(f"T2.4 unexpected run files: {sorted(extra_paths)}")
+            if current_state == "AWAITING_PRODUCT_VERDICT":
+                required_paths = expected_run_paths - {
+                    "runs/T2.4-IDEA-PILOT-01/acceptance/product-verdicts.md",
+                    "runs/T2.4-IDEA-PILOT-01/final/experiment-report.md",
+                }
+                missing_paths = required_paths - actual_run_paths
+                if missing_paths:
+                    errors.append(
+                        "T2.4 awaiting-verdict artifacts missing: "
+                        f"{sorted(missing_paths)}"
+                    )
+            elif current_state == "COMPLETE":
+                missing_paths = expected_run_paths - actual_run_paths
+                if missing_paths:
+                    errors.append(
+                        f"T2.4 complete artifacts missing: {sorted(missing_paths)}"
+                    )
+
+    if "涉及生产流程、角色责任、晋级、实验治理或任务卡设计时，必须读 `blueprints/PIPELINE-MAP.md`" not in agents:
+        errors.append("AGENTS.md does not require the long-term pipeline map before experiment design")
+    if "任务卡只能组织一次实验，不能新增长期角色、改写长期流程或决定最终 Skill 拆分" not in agents:
+        errors.append("AGENTS.md does not prevent taskcards from redefining long-term architecture")
+    if "任务卡只在执行对应任务时读取" not in agents:
+        errors.append("AGENTS.md does not keep taskcard parameters task-local")
+
+
+def validate_t25_experiment_boundary(errors: list[str]) -> None:
+    card_path = ROOT / "taskcards/T2.5.md"
+    product_path = ROOT / "PRODUCT-DECISIONS.md"
+    lessons_path = ROOT / "ENGINEERING-LESSONS.md"
+    pipeline_path = ROOT / "blueprints/PIPELINE-MAP.md"
+    roadmap_path = ROOT / "blueprints/EXECUTION-ROADMAP.md"
+    readme_path = ROOT / "README.md"
+
+    card = read_regular_utf8(card_path, errors, ROOT)
+    product = read_regular_utf8(product_path, errors, ROOT)
+    lessons = read_regular_utf8(lessons_path, errors, ROOT)
+    pipeline = read_regular_utf8(pipeline_path, errors, ROOT)
+    roadmap = read_regular_utf8(roadmap_path, errors, ROOT)
+    readme = read_regular_utf8(readme_path, errors, ROOT)
+    if any(
+        value is None
+        for value in (card, product, lessons, pipeline, roadmap, readme)
+    ):
+        return
+    assert card is not None
+    assert product is not None
+    assert lessons is not None
+    assert pipeline is not None
+    assert roadmap is not None
+    assert readme is not None
+
+    required_product_text = (
+        "专家的核心工作是把完整原文中的真实问题、现象或判断作为案例",
+        "名称、词语或表面比喻相似不构成真实连接",
+        "没有自然且值得的连接时，专家可以沉默",
+        "更细的诊断问题不得继续堆入专家 Prompt",
+    )
+    for literal in required_product_text:
+        if literal not in product:
+            errors.append(f"T2.5 product owner missing Expert invariant: {literal}")
+
+    required_retrospective_invariants = (
+        "知识专长不能退化为分析动作",
+        "去角色扮演／表达风格",
+        "去知识专长",
+        "技术 `PASS` 永远不能替代这项目标保真检查",
+    )
+    for literal in required_retrospective_invariants:
+        if literal not in lessons:
+            errors.append(f"T2.5 retrospective invariant missing: {literal}")
+
+    stale_current_pointers = (
+        "T2.5 的实时状态、材料复用、调用和停止边界只由 `taskcards/T2.5.md` 拥有",
+        "按 `taskcards/T2.5.md` 用同一阅读单元隔离验证新的 Expert 工作合同",
+        "T2.5 Expert 工作合同知识课 Demo 实验（待派发）",
+    )
+    for literal in stale_current_pointers:
+        if literal in pipeline or literal in roadmap or literal in readme:
+            errors.append(f"T2.5 stale current-state pointer still present: {literal}")
+
+    experiment_match = re.search(r"^experiment-id: (\S+)$", card, re.MULTILINE)
+    if experiment_match is None:
+        errors.append("T2.5 card missing experiment-id")
+        return
+    experiment_id = experiment_match.group(1)
+    if experiment_id != "T2.5-KNOWLEDGE-LENS-PILOT-01":
+        errors.append("T2.5 experiment-id mismatch")
+    for long_term_path, long_term_text in (
+        ("PRODUCT-DECISIONS.md", product),
+        ("blueprints/PIPELINE-MAP.md", pipeline),
+    ):
+        if experiment_id in long_term_text:
+            errors.append(
+                f"T2.5 run identity leaked into long-term owner: {long_term_path}"
+            )
+
+    state_match = re.search(r"^current-state: (\S+)$", card, re.MULTILINE)
+    allowed_states = {
+        "READY_FOR_DISPATCH",
+        "IN_PROGRESS",
+        "AWAITING_PRODUCT_VERDICT",
+        "COMPLETE",
+        "STOPPED",
+    }
+    if state_match is None or state_match.group(1) not in allowed_states:
+        errors.append("T2.5 card has an invalid execution state")
+        return
+    current_state = state_match.group(1)
+    if current_state in {"READY_FOR_DISPATCH", "IN_PROGRESS", "AWAITING_PRODUCT_VERDICT"}:
+        if f"`taskcards/T2.5.md` 状态为 `{current_state}`" not in readme:
+            errors.append("README does not match the active T2.5 execution state")
+    elif "T2.5" not in readme or "已完成" not in readme:
+        errors.append("README does not retain the terminal T2.5 history")
+
+    required_card_text = (
+        "不测试专家人设、随机透镜、选角机制",
+        "不得附加评分表、逐项自检、知识类型菜单或更多反例",
+        "没有自然且值得的连接时，请保持沉默",
+        "`title`、`anchor`、`lesson`",
+        '分别使用 `fork_turns="none"` 的新会话',
+        "不做产品价值过滤",
+        "产品负责人判词前不得揭示映射",
+        "只有产品负责人在看到本卡的材料、合同、成本与停止点后明确发出开始指令",
+    )
+    for literal in required_card_text:
+        if literal not in card:
+            errors.append(f"T2.5 card missing frozen boundary: {literal}")
+
+    expected_expert_outputs = {
+        f"runs/T2.5-KNOWLEDGE-LENS-PILOT-01/raw/experts/E0{index}.json"
+        for index in range(1, 5)
+    }
+    for expert_path in expected_expert_outputs:
+        expert_id = PurePosixPath(expert_path).stem
+        expected_line = f"- `{expert_id}` 只能写 `{expert_path}`。"
+        if expected_line not in card:
+            errors.append(f"T2.5 Expert output whitelist mismatch: {expert_id}")
+
+    expected_run_paths = {
+        "runs/T2.5-KNOWLEDGE-LENS-PILOT-01/inputs/expert-work-contract.md",
+        *expected_expert_outputs,
+        "runs/T2.5-KNOWLEDGE-LENS-PILOT-01/review/anonymous-lessons.json",
+        "runs/T2.5-KNOWLEDGE-LENS-PILOT-01/review/anonymous-lessons.html",
+        "runs/T2.5-KNOWLEDGE-LENS-PILOT-01/review/reveal-map.json",
+        "runs/T2.5-KNOWLEDGE-LENS-PILOT-01/acceptance/product-verdicts.md",
+    }
+    observed_run_paths = set(
+        re.findall(r"`(runs/T2\.5-KNOWLEDGE-LENS-PILOT-01/[^`]+)`", card)
+    )
+    observed_run_paths.discard("runs/T2.5-KNOWLEDGE-LENS-PILOT-01/")
+    if observed_run_paths != expected_run_paths:
+        errors.append(
+            "T2.5 run-path closure mismatch: "
+            f"missing {sorted(expected_run_paths - observed_run_paths)}, "
+            f"unexpected {sorted(observed_run_paths - expected_run_paths)}"
+        )
+
+    material_path = ROOT / "materials/T2.4-IDEA-PILOT-01/source.epub"
+    material = read_regular_bytes(material_path, errors, ROOT)
+    if material is not None:
+        if len(material) != 672638:
+            errors.append("T2.5 EPUB byte size mismatch")
+        if hashlib.sha256(material).hexdigest() != (
+            "3baf9932c92412f0e7d0ccae993182f55f62e2fab5ec46a3882d675476288664"
+        ):
+            errors.append("T2.5 EPUB SHA-256 mismatch")
+        try:
+            with zipfile.ZipFile(io.BytesIO(material)) as epub:
+                member = epub.read("text/part0019.html")
+        except (KeyError, zipfile.BadZipFile, OSError) as error:
+            errors.append(f"T2.5 frozen EPUB member unreadable: {error}")
+        else:
+            start_marker = b'<h2 class="calibre15"'
+            end_marker = b'<ol class="duokan-footnote-content1">'
+            if len(member) != 15941 or hashlib.sha256(member).hexdigest() != (
+                "c72b2e794266b7eb0d2589045328ea98c9511d8a56aa4037d924e036d1fac891"
+            ):
+                errors.append("T2.5 frozen EPUB member identity mismatch")
+            if member.count(start_marker) != 1 or member.count(end_marker) != 1:
+                errors.append("T2.5 frozen XHTML scope markers must each occur once")
+            else:
+                scope = member[member.index(start_marker) : member.index(end_marker)]
+                if len(scope) != 13337 or hashlib.sha256(scope).hexdigest() != (
+                    "216f3a01176e10084ee7a011da7f85cd8bb6e6f1558546db6414f9a285b05dad"
+                ):
+                    errors.append("T2.5 frozen XHTML scope identity mismatch")
+                if scope.count(b'<p class="fn">') != 18:
+                    errors.append("T2.5 frozen XHTML paragraph count mismatch")
+                if "世俗主义，就能为我们提供所需的所有价值。".encode() not in scope:
+                    errors.append("T2.5 frozen XHTML final sentence missing")
+
+    run_root = ROOT / "runs/T2.5-KNOWLEDGE-LENS-PILOT-01"
+    if run_root.is_symlink():
+        errors.append("T2.5 run root symlink forbidden")
+    elif current_state == "READY_FOR_DISPATCH" and run_root.exists():
+        errors.append("T2.5 READY_FOR_DISPATCH requires an absent run root")
+    elif current_state in {
+        "IN_PROGRESS",
+        "AWAITING_PRODUCT_VERDICT",
+        "COMPLETE",
+        "STOPPED",
+    }:
+        if current_state == "STOPPED" and not run_root.exists():
+            pass
+        elif not run_root.is_dir():
+            errors.append(f"T2.5 state {current_state} requires a regular run directory")
+        else:
+            actual_run_paths: set[str] = set()
+            for path in run_root.rglob("*"):
+                relative = path.relative_to(ROOT).as_posix()
+                if path.is_symlink():
+                    errors.append(f"T2.5 run symlink forbidden: {relative}")
+                elif path.is_file():
+                    actual_run_paths.add(relative)
+            extra_paths = actual_run_paths - expected_run_paths
+            if extra_paths:
+                errors.append(f"T2.5 unexpected run files: {sorted(extra_paths)}")
+            if current_state == "AWAITING_PRODUCT_VERDICT":
+                required_paths = expected_run_paths - {
+                    "runs/T2.5-KNOWLEDGE-LENS-PILOT-01/acceptance/product-verdicts.md",
+                }
+                missing_paths = required_paths - actual_run_paths
+                if missing_paths:
+                    errors.append(
+                        "T2.5 awaiting-verdict artifacts missing: "
+                        f"{sorted(missing_paths)}"
+                    )
+            elif current_state == "COMPLETE":
+                missing_paths = expected_run_paths - actual_run_paths
+                if missing_paths:
+                    errors.append(
+                        f"T2.5 complete artifacts missing: {sorted(missing_paths)}"
+                    )
+
+
+class _ExpertDemoVisiblePageParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.articles: dict[str, dict[str, object]] = {}
+        self.disciplines: dict[str, str] = {}
+        self.errors: list[str] = []
+        self._article_id: str | None = None
+        self._capture: str | None = None
+        self._buffer: list[str] = []
+
+    def handle_starttag(
+        self, tag: str, attrs: list[tuple[str, str | None]]
+    ) -> None:
+        attributes = dict(attrs)
+        if tag == "article":
+            article_id = attributes.get("id")
+            if article_id is not None:
+                self._article_id = article_id
+                if article_id in self.articles:
+                    self.errors.append(f"duplicate article id: {article_id}")
+                else:
+                    self.articles[article_id] = {
+                        "title": "",
+                        "anchor": "",
+                        "paragraphs": [],
+                    }
+        elif (
+            self._article_id is not None
+            and tag == "span"
+            and "discipline" in (attributes.get("class") or "").split()
+        ):
+            if self._capture is not None:
+                self.errors.append("nested captured node: span")
+                return
+            if self._article_id in self.disciplines:
+                self.errors.append(f"duplicate discipline in article: {self._article_id}")
+                return
+            self._capture = tag
+            self._buffer = []
+        elif self._article_id is not None and tag in {"h2", "blockquote", "p"}:
+            if self._capture is not None:
+                self.errors.append(f"nested captured node: {tag}")
+                return
+            if tag in {"h2", "blockquote"}:
+                key = "title" if tag == "h2" else "anchor"
+                if self.articles[self._article_id][key] != "":
+                    self.errors.append(
+                        f"duplicate {tag} in article: {self._article_id}"
+                    )
+                    return
+            self._capture = tag
+            self._buffer = []
+
+    def handle_data(self, data: str) -> None:
+        if self._capture is not None:
+            self._buffer.append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        if self._article_id is not None and tag == self._capture:
+            text = "".join(self._buffer).strip()
+            article = self.articles[self._article_id]
+            if tag == "h2":
+                article["title"] = text
+            elif tag == "blockquote":
+                article["anchor"] = text
+            elif tag == "p":
+                paragraphs = article["paragraphs"]
+                assert isinstance(paragraphs, list)
+                paragraphs.append(text)
+            elif tag == "span":
+                self.disciplines[self._article_id] = text
+            self._capture = None
+            self._buffer = []
+        elif tag == "article":
+            self._article_id = None
+
+
+def validate_t26_experiment_boundary(errors: list[str]) -> None:
+    card_path = ROOT / "taskcards/T2.6.md"
+    readme_path = ROOT / "README.md"
+    pipeline_path = ROOT / "blueprints/PIPELINE-MAP.md"
+    card = read_regular_utf8(card_path, errors, ROOT)
+    readme = read_regular_utf8(readme_path, errors, ROOT)
+    pipeline = read_regular_utf8(pipeline_path, errors, ROOT)
+    if card is None or readme is None or pipeline is None:
+        return
+
+    experiment_id = "T2.6-DISCIPLINE-EXPERT-PILOT-01"
+    if f"experiment-id: {experiment_id}" not in card:
+        errors.append("T2.6 experiment-id mismatch")
+    if experiment_id in pipeline:
+        errors.append("T2.6 run identity leaked into long-term pipeline owner")
+
+    state_match = re.search(r"^current-state: (\S+)$", card, re.MULTILINE)
+    allowed_states = {
+        "READY_FOR_DISPATCH",
+        "IN_PROGRESS",
+        "AWAITING_PRODUCT_VERDICT",
+        "COMPLETE",
+        "STOPPED",
+    }
+    if state_match is None or state_match.group(1) not in allowed_states:
+        errors.append("T2.6 card has an invalid execution state")
+        return
+    current_state = state_match.group(1)
+    if f"`taskcards/T2.6.md` 状态为 `{current_state}`" not in readme:
+        errors.append("README does not match the current T2.6 execution state")
+
+    required_card_text = (
+        "不生产专家画像、知识承载型背景、理论清单或知识地图",
+        "不调用材料分析／自动选角",
+        "学科标签只指定知识来源，不指定文风、理论、锚点或结论",
+        '三个调用均使用 `fork_turns="none"`',
+        "不返工、不补调",
+        "产品负责人明确决定直接阅读",
+        "review-mode: transparent",
+        "产品负责人已在看到最小方案和 Prompt 后明确要求开始测试",
+    )
+    for literal in required_card_text:
+        if literal not in card:
+            errors.append(f"T2.6 card missing frozen boundary: {literal}")
+
+    expected_expert_outputs = {
+        f"runs/{experiment_id}/raw/experts/E0{index}.json"
+        for index in range(1, 4)
+    }
+    expected_run_paths = {
+        f"runs/{experiment_id}/inputs/expert-prompt.md",
+        *expected_expert_outputs,
+        f"runs/{experiment_id}/review/expert-demos.html",
+        f"runs/{experiment_id}/acceptance/product-verdicts.md",
+    }
+    observed_run_paths = set(
+        re.findall(rf"`(runs/{re.escape(experiment_id)}/[^`]+)`", card)
+    )
+    if observed_run_paths != expected_run_paths:
+        errors.append(
+            "T2.6 run-path closure mismatch: "
+            f"missing {sorted(expected_run_paths - observed_run_paths)}, "
+            f"unexpected {sorted(observed_run_paths - expected_run_paths)}"
+        )
+
+    material_path = ROOT / "materials/T2.4-IDEA-PILOT-01/source.epub"
+    material = read_regular_bytes(material_path, errors, ROOT)
+    if material is not None:
+        if len(material) != 672638:
+            errors.append("T2.6 EPUB byte size mismatch")
+        if hashlib.sha256(material).hexdigest() != (
+            "3baf9932c92412f0e7d0ccae993182f55f62e2fab5ec46a3882d675476288664"
+        ):
+            errors.append("T2.6 EPUB SHA-256 mismatch")
+        try:
+            with zipfile.ZipFile(io.BytesIO(material)) as epub:
+                member = epub.read("text/part0019.html")
+        except (KeyError, zipfile.BadZipFile, OSError) as error:
+            errors.append(f"T2.6 frozen EPUB member unreadable: {error}")
+        else:
+            start_marker = b'<h2 class="calibre15"'
+            end_marker = b'<ol class="duokan-footnote-content1">'
+            if len(member) != 15941 or hashlib.sha256(member).hexdigest() != (
+                "c72b2e794266b7eb0d2589045328ea98c9511d8a56aa4037d924e036d1fac891"
+            ):
+                errors.append("T2.6 frozen EPUB member identity mismatch")
+            if member.count(start_marker) != 1 or member.count(end_marker) != 1:
+                errors.append("T2.6 frozen XHTML scope markers must each occur once")
+            else:
+                scope = member[member.index(start_marker) : member.index(end_marker)]
+                if len(scope) != 13337 or hashlib.sha256(scope).hexdigest() != (
+                    "216f3a01176e10084ee7a011da7f85cd8bb6e6f1558546db6414f9a285b05dad"
+                ):
+                    errors.append("T2.6 frozen XHTML scope identity mismatch")
+                if scope.count(b'<p class="fn">') != 18:
+                    errors.append("T2.6 frozen XHTML paragraph count mismatch")
+
+    run_root = ROOT / f"runs/{experiment_id}"
+    if run_root.is_symlink():
+        errors.append("T2.6 run root symlink forbidden")
+    elif current_state == "READY_FOR_DISPATCH" and run_root.exists():
+        errors.append("T2.6 READY_FOR_DISPATCH requires an absent run root")
+    elif current_state in {
+        "IN_PROGRESS",
+        "AWAITING_PRODUCT_VERDICT",
+        "COMPLETE",
+        "STOPPED",
+    }:
+        if current_state == "STOPPED" and not run_root.exists():
+            return
+        if not run_root.is_dir():
+            errors.append(f"T2.6 state {current_state} requires a regular run directory")
+            return
+        actual_run_paths: set[str] = set()
+        for path in run_root.rglob("*"):
+            relative = path.relative_to(ROOT).as_posix()
+            if path.is_symlink():
+                errors.append(f"T2.6 run symlink forbidden: {relative}")
+            elif path.is_file():
+                actual_run_paths.add(relative)
+        extra_paths = actual_run_paths - expected_run_paths
+        if extra_paths:
+            errors.append(f"T2.6 unexpected run files: {sorted(extra_paths)}")
+
+        raw_items: dict[str, dict[str, object]] = {}
+        for expert_id in ("E01", "E02", "E03"):
+            raw_path = run_root / f"raw/experts/{expert_id}.json"
+            if not raw_path.is_file():
+                continue
+            try:
+                raw_value = json.loads(raw_path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError, json.JSONDecodeError) as error:
+                errors.append(f"T2.6 invalid raw JSON {expert_id}: {error}")
+                continue
+            if not isinstance(raw_value, dict):
+                errors.append(f"T2.6 raw output must be an object: {expert_id}")
+                continue
+            status = raw_value.get("status")
+            if status == "submit":
+                if set(raw_value) != {"status", "title", "anchor", "lesson"}:
+                    errors.append(f"T2.6 submit schema mismatch: {expert_id}")
+                    continue
+                if not all(
+                    isinstance(raw_value.get(field), str) and raw_value[field].strip()
+                    for field in ("title", "anchor", "lesson")
+                ):
+                    errors.append(f"T2.6 submit has an empty content field: {expert_id}")
+                    continue
+            elif status == "silent":
+                if set(raw_value) != {"status"}:
+                    errors.append(f"T2.6 silent schema mismatch: {expert_id}")
+                    continue
+            else:
+                errors.append(f"T2.6 invalid raw status: {expert_id}")
+                continue
+            raw_items[expert_id] = raw_value
+
+        expert_page_path = run_root / "review/expert-demos.html"
+        if expert_page_path.is_file():
+            try:
+                expert_page = expert_page_path.read_text(encoding="utf-8")
+            except (OSError, UnicodeError) as error:
+                errors.append(f"T2.6 transparent review page unreadable: {error}")
+            else:
+                source_match = re.search(
+                    r'<script type="application/json" id="source-data">\s*(\{.*?\})\s*</script>',
+                    expert_page,
+                    flags=re.DOTALL,
+                )
+                if source_match is None:
+                    errors.append("T2.6 transparent page lacks embedded source data")
+                else:
+                    visible_html = expert_page[: source_match.start()]
+                    visible_parser = _ExpertDemoVisiblePageParser()
+                    visible_parser.feed(visible_html)
+                    visible_parser.close()
+                    if visible_parser.errors:
+                        errors.append(
+                            "T2.6 static page duplicate structure: "
+                            + "; ".join(visible_parser.errors)
+                        )
+                    try:
+                        page_data = json.loads(source_match.group(1))
+                    except json.JSONDecodeError as error:
+                        errors.append(f"T2.6 transparent page source data invalid: {error}")
+                    else:
+                        page_items = page_data.get("items") if isinstance(page_data, dict) else None
+                        if not isinstance(page_items, list) or len(page_items) != 3:
+                            errors.append("T2.6 transparent page item closure mismatch")
+                        else:
+                            expected_page_items = (
+                                ("sociology", "社会学", "E01"),
+                                ("history", "历史学", "E02"),
+                                ("institutional-economics", "制度经济学", "E03"),
+                            )
+                            if set(visible_parser.articles) != {
+                                item[0] for item in expected_page_items
+                            }:
+                                errors.append("T2.6 static article closure mismatch")
+                            for page_item, (article_id, discipline, expert_id) in zip(
+                                page_items, expected_page_items
+                            ):
+                                if not isinstance(page_item, dict):
+                                    errors.append("T2.6 transparent page item must be an object")
+                                    continue
+                                raw_value = raw_items.get(expert_id)
+                                if raw_value is None or raw_value.get("status") != "submit":
+                                    errors.append(
+                                        f"T2.6 transparent page source unavailable: {expert_id}"
+                                    )
+                                    continue
+                                if page_item.get("discipline") != discipline:
+                                    errors.append(
+                                        f"T2.6 transparent page discipline mismatch: {expert_id}"
+                                    )
+                                if any(
+                                    page_item.get(field) != raw_value.get(field)
+                                    for field in ("title", "anchor", "lesson")
+                                ):
+                                    errors.append(
+                                        f"T2.6 transparent page copy mismatch: {expert_id}"
+                                    )
+                                visible_article = visible_parser.articles.get(article_id)
+                                expected_visible = {
+                                    "title": raw_value["title"],
+                                    "anchor": raw_value["anchor"],
+                                    "paragraphs": str(raw_value["lesson"]).split("\n\n"),
+                                }
+                                if visible_article != expected_visible:
+                                    errors.append(
+                                        f"T2.6 static visible copy mismatch: {expert_id}"
+                                    )
+                if not all(
+                    discipline in expert_page
+                    for discipline in ("社会学", "历史学", "制度经济学")
+                ):
+                    errors.append("T2.6 transparent page does not label every discipline")
+        if current_state == "AWAITING_PRODUCT_VERDICT":
+            required_paths = expected_run_paths - {
+                f"runs/{experiment_id}/acceptance/product-verdicts.md"
+            }
+            missing_paths = required_paths - actual_run_paths
+            if missing_paths:
+                errors.append(
+                    f"T2.6 awaiting-verdict artifacts missing: {sorted(missing_paths)}"
+                )
+        elif current_state == "COMPLETE":
+            missing_paths = expected_run_paths - actual_run_paths
+            if missing_paths:
+                errors.append(f"T2.6 complete artifacts missing: {sorted(missing_paths)}")
+
+
+def validate_t27_experiment_boundary(errors: list[str]) -> None:
+    card = read_regular_utf8(ROOT / "taskcards/T2.7.md", errors, ROOT)
+    readme = read_regular_utf8(ROOT / "README.md", errors, ROOT)
+    pipeline = read_regular_utf8(ROOT / "blueprints/PIPELINE-MAP.md", errors, ROOT)
+    roadmap = read_regular_utf8(
+        ROOT / "blueprints/EXECUTION-ROADMAP.md", errors, ROOT
+    )
+    if card is None or readme is None or pipeline is None or roadmap is None:
+        return
+
+    experiment_id = "T2.7-BOUNDED-FRAMEWORK-PILOT-01"
+    if f"experiment-id: {experiment_id}" not in card:
+        errors.append("T2.7 experiment-id mismatch")
+    if experiment_id in pipeline:
+        errors.append("T2.7 run identity leaked into long-term pipeline owner")
+
+    state_match = re.search(r"^current-state: (\S+)$", card, re.MULTILINE)
+    allowed_states = {
+        "READY_FOR_DISPATCH",
+        "IN_PROGRESS",
+        "AWAITING_PRODUCT_VERDICT",
+        "COMPLETE",
+        "STOPPED",
+    }
+    if state_match is None or state_match.group(1) not in allowed_states:
+        errors.append("T2.7 card has an invalid execution state")
+        return
+    current_state = state_match.group(1)
+    if f"`taskcards/T2.7.md` 状态为 `{current_state}`" not in readme:
+        errors.append("README does not match the current T2.7 execution state")
+    if (
+        f"T2.7 有边界知识框架 Prompt 对照实验（`{current_state}`）"
+        not in roadmap
+    ):
+        errors.append("roadmap does not match the current T2.7 execution state")
+
+    required_card_text = (
+        "保持 T2.6 的材料、学科标签、模型和隔离方式不变",
+        "有明确边界的成熟知识框架",
+        "读者读完后必须能够重建",
+        "单个概念、一段历史解释、一条因果机制",
+        '所有调用均使用 `fork_turns="none"`',
+        "不返工、不补调",
+        "标明学科的直接阅读页",
+        "产品负责人已明确同意推荐方案并要求测试一轮",
+    )
+    for literal in required_card_text:
+        if literal not in card:
+            errors.append(f"T2.7 card missing frozen boundary: {literal}")
+
+    expected_expert_outputs = {
+        f"runs/{experiment_id}/raw/experts/E0{index}.json"
+        for index in range(1, 4)
+    }
+    expected_run_paths = {
+        f"runs/{experiment_id}/inputs/expert-prompt-v2.md",
+        *expected_expert_outputs,
+        f"runs/{experiment_id}/review/expert-demos.html",
+        f"runs/{experiment_id}/acceptance/product-verdicts.md",
+    }
+    observed_run_paths = set(
+        re.findall(rf"`(runs/{re.escape(experiment_id)}/[^`]+)`", card)
+    )
+    if observed_run_paths != expected_run_paths:
+        errors.append(
+            "T2.7 run-path closure mismatch: "
+            f"missing {sorted(expected_run_paths - observed_run_paths)}, "
+            f"unexpected {sorted(observed_run_paths - expected_run_paths)}"
+        )
+
+    material = read_regular_bytes(
+        ROOT / "materials/T2.4-IDEA-PILOT-01/source.epub", errors, ROOT
+    )
+    if material is not None:
+        if len(material) != 672638 or hashlib.sha256(material).hexdigest() != (
+            "3baf9932c92412f0e7d0ccae993182f55f62e2fab5ec46a3882d675476288664"
+        ):
+            errors.append("T2.7 EPUB identity mismatch")
+        try:
+            with zipfile.ZipFile(io.BytesIO(material)) as epub:
+                member = epub.read("text/part0019.html")
+        except (KeyError, zipfile.BadZipFile, OSError) as error:
+            errors.append(f"T2.7 frozen EPUB member unreadable: {error}")
+        else:
+            start_marker = b'<h2 class="calibre15"'
+            end_marker = b'<ol class="duokan-footnote-content1">'
+            if len(member) != 15941 or hashlib.sha256(member).hexdigest() != (
+                "c72b2e794266b7eb0d2589045328ea98c9511d8a56aa4037d924e036d1fac891"
+            ):
+                errors.append("T2.7 frozen EPUB member identity mismatch")
+            if member.count(start_marker) != 1 or member.count(end_marker) != 1:
+                errors.append("T2.7 frozen XHTML scope markers must each occur once")
+            else:
+                scope = member[member.index(start_marker) : member.index(end_marker)]
+                if len(scope) != 13337 or hashlib.sha256(scope).hexdigest() != (
+                    "216f3a01176e10084ee7a011da7f85cd8bb6e6f1558546db6414f9a285b05dad"
+                ):
+                    errors.append("T2.7 frozen XHTML scope identity mismatch")
+
+    run_root = ROOT / f"runs/{experiment_id}"
+    if run_root.is_symlink():
+        errors.append("T2.7 run root symlink forbidden")
+        return
+    if current_state == "READY_FOR_DISPATCH":
+        if run_root.exists():
+            errors.append("T2.7 READY_FOR_DISPATCH requires an absent run root")
+        return
+    if current_state == "STOPPED" and not run_root.exists():
+        return
+    if not run_root.is_dir():
+        errors.append(f"T2.7 state {current_state} requires a regular run directory")
+        return
+
+    actual_run_paths: set[str] = set()
+    for path in run_root.rglob("*"):
+        relative = path.relative_to(ROOT).as_posix()
+        if path.is_symlink():
+            errors.append(f"T2.7 run symlink forbidden: {relative}")
+        elif path.is_file():
+            actual_run_paths.add(relative)
+    extra_paths = actual_run_paths - expected_run_paths
+    if extra_paths:
+        errors.append(f"T2.7 unexpected run files: {sorted(extra_paths)}")
+
+    prompt_path = run_root / "inputs/expert-prompt-v2.md"
+    if prompt_path.is_file():
+        prompt = read_regular_utf8(prompt_path, errors, ROOT)
+        if prompt is not None:
+            expected_prompt_sha256 = (
+                "e2ce8df8dbb71590e60320bafdb40bd29322aafbd7d1e192b7d9e496b6b505b8"
+            )
+            if expected_prompt_sha256 not in card:
+                errors.append("T2.7 card does not own the frozen v2 Prompt identity")
+            if hashlib.sha256(prompt_path.read_bytes()).hexdigest() != expected_prompt_sha256:
+                errors.append("T2.7 frozen v2 Prompt identity mismatch")
+            for literal in (
+                "有明确边界的成熟知识框架",
+                "读者读完后必须能够重建",
+                "单个概念、一段历史解释、一条因果机制",
+                "没有合适的完整框架时，只提交 `silent`",
+            ):
+                if literal not in prompt:
+                    errors.append(f"T2.7 v2 Prompt missing invariant: {literal}")
+
+    raw_items: dict[str, dict[str, object]] = {}
+    for expert_id in ("E01", "E02", "E03"):
+        raw_path = run_root / f"raw/experts/{expert_id}.json"
+        if not raw_path.is_file():
+            continue
+        try:
+            raw_value = json.loads(raw_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            errors.append(f"T2.7 invalid raw JSON {expert_id}: {error}")
+            continue
+        if not isinstance(raw_value, dict):
+            errors.append(f"T2.7 raw output must be an object: {expert_id}")
+            continue
+        if raw_value.get("status") == "submit":
+            if set(raw_value) != {"status", "title", "anchor", "lesson"} or not all(
+                isinstance(raw_value.get(field), str) and raw_value[field].strip()
+                for field in ("title", "anchor", "lesson")
+            ):
+                errors.append(f"T2.7 submit schema/content mismatch: {expert_id}")
+                continue
+        elif raw_value.get("status") == "silent":
+            if set(raw_value) != {"status"}:
+                errors.append(f"T2.7 silent schema mismatch: {expert_id}")
+                continue
+        else:
+            errors.append(f"T2.7 invalid raw status: {expert_id}")
+            continue
+        raw_items[expert_id] = raw_value
+
+    page_path = run_root / "review/expert-demos.html"
+    if page_path.is_file():
+        page = read_regular_utf8(page_path, errors, ROOT)
+        if page is not None:
+            source_match = re.search(
+                r'<script type="application/json" id="source-data">\s*(\{.*?\})\s*</script>',
+                page,
+                flags=re.DOTALL,
+            )
+            if source_match is None:
+                errors.append("T2.7 review page lacks embedded source data")
+            else:
+                try:
+                    page_data = json.loads(source_match.group(1))
+                except json.JSONDecodeError as error:
+                    errors.append(f"T2.7 review page source data invalid: {error}")
+                else:
+                    page_items = page_data.get("items") if isinstance(page_data, dict) else None
+                    expected = (
+                        ("sociology", "社会学", "E01"),
+                        ("history", "历史学", "E02"),
+                        ("institutional-economics", "制度经济学", "E03"),
+                    )
+                    if not isinstance(page_items, list) or len(page_items) != 3:
+                        errors.append("T2.7 review page item closure mismatch")
+                    else:
+                        parser = _ExpertDemoVisiblePageParser()
+                        parser.feed(page[: source_match.start()])
+                        parser.close()
+                        if parser.errors or set(parser.articles) != {
+                            item[0] for item in expected
+                        }:
+                            errors.append("T2.7 visible page structure mismatch")
+                        if parser.disciplines != {
+                            article_id: discipline
+                            for article_id, discipline, _ in expected
+                        }:
+                            errors.append("T2.7 visible discipline labels mismatch")
+                        for page_item, (article_id, discipline, expert_id) in zip(
+                            page_items, expected
+                        ):
+                            raw_value = raw_items.get(expert_id)
+                            if not isinstance(page_item, dict) or raw_value is None:
+                                errors.append(f"T2.7 review source unavailable: {expert_id}")
+                                continue
+                            if page_item.get("discipline") != discipline or any(
+                                page_item.get(field) != raw_value.get(field)
+                                for field in ("title", "anchor", "lesson")
+                            ):
+                                errors.append(f"T2.7 embedded copy mismatch: {expert_id}")
+                            expected_visible = {
+                                "title": raw_value.get("title", ""),
+                                "anchor": raw_value.get("anchor", ""),
+                                "paragraphs": str(raw_value.get("lesson", "")).split(
+                                    "\n\n"
+                                ),
+                            }
+                            if parser.articles.get(article_id) != expected_visible:
+                                errors.append(f"T2.7 visible copy mismatch: {expert_id}")
+
+    if current_state == "AWAITING_PRODUCT_VERDICT":
+        missing = expected_run_paths - {
+            f"runs/{experiment_id}/acceptance/product-verdicts.md"
+        } - actual_run_paths
+        if missing:
+            errors.append(f"T2.7 awaiting-verdict artifacts missing: {sorted(missing)}")
+    elif current_state == "COMPLETE":
+        missing = expected_run_paths - actual_run_paths
+        if missing:
+            errors.append(f"T2.7 complete artifacts missing: {sorted(missing)}")
+        verdict_path = run_root / "acceptance/product-verdicts.md"
+        if verdict_path.is_file():
+            verdict = read_regular_utf8(verdict_path, errors, ROOT)
+            if verdict is not None:
+                verdict_matches = re.findall(
+                    r"^verdict: (ACCEPTED|REJECTED)$", verdict, re.MULTILINE
+                )
+                accepted_matches = re.findall(
+                    r"^product-accepted: (yes|no)$", verdict, re.MULTILINE
+                )
+                owner_quote_matches = re.findall(
+                    r"^owner-quote: (\S.*)$", verdict, re.MULTILINE
+                )
+                if (
+                    len(verdict_matches) != 1
+                    or len(accepted_matches) != 1
+                    or len(owner_quote_matches) != 1
+                    or (verdict_matches[0] == "ACCEPTED")
+                    != (accepted_matches[0] == "yes")
+                ):
+                    errors.append("T2.7 product verdict receipt is invalid")
+
+
+def validate_t28_experiment_boundary(errors: list[str]) -> None:
+    card = read_regular_utf8(ROOT / "taskcards/T2.8.md", errors, ROOT)
+    readme = read_regular_utf8(ROOT / "README.md", errors, ROOT)
+    pipeline = read_regular_utf8(ROOT / "blueprints/PIPELINE-MAP.md", errors, ROOT)
+    roadmap = read_regular_utf8(
+        ROOT / "blueprints/EXECUTION-ROADMAP.md", errors, ROOT
+    )
+    if card is None or readme is None or pipeline is None or roadmap is None:
+        return
+
+    experiment_id = "T2.8-KNOWLEDGE-OBJECT-PILOT-01"
+    if f"experiment-id: {experiment_id}" not in card:
+        errors.append("T2.8 experiment-id mismatch")
+    if experiment_id in pipeline:
+        errors.append("T2.8 run identity leaked into long-term pipeline owner")
+
+    state_match = re.search(r"^current-state: (\S+)$", card, re.MULTILINE)
+    allowed_states = {
+        "READY_FOR_DISPATCH",
+        "IN_PROGRESS",
+        "AWAITING_PRODUCT_VERDICT",
+        "COMPLETE",
+        "STOPPED",
+    }
+    if state_match is None or state_match.group(1) not in allowed_states:
+        errors.append("T2.8 card has an invalid execution state")
+        return
+    current_state = state_match.group(1)
+    if f"`taskcards/T2.8.md` 状态为 `{current_state}`" not in readme:
+        errors.append("README does not match the current T2.8 execution state")
+    if (
+        f"T2.8 既存知识对象核心卡实验（`{current_state}`）"
+        not in roadmap
+    ):
+        errors.append("roadmap does not match the current T2.8 execution state")
+
+    required_card_text = (
+        "删除诱导 Expert 现场拼装“完整框架”的五项完成清单",
+        "在本次阅读前已经存在、可辨认来源且具有稳定内核的知识对象",
+        "不要求著名、学界公认或体系庞大",
+        "针对本章临时归纳的一二三四结构",
+        "只交付一张简短知识核心卡",
+        "不按字数机械截断",
+        "后端精确模型身份和实际 read-set 均不可独立核对",
+        '所有调用均使用 `fork_turns="none"`',
+        "identity` 是模型本轮根据既有知识给出的来源身份，未经来源研究核验",
+        "不返工、不补调",
+        "产品负责人已明确同意该修改并要求继续推进",
+    )
+    for literal in required_card_text:
+        if literal not in card:
+            errors.append(f"T2.8 card missing frozen boundary: {literal}")
+
+    expected_run_paths = {
+        f"runs/{experiment_id}/inputs/expert-prompt-v3.md",
+        f"runs/{experiment_id}/raw/experts/E01.json",
+        f"runs/{experiment_id}/raw/experts/E02.json",
+        f"runs/{experiment_id}/raw/experts/E03.json",
+        f"runs/{experiment_id}/receipts/dispatch.json",
+        f"runs/{experiment_id}/review/knowledge-object-cards.html",
+        f"runs/{experiment_id}/acceptance/product-verdicts.md",
+    }
+    listed_run_paths = set(
+        re.findall(rf"`(runs/{re.escape(experiment_id)}/[^`]+)`", card)
+    )
+    if listed_run_paths != expected_run_paths:
+        errors.append(
+            "T2.8 run-path closure mismatch: "
+            f"expected={sorted(expected_run_paths)} actual={sorted(listed_run_paths)}"
+        )
+
+    material_path = ROOT / "materials/T2.4-IDEA-PILOT-01/source.epub"
+    if not material_path.is_file() or material_path.is_symlink():
+        errors.append("T2.8 frozen EPUB missing or unsafe")
+    else:
+        material = material_path.read_bytes()
+        if len(material) != 672638 or hashlib.sha256(material).hexdigest() != (
+            "3baf9932c92412f0e7d0ccae993182f55f62e2fab5ec46a3882d675476288664"
+        ):
+            errors.append("T2.8 EPUB identity mismatch")
+        try:
+            with zipfile.ZipFile(io.BytesIO(material)) as archive:
+                member = archive.read("text/part0019.html")
+        except (KeyError, zipfile.BadZipFile, OSError) as error:
+            errors.append(f"T2.8 frozen EPUB member unreadable: {error}")
+        else:
+            if len(member) != 15941 or hashlib.sha256(member).hexdigest() != (
+                "c72b2e794266b7eb0d2589045328ea98c9511d8a56aa4037d924e036d1fac891"
+            ):
+                errors.append("T2.8 frozen EPUB member identity mismatch")
+            start_marker = b'<h2 class="calibre15"'
+            end_marker = b'<ol class="duokan-footnote-content1">'
+            if member.count(start_marker) != 1 or member.count(end_marker) != 1:
+                errors.append("T2.8 frozen XHTML scope markers must each occur once")
+            else:
+                start = member.index(start_marker)
+                end = member.index(end_marker, start)
+                scope = member[start:end]
+                if len(scope) != 13337 or hashlib.sha256(scope).hexdigest() != (
+                    "216f3a01176e10084ee7a011da7f85cd8bb6e6f1558546db6414f9a285b05dad"
+                ):
+                    errors.append("T2.8 frozen XHTML scope identity mismatch")
+
+    run_root = ROOT / "runs" / experiment_id
+    if run_root.is_symlink():
+        errors.append("T2.8 run root symlink forbidden")
+        return
+    if current_state == "READY_FOR_DISPATCH":
+        if run_root.exists():
+            errors.append("T2.8 READY_FOR_DISPATCH requires an absent run root")
+        return
+    if current_state == "STOPPED" and not run_root.exists():
+        return
+    if not run_root.is_dir():
+        errors.append(f"T2.8 state {current_state} requires a regular run directory")
+        return
+
+    actual_run_paths: set[str] = set()
+    for path in run_root.rglob("*"):
+        relative = path.relative_to(ROOT).as_posix()
+        if path.is_symlink():
+            errors.append(f"T2.8 run symlink forbidden: {relative}")
+        elif path.is_file():
+            actual_run_paths.add(relative)
+    extra_paths = actual_run_paths - expected_run_paths
+    if extra_paths:
+        errors.append(f"T2.8 unexpected run files: {sorted(extra_paths)}")
+
+    dispatch_path = run_root / "receipts/dispatch.json"
+    if dispatch_path.is_file():
+        try:
+            dispatch = json.loads(dispatch_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            errors.append(f"T2.8 dispatch receipt invalid: {error}")
+        else:
+            expected_dispatch = {
+                "experiment_id": experiment_id,
+                "comparison_configuration": {
+                    "t27_and_t28_controller_dispatch": "same",
+                    "agent_type": "worker",
+                    "reasoning_effort": "high",
+                    "model_override": None,
+                    "backend_model_identity": "unknown",
+                },
+                "evidence_limits": {
+                    "fork_turns": "controller-observed",
+                    "read_whitelist": "instructed-not-independently-observed",
+                    "backend_model_identity": "not-exposed-for-persistent-verification",
+                },
+                "calls": [
+                    {
+                        "expert_id": "E01",
+                        "discipline": "社会学",
+                        "task": "/root/t28_sociology",
+                        "fork_turns": "none",
+                        "output": "raw/experts/E01.json",
+                    },
+                    {
+                        "expert_id": "E02",
+                        "discipline": "历史学",
+                        "task": "/root/t28_history",
+                        "fork_turns": "none",
+                        "output": "raw/experts/E02.json",
+                    },
+                    {
+                        "expert_id": "E03",
+                        "discipline": "制度经济学",
+                        "task": "/root/t28_institutional_econ",
+                        "fork_turns": "none",
+                        "output": "raw/experts/E03.json",
+                    },
+                ],
+            }
+            if dispatch != expected_dispatch:
+                errors.append("T2.8 dispatch receipt does not match controller evidence")
+
+    prompt_path = run_root / "inputs/expert-prompt-v3.md"
+    if not prompt_path.is_file():
+        errors.append("T2.8 active state requires the frozen v3 Prompt")
+    else:
+        prompt = read_regular_utf8(prompt_path, errors, ROOT)
+        prompt_block_match = re.search(
+            r"### v3 Expert Prompt.*?```text\n(.*?)\n```",
+            card,
+            flags=re.DOTALL,
+        )
+        declared_hash_match = re.search(
+            r"冻结 Prompt SHA-256：`([0-9a-f]{64})`", card
+        )
+        if prompt is not None:
+            if prompt_block_match is None or prompt != prompt_block_match.group(1) + "\n":
+                errors.append("T2.8 v3 Prompt does not match the taskcard-owned body")
+            if declared_hash_match is None:
+                errors.append("T2.8 taskcard lacks the frozen v3 Prompt identity")
+            elif hashlib.sha256(prompt_path.read_bytes()).hexdigest() != (
+                declared_hash_match.group(1)
+            ):
+                errors.append("T2.8 frozen v3 Prompt identity mismatch")
+
+    raw_items: dict[str, dict[str, object]] = {}
+    for expert_id in ("E01", "E02", "E03"):
+        raw_path = run_root / f"raw/experts/{expert_id}.json"
+        if not raw_path.is_file():
+            continue
+        try:
+            raw_value = json.loads(raw_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            errors.append(f"T2.8 invalid raw JSON {expert_id}: {error}")
+            continue
+        if not isinstance(raw_value, dict):
+            errors.append(f"T2.8 raw output must be an object: {expert_id}")
+            continue
+        if raw_value.get("status") == "submit":
+            expected_fields = {"status", "object", "identity", "core", "connection"}
+            if set(raw_value) != expected_fields or not all(
+                isinstance(raw_value.get(field), str) and raw_value[field].strip()
+                for field in expected_fields - {"status"}
+            ):
+                errors.append(f"T2.8 submit schema/content mismatch: {expert_id}")
+                continue
+        elif raw_value.get("status") == "silent":
+            if set(raw_value) != {"status"}:
+                errors.append(f"T2.8 silent schema mismatch: {expert_id}")
+                continue
+        else:
+            errors.append(f"T2.8 invalid raw status: {expert_id}")
+            continue
+        raw_items[expert_id] = raw_value
+
+    page_path = run_root / "review/knowledge-object-cards.html"
+    if page_path.is_file():
+        page = read_regular_utf8(page_path, errors, ROOT)
+        if page is not None:
+            if "同一模型" in page:
+                errors.append("T2.8 review page overclaims exact model identity")
+            if re.search(
+                r'<div class="warning">[^<]*来源身份未经来源研究核验', page
+            ) is None:
+                errors.append("T2.8 review page lacks the provenance warning")
+            source_match = re.search(
+                r'<script type="application/json" id="source-data">\s*(\{.*?\})\s*</script>',
+                page,
+                flags=re.DOTALL,
+            )
+            if source_match is None:
+                errors.append("T2.8 review page lacks embedded source data")
+            else:
+                try:
+                    page_data = json.loads(source_match.group(1))
+                except json.JSONDecodeError as error:
+                    errors.append(f"T2.8 review page source data invalid: {error}")
+                else:
+                    expected = (
+                        ("sociology", "社会学", "E01"),
+                        ("history", "历史学", "E02"),
+                        ("institutional-economics", "制度经济学", "E03"),
+                    )
+                    page_items = page_data.get("items") if isinstance(page_data, dict) else None
+                    if not isinstance(page_items, list) or len(page_items) != 3:
+                        errors.append("T2.8 review page item closure mismatch")
+                    else:
+                        parser = _ExpertDemoVisiblePageParser()
+                        parser.feed(page[: source_match.start()])
+                        parser.close()
+                        submitted_articles = {
+                            article_id
+                            for article_id, _, expert_id in expected
+                            if raw_items.get(expert_id, {}).get("status") == "submit"
+                        }
+                        if parser.errors or set(parser.articles) != submitted_articles:
+                            errors.append("T2.8 visible page structure mismatch")
+                        if parser.disciplines != {
+                            article_id: discipline
+                            for article_id, discipline, expert_id in expected
+                            if raw_items.get(expert_id, {}).get("status") == "submit"
+                        }:
+                            errors.append("T2.8 visible discipline labels mismatch")
+                        for page_item, (article_id, discipline, expert_id) in zip(
+                            page_items, expected
+                        ):
+                            raw_value = raw_items.get(expert_id)
+                            if not isinstance(page_item, dict) or raw_value is None:
+                                errors.append(f"T2.8 review source unavailable: {expert_id}")
+                                continue
+                            if raw_value.get("status") == "silent":
+                                if page_item != {
+                                    "discipline": discipline,
+                                    "status": "silent",
+                                }:
+                                    errors.append(
+                                        f"T2.8 silent embedded copy mismatch: {expert_id}"
+                                    )
+                                silent_pattern = (
+                                    rf'<div[^>]*id="silent-{expert_id}"[^>]*>'
+                                    rf'[^<]*{re.escape(discipline)}[^<]*silent[^<]*</div>'
+                                )
+                                if re.search(silent_pattern, page) is None:
+                                    errors.append(
+                                        f"T2.8 visible silent status missing: {expert_id}"
+                                    )
+                                continue
+                            if page_item.get("discipline") != discipline or any(
+                                page_item.get(field) != raw_value.get(field)
+                                for field in ("object", "identity", "core", "connection")
+                            ):
+                                errors.append(f"T2.8 embedded copy mismatch: {expert_id}")
+                            expected_visible = {
+                                "title": raw_value.get("object", ""),
+                                "anchor": raw_value.get("identity", ""),
+                                "paragraphs": [
+                                    raw_value.get("core", ""),
+                                    raw_value.get("connection", ""),
+                                ],
+                            }
+                            if parser.articles.get(article_id) != expected_visible:
+                                errors.append(f"T2.8 visible copy mismatch: {expert_id}")
+
+    if current_state == "AWAITING_PRODUCT_VERDICT":
+        required = expected_run_paths - {
+            f"runs/{experiment_id}/acceptance/product-verdicts.md"
+        }
+        if actual_run_paths != required:
+            errors.append(
+                "T2.8 awaiting-verdict artifact closure mismatch: "
+                f"expected={sorted(required)} actual={sorted(actual_run_paths)}"
+            )
+    elif current_state == "COMPLETE":
+        missing = expected_run_paths - actual_run_paths
+        if missing:
+            errors.append(f"T2.8 complete artifacts missing: {sorted(missing)}")
+        verdict_path = run_root / "acceptance/product-verdicts.md"
+        if verdict_path.is_file():
+            verdict = read_regular_utf8(verdict_path, errors, ROOT)
+            if verdict is not None:
+                verdict_matches = re.findall(
+                    r"^verdict: (ACCEPTED|REJECTED)$", verdict, re.MULTILINE
+                )
+                accepted_matches = re.findall(
+                    r"^product-accepted: (yes|no)$", verdict, re.MULTILINE
+                )
+                owner_quote_matches = re.findall(
+                    r"^owner-quote: (\S.*)$", verdict, re.MULTILINE
+                )
+                if (
+                    len(verdict_matches) != 1
+                    or len(accepted_matches) != 1
+                    or len(owner_quote_matches) != 1
+                    or (verdict_matches[0] == "ACCEPTED")
+                    != (accepted_matches[0] == "yes")
+                ):
+                    errors.append("T2.8 product verdict receipt is invalid")
+
+
+class _VisibleTextParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.parts: list[str] = []
+        self._hidden_depth = 0
+
+    def handle_starttag(
+        self, tag: str, attrs: list[tuple[str, str | None]]
+    ) -> None:
+        if tag in {"script", "style"}:
+            self._hidden_depth += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in {"script", "style"} and self._hidden_depth:
+            self._hidden_depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if self._hidden_depth == 0:
+            text = " ".join(data.split())
+            if text:
+                self.parts.append(text)
+
+
+def validate_t29_experiment_boundary(errors: list[str]) -> None:
+    card = read_regular_utf8(ROOT / "taskcards/T2.9.md", errors, ROOT)
+    readme = read_regular_utf8(ROOT / "README.md", errors, ROOT)
+    pipeline = read_regular_utf8(ROOT / "blueprints/PIPELINE-MAP.md", errors, ROOT)
+    roadmap = read_regular_utf8(
+        ROOT / "blueprints/EXECUTION-ROADMAP.md", errors, ROOT
+    )
+    if card is None or readme is None or pipeline is None or roadmap is None:
+        return
+
+    experiment_id = "T2.9-BERGER-STUDY-NOTES-PROTOTYPE-01"
+    if f"experiment-id: {experiment_id}" not in card:
+        errors.append("T2.9 experiment-id mismatch")
+    if experiment_id in pipeline:
+        errors.append("T2.9 run identity leaked into long-term pipeline owner")
+
+    state_match = re.search(r"^current-state: (\S+)$", card, re.MULTILINE)
+    version_match = re.search(r"^active-version: (\S+)$", card, re.MULTILINE)
+    allowed_states = {
+        "READY_FOR_RESEARCH",
+        "RESEARCH_IN_PROGRESS",
+        "DRAFT_IN_PROGRESS",
+        "AWAITING_PRODUCT_VERDICT",
+        "COMPLETE",
+        "STOPPED",
+    }
+    if state_match is None or state_match.group(1) not in allowed_states:
+        errors.append("T2.9 card has an invalid execution state")
+        return
+    if version_match is None or version_match.group(1) != "v03":
+        errors.append("T2.9 active version mismatch")
+        return
+    current_state = state_match.group(1)
+    if f"`taskcards/T2.9.md` 状态为 `{current_state}`" not in readme:
+        errors.append("README does not match the current T2.9 execution state")
+    if "active version 为 `v03`" not in readme:
+        errors.append("README does not match the active T2.9 version")
+    if (
+        f"T2.9 伯格原理论考点式讲义单样张（`{current_state}`，`v03`）"
+        not in roadmap
+    ):
+        errors.append("roadmap does not match the current T2.9 state/version")
+
+    required_card_text = (
+        "忠实还原彼得·伯格相关原著中的宗教合法化知识骨架",
+        "考试知识要点",
+        "产品负责人接受当前版本前，另外两个知识对象、原文嵌入和自动化均不得启动",
+        "每个进入样张的原理论要点必须",
+        "稳定 claim id",
+        "未找到可核对证据的主张保持 `unknown`",
+        "原理论内容必须只来自研究报告中可追踪的 claim id",
+        "ReaderLab 辅助解释",
+        "本次应用／推演",
+        'fresh `fork_turns="none"`',
+        "实际 read-set、后端精确模型与内部推理仍为 `unknown`",
+        "旧版本保留，不得覆盖",
+        "原样保留七点顺序及每点 claim id 分配",
+        "不重复搜索、逐条原典审计或全套多角色审阅",
+        "理论层尽量维持原理论样式，解释层负责通俗化",
+        "不能重新命名机制、替换承重术语",
+    )
+    for literal in required_card_text:
+        if literal not in card:
+            errors.append(f"T2.9 card missing frozen boundary: {literal}")
+
+    source_card_path = (
+        ROOT / "runs/T2.8-KNOWLEDGE-OBJECT-PILOT-01/raw/experts/E01.json"
+    )
+    if not source_card_path.is_file() or source_card_path.is_symlink():
+        errors.append("T2.9 selected T2.8 card missing or unsafe")
+    elif hashlib.sha256(source_card_path.read_bytes()).hexdigest() != (
+        "1a02af4fafe80ec1bd89c1a5d9d88ce7a69bddefa60c9feab1fb43aaa67e7aeb"
+    ):
+        errors.append("T2.9 selected T2.8 card identity mismatch")
+
+    material_path = ROOT / "materials/T2.4-IDEA-PILOT-01/source.epub"
+    if not material_path.is_file() or material_path.is_symlink():
+        errors.append("T2.9 frozen EPUB missing or unsafe")
+    else:
+        material = material_path.read_bytes()
+        if len(material) != 672638 or hashlib.sha256(material).hexdigest() != (
+            "3baf9932c92412f0e7d0ccae993182f55f62e2fab5ec46a3882d675476288664"
+        ):
+            errors.append("T2.9 EPUB identity mismatch")
+        try:
+            with zipfile.ZipFile(io.BytesIO(material)) as archive:
+                member = archive.read("text/part0019.html")
+        except (KeyError, zipfile.BadZipFile, OSError) as error:
+            errors.append(f"T2.9 frozen EPUB member unreadable: {error}")
+        else:
+            start_marker = b'<h2 class="calibre15"'
+            end_marker = b'<ol class="duokan-footnote-content1">'
+            if (
+                len(member) != 15941
+                or hashlib.sha256(member).hexdigest()
+                != "c72b2e794266b7eb0d2589045328ea98c9511d8a56aa4037d924e036d1fac891"
+                or member.count(start_marker) != 1
+                or member.count(end_marker) != 1
+            ):
+                errors.append("T2.9 frozen XHTML member/scope markers mismatch")
+            else:
+                scope = member[
+                    member.index(start_marker) : member.index(end_marker)
+                ]
+                if hashlib.sha256(scope).hexdigest() != (
+                    "216f3a01176e10084ee7a011da7f85cd8bb6e6f1558546db6414f9a285b05dad"
+                ):
+                    errors.append("T2.9 frozen XHTML scope identity mismatch")
+
+    expected_run_paths = {
+        f"runs/{experiment_id}/research/berger-source-audit.md",
+        f"runs/{experiment_id}/inputs/study-note-brief.md",
+        f"runs/{experiment_id}/inputs/study-note-brief-v02.md",
+        f"runs/{experiment_id}/inputs/study-note-brief-v03.md",
+        f"runs/{experiment_id}/raw/v01.json",
+        f"runs/{experiment_id}/raw/v02.json",
+        f"runs/{experiment_id}/raw/v03.json",
+        f"runs/{experiment_id}/review/v01.html",
+        f"runs/{experiment_id}/review/v02.html",
+        f"runs/{experiment_id}/review/v03.html",
+        f"runs/{experiment_id}/receipts/dispatch.json",
+        f"runs/{experiment_id}/receipts/dispatch-v02.json",
+        f"runs/{experiment_id}/receipts/dispatch-v03.json",
+        f"runs/{experiment_id}/acceptance/product-verdicts.md",
+    }
+    listed_run_paths = set(
+        re.findall(rf"`(runs/{re.escape(experiment_id)}/[^`]+)`", card)
+    )
+    if listed_run_paths != expected_run_paths:
+        errors.append(
+            "T2.9 run-path closure mismatch: "
+            f"expected={sorted(expected_run_paths)} actual={sorted(listed_run_paths)}"
+        )
+
+    run_root = ROOT / "runs" / experiment_id
+    if run_root.is_symlink():
+        errors.append("T2.9 run root symlink forbidden")
+        return
+    if current_state == "READY_FOR_RESEARCH":
+        if run_root.exists():
+            errors.append("T2.9 READY_FOR_RESEARCH requires an absent run root")
+        return
+    if current_state == "STOPPED" and not run_root.exists():
+        return
+    if not run_root.is_dir():
+        errors.append(f"T2.9 state {current_state} requires a regular run directory")
+        return
+
+    actual_run_paths: set[str] = set()
+    for path in run_root.rglob("*"):
+        relative = path.relative_to(ROOT).as_posix()
+        if path.is_symlink():
+            errors.append(f"T2.9 run symlink forbidden: {relative}")
+        elif path.is_file():
+            actual_run_paths.add(relative)
+    extra_paths = actual_run_paths - expected_run_paths
+    if extra_paths:
+        errors.append(f"T2.9 unexpected run files: {sorted(extra_paths)}")
+
+    report_path = run_root / "research/berger-source-audit.md"
+    report = None
+    claim_ids: set[str] = set()
+    if report_path.is_file():
+        report = read_regular_utf8(report_path, errors, ROOT)
+        if report is not None:
+            if hashlib.sha256(report_path.read_bytes()).hexdigest() != (
+                "e5060abf9386d4d27328e2d9fa5caa87fb743e52f4b408815310997a57aab3f8"
+            ):
+                errors.append("T2.9 frozen research report identity mismatch")
+            for literal in (
+                "verified-at:",
+                "## 研究结论",
+                "## 原理论 claim ledger",
+                "source:",
+                "location:",
+                "faithful-paraphrase:",
+                "evidence-strength:",
+                "boundary:",
+            ):
+                if literal not in report:
+                    errors.append(f"T2.9 research report missing field: {literal}")
+            claim_ids = set(
+                re.findall(r"^### (B\d{2})\b", report, flags=re.MULTILINE)
+            )
+            if not claim_ids:
+                errors.append("T2.9 research report has no stable Berger claim ids")
+            if not {f"B{index:02d}" for index in range(1, 11)} <= claim_ids:
+                errors.append("T2.9 research report lacks the B01-B10 theory whitelist")
+
+    brief_path = run_root / "inputs/study-note-brief.md"
+    if brief_path.is_file() and hashlib.sha256(brief_path.read_bytes()).hexdigest() != (
+        "be9e71bb626981ac5e2d13e05b65e667016633f9700dcac69870718b533d4e77"
+    ):
+        errors.append("T2.9 frozen expression brief identity mismatch")
+
+    receipt_path = run_root / "receipts/dispatch.json"
+    if receipt_path.is_file():
+        try:
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            errors.append(f"T2.9 dispatch receipt invalid: {error}")
+        else:
+            expected_receipt = {
+                "experiment_id": experiment_id,
+                "backend_model_identity": "unknown",
+                "actual_read_set": "unknown",
+                "ordering_evidence": "controller-observed",
+                "calls": [
+                    {
+                        "sequence": 1,
+                        "phase": "research",
+                        "task": "/root/t29_berger_research",
+                        "fork_turns": "none",
+                        "network": "public-static-only",
+                        "output": "research/berger-source-audit.md",
+                    },
+                    {
+                        "sequence": 2,
+                        "phase": "expression-v01",
+                        "task": "/root/t29_berger_notes_v01",
+                        "fork_turns": "none",
+                        "network": "forbidden",
+                        "output": "raw/v01.json",
+                    },
+                    {
+                        "sequence": 3,
+                        "phase": "source-fidelity-review",
+                        "task": "/root/t29_source_fidelity_review",
+                        "fork_turns": "none",
+                        "network": "forbidden",
+                        "output": "notification-only: SOURCE_FIDELITY PASS",
+                    },
+                ],
+            }
+            if receipt != expected_receipt:
+                errors.append("T2.9 dispatch receipt evidence boundary mismatch")
+
+    raw_path = run_root / "raw/v01.json"
+    raw_value = None
+    if raw_path.is_file():
+        if hashlib.sha256(raw_path.read_bytes()).hexdigest() != (
+            "3d942d3eac4d7a46fd07c82e5000b71a7d15995a10c25529d7ce13ed93fb8e36"
+        ):
+            errors.append("T2.9 frozen v01 raw identity mismatch")
+        try:
+            raw_value = json.loads(raw_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            errors.append(f"T2.9 v01 raw invalid: {error}")
+        else:
+            expected_fields = {
+                "status",
+                "knowledge_object",
+                "thesis",
+                "points",
+                "book_connection",
+                "application_inference",
+            }
+            if not isinstance(raw_value, dict) or set(raw_value) != expected_fields:
+                errors.append("T2.9 v01 raw top-level schema mismatch")
+            elif raw_value.get("status") != "submit" or not all(
+                isinstance(raw_value.get(field), str) and raw_value[field].strip()
+                for field in ("knowledge_object", "thesis", "book_connection")
+            ):
+                errors.append("T2.9 v01 raw required content missing")
+            elif not isinstance(raw_value.get("application_inference"), str):
+                errors.append("T2.9 v01 application inference must be a string")
+            elif not isinstance(raw_value.get("points"), list) or not raw_value["points"]:
+                errors.append("T2.9 v01 requires at least one source-faithful point")
+            else:
+                used_claims: set[str] = set()
+                for index, point in enumerate(raw_value["points"], start=1):
+                    if not isinstance(point, dict) or set(point) != {
+                        "heading",
+                        "source_faithful_core",
+                        "reader_aid",
+                        "claim_ids",
+                    }:
+                        errors.append(f"T2.9 v01 point schema mismatch: {index}")
+                        continue
+                    if not all(
+                        isinstance(point.get(field), str) and point[field].strip()
+                        for field in ("heading", "source_faithful_core")
+                    ) or not isinstance(point.get("reader_aid"), str):
+                        errors.append(f"T2.9 v01 point content mismatch: {index}")
+                    ids = point.get("claim_ids")
+                    if not isinstance(ids, list) or not ids or not all(
+                        isinstance(claim_id, str) for claim_id in ids
+                    ):
+                        errors.append(f"T2.9 v01 point claim ids invalid: {index}")
+                    else:
+                        used_claims.update(ids)
+                allowed_claims = {f"B{index:02d}" for index in range(1, 11)}
+                if not used_claims <= allowed_claims:
+                    errors.append(
+                        "T2.9 v01 cites non-theory or unknown claims: "
+                        f"{sorted(used_claims - allowed_claims)}"
+                    )
+
+    page_path = run_root / "review/v01.html"
+    if page_path.is_file():
+        if hashlib.sha256(page_path.read_bytes()).hexdigest() != (
+            "0b440b747e49c5e6cf442a7c780880b9e6d810ac46448a379822a7c6c33f50d8"
+        ):
+            errors.append("T2.9 frozen v01 page identity mismatch")
+        page = read_regular_utf8(page_path, errors, ROOT)
+        if page is not None:
+            source_match = re.search(
+                r'<script type="application/json" id="source-data">\s*(\{.*?\})\s*</script>',
+                page,
+                flags=re.DOTALL,
+            )
+            if source_match is None:
+                errors.append("T2.9 v01 page lacks embedded source data")
+            else:
+                try:
+                    page_source = json.loads(source_match.group(1))
+                except json.JSONDecodeError as error:
+                    errors.append(f"T2.9 v01 page source data invalid: {error}")
+                else:
+                    if raw_value is None or page_source != raw_value:
+                        errors.append("T2.9 v01 page source does not equal raw")
+            if raw_value is not None:
+                parser = _VisibleTextParser()
+                parser.feed(page[: source_match.start()] if source_match else page)
+                parser.close()
+                visible_text = " ".join(parser.parts)
+                visible_values = [
+                    raw_value.get("knowledge_object", ""),
+                    raw_value.get("thesis", ""),
+                    raw_value.get("book_connection", ""),
+                ]
+                if raw_value.get("application_inference"):
+                    visible_values.append(raw_value["application_inference"])
+                for point in raw_value.get("points", []):
+                    if isinstance(point, dict):
+                        visible_values.extend(
+                            [
+                                point.get("heading", ""),
+                                point.get("source_faithful_core", ""),
+                            ]
+                        )
+                        if point.get("reader_aid"):
+                            visible_values.append(point["reader_aid"])
+                for value in visible_values:
+                    if isinstance(value, str) and " ".join(value.split()) not in visible_text:
+                        errors.append("T2.9 v01 page omits raw semantic content")
+                        break
+
+    frozen_version_hashes = {
+        "v02": {
+            "brief": "a5548cf351f3b5c5649ad934b5bebb4d813a5df771bdeee0f1f2ad91d7d2e556",
+            "raw": "fa2403286f7f23eb8224ba276b131534cfa251e24eb3ba59e1ece0764b2afb56",
+            "page": "12ec5d4c6daefbefe8e06ce589444f4bf94fd00d91c08f5e8fcacc1bd360bcd5",
+            "receipt": "73065ce0a56ae0cb8a1cf6fc74abc879f9dd5b1be129017508cbd32b820bad2b",
+        },
+        "v03": {
+            "brief": "ac22f5bb669bd883a436f9f7e3f3fd2402e5765c92728c991089f269e3750e7a",
+            "raw": "52e42bcfb8cbd32cad76288e0564540b4c4406bc4ed14ccaa3b4a12b2ba4b428",
+            "page": "cdb038316ee3bcda69189574b07cb19cca62ab142cb36559f51c8524b903199e",
+            "receipt": "3d1370b8ae8c562f0a86f7d209ca526058a0cc2e189a4e29369693169ff88a3b",
+        },
+    }
+    for version, frozen_hashes in frozen_version_hashes.items():
+        brief_path_versioned = run_root / f"inputs/study-note-brief-{version}.md"
+        if brief_path_versioned.is_file():
+            brief_hash = hashlib.sha256(brief_path_versioned.read_bytes()).hexdigest()
+            if (
+                brief_hash != frozen_hashes["brief"]
+                or f"冻结 {version} 表达 Brief SHA-256：`{brief_hash}`" not in card
+            ):
+                errors.append(
+                    f"T2.9 {version} expression brief identity is not frozen in card"
+                )
+
+        receipt_path_versioned = run_root / f"receipts/dispatch-{version}.json"
+        if receipt_path_versioned.is_file():
+            if hashlib.sha256(receipt_path_versioned.read_bytes()).hexdigest() != (
+                frozen_hashes["receipt"]
+            ):
+                errors.append(f"T2.9 frozen {version} receipt identity mismatch")
+            try:
+                receipt_versioned = json.loads(
+                    receipt_path_versioned.read_text(encoding="utf-8")
+                )
+            except (OSError, UnicodeError, json.JSONDecodeError) as error:
+                errors.append(f"T2.9 {version} dispatch receipt invalid: {error}")
+            else:
+                expected_calls = [
+                    {
+                        "sequence": 1,
+                        "phase": f"expression-{version}",
+                        "task": f"/root/t29_berger_notes_{version}",
+                        "fork_turns": "none",
+                        "network": "forbidden",
+                        "output": f"raw/{version}.json",
+                    },
+                    {
+                        "sequence": 2,
+                        "phase": f"source-fidelity-diff-{version}",
+                        "task": f"/root/t29_source_fidelity_diff_{version}",
+                        "fork_turns": "none",
+                        "network": "forbidden",
+                        "output": "notification-only: SOURCE_FIDELITY_DIFF PASS",
+                    },
+                ]
+                if (
+                    not isinstance(receipt_versioned, dict)
+                    or receipt_versioned.get("experiment_id") != experiment_id
+                    or receipt_versioned.get("backend_model_identity") != "unknown"
+                    or receipt_versioned.get("actual_read_set") != "unknown"
+                    or receipt_versioned.get("ordering_evidence")
+                    != "controller-observed"
+                    or receipt_versioned.get("calls") != expected_calls
+                    or not isinstance(receipt_versioned.get("timing"), dict)
+                ):
+                    errors.append(
+                        f"T2.9 {version} dispatch receipt evidence boundary mismatch"
+                    )
+
+        raw_path_versioned = run_root / f"raw/{version}.json"
+        raw_value_versioned = None
+        if raw_path_versioned.is_file():
+            if hashlib.sha256(raw_path_versioned.read_bytes()).hexdigest() != (
+                frozen_hashes["raw"]
+            ):
+                errors.append(f"T2.9 frozen {version} raw identity mismatch")
+            try:
+                raw_value_versioned = json.loads(
+                    raw_path_versioned.read_text(encoding="utf-8")
+                )
+            except (OSError, UnicodeError, json.JSONDecodeError) as error:
+                errors.append(f"T2.9 {version} raw invalid: {error}")
+            else:
+                expected_fields = {
+                    "status",
+                    "knowledge_object",
+                    "thesis",
+                    "points",
+                    "book_connection",
+                    "application_inference",
+                }
+                if (
+                    not isinstance(raw_value_versioned, dict)
+                    or set(raw_value_versioned) != expected_fields
+                ):
+                    errors.append(f"T2.9 {version} raw top-level schema mismatch")
+                elif raw_value_versioned.get("status") != "submit" or not all(
+                    isinstance(raw_value_versioned.get(field), str)
+                    and raw_value_versioned[field].strip()
+                    for field in ("knowledge_object", "thesis", "book_connection")
+                ):
+                    errors.append(f"T2.9 {version} raw required content missing")
+                elif not isinstance(
+                    raw_value_versioned.get("application_inference"), str
+                ):
+                    errors.append(
+                        f"T2.9 {version} application inference must be a string"
+                    )
+                elif not isinstance(raw_value_versioned.get("points"), list):
+                    errors.append(f"T2.9 {version} points must be a list")
+                elif raw_value is None or len(raw_value_versioned["points"]) != len(
+                    raw_value.get("points", [])
+                ):
+                    errors.append(
+                        f"T2.9 {version} must preserve the v01 point count"
+                    )
+                else:
+                    for index, (v01_point, point_versioned) in enumerate(
+                        zip(raw_value["points"], raw_value_versioned["points"]),
+                        start=1,
+                    ):
+                        if not isinstance(point_versioned, dict) or set(
+                            point_versioned
+                        ) != {
+                            "heading",
+                            "source_faithful_core",
+                            "reader_aid",
+                            "claim_ids",
+                        }:
+                            errors.append(
+                                f"T2.9 {version} point schema mismatch: {index}"
+                            )
+                            continue
+                        if not all(
+                            isinstance(point_versioned.get(field), str)
+                            and point_versioned[field].strip()
+                            for field in ("heading", "source_faithful_core")
+                        ) or not isinstance(point_versioned.get("reader_aid"), str):
+                            errors.append(
+                                f"T2.9 {version} point content mismatch: {index}"
+                            )
+                        if point_versioned.get("claim_ids") != v01_point.get(
+                            "claim_ids"
+                        ):
+                            errors.append(
+                                f"T2.9 {version} claim mapping changed: {index}"
+                            )
+
+        page_path_versioned = run_root / f"review/{version}.html"
+        if page_path_versioned.is_file():
+            if hashlib.sha256(page_path_versioned.read_bytes()).hexdigest() != (
+                frozen_hashes["page"]
+            ):
+                errors.append(f"T2.9 frozen {version} page identity mismatch")
+            page_versioned = read_regular_utf8(page_path_versioned, errors, ROOT)
+            if page_versioned is not None:
+                source_match = re.search(
+                    r'<script type="application/json" id="source-data">\s*(\{.*?\})\s*</script>',
+                    page_versioned,
+                    flags=re.DOTALL,
+                )
+                if source_match is None:
+                    errors.append(f"T2.9 {version} page lacks embedded source data")
+                else:
+                    try:
+                        page_source = json.loads(source_match.group(1))
+                    except json.JSONDecodeError as error:
+                        errors.append(f"T2.9 {version} page source data invalid: {error}")
+                    else:
+                        if (
+                            raw_value_versioned is None
+                            or page_source != raw_value_versioned
+                        ):
+                            errors.append(f"T2.9 {version} page source does not equal raw")
+                if raw_value_versioned is not None:
+                    parser = _VisibleTextParser()
+                    parser.feed(
+                        page_versioned[: source_match.start()]
+                        if source_match
+                        else page_versioned
+                    )
+                    parser.close()
+                    visible_text = " ".join(parser.parts)
+                    visible_values = [
+                        raw_value_versioned.get("knowledge_object", ""),
+                        raw_value_versioned.get("thesis", ""),
+                        raw_value_versioned.get("book_connection", ""),
+                    ]
+                    if raw_value_versioned.get("application_inference"):
+                        visible_values.append(
+                            raw_value_versioned["application_inference"]
+                        )
+                    for point in raw_value_versioned.get("points", []):
+                        if isinstance(point, dict):
+                            visible_values.extend(
+                                [
+                                    point.get("heading", ""),
+                                    point.get("source_faithful_core", ""),
+                                ]
+                            )
+                            if point.get("reader_aid"):
+                                visible_values.append(point["reader_aid"])
+                    for value in visible_values:
+                        if (
+                            isinstance(value, str)
+                            and " ".join(value.split()) not in visible_text
+                        ):
+                            errors.append(
+                                f"T2.9 {version} page omits raw semantic content"
+                            )
+                            break
+
+    research_relative = f"runs/{experiment_id}/research/berger-source-audit.md"
+    brief_relative = f"runs/{experiment_id}/inputs/study-note-brief.md"
+    receipt_relative = f"runs/{experiment_id}/receipts/dispatch.json"
+    if current_state == "RESEARCH_IN_PROGRESS":
+        if not actual_run_paths <= {research_relative}:
+            errors.append("T2.9 research phase contains non-research artifacts")
+    elif current_state == "DRAFT_IN_PROGRESS":
+        required = {
+            research_relative,
+            brief_relative,
+            receipt_relative,
+            f"runs/{experiment_id}/inputs/study-note-brief-v02.md",
+            f"runs/{experiment_id}/inputs/study-note-brief-v03.md",
+            f"runs/{experiment_id}/raw/v01.json",
+            f"runs/{experiment_id}/raw/v02.json",
+            f"runs/{experiment_id}/review/v01.html",
+            f"runs/{experiment_id}/review/v02.html",
+            f"runs/{experiment_id}/receipts/dispatch-v02.json",
+        }
+        if not required <= actual_run_paths:
+            errors.append("T2.9 draft phase lacks frozen research/brief/receipt")
+    elif current_state == "AWAITING_PRODUCT_VERDICT":
+        required = expected_run_paths - {
+            f"runs/{experiment_id}/acceptance/product-verdicts.md"
+        }
+        if actual_run_paths != required:
+            errors.append(
+                "T2.9 awaiting-verdict artifact closure mismatch: "
+                f"expected={sorted(required)} actual={sorted(actual_run_paths)}"
+            )
+    elif current_state == "COMPLETE":
+        if actual_run_paths != expected_run_paths:
+            errors.append("T2.9 complete artifact closure mismatch")
+        verdict_path = run_root / "acceptance/product-verdicts.md"
+        if verdict_path.is_file():
+            verdict = read_regular_utf8(verdict_path, errors, ROOT)
+            if verdict is not None:
+                verdict_matches = re.findall(
+                    r"^verdict: (ACCEPTED|REJECTED)$", verdict, re.MULTILINE
+                )
+                accepted_matches = re.findall(
+                    r"^product-accepted: (yes|no)$", verdict, re.MULTILINE
+                )
+                owner_quote_matches = re.findall(
+                    r"^owner-quote: (\S.*)$", verdict, re.MULTILINE
+                )
+                if (
+                    verdict_matches != ["ACCEPTED"]
+                    or accepted_matches != ["yes"]
+                    or len(owner_quote_matches) != 1
+                ):
+                    errors.append("T2.9 product verdict receipt is invalid")
+
+
+def validate_t210_experiment_boundary(errors: list[str]) -> None:
+    card = read_regular_utf8(ROOT / "taskcards/T2.10.md", errors, ROOT)
+    readme = read_regular_utf8(ROOT / "README.md", errors, ROOT)
+    pipeline = read_regular_utf8(ROOT / "blueprints/PIPELINE-MAP.md", errors, ROOT)
+    roadmap = read_regular_utf8(
+        ROOT / "blueprints/EXECUTION-ROADMAP.md", errors, ROOT
+    )
+    if card is None or readme is None or pipeline is None or roadmap is None:
+        return
+
+    experiment_id = "T2.10-BERGER-INLINE-READING-PROTOTYPE-01"
+    state_match = re.search(r"^current-state: (\S+)$", card, re.MULTILINE)
+    if state_match is None or state_match.group(1) not in {
+        "DRAFT_IN_PROGRESS",
+        "AWAITING_PRODUCT_VERDICT",
+        "COMPLETE",
+        "STOPPED",
+    }:
+        errors.append("T2.10 card has an invalid execution state")
+        return
+    current_state = state_match.group(1)
+    if f"experiment-id: {experiment_id}" not in card:
+        errors.append("T2.10 experiment-id mismatch")
+    if "active-version: v02" not in card:
+        errors.append("T2.10 active version mismatch")
+    if experiment_id in pipeline:
+        errors.append("T2.10 run identity leaked into long-term pipeline owner")
+    if f"`taskcards/T2.10.md` 状态为 `{current_state}`" not in readme:
+        errors.append("README does not match the current T2.10 execution state")
+    if (
+        f"T2.10 伯格知识讲义原文融合单样张（`{current_state}`，`v02`）"
+        not in roadmap
+    ):
+        errors.append("roadmap does not match the current T2.10 state/version")
+
+    material_path = ROOT / "materials/T2.4-IDEA-PILOT-01/source.epub"
+    source_blocks: list[str] = []
+    source_scope_text = ""
+    source_heading = ""
+
+    def visible_fragment(fragment: str) -> str:
+        fragment_parser = _VisibleTextParser()
+        fragment_parser.feed(fragment)
+        fragment_parser.close()
+        return "".join(fragment_parser.parts)
+    if not material_path.is_file() or material_path.is_symlink():
+        errors.append("T2.10 frozen EPUB missing or unsafe")
+    else:
+        material = material_path.read_bytes()
+        if len(material) != 672638 or hashlib.sha256(material).hexdigest() != (
+            "3baf9932c92412f0e7d0ccae993182f55f62e2fab5ec46a3882d675476288664"
+        ):
+            errors.append("T2.10 EPUB identity mismatch")
+        try:
+            with zipfile.ZipFile(io.BytesIO(material)) as archive:
+                member = archive.read("text/part0019.html")
+        except (KeyError, zipfile.BadZipFile, OSError) as error:
+            errors.append(f"T2.10 frozen XHTML member unreadable: {error}")
+        else:
+            start_marker = b'<h2 class="calibre15"'
+            end_marker = b'<ol class="duokan-footnote-content1">'
+            if member.count(start_marker) != 1 or member.count(end_marker) != 1:
+                errors.append("T2.10 XHTML scope markers mismatch")
+            else:
+                scope = member[member.index(start_marker) : member.index(end_marker)]
+                if hashlib.sha256(scope).hexdigest() != (
+                    "216f3a01176e10084ee7a011da7f85cd8bb6e6f1558546db6414f9a285b05dad"
+                ):
+                    errors.append("T2.10 frozen XHTML scope identity mismatch")
+                source_scope_text = scope.decode("utf-8")
+                source_heading_match = re.search(
+                    r"<h2\b[^>]*>(.*?)</h2>",
+                    source_scope_text,
+                    flags=re.DOTALL,
+                )
+                if source_heading_match is None:
+                    errors.append("T2.10 source scope lacks its chapter heading")
+                else:
+                    source_heading = visible_fragment(source_heading_match.group(1))
+                source_blocks = [
+                    visible_fragment(fragment)
+                    for _, fragment in re.findall(
+                        r"<(p|h3)\b[^>]*>(.*?)</\1>",
+                        source_scope_text,
+                        flags=re.DOTALL,
+                    )
+                ]
+
+    v03_path = ROOT / "runs/T2.9-BERGER-STUDY-NOTES-PROTOTYPE-01/raw/v03.json"
+    v03_value = None
+    if not v03_path.is_file() or hashlib.sha256(v03_path.read_bytes()).hexdigest() != (
+        "52e42bcfb8cbd32cad76288e0564540b4c4406bc4ed14ccaa3b4a12b2ba4b428"
+    ):
+        errors.append("T2.10 accepted v03 identity mismatch")
+    else:
+        try:
+            v03_value = json.loads(v03_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            errors.append(f"T2.10 accepted v03 unreadable: {error}")
+
+    verdict_path = (
+        ROOT
+        / "runs/T2.9-BERGER-STUDY-NOTES-PROTOTYPE-01/acceptance/product-verdicts.md"
+    )
+    if not verdict_path.is_file() or hashlib.sha256(verdict_path.read_bytes()).hexdigest() != (
+        "89d580bc073a7a7d79b5ab66051d3a3e9aa6fa66d07c334de28dfafccf85214f"
+    ):
+        errors.append("T2.10 T2.9 product verdict identity mismatch")
+
+    expected_paths = {
+        f"runs/{experiment_id}/review/inline-reading-v01.html",
+        f"runs/{experiment_id}/review/inline-reading-v02.md",
+        f"runs/{experiment_id}/receipts/assembly.json",
+        f"runs/{experiment_id}/receipts/assembly-v02.json",
+        f"runs/{experiment_id}/acceptance/product-verdicts.md",
+    }
+    listed_paths = set(
+        re.findall(rf"`(runs/{re.escape(experiment_id)}/[^`]+)`", card)
+    )
+    if listed_paths != expected_paths:
+        errors.append("T2.10 run-path closure mismatch")
+
+    run_root = ROOT / "runs" / experiment_id
+    if not run_root.is_dir() or run_root.is_symlink():
+        if current_state != "STOPPED":
+            errors.append("T2.10 requires a regular run directory")
+        return
+    actual_paths = {
+        path.relative_to(ROOT).as_posix()
+        for path in run_root.rglob("*")
+        if path.is_file() and not path.is_symlink() and path.name != ".DS_Store"
+    }
+    for path in run_root.rglob("*"):
+        if path.is_symlink():
+            errors.append(f"T2.10 symlink forbidden: {path.relative_to(ROOT)}")
+    extra_paths = actual_paths - expected_paths
+    if extra_paths:
+        errors.append(f"T2.10 unexpected run files: {sorted(extra_paths)}")
+
+    expected_receipt_fields = {
+        "experiment_id",
+        "source_scope_sha256",
+        "accepted_knowledge_sha256",
+        "anchor_after_paragraph",
+        "anchor_occurrences_in_scope",
+        "anchor_text",
+        "anchor_text_sha256",
+        "assembly_mode",
+        "semantic_edit",
+        "output",
+    }
+
+    def validate_assembly_receipt(
+        relative_path: str, assembly_mode: str, output: str, label: str
+    ) -> str | None:
+        receipt_path = run_root / relative_path
+        if not receipt_path.is_file():
+            return None
+        try:
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            errors.append(f"T2.10 {label} receipt invalid: {error}")
+            return None
+        expected_fixed = {
+            "experiment_id": experiment_id,
+            "source_scope_sha256": "216f3a01176e10084ee7a011da7f85cd8bb6e6f1558546db6414f9a285b05dad",
+            "accepted_knowledge_sha256": "52e42bcfb8cbd32cad76288e0564540b4c4406bc4ed14ccaa3b4a12b2ba4b428",
+            "assembly_mode": assembly_mode,
+            "semantic_edit": "none",
+            "output": output,
+        }
+        if not isinstance(receipt, dict) or set(receipt) != expected_receipt_fields or any(
+            receipt.get(key) != value for key, value in expected_fixed.items()
+        ):
+            errors.append(f"T2.10 {label} receipt mismatch")
+            return None
+        receipt_anchor = receipt.get("anchor_text")
+        if not isinstance(receipt_anchor, str) or not receipt_anchor:
+            errors.append(f"T2.10 {label} anchor text invalid")
+            return None
+        anchor_positions = [
+            index
+            for index, block in enumerate(source_blocks, start=1)
+            if block == receipt_anchor
+        ]
+        if (
+            anchor_positions != [receipt.get("anchor_after_paragraph")]
+            or receipt.get("anchor_occurrences_in_scope") != len(anchor_positions)
+            or receipt.get("anchor_text_sha256")
+            != hashlib.sha256(receipt_anchor.encode("utf-8")).hexdigest()
+        ):
+            errors.append(f"T2.10 {label} anchor is not derived from source scope")
+            return None
+        return receipt_anchor
+
+    anchor_text = validate_assembly_receipt(
+        "receipts/assembly.json",
+        "single-collapsible-editorial-inset",
+        "review/inline-reading-v01.html",
+        "HTML assembly",
+    )
+    markdown_anchor_text = validate_assembly_receipt(
+        "receipts/assembly-v02.json",
+        "single-expanded-obsidian-callout",
+        "review/inline-reading-v02.md",
+        "Markdown assembly",
+    )
+    if (
+        anchor_text is not None
+        and markdown_anchor_text is not None
+        and markdown_anchor_text != anchor_text
+    ):
+        errors.append("T2.10 Markdown anchor receipt differs from v01")
+
+    page_path = run_root / "review/inline-reading-v01.html"
+    if page_path.is_file():
+        page = read_regular_utf8(page_path, errors, ROOT)
+        if page is not None:
+            if re.search(r"(?:https?:)?//", page):
+                errors.append("T2.10 page contains a remote resource or URL")
+            if page.count('<details class="readerlab-inset" open>') != 1:
+                errors.append("T2.10 page must contain one open editorial inset")
+            if any(token in page for token in ('class="point"', 'class="point-body"')):
+                errors.append("T2.10 page reintroduced nested knowledge cards")
+            knowledge_match = re.search(
+                r'<script type="application/json" id="knowledge-data">\s*(\{.*?\})\s*</script>',
+                page,
+                flags=re.DOTALL,
+            )
+            if knowledge_match is None:
+                errors.append("T2.10 page lacks embedded accepted knowledge")
+            else:
+                try:
+                    embedded = json.loads(knowledge_match.group(1))
+                except json.JSONDecodeError as error:
+                    errors.append(f"T2.10 embedded knowledge invalid: {error}")
+                else:
+                    if v03_value is None or embedded != v03_value:
+                        errors.append("T2.10 embedded knowledge differs from accepted v03")
+            parser = _VisibleTextParser()
+            parser.feed(page[: knowledge_match.start()] if knowledge_match else page)
+            parser.close()
+            visible_text = " ".join(parser.parts)
+            article_match = re.search(r"<article>(.*?)</article>", page, re.DOTALL)
+            details_match = re.search(
+                r'<details class="readerlab-inset" open>(.*?)</details>',
+                page,
+                re.DOTALL,
+            )
+            if article_match is None or details_match is None:
+                errors.append("T2.10 page lacks the source article or editorial inset")
+            else:
+                page_chapter_match = re.search(
+                    r'<div class="chapter-no">(.*?)</div>\s*<h1>(.*?)</h1>',
+                    page,
+                    flags=re.DOTALL,
+                )
+                if (
+                    page_chapter_match is None
+                    or visible_fragment(page_chapter_match.group(1))
+                    + visible_fragment(page_chapter_match.group(2))
+                    != source_heading
+                ):
+                    errors.append("T2.10 page chapter heading differs from source scope")
+                source_article = article_match.group(1)
+                source_article = re.sub(
+                    r'<details class="readerlab-inset" open>.*?</details>',
+                    "",
+                    source_article,
+                    count=1,
+                    flags=re.DOTALL,
+                )
+                source_article = re.sub(
+                    r'<span class="anchor-tag">.*?</span>',
+                    "",
+                    source_article,
+                    count=1,
+                    flags=re.DOTALL,
+                )
+                page_source_blocks = [
+                    visible_fragment(fragment)
+                    for _, fragment in re.findall(
+                        r"<(p|h2)\b[^>]*>(.*?)</\1>",
+                        source_article,
+                        flags=re.DOTALL,
+                    )
+                ]
+                if page_source_blocks != source_blocks:
+                    errors.append(
+                        "T2.10 page source blocks differ in content, order, or count"
+                    )
+                if anchor_text is not None:
+                    anchor_then_inset = re.search(
+                        r'<p class="anchor">(.*?)<span class="anchor-tag">.*?</span></p>\s*'
+                        r'<details class="readerlab-inset" open>',
+                        article_match.group(1),
+                        flags=re.DOTALL,
+                    )
+                    if (
+                        anchor_then_inset is None
+                        or visible_fragment(anchor_then_inset.group(1)) != anchor_text
+                    ):
+                        errors.append(
+                            "T2.10 editorial inset is not immediately after its frozen anchor"
+                        )
+            if v03_value is not None:
+                required_knowledge = [
+                    v03_value.get("knowledge_object", ""),
+                    v03_value.get("thesis", ""),
+                    v03_value.get("book_connection", ""),
+                ]
+                for point in v03_value.get("points", []):
+                    required_knowledge.extend(
+                        [
+                            point.get("heading", ""),
+                            point.get("source_faithful_core", ""),
+                            point.get("reader_aid", ""),
+                        ]
+                    )
+                for value in required_knowledge:
+                    if isinstance(value, str) and " ".join(value.split()) not in visible_text:
+                        errors.append("T2.10 page omits accepted v03 semantic content")
+                        break
+                if details_match is not None:
+                    knowledge_values = [
+                        v03_value.get("knowledge_object", ""),
+                        v03_value.get("book_connection", ""),
+                        v03_value.get("thesis", ""),
+                    ]
+                    for point in v03_value.get("points", []):
+                        knowledge_values.extend(
+                            [
+                                point.get("heading", ""),
+                                point.get("source_faithful_core", ""),
+                                point.get("reader_aid", ""),
+                            ]
+                        )
+                    cursor = -1
+                    for value in knowledge_values:
+                        if not isinstance(value, str) or not value:
+                            continue
+                        position = details_match.group(1).find(value, cursor + 1)
+                        if position < 0 or details_match.group(1).count(value) != 1:
+                            errors.append(
+                                "T2.10 accepted knowledge differs in order or count"
+                            )
+                            break
+                        cursor = position
+
+    markdown_path = run_root / "review/inline-reading-v02.md"
+    if markdown_path.is_file():
+        markdown = read_regular_utf8(markdown_path, errors, ROOT)
+        if markdown is not None:
+            if re.search(r"(?:https?:)?//", markdown):
+                errors.append("T2.10 Markdown contains a remote resource or URL")
+            if markdown.count("> [!note]+ ") != 1 or markdown.count("> [!") != 1:
+                errors.append("T2.10 Markdown must contain one expanded callout")
+            if "理论要点" in markdown or "辅助理解" in markdown:
+                errors.append("T2.10 Markdown reintroduced nested knowledge labels")
+            if markdown.count("> *换句话说：") != 7:
+                errors.append("T2.10 Markdown must contain seven weak reader aids")
+
+            markdown_lines = markdown.splitlines()
+            if not markdown_lines or not markdown_lines[0].startswith("# "):
+                errors.append("T2.10 Markdown lacks its chapter heading")
+            else:
+                markdown_heading = markdown_lines[0][2:].replace(" ", "")
+                if markdown_heading != source_heading.replace(" ", ""):
+                    errors.append("T2.10 Markdown chapter heading differs from source")
+
+            source_lines: list[str] = []
+            in_callout = False
+            for line in markdown_lines[1:]:
+                if line.startswith(">"):
+                    in_callout = True
+                    continue
+                if in_callout:
+                    in_callout = False
+                source_lines.append(line)
+            source_markdown = "\n".join(source_lines).strip()
+            markdown_source_blocks = []
+            for block in re.split(r"\n\s*\n", source_markdown):
+                block = block.strip()
+                if not block:
+                    continue
+                if block.startswith("## "):
+                    block = block[3:]
+                markdown_source_blocks.append(visible_fragment(block))
+            if markdown_source_blocks != source_blocks:
+                errors.append(
+                    "T2.10 Markdown source blocks differ in content, order, or count"
+                )
+
+            if anchor_text is not None:
+                rendered_anchor = anchor_text.replace("E=mc2", "E=mc<sup>2</sup>")
+                if (
+                    rendered_anchor
+                    + "\n\n> [!note]+ 陪读｜彼得·伯格《神圣的帷幕》中的宗教合法化机制"
+                    not in markdown
+                ):
+                    errors.append(
+                        "T2.10 Markdown callout is not immediately after its frozen anchor"
+                    )
+
+            callout_lines = [
+                line[2:] if line.startswith("> ") else ""
+                for line in markdown_lines
+                if line.startswith(">")
+            ]
+            callout = "\n".join(callout_lines)
+            if v03_value is not None:
+                knowledge_values = [
+                    v03_value.get("knowledge_object", ""),
+                    v03_value.get("book_connection", ""),
+                    v03_value.get("thesis", ""),
+                ]
+                for point in v03_value.get("points", []):
+                    knowledge_values.extend(
+                        [
+                            point.get("heading", ""),
+                            point.get("source_faithful_core", ""),
+                            point.get("reader_aid", ""),
+                        ]
+                    )
+                cursor = -1
+                for value in knowledge_values:
+                    if not isinstance(value, str) or not value:
+                        continue
+                    position = callout.find(value, cursor + 1)
+                    if position < 0 or callout.count(value) != 1:
+                        errors.append(
+                            "T2.10 Markdown accepted knowledge differs in order or count"
+                        )
+                        break
+                    cursor = position
+
+    verdict_relative = f"runs/{experiment_id}/acceptance/product-verdicts.md"
+    t210_verdict_path = run_root / "acceptance/product-verdicts.md"
+    if t210_verdict_path.is_file():
+        t210_verdict = read_regular_utf8(t210_verdict_path, errors, ROOT)
+        if t210_verdict is not None:
+            if (
+                re.findall(r"^verdict: (\S+)$", t210_verdict, re.MULTILINE)
+                != ["ACCEPTED"]
+                or re.findall(
+                    r"^product-accepted: (\S+)$", t210_verdict, re.MULTILINE
+                )
+                != ["yes"]
+                or re.findall(
+                    r"^active-version: (\S+)$", t210_verdict, re.MULTILINE
+                )
+                != ["v02"]
+                or len(
+                    re.findall(r"^owner-quote: .+$", t210_verdict, re.MULTILINE)
+                )
+                != 1
+            ):
+                errors.append("T2.10 product verdict receipt is invalid")
+    if current_state == "AWAITING_PRODUCT_VERDICT":
+        if actual_paths != expected_paths - {verdict_relative}:
+            errors.append("T2.10 awaiting-verdict artifact closure mismatch")
+    elif current_state == "COMPLETE":
+        if actual_paths != expected_paths:
+            errors.append("T2.10 complete artifact closure mismatch")
+
+
+def validate_t211_experiment_boundary(errors: list[str]) -> None:
+    card = read_regular_utf8(ROOT / "taskcards/T2.11.md", errors, ROOT)
+    readme = read_regular_utf8(ROOT / "README.md", errors, ROOT)
+    pipeline = read_regular_utf8(ROOT / "blueprints/PIPELINE-MAP.md", errors, ROOT)
+    roadmap = read_regular_utf8(
+        ROOT / "blueprints/EXECUTION-ROADMAP.md", errors, ROOT
+    )
+    if card is None or readme is None or pipeline is None or roadmap is None:
+        return
+
+    experiment_id = "T2.11-NON-BERGER-STUDY-NOTES-PROTOTYPE-01"
+    state_match = re.search(r"^current-state: (\S+)$", card, re.MULTILINE)
+    valid_states = {
+        "DRAFT_IN_PROGRESS",
+        "AWAITING_PRODUCT_VERDICT",
+        "COMPLETE",
+        "STOPPED",
+    }
+    if state_match is None or state_match.group(1) not in valid_states:
+        errors.append("T2.11 card has an invalid execution state")
+        return
+    current_state = state_match.group(1)
+    if f"experiment-id: {experiment_id}" not in card:
+        errors.append("T2.11 experiment-id mismatch")
+    if "active-version: v01" not in card or "card-status: FROZEN" not in card:
+        errors.append("T2.11 active version or frozen card status mismatch")
+    if experiment_id in pipeline:
+        errors.append("T2.11 run identity leaked into long-term pipeline owner")
+    if f"`taskcards/T2.11.md` 状态为 `{current_state}`" not in readme:
+        errors.append("README does not match the current T2.11 execution state")
+    if (
+        f"T2.11 两个非伯格知识对象考点式讲义平行样张（`{current_state}`，`v01`）"
+        not in roadmap
+    ):
+        errors.append("roadmap does not match the current T2.11 state/version")
+
+    expected_paths = {
+        f"runs/{experiment_id}/research/object-01-source-audit.md",
+        f"runs/{experiment_id}/research/object-02-source-audit.md",
+        f"runs/{experiment_id}/raw/object-01-v01.json",
+        f"runs/{experiment_id}/raw/object-02-v01.json",
+        f"runs/{experiment_id}/review/study-notes-v01.md",
+        f"runs/{experiment_id}/receipts/dispatch.json",
+        f"runs/{experiment_id}/acceptance/product-verdicts.md",
+    }
+    listed_paths = set(
+        re.findall(rf"`(runs/{re.escape(experiment_id)}/[^`]+)`", card)
+    )
+    if listed_paths != expected_paths:
+        errors.append("T2.11 run-path closure mismatch")
+
+    run_root = ROOT / "runs" / experiment_id
+    if not run_root.exists():
+        if current_state not in {"DRAFT_IN_PROGRESS", "STOPPED"}:
+            errors.append("T2.11 requires a regular run directory")
+        return
+    if not run_root.is_dir() or run_root.is_symlink():
+        errors.append("T2.11 run root must be a regular directory")
+        return
+    actual_paths = {
+        path.relative_to(ROOT).as_posix()
+        for path in run_root.rglob("*")
+        if path.is_file() and not path.is_symlink() and path.name != ".DS_Store"
+    }
+    for path in run_root.rglob("*"):
+        if path.is_symlink():
+            errors.append(f"T2.11 symlink forbidden: {path.relative_to(ROOT)}")
+    extra_paths = actual_paths - expected_paths
+    if extra_paths:
+        errors.append(f"T2.11 unexpected run files: {sorted(extra_paths)}")
+    for relative_path in sorted(actual_paths):
+        text_value = read_regular_utf8(ROOT / relative_path, errors, ROOT)
+        if text_value is not None and any(
+            line.endswith((" ", "\t")) for line in text_value.splitlines()
+        ):
+            errors.append(f"T2.11 trailing whitespace: {relative_path}")
+
+    object_specs = {
+        "object-01": {
+            "name": "宗派化（Konfessionalisierung）",
+            "audit": "research/object-01-source-audit.md",
+            "raw": "raw/object-01-v01.json",
+            "lead_field": "guiding_question",
+            "collection_field": "historical_relations",
+            "entry_count": 4,
+            "entry_fields": (
+                "relation",
+                "historical_explanation",
+                "why_it_matters",
+            ),
+        },
+        "object-02": {
+            "name": "道格拉斯·诺斯的意识形态—执行成本机制",
+            "audit": "research/object-02-source-audit.md",
+            "raw": "raw/object-02-v01.json",
+            "lead_field": "behavioral_puzzle",
+            "collection_field": "mechanism_chain",
+            "entry_count": 5,
+            "entry_fields": (
+                "link",
+                "mechanism_explanation",
+                "practical_reading",
+            ),
+        },
+    }
+    raw_values: dict[str, dict] = {}
+    research_hashes: dict[str, str] = {}
+    raw_hashes: dict[str, str] = {}
+    audit_evidence_ids: dict[str, set[str]] = {}
+    for object_id, spec in object_specs.items():
+        audit_path = run_root / spec["audit"]
+        if audit_path.is_file():
+            audit = read_regular_utf8(audit_path, errors, ROOT)
+            if audit is not None:
+                required_audit_tokens = (
+                    object_id,
+                    spec["name"],
+                    "2026-07-22",
+                    "http",
+                    "unknown",
+                )
+                if any(token not in audit for token in required_audit_tokens):
+                    errors.append(f"T2.11 {object_id} source audit is incomplete")
+                evidence_ids = set(
+                    re.findall(r"^### (S\d+)｜", audit, flags=re.MULTILINE)
+                )
+                if not evidence_ids:
+                    errors.append(f"T2.11 {object_id} source audit lacks evidence ids")
+                audit_evidence_ids[object_id] = evidence_ids
+                research_hashes[object_id] = hashlib.sha256(
+                    audit_path.read_bytes()
+                ).hexdigest()
+
+        raw_path = run_root / spec["raw"]
+        if not raw_path.is_file():
+            continue
+        try:
+            value = json.loads(raw_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            errors.append(f"T2.11 {object_id} raw invalid: {error}")
+            continue
+        expected_fields = {
+            "status",
+            "object_id",
+            "knowledge_object",
+            "source_identity",
+            spec["lead_field"],
+            spec["collection_field"],
+            "limits",
+            "source_audit",
+        }
+        if not isinstance(value, dict) or set(value) != expected_fields:
+            errors.append(f"T2.11 {object_id} raw top-level schema mismatch")
+            continue
+        if (
+            value.get("status") != "submit"
+            or value.get("object_id") != object_id
+            or value.get("knowledge_object") != spec["name"]
+            or "伯格" in value.get("knowledge_object", "")
+            or value.get("source_audit") != spec["audit"]
+            or not all(
+                isinstance(value.get(field), str) and value[field].strip()
+                for field in ("source_identity", spec["lead_field"])
+            )
+        ):
+            errors.append(f"T2.11 {object_id} identity or required content mismatch")
+        entries = value.get(spec["collection_field"])
+        if not isinstance(entries, list) or not entries:
+            errors.append(f"T2.11 {object_id} requires object-specific entries")
+        elif len(entries) != spec["entry_count"]:
+            errors.append(
+                f"T2.11 {object_id} frozen entry count mismatch: "
+                f"expected {spec['entry_count']}"
+            )
+        else:
+            for index, entry in enumerate(entries, start=1):
+                if not isinstance(entry, dict) or set(entry) != {
+                    *spec["entry_fields"],
+                    "evidence_ids",
+                }:
+                    errors.append(
+                        f"T2.11 {object_id} entry schema mismatch: {index}"
+                    )
+                    continue
+                if not all(
+                    isinstance(entry.get(field), str) and entry[field].strip()
+                    for field in spec["entry_fields"]
+                ):
+                    errors.append(
+                        f"T2.11 {object_id} entry content mismatch: {index}"
+                    )
+                evidence_ids = entry.get("evidence_ids")
+                if not isinstance(evidence_ids, list) or not evidence_ids or not all(
+                    isinstance(evidence_id, str) and evidence_id.strip()
+                    for evidence_id in evidence_ids
+                ):
+                    errors.append(
+                        f"T2.11 {object_id} evidence ids invalid: {index}"
+                    )
+                elif not set(evidence_ids) <= audit_evidence_ids.get(object_id, set()):
+                    errors.append(
+                        f"T2.11 {object_id} evidence ids are absent from audit: {index}"
+                    )
+        limits = value.get("limits")
+        if not isinstance(limits, list) or not limits or not all(
+            isinstance(limit, str) and limit.strip() for limit in limits
+        ):
+            errors.append(f"T2.11 {object_id} limits missing")
+        raw_values[object_id] = value
+        raw_hashes[object_id] = hashlib.sha256(raw_path.read_bytes()).hexdigest()
+
+    review_path = run_root / "review/study-notes-v01.md"
+    if review_path.is_file():
+        review = read_regular_utf8(review_path, errors, ROOT)
+        if review is not None:
+            if re.search(r"!\[[^\]]*\]\(https?://", review):
+                errors.append("T2.11 review embeds a remote resource")
+            if "原文锚点" in review or "原文融合" in review:
+                errors.append("T2.11 review crossed into source-text integration")
+            cursor = -1
+            for object_id in ("object-01", "object-02"):
+                value = raw_values.get(object_id)
+                if value is None:
+                    continue
+                semantic_values = [
+                    value["knowledge_object"],
+                    value["source_identity"],
+                    value[object_specs[object_id]["lead_field"]],
+                ]
+                spec = object_specs[object_id]
+                for entry in value[spec["collection_field"]]:
+                    semantic_values.extend(
+                        entry[field] for field in spec["entry_fields"]
+                    )
+                semantic_values.extend(value["limits"])
+                for semantic_value in semantic_values:
+                    position = review.find(semantic_value, cursor + 1)
+                    if position < 0 or review.count(semantic_value) != 1:
+                        errors.append(
+                            f"T2.11 review differs from {object_id} raw semantic order"
+                        )
+                        break
+                    cursor = position
+
+    receipt_path = run_root / "receipts/dispatch.json"
+    if receipt_path.is_file():
+        try:
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            errors.append(f"T2.11 dispatch receipt invalid: {error}")
+        else:
+            expected_receipt_fields = {
+                "experiment_id",
+                "object_ids",
+                "research_sha256",
+                "raw_sha256",
+                "review_output",
+                "production_mode",
+                "network_scope",
+                "actual_read_set",
+            }
+            if (
+                not isinstance(receipt, dict)
+                or set(receipt) != expected_receipt_fields
+                or receipt.get("experiment_id") != experiment_id
+                or receipt.get("object_ids") != ["object-01", "object-02"]
+                or receipt.get("research_sha256") != research_hashes
+                or receipt.get("raw_sha256") != raw_hashes
+                or receipt.get("review_output") != "review/study-notes-v01.md"
+                or receipt.get("production_mode") != "manual-parallel-samples"
+                or receipt.get("network_scope") != "public-source-verification-only"
+                or receipt.get("actual_read_set") != "research-agent-reported"
+            ):
+                errors.append("T2.11 dispatch receipt evidence boundary mismatch")
+
+    validate_t211_manifest_projection(errors)
+
+    verdict_relative = f"runs/{experiment_id}/acceptance/product-verdicts.md"
+    if current_state == "DRAFT_IN_PROGRESS":
+        if verdict_relative in actual_paths:
+            errors.append("T2.11 product verdict exists before product review")
+    elif current_state == "AWAITING_PRODUCT_VERDICT":
+        if actual_paths != expected_paths - {verdict_relative}:
+            errors.append("T2.11 awaiting-verdict artifact closure mismatch")
+    elif current_state == "COMPLETE":
+        if actual_paths != expected_paths:
+            errors.append("T2.11 complete artifact closure mismatch")
+        verdict_path = run_root / "acceptance/product-verdicts.md"
+        if verdict_path.is_file():
+            verdict = read_regular_utf8(verdict_path, errors, ROOT)
+            if verdict is not None:
+                verdict_ids = re.findall(
+                    r"^(object-(?:01|02))-verdict: (ACCEPTED|REJECTED)$",
+                    verdict,
+                    re.MULTILINE,
+                )
+                quote_ids = re.findall(
+                    r"^(object-(?:01|02))-owner-quote: \S.*$",
+                    verdict,
+                    re.MULTILINE,
+                )
+                if (
+                    {object_id for object_id, _ in verdict_ids}
+                    != {"object-01", "object-02"}
+                    or len(verdict_ids) != 2
+                    or set(quote_ids) != {"object-01", "object-02"}
+                    or len(quote_ids) != 2
+                ):
+                    errors.append("T2.11 product verdict receipt is invalid")
+
+
+def _read_manifest_object(errors: list[str]) -> dict[str, object] | None:
+    manifest_text = read_regular_utf8(MANIFEST, errors, ROOT)
+    if manifest_text is None:
+        return None
+    try:
+        manifest = json.loads(manifest_text)
+    except json.JSONDecodeError as error:
+        errors.append(f"audit/manifest.json is not valid JSON: {error}")
+        return None
+    if (
+        not isinstance(manifest, dict)
+        or manifest.get("schema") != "readerlab-clean-seed-manifest/v1"
+        or not isinstance(manifest.get("purpose"), str)
+        or not isinstance(manifest.get("files"), list)
+    ):
+        errors.append("audit/manifest.json has an invalid top-level schema")
+        return None
+    entries = manifest["files"]
+    if not all(
+        isinstance(entry, dict)
+        and set(entry) == {"path", "sha256"}
+        and isinstance(entry.get("path"), str)
+        and isinstance(entry.get("sha256"), str)
+        for entry in entries
+    ):
+        errors.append("audit/manifest.json has an invalid file entry")
+        return None
+    paths = [entry["path"] for entry in entries]
+    if len(paths) != len(set(paths)) or paths != sorted(paths):
+        errors.append("audit/manifest.json file entries are duplicated or unsorted")
+        return None
+    return manifest
+
+
+def validate_t211_manifest_projection(errors: list[str]) -> None:
+    manifest = _read_manifest_object(errors)
+    if manifest is None:
+        return
+    entries = {entry["path"]: entry["sha256"] for entry in manifest["files"]}
+    for relative_path in T211_MANIFEST_PROJECT_PATHS:
+        path = ROOT / relative_path
+        content = read_regular_bytes(path, errors, ROOT)
+        if content is None:
+            continue
+        if entries.get(relative_path) != hashlib.sha256(content).hexdigest():
+            errors.append(f"T2.11 manifest projection mismatch: {relative_path}")
+
+
+def update_t211_manifest_projection(errors: list[str]) -> None:
+    manifest = _read_manifest_object(errors)
+    if manifest is None:
+        return
+    entries = {entry["path"]: entry for entry in manifest["files"]}
+    for relative_path in T211_MANIFEST_PROJECT_PATHS:
+        if relative_path not in entries:
+            errors.append(f"T2.11 manifest lacks governed path: {relative_path}")
+            continue
+        content = read_regular_bytes(ROOT / relative_path, errors, ROOT)
+        if content is not None:
+            entries[relative_path]["sha256"] = hashlib.sha256(content).hexdigest()
+    if errors:
+        return
+    manifest_text = json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
+    try:
+        write_manifest_atomically(manifest_text)
+    except OSError as error:
+        errors.append(f"cannot write T2.11 manifest projection: {error}")
+
+
 def validate_manifest_parent(errors: list[str]) -> None:
     parent = MANIFEST.parent
     label = parent.relative_to(ROOT).as_posix()
@@ -1250,14 +4243,15 @@ def validate_run_script(errors: list[str]) -> None:
     nonstandard_imports = sorted(imports - allowed_imports)
     if nonstandard_imports:
         errors.append(f"tools/run.py has non-stdlib imports: {nonstandard_imports}")
-    if subcommands != {"new", "freeze", "check"}:
+    if subcommands != {"new", "promote", "freeze", "check"}:
         errors.append(
-            "tools/run.py subcommands must be exactly new/freeze/check: "
+            "tools/run.py subcommands must be exactly new/promote/freeze/check: "
             f"{sorted(subcommands)}"
         )
 
     required_literals = {
         "new",
+        "promote",
         "freeze",
         "check",
         "raw",
@@ -6158,6 +9152,123 @@ def main() -> int:
             return 2
         return _run_recovery_only(Path(sys.argv[2]).resolve())
 
+    if "--check-t24" in sys.argv:
+        if len(sys.argv) != 2:
+            print("usage: validate.py --check-t24", file=sys.stderr)
+            return 2
+        errors: list[str] = []
+        validate_t24_experiment_boundary(errors)
+        if errors:
+            print("T2.4 validation FAILED")
+            print("\n".join(errors))
+            return 1
+        print("T2.4 validation PASSED")
+        return 0
+
+    if "--check-t25" in sys.argv:
+        if len(sys.argv) != 2:
+            print("usage: validate.py --check-t25", file=sys.stderr)
+            return 2
+        errors: list[str] = []
+        validate_t25_experiment_boundary(errors)
+        if errors:
+            print("T2.5 validation FAILED")
+            print("\n".join(errors))
+            return 1
+        print("T2.5 validation PASSED")
+        return 0
+
+    if "--check-t26" in sys.argv:
+        if len(sys.argv) != 2:
+            print("usage: validate.py --check-t26", file=sys.stderr)
+            return 2
+        errors: list[str] = []
+        validate_t26_experiment_boundary(errors)
+        if errors:
+            print("T2.6 validation FAILED")
+            print("\n".join(errors))
+            return 1
+        print("T2.6 validation PASSED")
+        return 0
+
+    if "--check-t27" in sys.argv:
+        if len(sys.argv) != 2:
+            print("usage: validate.py --check-t27", file=sys.stderr)
+            return 2
+        errors: list[str] = []
+        validate_t27_experiment_boundary(errors)
+        if errors:
+            print("T2.7 validation FAILED")
+            print("\n".join(errors))
+            return 1
+        print("T2.7 validation PASSED")
+        return 0
+
+    if "--check-t28" in sys.argv:
+        if len(sys.argv) != 2:
+            print("usage: validate.py --check-t28", file=sys.stderr)
+            return 2
+        errors: list[str] = []
+        validate_t28_experiment_boundary(errors)
+        if errors:
+            print("T2.8 validation FAILED")
+            print("\n".join(errors))
+            return 1
+        print("T2.8 validation PASSED")
+        return 0
+
+    if "--check-t29" in sys.argv:
+        if len(sys.argv) != 2:
+            print("usage: validate.py --check-t29", file=sys.stderr)
+            return 2
+        errors: list[str] = []
+        validate_t29_experiment_boundary(errors)
+        if errors:
+            print("T2.9 validation FAILED")
+            print("\n".join(errors))
+            return 1
+        print("T2.9 validation PASSED")
+        return 0
+
+    if "--check-t210" in sys.argv:
+        if len(sys.argv) != 2:
+            print("usage: validate.py --check-t210", file=sys.stderr)
+            return 2
+        errors: list[str] = []
+        validate_t210_experiment_boundary(errors)
+        if errors:
+            print("T2.10 validation FAILED")
+            print("\n".join(errors))
+            return 1
+        print("T2.10 validation PASSED")
+        return 0
+
+    if "--check-t211" in sys.argv:
+        if len(sys.argv) != 2:
+            print("usage: validate.py --check-t211", file=sys.stderr)
+            return 2
+        errors: list[str] = []
+        validate_t211_experiment_boundary(errors)
+        if errors:
+            print("T2.11 validation FAILED")
+            print("\n".join(errors))
+            return 1
+        print("T2.11 validation PASSED")
+        return 0
+
+    if "--update-t211-manifest" in sys.argv:
+        if len(sys.argv) != 2:
+            print("usage: validate.py --update-t211-manifest", file=sys.stderr)
+            return 2
+        errors: list[str] = []
+        update_t211_manifest_projection(errors)
+        if errors:
+            print("T2.11 manifest update FAILED")
+            print("\n".join(errors))
+            return 1
+        print("T2.11 manifest update PASSED")
+        return 0
+
     write_manifest = "--write-manifest" in sys.argv
     errors: list[str] = []
     validate_t0_3_contracts(errors)
@@ -6173,7 +9284,7 @@ def main() -> int:
 
     files = owned_files()
     example_files = [path for path in files if "examples" in path.parts]
-    expected_counts = {"positive": 4, "negative": 8, "reference": 4}
+    expected_counts = {"positive": 4, "negative": 9, "reference": 4}
     observed_counts = {
         kind: sum(1 for path in example_files if kind in path.parts)
         for kind in expected_counts
@@ -6194,6 +9305,14 @@ def main() -> int:
     validate_run_script(errors)
     validate_material_guard(errors)
     validate_material_index(errors)
+    validate_t24_experiment_boundary(errors)
+    validate_t25_experiment_boundary(errors)
+    validate_t26_experiment_boundary(errors)
+    validate_t27_experiment_boundary(errors)
+    validate_t28_experiment_boundary(errors)
+    validate_t29_experiment_boundary(errors)
+    validate_t210_experiment_boundary(errors)
+    validate_t211_experiment_boundary(errors)
     validate_t36_freeze_contract(errors)
     validate_recovery_control(errors)
 

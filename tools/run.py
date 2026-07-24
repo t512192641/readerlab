@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Create, freeze, and deterministically check a lightweight ReaderLab run.
+"""Create, promote, freeze, and deterministically check a ReaderLab run.
 
 Single-writer contract: during each command, the explicit root, material path,
 and run directory are writable only by the current caller. External concurrent
-writes are outside this deliberately lightweight three-command skeleton.
+writes are outside this deliberately lightweight control tool.
 """
 
 from __future__ import annotations
@@ -13,7 +13,9 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
+import tempfile
 from pathlib import Path, PurePosixPath
 
 
@@ -32,6 +34,19 @@ PREDICTIONS_NAME = "judge-predictions.md"
 ACCEPTANCE_REPORT_NAME = "acceptance-report.md"
 PRODUCT_VERDICTS_NAME = "product-verdicts.md"
 FROZEN_ACCEPTANCE_NAMES = (PREDICTIONS_NAME, ACCEPTANCE_REPORT_NAME)
+PROMOTION_CHECKS = (
+    "artifact_type",
+    "fields",
+    "source",
+    "synthetic",
+    "version",
+)
+REQUIRED_PROMOTION_CHECKS = {
+    "artifact_type",
+    "source",
+    "synthetic",
+}
+PROMOTION_STAGING_PREFIX = ".readerlab-promote-"
 SHA256 = re.compile(r"\A[0-9a-f]{64}\Z")
 T31_RECEIPT_BINDING = re.compile(
     r"^t3\.1-freeze-receipt-sha256: (?P<sha256>[0-9a-f]{64})$",
@@ -135,6 +150,29 @@ def _sha256_and_size(path: Path) -> tuple[str, int]:
     if identity_before != identity_after:
         raise RunError(f"file changed while hashing: {path}")
     return digest.hexdigest(), before.st_size
+
+
+def _stable_bytes(path: Path, label: str) -> bytes:
+    _require_regular_file(path, label)
+    with path.open("rb") as handle:
+        before = os.fstat(handle.fileno())
+        payload = handle.read()
+        after = os.fstat(handle.fileno())
+    identity_before = (
+        before.st_dev,
+        before.st_ino,
+        before.st_size,
+        before.st_mtime_ns,
+    )
+    identity_after = (
+        after.st_dev,
+        after.st_ino,
+        after.st_size,
+        after.st_mtime_ns,
+    )
+    if identity_before != identity_after or len(payload) != before.st_size:
+        raise RunError(f"{label} changed while reading: {path}")
+    return payload
 
 
 def _write_json_exclusive(path: Path, value: dict[str, object]) -> None:
@@ -348,6 +386,8 @@ def _production_snapshot(
             relative = path.relative_to(run_dir).as_posix()
             if path.is_symlink():
                 raise RunError(f"symlink forbidden in production: {relative}")
+            if path.name.startswith(PROMOTION_STAGING_PREFIX):
+                raise RunError(f"incomplete promotion staging file: {relative}")
             if path.is_dir():
                 directories.append(relative)
             elif path.is_file():
@@ -663,6 +703,209 @@ def _new_run(args: argparse.Namespace) -> None:
     )
 
 
+def _promotion_target(run_dir: Path, value: str) -> tuple[Path, str]:
+    reference = PurePosixPath(value)
+    if (
+        reference.is_absolute()
+        or reference.as_posix() != value
+        or len(reference.parts) < 2
+        or reference.parts[0] not in PRODUCTION_DIRECTORIES
+        or any(part in {"", ".", ".."} for part in reference.parts)
+    ):
+        raise RunError(
+            "promotion target must be a canonical relative path below "
+            f"{PRODUCTION_DIRECTORIES}: {value!r}"
+        )
+
+    current = run_dir
+    for part in reference.parts[:-1]:
+        current = current / part
+        if current.is_symlink() or not current.is_dir():
+            raise RunError(f"promotion target parent must be a real directory: {current}")
+    target = current / reference.name
+    if _lexists(target):
+        raise RunError(f"refusing to overwrite existing formal target: {value}")
+    return target, value
+
+
+def _promotion_candidate(run_dir: Path, path: Path) -> Path:
+    _require_regular_file(path, "promotion candidate")
+    try:
+        candidate = path.resolve(strict=True)
+    except OSError as error:
+        raise RunError(f"promotion candidate does not exist: {path}") from error
+    try:
+        candidate.relative_to(run_dir)
+    except ValueError:
+        return candidate
+    raise RunError("promotion candidate must be outside the formal run directory")
+
+
+def _parse_validator_result(
+    stdout: str,
+    *,
+    candidate_sha256: str,
+    candidate_bytes: int,
+) -> dict[str, str]:
+    if not stdout.strip():
+        raise RunError("validator returned no explicit PASS result")
+    try:
+        result = json.loads(stdout)
+    except json.JSONDecodeError as error:
+        raise RunError("validator stdout must be exactly one JSON object") from error
+    if not isinstance(result, dict):
+        raise RunError("validator result must be a JSON object")
+    if result.get("status") != "PASS":
+        raise RunError("validator did not explicitly return PASS")
+    if result.get("candidate_sha256") != candidate_sha256:
+        raise RunError("validator PASS is not bound to the candidate SHA-256")
+    reported_candidate_bytes = result.get("candidate_bytes")
+    if (
+        type(reported_candidate_bytes) is not int
+        or reported_candidate_bytes != candidate_bytes
+    ):
+        raise RunError("validator PASS is not bound to the candidate byte count")
+
+    checks = result.get("checks")
+    if not isinstance(checks, dict) or set(checks) != set(PROMOTION_CHECKS):
+        raise RunError(
+            "validator PASS must report exactly these checks: "
+            f"{list(PROMOTION_CHECKS)}"
+        )
+    normalized: dict[str, str] = {}
+    for name in PROMOTION_CHECKS:
+        value = checks.get(name)
+        allowed_values = (
+            {"PASS"} if name in REQUIRED_PROMOTION_CHECKS else {"PASS", "NOT_APPLICABLE"}
+        )
+        if value not in allowed_values:
+            raise RunError(f"validator check is not PASS: {name}={value!r}")
+        normalized[name] = value
+    return normalized
+
+
+def _fsync_directory(path: Path) -> None:
+    flags = os.O_RDONLY
+    if hasattr(os, "O_DIRECTORY"):
+        flags |= os.O_DIRECTORY
+    directory_fd = os.open(path, flags)
+    try:
+        os.fsync(directory_fd)
+    finally:
+        os.close(directory_fd)
+
+
+def _publish_exclusive(target: Path, payload: bytes) -> None:
+    stage_fd, stage_name = tempfile.mkstemp(
+        prefix=PROMOTION_STAGING_PREFIX,
+        dir=target.parent,
+    )
+    stage = Path(stage_name)
+    published = False
+    try:
+        with os.fdopen(stage_fd, "wb") as handle:
+            handle.write(payload)
+            handle.flush()
+            os.fsync(handle.fileno())
+        if _stable_bytes(stage, "promotion staging file") != payload:
+            raise RunError("promotion staging bytes changed before publication")
+        try:
+            os.link(stage, target)
+        except FileExistsError as error:
+            raise RunError(
+                f"refusing to overwrite existing formal target: {target}"
+            ) from error
+        published = True
+        _fsync_directory(target.parent)
+    except Exception:
+        if published:
+            try:
+                target.unlink()
+                _fsync_directory(target.parent)
+            except FileNotFoundError:
+                pass
+        raise
+    finally:
+        try:
+            stage.unlink()
+        except FileNotFoundError:
+            pass
+        # The directory fsync after linking the target is the commit point.
+        # A crash may conservatively retain this staging name; another fsync
+        # here could instead report failure after the target was committed.
+
+
+def _promote(args: argparse.Namespace) -> None:
+    context = _load_context(args.run_dir)
+    run_dir = context[0]
+    if _lexists(run_dir / PRODUCTION_FREEZE_NAME):
+        raise RunError("cannot promote after production freeze")
+
+    target, target_relative = _promotion_target(run_dir, args.target)
+    candidate = _promotion_candidate(run_dir, args.candidate)
+    candidate_payload = _stable_bytes(candidate, "promotion candidate")
+    candidate_sha256 = hashlib.sha256(candidate_payload).hexdigest()
+    candidate_bytes = len(candidate_payload)
+    if not args.validator:
+        raise RunError("validator command must not be empty")
+
+    validator_environment = os.environ.copy()
+    validator_environment.update(
+        {
+            "READERLAB_RUN_DIR": os.fspath(run_dir),
+            "READERLAB_CANDIDATE": os.fspath(candidate),
+            "READERLAB_CANDIDATE_SHA256": candidate_sha256,
+            "READERLAB_CANDIDATE_BYTES": str(candidate_bytes),
+        }
+    )
+    validator = subprocess.run(
+        args.validator,
+        cwd=candidate.parent,
+        env=validator_environment,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if validator.returncode != 0:
+        raise RunError(
+            f"validator failed with exit status {validator.returncode}; "
+            "formal target was not written"
+        )
+    checks = _parse_validator_result(
+        validator.stdout,
+        candidate_sha256=candidate_sha256,
+        candidate_bytes=candidate_bytes,
+    )
+
+    if _stable_bytes(candidate, "promotion candidate") != candidate_payload:
+        raise RunError("promotion candidate changed after validator PASS")
+    if _lexists(target):
+        raise RunError(
+            f"formal target appeared during validation; refusing promotion: "
+            f"{target_relative}"
+        )
+
+    _publish_exclusive(target, candidate_payload)
+    if _stable_bytes(target, "formal target") != candidate_payload:
+        raise RunError("formal target postflight bytes do not match candidate")
+
+    evidence: dict[str, object] = {
+        "status": "PROMOTED",
+        "candidate": os.fspath(candidate),
+        "candidate_sha256": candidate_sha256,
+        "candidate_bytes": candidate_bytes,
+        "target": target_relative,
+        "checks": checks,
+        "validator_stdout_sha256": hashlib.sha256(
+            validator.stdout.encode("utf-8")
+        ).hexdigest(),
+        "validator_stderr_sha256": hashlib.sha256(
+            validator.stderr.encode("utf-8")
+        ).hexdigest(),
+    }
+    print(json.dumps(evidence, ensure_ascii=False, sort_keys=True))
+
+
 def _freeze_production(
     context: tuple[Path, dict[str, object], Path, str]
 ) -> None:
@@ -769,6 +1012,21 @@ def _parser() -> argparse.ArgumentParser:
     new_parser.add_argument("--scope", required=True)
     new_parser.add_argument("--route", required=True, choices=("book", "skills"))
     new_parser.set_defaults(handler=_new_run)
+
+    promote_parser = subparsers.add_parser(
+        "promote",
+        help="validate a candidate and atomically publish it without overwrite",
+    )
+    promote_parser.add_argument("run_dir", type=Path)
+    promote_parser.add_argument("--candidate", required=True, type=Path)
+    promote_parser.add_argument("--target", required=True)
+    promote_parser.add_argument(
+        "--validator",
+        required=True,
+        nargs=argparse.REMAINDER,
+        help="validator argv; must emit one candidate-bound PASS JSON object",
+    )
+    promote_parser.set_defaults(handler=_promote)
 
     freeze_parser = subparsers.add_parser(
         "freeze", help="write an exclusive production or acceptance manifest"

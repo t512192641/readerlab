@@ -1,0 +1,22 @@
+{
+  "files": [
+    {
+      "bytes": 132,
+      "path": "acceptance/judge-predictions.md",
+      "sha256": "c6a25eb368ada56e7dd803b3cd4f8e4bd4d1bf1800bdc9579c07fb62084b95e5"
+    },
+    {
+      "bytes": 630,
+      "path": "acceptance/acceptance-report.md",
+      "sha256": "e9e6179c01cca282a107f3b629c7a0fea9e3daecb8cb52c4344107c5ce0aafe0"
+    }
+  ],
+  "production_freeze": {
+    "bytes": 1813,
+    "path": "production-freeze.json",
+    "sha256": "d3145e160954445f523ffcbd667eff35541c732a6db2e857396f13632d1404f8"
+  },
+  "run_schema": "readerlab-run/v2",
+  "schema": "readerlab-acceptance-freeze/v1",
+  "scope": "acceptance"
+}

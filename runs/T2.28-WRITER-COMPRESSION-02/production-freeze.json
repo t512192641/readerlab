@@ -1,0 +1,62 @@
+{
+  "directories": [
+    "final",
+    "locked",
+    "raw"
+  ],
+  "files": [
+    {
+      "bytes": 4189,
+      "path": "final/C-01-reader-v03.md",
+      "sha256": "5ca79c302beef36c109a19213ef247d215ec8dba39a0ebe15408f7c64e7db94d"
+    },
+    {
+      "bytes": 1920,
+      "path": "final/assembly-receipt-v03.json",
+      "sha256": "576a65820cee3fe088702ab513a7cae0d7fb7fa999b5f93cd662e5edc15088af"
+    },
+    {
+      "bytes": 22415,
+      "path": "final/chapter-with-callouts-v03.md",
+      "sha256": "8aaef47a031b588935c85dab8e2909c1fcfb647a3d7d385675e965a1b6e2df19"
+    },
+    {
+      "bytes": 1785,
+      "path": "final/supersession-record-v03.json",
+      "sha256": "af1f61b0f0551a4605db62a0b1b1252b5bfc178a64d3d007377d46c94cc8c058"
+    },
+    {
+      "bytes": 5946,
+      "path": "locked/C-01-reader-v02-input.md",
+      "sha256": "ce13089ae0c0bbb1c5f974cef5401230e8db9ed2e23d6a7fbea8d84ec688c490"
+    },
+    {
+      "bytes": 2142,
+      "path": "locked/P3-directed-compression.md",
+      "sha256": "7fcc0861c533d93a7937c5fbf37b3c3438f5f4e858c8233ed688efa0ac77398b"
+    },
+    {
+      "bytes": 21297,
+      "path": "locked/chapter-scope.xhtml",
+      "sha256": "27a0ef436b8d6e57ca9e6cb0cf4b43babe76f6852857edad0c2b6ae30bcf9e04"
+    },
+    {
+      "bytes": 2086,
+      "path": "raw/C-01-fidelity-v03.md",
+      "sha256": "1867743abb5b4111fa2dee27a9ceb84b59eb8a184505b1728ee4b3aac7f107a8"
+    },
+    {
+      "bytes": 1119,
+      "path": "raw/C-01-writer-ledger-v03.md",
+      "sha256": "fd8e7a1912eac6e97fa46c299a332ea2cb3143c7720b536d33341d1881485710"
+    },
+    {
+      "bytes": 654,
+      "path": "run.json",
+      "sha256": "f5ced4a48ab397791070ee7f9c24b270a13127fc3439a9dcf4692002be6560e3"
+    }
+  ],
+  "run_schema": "readerlab-run/v2",
+  "schema": "readerlab-production-freeze/v1",
+  "scope": "production"
+}

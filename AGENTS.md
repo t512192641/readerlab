@@ -7,16 +7,18 @@
 1. `AGENTS.md`
 2. `PRODUCT-DECISIONS.md`
 3. `ENGINEERING-LESSONS.md`
-4. `GOLD-STANDARDS.md`
-5. 只有涉及流水线开发时，才读 `blueprints/PIPELINE-MAP.md`
+4. 涉及生产流程、角色责任、晋级、实验治理或任务卡设计时，必须读 `blueprints/PIPELINE-MAP.md`
+5. `GOLD-STANDARDS.md` 只在当前任务逐文件授权时读取；生产任务永远跳过
 6. 只有涉及借鉴方法时，才读 `references/BOOK-AND-SKILLS-METHODS.md`
+7. 任务卡只在执行对应任务时读取；例如 `taskcards/T2.4.md` 不构成其他任务的默认上下文
 
 ## 唯一事实边界
 
 - 产品目标、用户、两条产品线和长期责任只以 `PRODUCT-DECISIONS.md` 为准。
 - 历史工程观察、失败教训和不能外推的边界只以 `ENGINEERING-LESSONS.md` 为准。
 - 正例、反例和边缘案例只以 `GOLD-STANDARDS.md` 及其链接的 `examples/` 文件为准。
-- `blueprints/PIPELINE-MAP.md` 是帮助开发的派生地图，不拥有新产品决议。
+- `blueprints/PIPELINE-MAP.md` 是两条长期产品线的派生架构地图，不拥有新产品决议；任务卡和实验组织不得改写其中的长期流程。
+- 一次运行的材料、调用、角色构成、Idea 上限、模型档位、返工和停止参数只由对应任务卡拥有；任务结束即按卡失效，不得外推为长期规则。
 - `references/BOOK-AND-SKILLS-METHODS.md` 只保存借鉴结论，不证明已经采用、实现或验证。
 
 一个事实只能在一个 owner 中拥有正文。派生文档若与 owner 冲突，必须停止并报告，不能自行选择更顺手的版本。
@@ -75,6 +77,7 @@
 ## 开发顺序
 
 - 当前项目只有产品与证据基线，没有已实现 runtime。
+- 正例生产任务必须先核对 `PRODUCT-DECISIONS.md` 与 `blueprints/PIPELINE-MAP.md` 的长期边界，再读取本任务卡；任务卡只能组织一次实验，不能新增长期角色、改写长期流程或决定最终 Skill 拆分。
 - 后续开发从 `blueprints/PIPELINE-MAP.md` 的节点逐项建立合同、输入、输出、硬阻塞和验证，不得把蓝图中“尚未决定”的内容擅自定案。
 - 图书线与 Skills 线分别开发和验收；共享机制不能让两条线共用错误的产品标准。
 - 每次只验证一个真实材料范围和一个关键问题。模型调用、真实材料运行、新依赖、外部写入和云端 push 都需要当前任务明确授权。

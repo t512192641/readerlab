@@ -16,15 +16,15 @@
 
 ## 当前项目状态（唯一交接入口）
 
-截至 2026-07-19，本 `README.md` 是仓库唯一的项目状态与跨会话交接入口。项目仍暂停执行；v3 恢复架构的 C0 读取隔离修复已完成实现、接线与确定性回归，等待总控基于真实提交重新复核，恢复任务尚未注册或执行。
+截至 2026-07-22，本 `README.md` 是仓库项目状态入口；长期产品责任由 `PRODUCT-DECISIONS.md` 拥有，两条产品线的派生架构由 `blueprints/PIPELINE-MAP.md` 呈现。T2.5 已完成且整包不通过；`taskcards/T2.6.md` 状态为 `COMPLETE`，`taskcards/T2.7.md` 状态为 `COMPLETE`，两轮产品均未接受；`taskcards/T2.8.md` 状态为 `COMPLETE`，三个知识核心卡获准进入单样张打磨；`taskcards/T2.9.md` 状态为 `COMPLETE`，active version 为 `v03`，伯格内容与 T2.10 原文融合 v02 已先后获得产品接受。`taskcards/T2.11.md` 状态为 `COMPLETE`，宗派化与诺斯意识形态—执行成本机制 v01 已分别获得产品接受并准许进入原文融合；`taskcards/T2.12.md` 已冻结为下一轮唯一图书线切片。历史 T2.2 恢复架构继续保留，但不构成当前执行许可。
 
 ### 1. 当前阶段与 gate
 
-- 当前阶段：阶段 2「裁判先行校准」。
-- 当前 gate：T2.2 裁判资格考试已执行但 `FAIL`，处于 M2 之前的硬阻塞。
+- 当前阶段：T2.12 两个非伯格知识对象的原文融合迁移实验已冻结，尚未开始生产。
+- 当前 gate：`taskcards/T2.12.md` 状态为 `READY`，active version 为 `v01`。下一步只允许在同一完整章节中融合两份已接受讲义并记录最小分段墙钟，停在产品负责人阅读判词；不得进入未见章节、自动化、Judge、M2 或 T3。
 - C0 输入 HEAD：`fc7b6c01daaee8a7814e26e8d3b8ff8c1fb198d7`；T2.2 失败证据 commit 仍为 `909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
 - 当前控制状态：`A1_ARCHITECTURE_RELEASED`。C0 读取隔离修复已 `implemented / integrated / verified`，但尚未经过总控基于真实提交的复核，不能认定 `A2_CONTROL_PLANE_INTEGRATED`；恢复卡数量：`0`。
-- T2.2 资格仍为 `FAIL`；M2 receipt 仍不存在；阶段 3 真实材料运行、生产 runtime 和产品验收均未开始。
+- T2.2 资格仍为 `FAIL`，但它不是当前正例生产的前置 gate；M2 receipt 仍不存在，模型 Judge 不得上岗。
 
 ### 2. 已经通过的内容
 
@@ -44,7 +44,9 @@
 - 21 张恢复卡尚未注册，R01—R21 均未执行；v2 active attempt/baseline/postflight 均不存在。
 - T2.1、未来 v2 active baseline/postflight、T2.3 v2 与 T1.8 尚未组成 M2 冻结集。
 - 图书线生产 runtime 未 `integrated`，未知材料能力和整体 semantic／product 质量未验证。
-- 产品 `accepted` 尚未发生。
+- T2.9 伯格 v03 内容与 T2.10 原文融合 v02 均已获得产品接受；另外两个知识对象的平行样张与自动化仍未验证。
+- `taskcards/T2.10.md` 状态为 `COMPLETE`；该历史状态只证明伯格融合样张已收口，不为 T2.11 或后续阶段授予权限。
+- T2.11 两份内容已分别获得产品接受；T2.12 只继承冻结讲义与判词，不继承来源研究或 T2.11 专属自动化。
 
 ### 4. T2.2 当前失败结果
 
@@ -197,10 +199,9 @@
 
 ### 10. 当前唯一下一步编排
 
-- 原路线现在不可继续：T2.2 资格为 `FAIL`，且 `diagnostics/M2-gate-receipt.md` 不存在；不得进入 M2 或阶段 3。
-- C0 读取隔离修复已完成，但当前状态保持 `A1_ARCHITECTURE_RELEASED`，恢复卡数量：`0`，M2 receipt 仍不存在。
-- 下一角色只能是 ReaderLab M2 总控：重新读取本次真实提交与确定性回归证据，复核 21 卡 read whitelist 和 R05 §8.8 copy-only 闭集，再决定是否启动独立 C0 后置审查。
-- 在总控明确放行前，不得启动独立后置审查，不得注册 `taskcards/T2.2-R01.md` 至 `taskcards/T2.2-R21.md`，不得派发 R01，不得请求或读取产品材料，不得创建 authorization/selector/blobs，不得调用模型，不得创建 M2 receipt，不得执行恢复 DAG，不得进入阶段 3。
+- 当前唯一切片是 T2.12：把宗派化与诺斯意识形态—执行成本机制两份已接受讲义放回同一完整原章节，验证真实锚点、连续阅读体验和激进时间预算，经过最小确定性检查后停在产品负责人阅读判词。
+- T2.12 只做同章融合迁移；不重做来源核验、不改讲义承重语义、不提炼共享 Meta Prompt，也不进入未见章节、Writer runtime、Assembler runtime、Judge、M2、T3 或自动化。
+- T2.2 资格仍为 `FAIL`，C0 当前仍为 `A1_ARCHITECTURE_RELEASED`，恢复卡数量为 `0`，M2 receipt 不存在；T2.12 不修改、不执行或放行这条历史恢复路线。
 
 ### 11. 下一会话读取顺序
 

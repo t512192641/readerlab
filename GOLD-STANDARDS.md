@@ -10,7 +10,7 @@
 
 每个重要案例都已经整理成当前目录内可以直接阅读的 Markdown 文件。新项目不需要访问旧 ReaderLab、旧会话、旧 Prompt、旧 run 或任何绝对路径。
 
-本清单对**目前已有索引、且能确认产品负责人直接判词的范围**是完整的：图书线共 13 个判词组，带入 12 个；唯一未带入的是产品负责人明确要求“不保留”的土星五号案例。它不能证明历史上从未出现过其他未登记判词；那部分必须保持 `unknown`，不能用本清单冒充“历史绝对全集”。
+本清单对**目前已有索引、且能确认产品负责人直接判词的范围**是完整的：图书线共 14 个判词组，带入 13 个；唯一未带入的是产品负责人明确要求“不保留”的土星五号案例。它不能证明历史上从未出现过其他未登记判词；那部分必须保持 `unknown`，不能用本清单冒充“历史绝对全集”。
 
 ## 正向金标
 
@@ -36,6 +36,7 @@
 - [集中式四段延伸](examples/book/negative/phase4-centralized-rejected.md)：离原文太远，像新增阅读材料。
 - [就近延伸](examples/book/negative/phase4-nearby-rejected.md)：重点不突出、视角奇怪，像说明文。
 - [“创新必须允许失败”三条陪读](examples/book/negative/innovation-failure-rejected.md)：概括、重命名或抽象化原文已经讲清的内容，不能冒充认知增量。
+- [C-01：外部知识不承重](examples/book/negative/c01-external-knowledge-insufficient.md)：高质量但类型错误的负样本；逻辑正确、结构完整、可迁移且来源诚实，但核心判断可从原文直接推出，外部来源只是外围支持。必须与结构不完整、事实错误或来源不诚实的低质量反例分开判断。
 - Lens Core 六条失败样张：[E1](examples/book/negative/lens-core-e1-rejected.md)、[E2](examples/book/negative/lens-core-e2-rejected.md)、[E3](examples/book/negative/lens-core-e3-rejected.md)：不能把解释读者本来就能读懂的内容当作陪读价值。
 
 当前 T2.2 固定对象的判词进一步明确如下：

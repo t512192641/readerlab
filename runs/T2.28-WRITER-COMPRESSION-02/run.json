@@ -1,0 +1,20 @@
+{
+  "directories": {
+    "acceptance": "acceptance",
+    "production": [
+      "raw",
+      "locked",
+      "final"
+    ]
+  },
+  "material": {
+    "bytes": 672638,
+    "path": "materials/T2.4-IDEA-PILOT-01/source.epub",
+    "sha256": "3baf9932c92412f0e7d0ccae993182f55f62e2fab5ec46a3882d675476288664"
+  },
+  "root_from_run": "../..",
+  "route": "book",
+  "schema": "readerlab-run/v2",
+  "scope": "C-01 v02 to v03; one directed compression; no new facts, mechanisms, variables, or attribution; externalize complete sources from main callout",
+  "source": "frozen T2.28 v02 Reader and chapter 4 assembly; P3-directed subtractive Writer compression only"
+}
