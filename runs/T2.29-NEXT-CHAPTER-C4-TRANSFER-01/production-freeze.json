@@ -1,0 +1,32 @@
+{
+  "directories": [
+    "final",
+    "locked",
+    "raw"
+  ],
+  "files": [
+    {
+      "bytes": 17492,
+      "path": "locked/chapter-scope.xhtml",
+      "sha256": "4d20227000ed3df217831d931d8c70db0579f7dc482d925c95b9cad90122021a"
+    },
+    {
+      "bytes": 22374,
+      "path": "raw/comparison.md",
+      "sha256": "9bb930ece86eed254a07aa63b01c12607beb1bbb54ba6281439126c0a76629ef"
+    },
+    {
+      "bytes": 35225,
+      "path": "raw/p1-candidates.md",
+      "sha256": "2a26f5f95eb73ef63557810b844d17619608d5f6255abc58e9d8b9463201bf66"
+    },
+    {
+      "bytes": 593,
+      "path": "run.json",
+      "sha256": "988a2c45ec91f503f0e468ce782024d6bb90152ae36fd50b6d3a021f38df329a"
+    }
+  ],
+  "run_schema": "readerlab-run/v2",
+  "schema": "readerlab-production-freeze/v1",
+  "scope": "production"
+}
