@@ -60,3 +60,31 @@
 - Reusable lesson / rule candidate：D-MEM-002；云端审核逐任务显式授权，不建立主仓库永久例外。
 - Follow-up：全新上下文复核三笔提交、忽略边界、当前 run 与 MEM 一致性；复核前保持 Writer
   未授权。
+
+### Run: 2026-07-25 - book-line-realignment-memory-closeout
+
+- Task / Type / Tool：图书线第一性原理复盘、owner 归位与下一会话交接 / cleanup /
+  mem-save + mem-clean + handoff
+- Context source / Boundary：产品负责人的长轮次产品与工程复盘；只维护产品／工程 owner、固定 MEM
+  层和仓库外 handoff，不修改 T2.35 taskcard、run、合同、Writer 指南或生产证据，不启动实验。
+- Files read / changed：`PRODUCT-DECISIONS.md`、`ENGINEERING-LESSONS.md`、
+  `blueprints/PIPELINE-MAP.md`、`docs/current-task.md`、`docs/dev-state.md`、
+  `docs/decisions.md`、本账本；仓库外两个 handoff／执行设计文件。
+- Commands / checks：`git diff --check`、`python3 -B tests/entry.py`、11 个当前 run 的
+  `python3 -B tools/run.py check <run-path>`。
+- Artifacts / reports：`/private/tmp/readerlab-book-line-handoff-20260725.md`、
+  `/private/tmp/readerlab-next-session-execution-design-20260725.md`。
+- Result / Evidence type：产品对象、成熟外部知识边界、分级核验、自动 Judge 暂缓、C4／Discovery
+  边界、候选期成本结构和 Writer A/B 未知项已归回各自 owner；active tests 36/36、当前 run
+  11/11、diff check 全部 PASS。诊断方案已认可但未派发，生产授权仍为 `none`。
+- Canonical status：`canonical`
+- Failures / detours：首次把 `docs/current-task.md` 的 `current-task` 写成自由标签，active tests
+  将其按任务卡路径解析并出现 1 ERROR／1 FAIL；随后保留 T2.35 为最后一个正式任务对象，以独立
+  诊断字段记录已批准未派发状态，复验通过。没有为交接伪造新 taskcard。
+- Repeat-error check：再次确认 handoff 不能成为产品或当前状态的平行 owner；当前事实只引用
+  `PRODUCT-DECISIONS.md`、`ENGINEERING-LESSONS.md` 与固定 MEM 层。
+- Reusable lesson / rule candidate：`docs/current-task.md` 的控制字段是可执行协议，不是自由
+  文案；新会话准备状态应使用已有字段语义或独立非生产字段，不能破坏任务卡／run／判词的 fail-closed
+  关系。
+- Follow-up：产品负责人手动把最终 handoff 交给干净总控；总控只运行仓库外 Discovery Lab 与
+  Writer Lab，完成后停止并等待产品盲审或新授权。
