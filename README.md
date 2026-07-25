@@ -28,9 +28,8 @@ ReaderLab 的终极交付是两条独立、成熟、可复用的 Skill 能力：
 - 资产生命周期与保留清单：[`audit/ASSET-LIFECYCLE-REGISTER.md`](audit/ASSET-LIFECYCLE-REGISTER.md)
 - 工程事故与防复发状态：[`audit/INCIDENT-GUARDRAILS.md`](audit/INCIDENT-GUARDRAILS.md)
 
-早期 clean-seed validator 已退役并从当前工作树删除；需要取证时可从本地 Git
-`c13ea5a:validate.py` 恢复。历史 T2.26 测试只能通过
-`python3 -B tests/entry.py historical-t226` 显式运行。
+早期 clean-seed validator 和已经失效的 T2.26 历史脚本／测试均已从当前工作树删除；
+需要取证时可从本地 Git 提交 `c13ea5a` 恢复。
 
 ## 历史内容
 

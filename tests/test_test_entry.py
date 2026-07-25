@@ -26,18 +26,16 @@ def _test_ids(test: unittest.TestSuite | unittest.TestCase) -> set[str]:
 
 
 class TestEntryTests(unittest.TestCase):
-    def test_inventory_is_exhaustively_partitioned(self) -> None:
+    def test_inventory_is_exactly_the_active_set(self) -> None:
         ENTRY.validate_inventory(TESTS_DIR)
 
         active = set(ENTRY.ACTIVE.files)
-        historical = set(ENTRY.HISTORICAL_T226.files)
         discovered = {path.name for path in TESTS_DIR.glob("test_*.py")}
 
-        self.assertFalse(active & historical)
-        self.assertEqual(active | historical, discovered)
+        self.assertEqual(active, discovered)
 
-    def test_active_suite_is_nonzero_and_excludes_t226(self) -> None:
-        suite = ENTRY.build_suite("active", TESTS_DIR)
+    def test_active_suite_is_nonzero(self) -> None:
+        suite = ENTRY.build_suite(TESTS_DIR)
         test_ids = _test_ids(suite)
 
         self.assertEqual(
@@ -49,15 +47,6 @@ class TestEntryTests(unittest.TestCase):
         )
         self.assertGreater(suite.countTestCases(), 0)
         self.assertTrue(test_ids)
-        self.assertFalse(any("test_t226_" in test_id for test_id in test_ids))
-
-    def test_historical_replay_is_nonzero_and_only_contains_t226(self) -> None:
-        suite = ENTRY.build_suite("historical-t226", TESTS_DIR)
-        test_ids = _test_ids(suite)
-
-        self.assertGreater(suite.countTestCases(), 0)
-        self.assertTrue(test_ids)
-        self.assertTrue(all("test_t226_" in test_id for test_id in test_ids))
 
 
 if __name__ == "__main__":

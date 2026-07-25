@@ -108,10 +108,11 @@
 - 事实：默认 `unittest discover` 运行 0 项并退出 5；显式 `-s tests` 后 35 项中 24 PASS、1 FAIL、10 ERROR，失败集中于历史 T2.26 身份和旧 Writer 字节假设。`validate.py` 也落后于当前任务集合。
 - 证据：`taskcards/T2.35.md:284-292`；复核命令 `python3 -B -m unittest discover -v`、`python3 -B -m unittest discover -s tests -v` 与 `python3 -B validate.py`，结果由当前综合审计报告固定。
 - 影响：团队会习惯忽略红灯，新回归难以识别。
-- 处理结果：新增 `tests/entry.py`，无参数运行 active 子集；T2.26 三组测试只能通过
-  `historical-t226` 显式回放。旧 clean-seed validator 后续确认无当前调用方，已从工作树
-  删除并只由本地 Git 保留恢复身份。
-- 独立复核：`python3 -B tests/entry.py` 当前为 20/20 PASS；`python3 -B tests/entry.py historical-t226` 明确运行 27 项并保留当前 1 FAIL／10 ERROR；inventory 对漏分类、交叉分类和零测试 fail closed。
+- 处理结果：新增 `tests/entry.py`，无参数只运行 active 集合。T2.26 三个脚本和三组测试没有
+  当前调用方，且所谓历史回放长期保留 1 FAIL／10 ERROR，不能提供可信信号，现已从工作树
+  删除；需要取证时从本地 Git `c13ea5a` 恢复。旧 clean-seed validator 同样已退役删除。
+- 独立复核：`python3 -B tests/entry.py` 只接受当前 active 文件全集；漏分类、多文件或零测试
+  均 fail closed。
 - 关闭边界：active 入口只是当前可维护的确定性测试子集，不是完整项目、语义质量或产品资格证明。
 
 ### AUD-006 run 健康检查受宿主元数据污染

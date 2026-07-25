@@ -37,7 +37,7 @@
 | `E05` | `current-point reverified`：`contracts/T1.8-independent-acceptance.md:8-68`、`taskcards/T2.2.md`，Judge 合同存在但资格失败 |
 | `E06` | `current-point reverified`：`taskcards/T2.28.md:1-10,162-176`、`T2.30.md:1-17,208-218`、`T2.31.md:1-11,175-179`、`T2.33.md:1-9,195-208`，近期 P3 未接受 |
 | `E07` | `current-point reverified`：`CURRENT-STATE.md` 是当前执行状态 owner；README、两份蓝图与专题路线只引用该 owner 或明确标记历史快照 |
-| `E08` | `current-point reverified`：`python3 -B tests/entry.py` 是当前健康入口；旧 clean-seed validator 无当前调用方，已从工作树删除并由本地 Git 保留恢复身份；`historical-t226` 仍为显式历史回放 |
+| `E08` | `current-point reverified`：`python3 -B tests/entry.py` 是唯一当前健康入口；旧 clean-seed validator 与失效的 T2.26 脚本／测试均无当前调用方，已从工作树删除并由本地 Git 保留恢复身份 |
 | `E09` | `current-point reverified`：`tools/run.py` 只受控忽略普通 `.DS_Store` 并 warning；专项回归与 T2.28 Writer、T2.30、T2.31、T2.35 check 通过，未知宿主文件继续硬失败 |
 | `E10` | `current-point reverified`：`lenses/T1.9-seed-lenses.md`、`lenses/T2.3-seed-lenses-v2.md`、`taskcards/T2.35.md:45-53`，透镜资产未接入当前生产 |
 | `E11` | `owner fact + derived projection`：`PRODUCT-DECISIONS.md:105-116` 是 Skills 线长期责任；`blueprints/PIPELINE-MAP.md:89-104` 是其派生图 |

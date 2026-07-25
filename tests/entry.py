@@ -36,56 +36,23 @@ ACTIVE = TestSuiteDefinition(
     ),
 )
 
-HISTORICAL_T226 = TestSuiteDefinition(
-    name="historical-t226",
-    files=(
-        "test_t226_control_contract_preflight.py",
-        "test_t226_material_scope.py",
-        "test_t226_p2_recovery.py",
-    ),
-    purpose="frozen T2.26 identity replay",
-)
-
-SUITES = {
-    definition.name: definition
-    for definition in (ACTIVE, HISTORICAL_T226)
-}
-
-
 def validate_inventory(test_dir: Path = TESTS_DIR) -> None:
     discovered = {path.name for path in test_dir.glob("test_*.py")}
     active = set(ACTIVE.files)
-    historical = set(HISTORICAL_T226.files)
-
-    overlap = active & historical
-    if overlap:
-        raise TestEntryError(
-            f"test files cannot be active and historical: {sorted(overlap)}"
-        )
-
-    classified = active | historical
-    if discovered != classified:
-        unclassified = sorted(discovered - classified)
-        missing = sorted(classified - discovered)
+    if discovered != active:
+        unclassified = sorted(discovered - active)
+        missing = sorted(active - discovered)
         raise TestEntryError(
             "test inventory classification mismatch: "
             f"unclassified={unclassified}, missing={missing}"
         )
 
 
-def build_suite(
-    suite_name: str,
-    test_dir: Path = TESTS_DIR,
-) -> unittest.TestSuite:
+def build_suite(test_dir: Path = TESTS_DIR) -> unittest.TestSuite:
     validate_inventory(test_dir)
-    try:
-        definition = SUITES[suite_name]
-    except KeyError as error:
-        raise TestEntryError(f"unknown test suite: {suite_name}") from error
-
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
-    for filename in definition.files:
+    for filename in ACTIVE.files:
         suite.addTests(
             loader.discover(
                 start_dir=str(test_dir),
@@ -95,16 +62,15 @@ def build_suite(
         )
 
     if suite.countTestCases() == 0:
-        raise TestEntryError(f"{suite_name} selected zero tests")
+        raise TestEntryError("active test inventory selected zero tests")
     return suite
 
 
-def run(suite_name: str, *, verbosity: int = 2) -> int:
-    suite = build_suite(suite_name)
-    definition = SUITES[suite_name]
+def run(*, verbosity: int = 2) -> int:
+    suite = build_suite()
     print(
-        f"ReaderLab test suite: {definition.name} "
-        f"({definition.purpose}; {suite.countTestCases()} tests)",
+        f"ReaderLab test suite: {ACTIVE.name} "
+        f"({ACTIVE.purpose}; {suite.countTestCases()} tests)",
         file=sys.stderr,
     )
     result = unittest.TextTestRunner(verbosity=verbosity).run(suite)
@@ -113,17 +79,11 @@ def run(suite_name: str, *, verbosity: int = 2) -> int:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Run ReaderLab active tests or an explicit historical replay."
+        description="Run the maintained ReaderLab active test inventory."
     )
-    parser.add_argument(
-        "suite",
-        nargs="?",
-        default=ACTIVE.name,
-        choices=tuple(SUITES),
-    )
-    args = parser.parse_args(argv)
+    parser.parse_args(argv)
     try:
-        return run(args.suite)
+        return run()
     except TestEntryError as error:
         print(f"test entry error: {error}", file=sys.stderr)
         return 2

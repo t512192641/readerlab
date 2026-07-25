@@ -16,7 +16,7 @@
 | 一次性临时脚本扩散 | T2.30 产生 10 个临时脚本，增加清理和复验成本 | 缺少稳定工具接口，机械动作按单次 run 硬编码 | `AGENTS.md` 要求预计超过 2 个先说明；T2.31 已登记并清理 | 流程约束；未自动盘点项目外文件 | 新任务完成报告核对项目外文件；相同机械动作第二次出现时先提取共享能力 |
 | `.DS_Store` 污染 run check | 4 个 run 出现宿主元数据并造成假红灯 | `.gitignore` 与 artifact inventory 规则不一致 | `tools/run.py` 仅忽略普通非 symlink `.DS_Store` 并 warning；未知文件仍 hard fail | 已自动化并有专项回归 | 文件本身可在后续获批物理清理中删除 |
 | 当前状态 owner 过期 | T2.35 产品判词已存在，`CURRENT-STATE.md` 仍写 `unknown` | 产品判词写回与状态 owner 同步没有同一 closeout gate | 单一 owner 和派生入口已建立 | 未自动检查业务语义同步 | 执行现场立即同步产品判词、停止点和下一任务授权边界；审计随后复核 |
-| historical tests 污染默认健康信号 | 历史 T2.26 失败曾让全量信号长期发红 | active 与历史回放未分开 | `tests/entry.py` 默认只运行 active；历史显式选择 | 已自动化且 inventory fail closed | 每新增测试必须明确归类 |
+| historical tests 污染默认健康信号 | 历史 T2.26 失败曾让全量信号长期发红 | active 与历史回放未分开 | 失效历史脚本／测试已退役删除；`tests/entry.py` 只接受 active 全集 | 已自动化且 inventory fail closed | 每新增测试必须进入 active 并提供可信信号 |
 | 历史正文挤占默认入口 | 原 README 266 行，多数为 2026-07-22 旧状态 | 交接快照与当前导航长期混写 | 根 README 缩成导航；旧正文由本地 Git 完整保留 | 目录测试自动核对入口长度 | 后续状态只写 `CURRENT-STATE.md` |
 
 ## 防线强度解释

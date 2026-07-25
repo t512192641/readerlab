@@ -163,8 +163,9 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 - `runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-06`
 - `runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-07`
 
-legacy 只表示没有 `run.json` 现行结构，不表示损坏。T2.26 的确定性代码回放使用
-`python3 -B tests/entry.py historical-t226`，且其已知失败不得污染 active 健康信号。
+legacy 只表示没有 `run.json` 现行结构，不表示损坏。T2.26 的确定性代码和测试没有当前
+调用方，且历史回放本身长期失败，已经从当前工作树删除；需要取证时从本地 Git
+`c13ea5a` 恢复。
 
 ## 4. 保留和清理规则
 
