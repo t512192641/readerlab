@@ -36,9 +36,9 @@
 | `E04` | `current-point reverified`：`PRODUCT-DECISIONS.md:55-59` 对照 `contracts/T1.6-writer.md:14-55`，现行 Writer 责任与旧单卡合同 |
 | `E05` | `current-point reverified`：`contracts/T1.8-independent-acceptance.md:8-68`、`README.md:39-46`、`taskcards/T2.2.md`，Judge 合同存在但资格失败 |
 | `E06` | `current-point reverified`：`taskcards/T2.28.md:1-10,162-176`、`T2.30.md:1-17,208-218`、`T2.31.md:1-11,175-179`、`T2.33.md:1-9,195-208`，近期 P3 未接受 |
-| `E07` | `current-point reverified`：`README.md:17-27` 对照 `taskcards/T2.35.md:1-18`，唯一状态入口仍停在 T2.12 |
-| `E08` | `current-point reverified`：`tools/run.py`、`tests/test_run_promotion.py`、`taskcards/T2.35.md:284-292`，run 骨架、专项通过与全仓历史失败 |
-| `E09` | `current-point reverified`：`find runs -name .DS_Store -print` 与 `python3 -B tools/run.py check runs/T2.35-CH08-D3-EXPERT-P2-01`，宿主元数据污染复验 |
+| `E07` | `current-point reverified`：`CURRENT-STATE.md` 是当前执行状态 owner；README、两份蓝图与专题路线只引用该 owner 或明确标记历史快照 |
+| `E08` | `current-point reverified`：`python3 -B tests/entry.py` 运行 active 子集 13/13 PASS；`historical-t226` 显式回放保留 27 项中的 1 FAIL／10 ERROR；`validate.py` 明确为早期 clean-seed 历史回放 |
+| `E09` | `current-point reverified`：`tools/run.py` 只受控忽略普通 `.DS_Store` 并 warning；专项回归与 T2.28 Writer、T2.30、T2.31、T2.35 check 通过，未知宿主文件继续硬失败 |
 | `E10` | `current-point reverified`：`lenses/T1.9-seed-lenses.md`、`lenses/T2.3-seed-lenses-v2.md`、`taskcards/T2.35.md:45-53`，透镜资产未接入当前生产 |
 | `E11` | `owner fact + derived projection`：`PRODUCT-DECISIONS.md:105-116` 是 Skills 线长期责任；`blueprints/PIPELINE-MAP.md:89-104` 是其派生图 |
 | `E12` | `current-point reverified`：`git status --short`、`find taskcards -maxdepth 1 -name '*.md'`、`find runs -mindepth 1 -maxdepth 1 -type d`、`git ls-files runs`，工作树与目录规模 |
@@ -83,10 +83,10 @@
 
 | 能力 | 当前成熟度 | 当前直接证据 | 关键缺口 |
 |---|---|---|---|
-| source／scope／hash／freeze | `局部实验` | `[E08][E09]` | `.DS_Store` 可使冻结 run 变红；profile 仍有限 |
+| source／scope／hash／freeze | `局部实验` | `[E08][E09]` | 宿主元数据假红灯已关闭；旧 run profile 和语义资格仍有限 |
 | 排他 promotion | `局部实验` | 工具与专项测试存在 | 全仓健康信号被历史测试污染 |
-| 当前状态交接 | `局部实验` | `[E07][E12]` | 唯一入口失真，多份状态正文冲突 |
-| 活跃测试与历史回放 | `未开始` | 当前有测试和历史证据 | 默认测试未分 active 与 historical |
+| 当前状态交接 | `局部实验` | `[E07][E12]` | 单一 owner 已建立；尚需在下一次业务状态变化时验证维护纪律 |
+| 活跃测试与历史回放 | `局部实验` | `[E08]` | active 子集与历史回放已分离；active 覆盖仍窄，不是完整资格门 |
 | 成本与墙钟观测 | `局部实验` | 后期任务记录部分墙钟与等待 | 口径不完全统一，未接入 Skill 运行 |
 | 故障预防与复发审计 | `局部实验` | Chrome 路线已在后续任务禁用 | 尚无统一事故台账与跨阶段复发检查 |
 | 审计控制面 | `局部实验` | 宪章、运行机制、能力地图和问题台账候选 | 需要全新上下文验证和首次大审计 |

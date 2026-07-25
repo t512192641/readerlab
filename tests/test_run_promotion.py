@@ -342,3 +342,91 @@ print(json.dumps({
             list((run_dir / "raw").glob(".readerlab-promote-*")),
             [],
         )
+
+    def test_host_metadata_is_warned_and_excluded_from_freeze_inventory(self) -> None:
+        run_dir, _ = _new_run(self.tmp_path)
+        (run_dir / "raw/artifact.md").write_text(
+            "official artifact\n",
+            encoding="utf-8",
+        )
+        (run_dir / ".DS_Store").write_bytes(b"finder metadata")
+        (run_dir / "raw/.DS_Store").write_bytes(b"nested finder metadata")
+
+        freeze = _run_tool("freeze", run_dir)
+
+        self.assertEqual(freeze.returncode, 0, freeze.stderr)
+        self.assertIn(
+            "warning: ignoring host metadata in artifact inventory: .DS_Store",
+            freeze.stderr,
+        )
+        self.assertIn(
+            "warning: ignoring host metadata in artifact inventory: raw/.DS_Store",
+            freeze.stderr,
+        )
+        manifest = json.loads((run_dir / "production-freeze.json").read_text())
+        frozen_paths = {record["path"] for record in manifest["files"]}
+        self.assertNotIn(".DS_Store", frozen_paths)
+        self.assertNotIn("raw/.DS_Store", frozen_paths)
+
+        check = _run_tool("check", run_dir)
+
+        self.assertEqual(check.returncode, 0, check.stderr)
+        self.assertIn(
+            "warning: ignoring host metadata in artifact inventory: .DS_Store",
+            check.stderr,
+        )
+        self.assertIn(
+            "warning: ignoring host metadata in artifact inventory: raw/.DS_Store",
+            check.stderr,
+        )
+
+        (run_dir / "acceptance/judge-predictions.md").write_text(
+            "predictions\n",
+            encoding="utf-8",
+        )
+        (run_dir / "acceptance/acceptance-report.md").write_text(
+            "report\n",
+            encoding="utf-8",
+        )
+        (run_dir / "acceptance/.DS_Store").write_bytes(b"acceptance finder metadata")
+
+        acceptance_freeze = _run_tool("freeze", run_dir, "--acceptance")
+
+        self.assertEqual(
+            acceptance_freeze.returncode,
+            0,
+            acceptance_freeze.stderr,
+        )
+        self.assertIn(
+            "warning: ignoring host metadata in artifact inventory: "
+            "acceptance/.DS_Store",
+            acceptance_freeze.stderr,
+        )
+        acceptance_manifest = json.loads(
+            (run_dir / "acceptance/acceptance-freeze.json").read_text()
+        )
+        acceptance_paths = {
+            record["path"] for record in acceptance_manifest["files"]
+        }
+        self.assertNotIn("acceptance/.DS_Store", acceptance_paths)
+
+        frozen_check = _run_tool("check", run_dir)
+
+        self.assertEqual(frozen_check.returncode, 0, frozen_check.stderr)
+        self.assertIn(
+            "warning: ignoring host metadata in artifact inventory: "
+            "acceptance/.DS_Store",
+            frozen_check.stderr,
+        )
+
+    def test_unknown_host_file_still_blocks_freeze(self) -> None:
+        run_dir, _ = _new_run(self.tmp_path)
+        (run_dir / ".Spotlight-V100").write_bytes(b"unknown host artifact")
+
+        freeze = _run_tool("freeze", run_dir)
+
+        self.assertNotEqual(freeze.returncode, 0)
+        self.assertIn(
+            "run error: unexpected path at run root: .Spotlight-V100",
+            freeze.stderr,
+        )

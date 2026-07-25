@@ -16,6 +16,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from collections.abc import Iterable
 from pathlib import Path, PurePosixPath
 
 
@@ -47,6 +48,7 @@ REQUIRED_PROMOTION_CHECKS = {
     "synthetic",
 }
 PROMOTION_STAGING_PREFIX = ".readerlab-promote-"
+HOST_METADATA_NAMES = frozenset({".DS_Store"})
 SHA256 = re.compile(r"\A[0-9a-f]{64}\Z")
 T31_RECEIPT_BINDING = re.compile(
     r"^t3\.1-freeze-receipt-sha256: (?P<sha256>[0-9a-f]{64})$",
@@ -211,7 +213,7 @@ def _resolve_run_directory(path: Path) -> Path:
         ROOT_RECEIPT_NAME,
         *required_directories,
     }
-    for child in run_dir.iterdir():
+    for child in _artifact_inventory(run_dir.iterdir(), run_dir):
         if child.name not in allowed_names:
             raise RunError(f"unexpected path at run root: {child.name}")
         if child.is_symlink():
@@ -374,6 +376,25 @@ def _file_record(path: Path, run_dir: Path) -> dict[str, object]:
     }
 
 
+def _artifact_inventory(paths: Iterable[Path], run_dir: Path) -> list[Path]:
+    inventory: list[Path] = []
+    for path in sorted(paths, key=lambda item: item.as_posix()):
+        relative = path.relative_to(run_dir).as_posix()
+        if (
+            path.name in HOST_METADATA_NAMES
+            and not path.is_symlink()
+            and path.is_file()
+        ):
+            print(
+                "warning: ignoring host metadata in artifact inventory: "
+                f"{relative}",
+                file=sys.stderr,
+            )
+            continue
+        inventory.append(path)
+    return inventory
+
+
 def _production_snapshot(
     run_dir: Path,
 ) -> tuple[list[str], list[dict[str, object]]]:
@@ -382,7 +403,7 @@ def _production_snapshot(
     for name in PRODUCTION_DIRECTORIES:
         root = run_dir / name
         directories.append(name)
-        for path in sorted(root.rglob("*"), key=lambda item: item.as_posix()):
+        for path in _artifact_inventory(root.rglob("*"), run_dir):
             relative = path.relative_to(run_dir).as_posix()
             if path.is_symlink():
                 raise RunError(f"symlink forbidden in production: {relative}")
@@ -526,7 +547,7 @@ def _manifest_difference(
 def _acceptance_entries(run_dir: Path) -> dict[str, Path]:
     acceptance_dir = run_dir / ACCEPTANCE_DIRECTORY
     entries: dict[str, Path] = {}
-    for path in sorted(acceptance_dir.iterdir(), key=lambda item: item.name):
+    for path in _artifact_inventory(acceptance_dir.iterdir(), run_dir):
         relative = path.relative_to(run_dir).as_posix()
         if path.is_symlink():
             raise RunError(f"symlink forbidden in acceptance: {relative}")

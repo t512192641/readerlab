@@ -10,18 +10,29 @@
 4. [流水线开发蓝图](blueprints/PIPELINE-MAP.md)
 5. [图书与 Skills 借鉴方法](references/BOOK-AND-SKILLS-METHODS.md)
 
-`examples/` 保存可直接阅读的固定案例；`audit/manifest.json` 只负责证明这些文件没有被静默改动。
+`examples/` 保存可直接阅读的固定案例；`audit/manifest.json` 是早期 clean-seed 文件集合的
+历史快照，只能回放当时边界，不证明当前仓库文件没有变化。
 
 本项目不包含任何旧 ReaderLab 代码、Prompt、合同、runtime、run、Memory 或旧项目路径，也不允许 Agent 自动回查旧项目。缺失信息必须标为 `unknown`，等待产品负责人在新项目内决定。
 
-## 当前项目状态（唯一交接入口）
+## 当前状态入口
+
+仓库当前任务、run、业务证据基线、dirty 快照、停止点、唯一产品前进行动、禁止动作与
+`unknown` 只由 [`CURRENT-STATE.md`](CURRENT-STATE.md) 拥有。长期产品责任仍由
+[`PRODUCT-DECISIONS.md`](PRODUCT-DECISIONS.md) 拥有，两条产品线的派生架构仍由
+[`blueprints/PIPELINE-MAP.md`](blueprints/PIPELINE-MAP.md) 呈现。
+
+以下内容是截至 2026-07-22 的历史交接快照，只用于追溯当时事实，已经失去“当前状态”和
+执行授权效力；其中的 T2.12 等“下一步”措辞不得用于派发新任务。
+
+历史快照正文（原样保留）：
 
 截至 2026-07-22，本 `README.md` 是仓库项目状态入口；长期产品责任由 `PRODUCT-DECISIONS.md` 拥有，两条产品线的派生架构由 `blueprints/PIPELINE-MAP.md` 呈现。T2.5 已完成且整包不通过；`taskcards/T2.6.md` 状态为 `COMPLETE`，`taskcards/T2.7.md` 状态为 `COMPLETE`，两轮产品均未接受；`taskcards/T2.8.md` 状态为 `COMPLETE`，三个知识核心卡获准进入单样张打磨；`taskcards/T2.9.md` 状态为 `COMPLETE`，active version 为 `v03`，伯格内容与 T2.10 原文融合 v02 已先后获得产品接受。`taskcards/T2.11.md` 状态为 `COMPLETE`，宗派化与诺斯意识形态—执行成本机制 v01 已分别获得产品接受并准许进入原文融合；`taskcards/T2.12.md` 已冻结为下一轮唯一图书线切片。历史 T2.2 恢复架构继续保留，但不构成当前执行许可。
 
-### 1. 当前阶段与 gate
+### 1. 2026-07-22 历史阶段与 gate（已失效）
 
-- 当前阶段：T2.12 两个非伯格知识对象的原文融合迁移实验已冻结，尚未开始生产。
-- 当前 gate：`taskcards/T2.12.md` 状态为 `READY`，active version 为 `v01`。下一步只允许在同一完整章节中融合两份已接受讲义并记录最小分段墙钟，停在产品负责人阅读判词；不得进入未见章节、自动化、Judge、M2 或 T3。
+- 当时阶段：T2.12 两个非伯格知识对象的原文融合迁移实验已冻结，尚未开始生产。
+- 当时 gate：`taskcards/T2.12.md` 状态为 `READY`，active version 为 `v01`。当时只允许在同一完整章节中融合两份已接受讲义并记录最小分段墙钟，停在产品负责人阅读判词；不得进入未见章节、自动化、Judge、M2 或 T3。
 - C0 输入 HEAD：`fc7b6c01daaee8a7814e26e8d3b8ff8c1fb198d7`；T2.2 失败证据 commit 仍为 `909531c42336a0fd6f22a39f7aaba7b3c9c1e3dd`。
 - 当前控制状态：`A1_ARCHITECTURE_RELEASED`。C0 读取隔离修复已 `implemented / integrated / verified`，但尚未经过总控基于真实提交的复核，不能认定 `A2_CONTROL_PLANE_INTEGRATED`；恢复卡数量：`0`。
 - T2.2 资格仍为 `FAIL`，但它不是当前正例生产的前置 gate；M2 receipt 仍不存在，模型 Judge 不得上岗。
@@ -197,13 +208,16 @@
 
 - 仓库根目录未跟踪的 `.DS_Store` 不属于项目交付，本次不处理。
 
-### 10. 当前唯一下一步编排
+### 10. 2026-07-22 历史下一步编排（已失效）
 
-- 当前唯一切片是 T2.12：把宗派化与诺斯意识形态—执行成本机制两份已接受讲义放回同一完整原章节，验证真实锚点、连续阅读体验和激进时间预算，经过最小确定性检查后停在产品负责人阅读判词。
-- T2.12 只做同章融合迁移；不重做来源核验、不改讲义承重语义、不提炼共享 Meta Prompt，也不进入未见章节、Writer runtime、Assembler runtime、Judge、M2、T3 或自动化。
-- T2.2 资格仍为 `FAIL`，C0 当前仍为 `A1_ARCHITECTURE_RELEASED`，恢复卡数量为 `0`，M2 receipt 不存在；T2.12 不修改、不执行或放行这条历史恢复路线。
+- 当时唯一切片是 T2.12：把宗派化与诺斯意识形态—执行成本机制两份已接受讲义放回同一完整原章节，验证真实锚点、连续阅读体验和激进时间预算，经过最小确定性检查后停在产品负责人阅读判词。
+- 当时的 T2.12 只做同章融合迁移；不重做来源核验、不改讲义承重语义、不提炼共享 Meta Prompt，也不进入未见章节、Writer runtime、Assembler runtime、Judge、M2、T3 或自动化。
+- 该编排已经失效，不构成当前下一步；现行状态只见 [`CURRENT-STATE.md`](CURRENT-STATE.md)。
 
-### 11. 下一会话读取顺序
+### 11. 2026-07-22 历史读取顺序（已失效）
+
+下列清单只保留当时交接证据，不能作为新会话的现行读取指令。新会话按 `AGENTS.md` 的读取
+规则进入，并从 [`CURRENT-STATE.md`](CURRENT-STATE.md) 恢复当前状态。
 
 1. `AGENTS.md`
 2. `README.md`
@@ -242,8 +256,11 @@
 
 **在 T2.2 恢复并重新通过资格验证前，不得进入 M2。**
 
-运行以下命令可验证项目边界：
+当前 active deterministic tests 入口是：
 
 ```bash
-python3 validate.py
+python3 -B tests/entry.py
 ```
+
+`python3 -B validate.py` 只用于历史 clean-seed 回放。当前新增状态 owner、后续任务卡与历史
+artifact 均不属于其早期清单，因此它预期报告历史差异，不作为 active gate。

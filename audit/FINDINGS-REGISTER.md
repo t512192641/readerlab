@@ -32,7 +32,7 @@
 - 唯一产品前进行动：产品负责人审阅 `runs/T2.35-CH08-D3-EXPERT-P2-01/acceptance/acceptance-report.md`，决定 D3 Expert 是否值得进入 Writer；这不授权 Writer 或新 run。
 - 辅助只读权限：只读审计；不写入生产文件的方案设计；按下方证据展开 manifest 核对直接证据。
 - 当前禁止：创建下一次正式生产 run；调用新的生产语义角色；新增长期 Prompt、角色、关卡或合同；让最终 Judge 上岗；移动或删除历史对象。
-- 解除 `RED` 的最低条件：完成第一次综合大审计；明确单一状态 owner、完整责任图和下一获批实验；AUD-001、AUD-003、AUD-005、AUD-006、AUD-009、AUD-012 中与该实验直接相关的问题至少达到独立复核允许的终局。AUD-002 由“完整责任图 + 新综合审计 supersede 旧路线建议”覆盖。
+- 解除 `RED` 的剩余最低条件：产品负责人完成 T2.35 判断；明确下一获批实验；AUD-003、AUD-009、AUD-012 中与该实验直接相关的问题达到独立复核允许的终局。第一次综合大审计、完整责任图、单一状态 owner、active／historical 健康入口和宿主元数据修复已经完成独立复核，但不替代这些剩余产品与合同条件。
 - 注意：该行动门不阻止产品负责人阅读和判断已经冻结的 T2.35 审阅包。
 - 优先级：本门高于 README、蓝图、旧路线报告和单条问题中的局部允许文字；外部路线文档不能放宽 `RED`。
 
@@ -53,27 +53,25 @@
 
 ### AUD-001 当前状态入口失真
 
-- 状态：`OPEN`
+- 状态：`CLOSED`
 - 阻塞级别：`BEFORE_NEXT_RUN`
 - 事实：README 自称唯一交接入口但停在 T2.12；派生路线和当前状态文档也落后于 T2.35。
 - 证据：`README.md:17-27`；`blueprints/PIPELINE-MAP.md:106-113`；`docs/book-pipeline-current-state-and-skill-roadmap.md:1000-1087`；`taskcards/T2.35.md:1-18`。
 - 影响：新执行者和审计者可能选择错误入口或错误下一步。
-- 处理责任：执行现场提出单一状态 owner 与派生投影方案。
-- 当前允许：只读审计、T2.35 既有产品审阅。
-- 当前禁止：依据过期入口注册新的长期路线或宣称当前状态明确。
-- 复核条件：全新上下文仅从指定入口可正确恢复当前任务、停止点和未知项；其他文档不再复制竞争正文。
+- 处理结果：新增 `CURRENT-STATE.md` 作为当前任务、run、停止点、下一产品动作、禁止项和 unknown 的 owner；README、两份蓝图与专题路线只保留引用或明确的历史快照。
+- 独立复核：相对链接、T2.35 冻结身份和派生入口 diff 通过；owner 不把固定审计基线误写成动态 HEAD。
+- 关闭边界：关闭的是状态入口冲突，不代表 T2.35 获得产品接受，也不授权下一 run。
 
 ### AUD-002 完整流程和当前实验被混淆
 
-- 状态：`OPEN`
+- 状态：`CLOSED`
 - 阻塞级别：`BEFORE_NEXT_RUN`
 - 事实：首次审计把 T2.35 产品审阅描述为唯一下一步，遗漏视角选择、Writer、B3 和最终 Judge 等长期责任。
 - 证据：`audit/ENGINEERING-AUDIT-2026-07-25.md:15-21,140-177` 对照 `PRODUCT-DECISIONS.md:21-27` 与 `taskcards/T2.35.md:10-18`。
 - 影响：局部实验停止点可能被误报为整体产品路线。
-- 处理责任：审计总控校正能力地图和后续报告；执行现场不得从旧报告取得生产许可。
-- 当前允许：保留首次报告作为历史时点证据。
-- 当前禁止：把首次报告第 7—9 节当作现行完整路线。
-- 复核条件：新的综合审计明确完整责任、当前成熟度和分支路线，并通过全新上下文验证。
+- 处理结果：`audit/PROJECT-SYSTEM-AUDIT-2026-07-25.md`、能力地图和审计宪章已明确完整功能责任、当前实验停止点与两条产品线；首次报告已标记 superseded。
+- 独立复核：第四轮全新上下文可同时恢复完整责任图、`RED` 门、T2.35 唯一产品动作和证据 manifest。
+- 关闭边界：完整责任图不是角色数量决定，也不表示其中各责任已经实现或资格通过。
 
 ### AUD-003 Writer 长期合同与产品 owner 冲突
 
@@ -101,27 +99,25 @@
 
 ### AUD-005 默认项目健康信号失真
 
-- 状态：`OPEN`
+- 状态：`CLOSED`
 - 阻塞级别：`BEFORE_NEXT_RUN`
 - 事实：默认 `unittest discover` 运行 0 项并退出 5；显式 `-s tests` 后 35 项中 24 PASS、1 FAIL、10 ERROR，失败集中于历史 T2.26 身份和旧 Writer 字节假设。`validate.py` 也落后于当前任务集合。
 - 证据：`taskcards/T2.35.md:284-292`；复核命令 `python3 -B -m unittest discover -v`、`python3 -B -m unittest discover -s tests -v` 与 `python3 -B validate.py`，结果由当前综合审计报告固定。
 - 影响：团队会习惯忽略红灯，新回归难以识别。
-- 处理责任：执行现场设计 active 与 historical replay 两个真实 adapter，不重写历史证据。
-- 当前允许：专项只读检查和方案设计。
-- 当前禁止：以当前全仓红灯证明新路线失败，或以“都是历史问题”长期忽略默认健康入口。
-- 复核条件：active 默认检查全绿；历史回放显式运行并准确报告冻结差异。
+- 处理结果：新增 `tests/entry.py`，无参数运行 active 子集；T2.26 三组测试只能通过 `historical-t226` 显式回放。README 与当前状态 owner 将 `validate.py` 明确为早期 clean-seed 历史回放。
+- 独立复核：`python3 -B tests/entry.py` 为 13/13 PASS；`python3 -B tests/entry.py historical-t226` 明确运行 27 项并保留当前 1 FAIL／10 ERROR；inventory 对漏分类、交叉分类和零测试 fail closed。
+- 关闭边界：active 入口只是当前可维护的确定性测试子集，不是完整项目、语义质量或产品资格证明。
 
 ### AUD-006 run 健康检查受宿主元数据污染
 
-- 状态：`OPEN`
+- 状态：`CLOSED`
 - 阻塞级别：`BEFORE_NEXT_RUN`
 - 事实：T2.28 Writer、T2.30、T2.31、T2.35 四个 run 存在 `.DS_Store`；当前 T2.35 `tools/run.py check` 会因此失败。独立复算显示跳过该宿主元数据后，四个 run 的冻结清单仍一致。
 - 证据：`find runs -name .DS_Store -print`；`python3 -B tools/run.py check runs/T2.35-CH08-D3-EXPERT-P2-01`；受影响 run 由当前综合审计报告逐项固定。
 - 影响：仅打开 Finder 就可能让已冻结 run 从 PASS 变为失败，复验证据不稳定。
-- 处理责任：执行现场提出共享 artifact inventory 修复和回归测试。
-- 当前允许：只读核对受影响范围。
-- 当前禁止：人工逐 run 删除后宣称根因已关闭。
-- 复核条件：明确宿主元数据受控忽略并 warning，其他未知文件继续失败，四个受影响 run 和反例测试通过。
+- 处理结果：`tools/run.py` 的共享 artifact inventory 只忽略非 symlink 普通文件 `.DS_Store` 并输出 warning；未知文件、symlink 和非普通对象继续硬失败。
+- 独立复核：专项回归 10/10 PASS；T2.28 Writer、T2.30、T2.31、T2.35 官方 check 全部 PASS 且 warning 可见；`.Spotlight-V100` 反例继续失败；未删除或改写任何 run。
+- 关闭边界：只关闭 Finder 元数据导致的假红灯，不评价 run 的语义质量或产品接受。
 
 ### AUD-007 历史、当前、草案和本地载荷未清楚分层
 
