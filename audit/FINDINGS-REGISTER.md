@@ -120,6 +120,8 @@
 - 证据：`find runs -name .DS_Store -print`；`python3 -B tools/run.py check runs/T2.35-CH08-D3-EXPERT-P2-01`；受影响 run 由当前综合审计报告逐项固定。
 - 影响：仅打开 Finder 就可能让已冻结 run 从 PASS 变为失败，复验证据不稳定。
 - 处理结果：`tools/run.py` 的共享 artifact inventory 只忽略非 symlink 普通文件 `.DS_Store` 并输出 warning；未知文件、symlink 和非普通对象继续硬失败。
+- 物理清理：T2.28 Writer、T2.30、T2.31 中的三个历史 `.DS_Store` 已删除；T2.35 的当前业务
+  文件不动。历史记录中的“四个 run 曾出现”仍是事故事实。
 - 独立复核：专项回归 10/10 PASS；T2.28 Writer、T2.30、T2.31、T2.35 官方 check 全部 PASS 且 warning 可见；`.Spotlight-V100` 反例继续失败；未删除或改写任何 run。
 - 关闭边界：只关闭 Finder 元数据导致的假红灯，不评价 run 的语义质量或产品接受。
 

@@ -15,7 +15,7 @@
 - 默认入口只指向当前 owner、现行合同和当前任务；
 - 历史对象保留原路径，不自动成为执行许可；
 - ignored payload 暂不删除，直到证明 tracked control evidence 足以恢复其必要事实；
-- `.DS_Store` 是明确物理删除候选，但删除本身不进入本轮。
+- 三个历史 run 中的 `.DS_Store` 已物理删除；T2.35 中的一个继续随当前业务现场保留。
 
 按宪章 `AUD-SCOPE-001`，下一轮必须覆盖当前仓库内全部项目文件，包括各 run 中生成的 Expert、
 Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。受限内容可以只做元数据与
@@ -175,7 +175,7 @@ legacy 只表示没有 `run.json` 现行结构，不表示损坏。T2.26 的确�
 | 已跟踪 control evidence | 必须保留 | 当前唯一可移植证据 |
 | 历史任务卡与 run | 逻辑归档 | 仍可追溯，但不进入默认入口 |
 | ignored payload | 暂时保留，备份责任 unknown | 尚未逐文件证明没有唯一语义证据 |
-| `.DS_Store` | 可删除候选 | 非项目内容；删除不影响 freeze，工具已受控忽略 |
+| `.DS_Store` | 三个历史文件已删除；T2.35 暂缓 | 非项目内容；删除不影响 freeze，工具已受控忽略。当前 run 不由清理线程修改 |
 | T2.30 已清理的十个临时脚本 | 保持不存在 | 历史任务卡已登记用途，无需恢复 |
 | `validate.py` | 已退出当前工程入口 | 根目录只保留 38 行兼容 adapter；9,485 行旧实现以原字节和固定 SHA-256 隔离到 `archive/legacy-code/validate-clean-seed.py`。当前健康入口不依赖它，历史命令仍可回放 |
 
