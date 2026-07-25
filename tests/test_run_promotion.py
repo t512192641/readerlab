@@ -366,6 +366,40 @@ print(json.dumps({
             [],
         )
 
+    def test_git_policy_keeps_full_review_payload_local_by_default(self) -> None:
+        def is_ignored(relative_path: str) -> bool:
+            result = subprocess.run(
+                [
+                    "git",
+                    "check-ignore",
+                    "--no-index",
+                    "-q",
+                    "--",
+                    relative_path,
+                ],
+                cwd=ROOT,
+                check=False,
+            )
+            self.assertIn(result.returncode, {0, 1}, relative_path)
+            return result.returncode == 0
+
+        for local_payload in (
+            "runs/T9.99-EXAMPLE/acceptance/acceptance-report.md",
+            "runs/T9.99-EXAMPLE/raw/expert.md",
+            "runs/T9.99-EXAMPLE/locked/knowledge-cards.md",
+            "archive/runs/T9.99-EXAMPLE/acceptance/acceptance-report.md",
+        ):
+            self.assertTrue(is_ignored(local_payload), local_payload)
+
+        for compact_evidence in (
+            "runs/T9.99-EXAMPLE/run.json",
+            "runs/T9.99-EXAMPLE/production-freeze.json",
+            "runs/T9.99-EXAMPLE/locked/p2-gate.md",
+            "runs/T9.99-EXAMPLE/acceptance/acceptance-freeze.json",
+            "runs/T9.99-EXAMPLE/acceptance/product-verdicts.md",
+        ):
+            self.assertFalse(is_ignored(compact_evidence), compact_evidence)
+
     def test_host_metadata_is_warned_and_excluded_from_freeze_inventory(self) -> None:
         run_dir, _ = _new_run(self.tmp_path)
         (run_dir / "raw/artifact.md").write_text(

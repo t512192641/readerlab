@@ -20,7 +20,6 @@ runs/*/**
 !runs/*/control/p2-recovery-*.json
 !runs/*/locked/*gate*.md
 !runs/*/acceptance/acceptance-freeze.json
-!runs/*/acceptance/acceptance-report.md
 !runs/*/acceptance/*verdict*.md
 !runs/*/review/companion-v01.md
 !runs/*/review/*summary*.md
@@ -44,7 +43,6 @@ archive/*/**
 !archive/*/control/p2-recovery-*.json
 !archive/*/locked/*gate*.md
 !archive/*/acceptance/acceptance-freeze.json
-!archive/*/acceptance/acceptance-report.md
 !archive/*/acceptance/*verdict*.md
 !archive/*/review/companion-v01.md
 !archive/*/review/*summary*.md
