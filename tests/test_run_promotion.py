@@ -99,6 +99,8 @@ def _promote(
     run_dir: Path,
     candidate: Path,
     validator: Path,
+    *,
+    timeout_seconds: float = 300.0,
 ) -> subprocess.CompletedProcess[str]:
     return _run_tool(
         "promote",
@@ -107,6 +109,8 @@ def _promote(
         candidate,
         "--target",
         "raw/p1-candidates.md",
+        "--validator-timeout-seconds",
+        str(timeout_seconds),
         "--validator",
         sys.executable,
         validator,
@@ -172,6 +176,25 @@ raise SystemExit(1)
         result = _promote(run_dir, candidate, validator)
 
         self.assertNotEqual(result.returncode, 0)
+        self.assertFalse((run_dir / "raw/p1-candidates.md").exists())
+
+    def test_hung_validator_times_out_and_keeps_target_absent(self) -> None:
+        run_dir, candidate = _new_run(self.tmp_path)
+        candidate.write_bytes(b"candidate")
+        validator = _write_validator(
+            self.tmp_path / "validator_hangs.py",
+            "import time\ntime.sleep(5)",
+        )
+
+        result = _promote(
+            run_dir,
+            candidate,
+            validator,
+            timeout_seconds=0.05,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("validator timed out", result.stderr)
         self.assertFalse((run_dir / "raw/p1-candidates.md").exists())
 
     def test_explicit_pass_promotes_exact_candidate_bytes(self) -> None:

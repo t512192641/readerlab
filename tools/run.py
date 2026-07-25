@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import re
 import subprocess
@@ -75,6 +76,18 @@ def _require_text(value: str, label: str) -> str:
     if not value:
         raise RunError(f"{label} must be explicitly provided")
     return value
+
+
+def _positive_seconds(value: str) -> float:
+    try:
+        seconds = float(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("timeout must be a number") from error
+    if not math.isfinite(seconds) or seconds <= 0:
+        raise argparse.ArgumentTypeError(
+            "timeout must be a finite number greater than zero"
+        )
+    return seconds
 
 
 def _require_regular_file(path: Path, label: str) -> None:
@@ -178,12 +191,10 @@ def _stable_bytes(path: Path, label: str) -> bytes:
 
 
 def _write_json_exclusive(path: Path, value: dict[str, object]) -> None:
-    try:
-        with path.open("x", encoding="utf-8", newline="\n") as handle:
-            json.dump(value, handle, ensure_ascii=False, indent=2, sort_keys=True)
-            handle.write("\n")
-    except FileExistsError as error:
-        raise RunError(f"refusing to overwrite existing file: {path}") from error
+    payload = (
+        json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+    ).encode("utf-8")
+    _publish_exclusive(path, payload)
 
 
 def _read_json_object(path: Path, label: str) -> dict[str, object]:
@@ -879,14 +890,22 @@ def _promote(args: argparse.Namespace) -> None:
             "READERLAB_CANDIDATE_BYTES": str(candidate_bytes),
         }
     )
-    validator = subprocess.run(
-        args.validator,
-        cwd=candidate.parent,
-        env=validator_environment,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
+    try:
+        validator = subprocess.run(
+            args.validator,
+            cwd=candidate.parent,
+            env=validator_environment,
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=args.validator_timeout_seconds,
+        )
+    except subprocess.TimeoutExpired as error:
+        raise RunError(
+            "validator timed out after "
+            f"{args.validator_timeout_seconds:g} seconds; "
+            "formal target was not written"
+        ) from error
     if validator.returncode != 0:
         raise RunError(
             f"validator failed with exit status {validator.returncode}; "
@@ -1041,6 +1060,12 @@ def _parser() -> argparse.ArgumentParser:
     promote_parser.add_argument("run_dir", type=Path)
     promote_parser.add_argument("--candidate", required=True, type=Path)
     promote_parser.add_argument("--target", required=True)
+    promote_parser.add_argument(
+        "--validator-timeout-seconds",
+        type=_positive_seconds,
+        default=300.0,
+        help="stop a hung validator after this many seconds (default: 300)",
+    )
     promote_parser.add_argument(
         "--validator",
         required=True,
