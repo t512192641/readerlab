@@ -88,19 +88,10 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 说明：仓库没有 T2.25 任务卡；T2.25 run 存在不等于任务卡存在。以上对象保留原路径，
 因为历史文档、判词和验证器使用这些坐标；不得把它们当作当前执行入口。
 
-### 未获当前执行许可的未来草案
+### 已退役的未来草案
 
-- `taskcards/T3.1.md`
-- `taskcards/T3.2.md`
-- `taskcards/T3.3.md`
-- `taskcards/T3.4.md`
-- `taskcards/T3.5.md`
-- `taskcards/T3.6.md`
-- `taskcards/T4.1.md`
-- `taskcards/T4.2.md`
-- `taskcards/T4.3.md`
-
-这些文件只是旧路线下的未来草案。现行合同、角色和当前状态均优先；任何一张都不能直接启动。
+旧路线下九张 T3／T4 未来任务卡从未执行，且现行合同和蓝图已经重新定义后续路线，因此已从
+当前工作树删除；需要取证时从本地 Git 提交 `e782605` 恢复。
 
 ### 模板
 
@@ -230,14 +221,12 @@ legacy 只表示没有 `run.json` 现行结构，不表示损坏。T2.26 的确�
 - `contracts/T1.6-writer.md`
 - `contracts/T1.7-b2-assembly.md`
 - `contracts/T1.8-independent-acceptance.md`
-- `docs/book-pipeline-current-state-and-skill-roadmap.md`
-- `docs/pipeline-template-draft.md`
 - `docs/writer-style-guide.md`
 - `lenses/T1.9-seed-lenses.md`
 - `lenses/T2.3-seed-lenses-v2.md`
 
-这些资产保留原路径用于追溯。旧合同已被 v2 current pointer 降为历史；路线、专题说明、风格和
-透镜文件均不得覆盖当前 owner 或自动取得生产许可。
+旧合同已被 v2 current pointer 降为历史；旧的专题路线和 pipeline template 已删除并由
+`e782605` 保留恢复身份。风格和透镜文件仍不得覆盖当前 owner 或自动取得生产许可。
 
 ### 历史诊断、考试与审计快照
 

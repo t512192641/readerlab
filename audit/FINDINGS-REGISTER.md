@@ -55,10 +55,13 @@
 
 - 状态：`OPEN`
 - 阻塞级别：`BEFORE_NEXT_RUN`
-- 事实：README 自称唯一交接入口但停在 T2.12；派生路线和当前状态文档也落后于 T2.35。
-- 证据：`b39a284:README.md:17-27`；`blueprints/PIPELINE-MAP.md:106-113`；`docs/book-pipeline-current-state-and-skill-roadmap.md:1000-1087`；`taskcards/T2.35.md:1-18`。
+- 事实：README 曾自称唯一交接入口但停在 T2.12；旧专题路线也落后于 T2.35。
+- 证据：`b39a284:README.md:17-27`；`e782605:docs/book-pipeline-current-state-and-skill-roadmap.md`；
+  `blueprints/PIPELINE-MAP.md:106-113`；`taskcards/T2.35.md:1-18`。
 - 影响：新执行者和审计者可能选择错误入口或错误下一步。
-- 处理结果：新增 `CURRENT-STATE.md` 作为当前任务、run、停止点、下一产品动作、禁止项和 unknown 的 owner；README、两份蓝图与专题路线只保留引用或明确的历史快照。
+- 处理结果：新增 `CURRENT-STATE.md` 作为当前任务、run、停止点、下一产品动作、禁止项和
+  unknown 的 owner；README 与现行蓝图只指向 owner，过期专题路线和未执行未来任务卡已从
+  当前工作树删除。
 - 独立复核：相对链接、T2.35 冻结身份和派生入口 diff 通过；owner 不把固定审计基线误写成动态 HEAD。
 - 复发证据：T2.35 产品判词文件已经存在并写明 `P2_PASS_WORTH_WRITING`，但
   `CURRENT-STATE.md` 仍把产品判断和 Writer 授权写成 `unknown`。这证明“单一 owner 已建立”，
