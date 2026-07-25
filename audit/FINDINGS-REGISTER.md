@@ -135,19 +135,22 @@
 
 - 状态：`OPEN`
 - 阻塞级别：`BEFORE_QUALIFICATION`
-- 事实：65 张任务卡、42 个 run、457 个 run 文件主要并列保留；只有一个 run 进入 `archive/`。183 个 run 文件被 Git 跟踪、268 个被忽略，其余为宿主元数据或当前未跟踪控制证据。第一层清单已分类 taskcard、run 容器和主要文档，但没有逐文件判断 run 内生成稿与本地载荷。
-- 证据：`find taskcards -maxdepth 1 -name '*.md'`；`find runs -mindepth 1 -maxdepth 1 -type d`；`find runs -type f`；`find archive -mindepth 1 -maxdepth 1 -type d`；`git ls-files runs`。
+- 事实：当前有 56 张任务卡和 42 个 run 容器，共 454 个 run 文件。31 个较早 legacy run
+  的 317 个文件已经移入 `archive/runs/`；`runs/` 只剩 10 个近期历史 run、当前 T2.35
+  和占位文件。run 文件中 183 个由 Git 跟踪、265 个保持 ignored、6 个是 T2.35 当前未跟踪
+  控制证据。
+- 证据：`find taskcards -maxdepth 1 -name '*.md'`；`find runs -mindepth 1 -maxdepth 1 -type d`；
+  `find archive/runs -mindepth 1 -maxdepth 1 -type d`；`git ls-files` 与 ignored inventory。
 - 影响：认知成本高，容易误读历史，保留和清理责任不明确。
 - 处理责任：执行现场先建立引用和保留清单，再提交逻辑归档与物理清理候选。
-- 阶段结果：`audit/ASSET-LIFECYCLE-REGISTER.md` 已逐项覆盖 65 张任务卡和 42 个 run，
-  区分当前、历史 current profile、历史 legacy profile、未来未授权草案、模板、保留理由、
-  replay 能力与删除前置；根 README 已缩为当前导航，历史对象保留原路径。这只到容器级，
-  不构成全仓文件级治理完成。
+- 阶段结果：资产清单已逐项覆盖 56 张任务卡和 42 个 run；31 个较早 legacy run 已完成
+  317/317 文件 SHA-256 对照后物理隔离，根 README 与 `AGENTS.md` 已禁止默认任务读取历史区。
+  近期 run、金标和价值不明对象仍保守保留，不构成全仓文件级治理完成。
 - 自动复核：active tests 会把清单中的任务卡／run 集合与真实目录做全量集合比较，漏项或多项
   均失败。
 - 当前允许：按 `AUD-SCOPE-001` 对全仓文件做只读分类、引用、恢复性和依赖分析。
-- 当前禁止：批量移动、删除、重命名或破坏现有 hash／路径证据。
-- 复核条件：全仓每个项目文件取得明确终局或诚实的 `unknown`；457 个 run 文件和 268 个
+- 当前禁止：未完成迁移前后身份核对就移动或删除；不确定对象不得按年龄直接淘汰。
+- 复核条件：全仓每个项目文件取得明确终局或诚实的 `unknown`；454 个 run 文件和 265 个
   ignored 文件有恢复性与唯一证据判断；当前入口不默认暴露历史噪声，历史证据仍可追溯。
 
 ### AUD-008 通用工程逻辑散落在任务卡与超长验证器

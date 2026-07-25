@@ -6,14 +6,14 @@
 
 ## 1. 结论
 
-本文件目前只完成第一层容器盘点：65 张任务卡、42 个 run 和 run／taskcard 外的 Markdown
-文档已经分类；42 个 run 内的 457 个文件尚未逐文件取得生命周期终局。因此当前不能声称
-“全仓文件已经处理”，也不能由目录级分类推导出所有历史对象都必须永久保留。
+当前共有 56 张任务卡和 42 个 run 容器。31 个较早 legacy run 的 317 个文件已完成
+迁移前后逐文件身份核对并物理隔离；11 个近期／当前 run 继续位于 `runs/`。其余历史对象
+尚未全部取得价值终局，因此当前仍不能声称“全仓文件已经处理”。
 
-本轮采用逻辑归档：
+当前采用物理隔离与保守保留并行：
 
 - 默认入口只指向当前 owner、现行合同和当前任务；
-- 历史对象保留原路径，不自动成为执行许可；
+- 较早 legacy run 移入 `archive/runs/`，默认任务禁止读取；
 - ignored payload 暂不删除，直到证明 tracked control evidence 足以恢复其必要事实；
 - 三个历史 run 中的 `.DS_Store` 已物理删除；T2.35 中的一个继续随当前业务现场保留。
 
@@ -120,43 +120,43 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 这些 run 的 `run.json` 使用现行 run profile，但业务生命周期已经结束。结构可复核不代表
 产品通过，也不表示其路线仍可执行。
 
-### 历史 run：legacy profile，没有统一 run replay
+### 历史 run：legacy profile，已物理隔离
 
-- `runs/T2.2-sufficiency-calibration-v3`
-- `runs/T2.2-sufficiency-calibration-v4`
-- `runs/T2.4-IDEA-PILOT-01`
-- `runs/T2.5-KNOWLEDGE-LENS-PILOT-01`
-- `runs/T2.6-DISCIPLINE-EXPERT-PILOT-01`
-- `runs/T2.7-BOUNDED-FRAMEWORK-PILOT-01`
-- `runs/T2.8-KNOWLEDGE-OBJECT-PILOT-01`
-- `runs/T2.9-BERGER-STUDY-NOTES-PROTOTYPE-01`
-- `runs/T2.10-BERGER-INLINE-READING-PROTOTYPE-01`
-- `runs/T2.11-NON-BERGER-STUDY-NOTES-PROTOTYPE-01`
-- `runs/T2.12-NON-BERGER-INLINE-READING-PROTOTYPE-01`
-- `runs/T2.13-COGNITIVE-COLLISION-REPRODUCTION-01`
-- `runs/T2.14-UNSEEN-CHAPTER-COGNITIVE-COLLISION-01`
-- `runs/T2.15-SECOND-UNSEEN-CHAPTER-COGNITIVE-COLLISION-01`
-- `runs/T2.16-STAGED-AUTONOMOUS-DISCOVERY-01`
-- `runs/T2.17-STANDALONE-LESSON-SELECTION-GATE-01`
-- `runs/T2.18-INDEPENDENT-COMPARATOR-01`
-- `runs/T2.19-TRANSFERABILITY-COMPARATOR-01`
-- `runs/T2.20-THREE-EXPERT-LESSON-EXPANSION-01`
-- `runs/T2.21-WRITER-QUALIFICATION-01`
-- `runs/T2.22-PARALLEL-SOURCE-AUDIT-01`
-- `runs/T2.23-SOURCE-FIX-AND-INTEGRATION-01`
-- `runs/T2.24-UNTOUCHED-CHAPTER-TRANSFER-01`
-- `runs/T2.25-WRITER-STYLE-AB-01`
-- `runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-01`
-- `runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-02`
-- `runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-03`
-- `runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-04`
-- `runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-05`
-- `runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-06`
-- `runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-07`
+- `archive/runs/T2.2-sufficiency-calibration-v3`
+- `archive/runs/T2.2-sufficiency-calibration-v4`
+- `archive/runs/T2.4-IDEA-PILOT-01`
+- `archive/runs/T2.5-KNOWLEDGE-LENS-PILOT-01`
+- `archive/runs/T2.6-DISCIPLINE-EXPERT-PILOT-01`
+- `archive/runs/T2.7-BOUNDED-FRAMEWORK-PILOT-01`
+- `archive/runs/T2.8-KNOWLEDGE-OBJECT-PILOT-01`
+- `archive/runs/T2.9-BERGER-STUDY-NOTES-PROTOTYPE-01`
+- `archive/runs/T2.10-BERGER-INLINE-READING-PROTOTYPE-01`
+- `archive/runs/T2.11-NON-BERGER-STUDY-NOTES-PROTOTYPE-01`
+- `archive/runs/T2.12-NON-BERGER-INLINE-READING-PROTOTYPE-01`
+- `archive/runs/T2.13-COGNITIVE-COLLISION-REPRODUCTION-01`
+- `archive/runs/T2.14-UNSEEN-CHAPTER-COGNITIVE-COLLISION-01`
+- `archive/runs/T2.15-SECOND-UNSEEN-CHAPTER-COGNITIVE-COLLISION-01`
+- `archive/runs/T2.16-STAGED-AUTONOMOUS-DISCOVERY-01`
+- `archive/runs/T2.17-STANDALONE-LESSON-SELECTION-GATE-01`
+- `archive/runs/T2.18-INDEPENDENT-COMPARATOR-01`
+- `archive/runs/T2.19-TRANSFERABILITY-COMPARATOR-01`
+- `archive/runs/T2.20-THREE-EXPERT-LESSON-EXPANSION-01`
+- `archive/runs/T2.21-WRITER-QUALIFICATION-01`
+- `archive/runs/T2.22-PARALLEL-SOURCE-AUDIT-01`
+- `archive/runs/T2.23-SOURCE-FIX-AND-INTEGRATION-01`
+- `archive/runs/T2.24-UNTOUCHED-CHAPTER-TRANSFER-01`
+- `archive/runs/T2.25-WRITER-STYLE-AB-01`
+- `archive/runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-01`
+- `archive/runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-02`
+- `archive/runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-03`
+- `archive/runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-04`
+- `archive/runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-05`
+- `archive/runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-06`
+- `archive/runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-07`
 
-legacy 只表示没有 `run.json` 现行结构，不表示损坏。T2.26 的确定性代码和测试没有当前
-调用方，且历史回放本身长期失败，已经从当前工作树删除；需要取证时从本地 Git
-`c13ea5a` 恢复。
+这 31 个 run 共 317 个文件。迁移前后逐文件 SHA-256 与数量完全一致，其中 138 个原 tracked
+文件继续由 Git 跟踪，179 个本地 payload 继续保持 ignored。legacy 只表示没有 `run.json`
+现行结构，不表示损坏；默认任务不得搜索或读取历史区。
 
 ## 4. 保留和清理规则
 
@@ -165,7 +165,7 @@ legacy 只表示没有 `run.json` 现行结构，不表示损坏。T2.26 的确�
 | 当前 T2.35 任务卡与 run | 保留原位，审计只读 | 正在微调的业务成果 |
 | 产品判词、freeze、receipt、hash、失败 blocker | 必须保留 | 它们是接受、拒绝和可复验边界 |
 | 已跟踪 control evidence | 必须保留 | 当前唯一可移植证据 |
-| 历史任务卡与 run | 逻辑归档 | 仍可追溯，但不进入默认入口 |
+| 较早 legacy run | 已迁移到 `archive/runs/` | 仍可追溯，但通过物理路径与读取规则退出默认入口 |
 | ignored payload | 暂时保留，备份责任 unknown | 尚未逐文件证明没有唯一语义证据 |
 | `.DS_Store` | 三个历史文件已删除；T2.35 暂缓 | 非项目内容；删除不影响 freeze，工具已受控忽略。当前 run 不由清理线程修改 |
 | T2.30 已清理的十个临时脚本 | 保持不存在 | 历史任务卡已登记用途，无需恢复 |
