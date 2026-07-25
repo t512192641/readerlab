@@ -32,7 +32,7 @@
 - 唯一产品前进行动：产品负责人审阅 `runs/T2.35-CH08-D3-EXPERT-P2-01/acceptance/acceptance-report.md`，决定 D3 Expert 是否值得进入 Writer；这不授权 Writer 或新 run。
 - 辅助只读权限：只读审计；不写入生产文件的方案设计；按下方证据展开 manifest 核对直接证据。
 - 当前禁止：创建下一次正式生产 run；调用新的生产语义角色；新增长期 Prompt、角色、关卡或合同；让最终 Judge 上岗；移动或删除历史对象。
-- 解除 `RED` 的剩余最低条件：产品负责人完成 T2.35 判断；明确下一获批实验；AUD-003、AUD-009、AUD-012 中与该实验直接相关的问题达到独立复核允许的终局。第一次综合大审计、完整责任图、单一状态 owner、active／historical 健康入口和宿主元数据修复已经完成独立复核，但不替代这些剩余产品与合同条件。
+- 解除 `RED` 的剩余最低条件：产品负责人完成 T2.35 判断；明确下一获批实验；AUD-009 针对该实验达到独立复核允许的终局。第一次综合大审计、完整责任图、单一状态 owner、active／historical 健康入口、宿主元数据修复及图书内容流合同冲突已经完成独立复核，但不替代剩余产品判断与未见材料防过拟合条件。
 - 注意：该行动门不阻止产品负责人阅读和判断已经冻结的 T2.35 审阅包。
 - 优先级：本门高于 README、蓝图、旧路线报告和单条问题中的局部允许文字；外部路线文档不能放宽 `RED`。
 
@@ -75,15 +75,14 @@
 
 ### AUD-003 Writer 长期合同与产品 owner 冲突
 
-- 状态：`OPEN`
+- 状态：`CLOSED`
 - 阻塞级别：`BEFORE_NEXT_RUN`
 - 事实：`contracts/T1.6-writer.md` 冻结为一张锁定知识卡对应一个成品且 Writer 不得拆卡；现行产品决议允许专家初稿包含多张关联知识卡，并允许 Writer 必要时拆分。
 - 证据：`contracts/T1.6-writer.md:14-55`；`PRODUCT-DECISIONS.md:55-59`。
 - 影响：继续使用旧合同可能错误压缩认知结构，或使执行者无法确定现行权限。
-- 处理责任：执行现场提交冲突分析和重开合同方案；产品责任不由审计改写。
-- 当前允许：读取历史 Writer 证据和讨论候选方案。
-- 当前禁止：把 T1.6 直接作为下一次 Writer 的现行长期合同。
-- 复核条件：唯一 owner 与派生合同一致，旧合同有清楚的 superseded 状态，适用回归证明没有损失已接受能力。
+- 处理结果：`contracts/BOOK-CONTENT-FLOW-v2.md` 以完整 Expert 初稿与语义锁作为 Writer 组织单位，允许按阅读体验合并或必要拆分为一个或多个 Reader 单元；旧 T1.6 字节与 M1 receipt 原样保留为历史身份。
+- 独立复核：三轮工程审查最终 `PASS`；新 freeze receipt 绑定 v2 身份，`blueprints/PIPELINE-MAP.md` 是唯一 current pointer；active 回归同时锁定新合同身份、旧 T1.3—T1.7 与 M1 receipt 哈希，17/17 PASS。
+- 关闭边界：关闭的是长期接口冲突。Writer runtime 仍未 `integrated`，真实 Reader 单元尚未 `verified`，产品能力保留仍须由后续获批真实运行证明；不得因此启动 Writer。
 
 ### AUD-004 最终 Judge 未取得资格
 
@@ -105,7 +104,7 @@
 - 证据：`taskcards/T2.35.md:284-292`；复核命令 `python3 -B -m unittest discover -v`、`python3 -B -m unittest discover -s tests -v` 与 `python3 -B validate.py`，结果由当前综合审计报告固定。
 - 影响：团队会习惯忽略红灯，新回归难以识别。
 - 处理结果：新增 `tests/entry.py`，无参数运行 active 子集；T2.26 三组测试只能通过 `historical-t226` 显式回放。README 与当前状态 owner 将 `validate.py` 明确为早期 clean-seed 历史回放。
-- 独立复核：`python3 -B tests/entry.py` 为 13/13 PASS；`python3 -B tests/entry.py historical-t226` 明确运行 27 项并保留当前 1 FAIL／10 ERROR；inventory 对漏分类、交叉分类和零测试 fail closed。
+- 独立复核：`python3 -B tests/entry.py` 当前为 17/17 PASS；`python3 -B tests/entry.py historical-t226` 明确运行 27 项并保留当前 1 FAIL／10 ERROR；inventory 对漏分类、交叉分类和零测试 fail closed。
 - 关闭边界：active 入口只是当前可维护的确定性测试子集，不是完整项目、语义质量或产品资格证明。
 
 ### AUD-006 run 健康检查受宿主元数据污染
@@ -159,7 +158,7 @@
 
 - 状态：`OPEN`
 - 阻塞级别：`BEFORE_QUALIFICATION`
-- 事实：方向比较、P1、P2、来源审核、Writer、Fidelity、P3、最终 Judge 等责任在不同实验中出现，但研发门与最终生产责任尚未分层；其中 P2 在不同任务中分别表示产品选课、内容资格、来源审核或 Writer 准入。
+- 事实：v2 已从长期合同删除 P1／P2／P3 混义名称，并区分课程入口价值、内容锁定、独立 Fidelity 和 B2 装配；但这些功能责任的运行成本、可合并实现与删除后果尚未用真实目标路径验证。
 - 证据：`PRODUCT-DECISIONS.md:21-27`；`blueprints/PIPELINE-MAP.md:11-88`；`taskcards/T2.26.md:79-94,215-321,527-570`；`taskcards/T2.34.md:19-32`；`taskcards/T2.35.md:10-18`。
 - 影响：可能保留重复判断和多余调用，也可能错误删除真正需要独立性的责任。
 - 处理责任：首次大审计逐责任执行删除测试，形成保留、合并、研发期临时或待验证结论。
@@ -181,15 +180,14 @@
 
 ### AUD-012 发现、Expert 与 B2 长期合同仍冻结旧路线
 
-- 状态：`OPEN`
+- 状态：`CLOSED`
 - 阻塞级别：`BEFORE_NEXT_RUN`
 - 事实：T1.3／T1.4 仍以先形成三字段透视需求、再路由并提出一句候选主张为主接口；现行产品 owner 要求 Expert 完整自由阅读、自然决定教什么，控制层不替 Expert 命题。T1.7 的固定 callout 格式也与近期 Reader 命名和未决 `tandem-comments` 接口不一致。
 - 证据：`contracts/T1.3-discovery.md:8-76`；`contracts/T1.4-expert-and-knowledge-card.md:8-98`；`contracts/T1.7-b2-assembly.md:38-72`；`PRODUCT-DECISIONS.md:63-79`；`blueprints/PIPELINE-MAP.md:35-77`。
 - 影响：下一次生产若直接继承旧合同，可能重新引入中央派题、短主张和过早卡片化，并把未验证的装配格式当成现行接口。
-- 处理责任：执行现场逐合同提交保留、重开或 supersede 分析；产品 owner 不由审计改写。
-- 当前允许：读取合同、任务证据并设计完整功能责任图。
-- 当前禁止：把 T1.3、T1.4、T1.7 与 T1.6 组合成现行完整生产链。
-- 复核条件：发现、认知背景路由、Expert 自主发现、内容审核、Writer 和 B2 装配各自拥有无冲突的判断对象、输入、失败动作和生命周期。
+- 处理结果：单一 v2 合同重新定义控制路由、正式透镜优先／真实缺口临时 Expert、受控偶遇、Expert 自主发现与沉默、初稿后审计投影、Writer、独立 Fidelity 与确定性 B2；旧 T1.3—T1.7 不再是现行接口。
+- 独立复核：首轮发现 4 P1／1 P2，二轮剩 2 P1，三轮 `PASS`；重点关闭了候选提前生效、价值检查表下沉 Expert、返工读取闭集不闭合、路由责任缺失与 Fidelity gate 歧义。
+- 关闭边界：合同技术激活不代表 runtime `integrated`、真实链路 `verified` 或产品 `accepted`；B3 与最终 Judge 仍在合同之外并保持原有阻塞。
 
 ## 四、观察项
 

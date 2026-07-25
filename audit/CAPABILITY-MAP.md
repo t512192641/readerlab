@@ -33,16 +33,16 @@
 | `E01` | `owner fact`：`PRODUCT-DECISIONS.md:21-27` 图书线长期责任；`PRODUCT-DECISIONS.md:105-116` Skills 线 E1—E4 |
 | `E02` | `current-point reverified`：`taskcards/T2.35.md:3-18,245-292`；审阅包 `runs/T2.35-CH08-D3-EXPERT-P2-01/acceptance/acceptance-report.md` SHA-256 `4c0248572786e72cbfa0dffed63c15f745a0a47243b5bc5c30221a277f6d101f`；production freeze `0bde93d07d98e9c7d66fb29a2e2c6c463314b2aa4f723a945e5f4c65af40d385`；acceptance freeze `c981641cda9133258ce51d5a1c9808c934a309ccc792055f064d7b54f0e387eb`；产品判词目标路径当前不存在 |
 | `E03` | `current-point reverified`：`taskcards/T2.34.md:288-324`，四向比较、六个语义角色、D3 产品选择 |
-| `E04` | `current-point reverified`：`PRODUCT-DECISIONS.md:55-59` 对照 `contracts/T1.6-writer.md:14-55`，现行 Writer 责任与旧单卡合同 |
+| `E04` | `current-point reverified`：`contracts/BOOK-CONTENT-FLOW-v2.md` 与其 freeze receipt 已成为现行技术 interface；Writer 以完整 Expert 初稿和语义锁为组织单位，可形成一个或多个 Reader 单元；旧 T1.6／M1 字节保留为历史 |
 | `E05` | `current-point reverified`：`contracts/T1.8-independent-acceptance.md:8-68`、`README.md:39-46`、`taskcards/T2.2.md`，Judge 合同存在但资格失败 |
 | `E06` | `current-point reverified`：`taskcards/T2.28.md:1-10,162-176`、`T2.30.md:1-17,208-218`、`T2.31.md:1-11,175-179`、`T2.33.md:1-9,195-208`，近期 P3 未接受 |
 | `E07` | `current-point reverified`：`CURRENT-STATE.md` 是当前执行状态 owner；README、两份蓝图与专题路线只引用该 owner 或明确标记历史快照 |
-| `E08` | `current-point reverified`：`python3 -B tests/entry.py` 运行 active 子集 13/13 PASS；`historical-t226` 显式回放保留 27 项中的 1 FAIL／10 ERROR；`validate.py` 明确为早期 clean-seed 历史回放 |
+| `E08` | `current-point reverified`：`python3 -B tests/entry.py` 运行 active 子集 17/17 PASS；`historical-t226` 显式回放保留 27 项中的 1 FAIL／10 ERROR；`validate.py` 明确为早期 clean-seed 历史回放 |
 | `E09` | `current-point reverified`：`tools/run.py` 只受控忽略普通 `.DS_Store` 并 warning；专项回归与 T2.28 Writer、T2.30、T2.31、T2.35 check 通过，未知宿主文件继续硬失败 |
 | `E10` | `current-point reverified`：`lenses/T1.9-seed-lenses.md`、`lenses/T2.3-seed-lenses-v2.md`、`taskcards/T2.35.md:45-53`，透镜资产未接入当前生产 |
 | `E11` | `owner fact + derived projection`：`PRODUCT-DECISIONS.md:105-116` 是 Skills 线长期责任；`blueprints/PIPELINE-MAP.md:89-104` 是其派生图 |
 | `E12` | `current-point reverified`：`git status --short`、`find taskcards -maxdepth 1 -name '*.md'`、`find runs -mindepth 1 -maxdepth 1 -type d`、`git ls-files runs`，工作树与目录规模 |
-| `E13` | `current-point reverified`：`contracts/T1.3-discovery.md:8-76`、`contracts/T1.4-expert-and-knowledge-card.md:8-98`、`contracts/T1.7-b2-assembly.md:38-72` 对照 `PRODUCT-DECISIONS.md:63-79`，旧发现／Expert／B2 interface 与现行路线 |
+| `E13` | `current-point reverified`：图书内容流 v2 已通过三轮独立工程审查，现行 current pointer 由 `blueprints/PIPELINE-MAP.md` 唯一拥有；active 回归锁定 v2 receipt 与旧 T1.3—T1.7 历史哈希 |
 
 ## 三、图书解读线
 
@@ -50,15 +50,15 @@
 |---|---|---|---|
 | 材料进入与范围冻结 | `局部实验` | `[E02][E08]` | 尚无最终 Skill 入口；默认健康信号不全绿 |
 | B1 完整原文 | `局部实验` | `[E02][E08]` | 未形成稳定 runtime 和目标环境资格 |
-| 值得停下的问题发现 | `局部实验` | `[E03][E06][E13]` | 旧长期合同与现行自主发现路线冲突，未冻结并跨未见样本复现 |
-| 视角／认知背景选择 | `局部实验` | `[E03][E10]` | 正式透镜匹配、临时专家路由和零结果机制未资格化 |
+| 值得停下的问题发现 | `局部实验` | `[E03][E06][E13]` | v2 已解除中央派题冲突；runtime 未集成，未跨未见样本复现 |
+| 视角／认知背景选择 | `局部实验` | `[E03][E10][E13]` | v2 已冻结正式透镜优先、真实缺口临时 Expert 与受控偶遇责任；具体匹配与治理仍未资格化 |
 | 正式透镜资产 | `局部实验` | `[E10]` | 均未接入当前生产；无登记、调用、晋退和真实资格 |
-| Expert 完整认知 | `局部实验` | `[E02][E06]` | T2.35 待产品判断；当前路线没有未见材料复现 |
+| Expert 完整认知 | `局部实验` | `[E02][E06][E13]` | v2 已保护自主发现、沉默和完整初稿；T2.35 待产品判断，当前路线没有未见材料复现 |
 | 内容价值判断 | `局部实验` | P1/P2 和比较在多轮人工运行 | 研发门与最终生产责任未分清；没有稳定资格 |
 | 来源／事实／边界审核 | `局部实验` | T2.23、T2.24、T2.30、T2.35 等人工运行 | 尚无统一 runtime；与内容审核是否合并未审定 |
-| Writer 编辑责任 | `局部实验` | `[E04][E06]` | T1.6 与现行产品决议冲突；当前 Writer 路线未资格化 |
-| Fidelity 忠实性复核 | `局部实验` | 多轮手工复核曾通过 | 只能证明固定产物；未证明稳定发现真实语义改写 |
-| B2 锚定与装配 | `局部实验` | `[E06][E13]` | 旧格式与当前命名漂移；未接入真实 Skill |
+| Writer 编辑责任 | `局部实验` | `[E04][E06]` | 长期合同冲突已关闭；runtime 与 Reader 单元真实能力未资格化 |
+| Fidelity 忠实性复核 | `局部实验` | `[E13]` 与多轮手工复核 | v2 已明确独立 gate；未证明稳定发现真实语义改写 |
+| B2 锚定与装配 | `局部实验` | `[E06][E13]` | v2 已取消旧 callout 冻结并保留确定性责任；真实 `tandem-comments` interface 仍 unknown |
 | B3 读薄 | `未开始` | 只有长期产品责任 | 无当前合同、实现、运行或产品样张 |
 | 最终独立 Judge | `局部实验` | `[E05]` | T2.2 资格 `FAIL`，当前不得上岗 |
 | 产品负责人最终接受 | `局部实验` | 多轮 P1/P2/P3 判词 | 目前是研发检查点，不等于成熟生产接口 |

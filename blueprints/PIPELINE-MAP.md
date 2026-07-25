@@ -22,14 +22,25 @@ B3 读薄
 
 Expert、Judge、Writer、核验和装配描述的是功能责任，不预先决定它们是否成为独立 Skill、同一 Skill 内的隔离调用或其他实现。长期硬边界是各阶段只取得完成自身责任所需的信息，并通过冻结产物交接；具体技术拆分留给后续选型。
 
+### 现行图书内容流合同指针
+
+- current-book-content-flow-contract：[`contracts/BOOK-CONTENT-FLOW-v2.md`](../contracts/BOOK-CONTENT-FLOW-v2.md)
+- activation-receipt：[`contracts/BOOK-CONTENT-FLOW-v2-freeze-receipt.md`](../contracts/BOOK-CONTENT-FLOW-v2-freeze-receipt.md)
+
+这是图书内容流合同唯一的 current pointer。v2 已完成独立工程审查并在工程侧技术激活；
+`contracts/T1.3-discovery.md` 至 `contracts/T1.7-b2-assembly.md` 及
+`contracts/M1-freeze-receipt.md` 只保留为 M1 历史身份，不再作为现行内容流接口。技术激活
+不表示内容生产 runtime 已 `integrated` 或真实链路已 `verified`，也不构成产品负责人
+`accepted`；它不授权 Writer 或创建新 run。
+
 ### 每个环节真正要交什么
 
 | 开发节点 | 当前接口来源 | 还没决定、不能擅自开发成定案 |
 |---|---|---|
 | 材料进入与 B1 | `PRODUCT-DECISIONS.md` 的完整阅读单元原则 | 自动识别方法、字段、失败界面、解析器与锚点格式 |
-| 认知供给与内容晋级 | `PRODUCT-DECISIONS.md` 的专家认知、知识审核与 Writer 前内容判断 | 画像 schema、正式 Expert 晋升、模型、提案追踪字段与未来 Judge Prompt |
-| 证据核验与编辑适配 | `PRODUCT-DECISIONS.md` 的来源边界与 Writer 编辑责任 | 来源工具、核验深度、编辑输入包字段、适配器与完整原文权限实验 |
-| B2 装配与陪读 | `PRODUCT-DECISIONS.md` 的 B2 体验与完整阅读单元原则 | 页面接口、锚点格式、最终产品 Judge 与失败处理 |
+| 认知供给与内容晋级 | `PRODUCT-DECISIONS.md` 拥有专家认知、知识审核与 Writer 前内容判断的产品责任；[`contracts/BOOK-CONTENT-FLOW-v2.md`](../contracts/BOOK-CONTENT-FLOW-v2.md) 是现行技术 interface | 画像 schema、正式 Expert 晋升、模型、提案追踪字段与未来 Judge Prompt |
+| 证据核验与编辑适配 | `PRODUCT-DECISIONS.md` 拥有来源边界与 Writer 编辑责任的产品责任；[`contracts/BOOK-CONTENT-FLOW-v2.md`](../contracts/BOOK-CONTENT-FLOW-v2.md) 是现行技术 interface | 来源工具、核验深度、编辑输入包字段、适配器与完整原文权限实验 |
+| B2 装配与陪读 | `PRODUCT-DECISIONS.md` 拥有 B2 体验与完整阅读单元原则的产品责任；[`contracts/BOOK-CONTENT-FLOW-v2.md`](../contracts/BOOK-CONTENT-FLOW-v2.md) 是现行技术 interface | 页面接口、锚点格式、最终产品 Judge 与失败处理 |
 | B3 与独立验收 | `PRODUCT-DECISIONS.md` 的 B3／冻结验收原则 | 具体结构、阈值、报告 schema 与上岗条件 |
 
 ### 正式透镜的治理支线
@@ -111,6 +122,6 @@ E1 完整中文净化正文（必交）
   “模型分层与日常生产目标”，本图不复制正文。
 - 历史实验事实与失败边界：由 `ENGINEERING-LESSONS.md` 及各任务卡拥有；历史阶段、样张和
   条件式路线不得恢复成当前执行许可。
-- 可执行合同：图书发现、知识供给、审核、Writer、透镜演化与目标档模型资格等细节仍需重新
-  冻结。
+- 可执行合同：现行图书内容流合同 v2 已技术激活，但内容生产 runtime 尚未 `integrated`；
+  透镜演化、目标档模型资格及其他未覆盖细节仍需各自另行冻结。
 - 当前实现：不能假定旧项目已经实现本图，也不能从单次实验推断完整流程已经资格通过。

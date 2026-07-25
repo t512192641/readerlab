@@ -32,6 +32,17 @@
   `c981641cda9133258ce51d5a1c9808c934a309ccc792055f064d7b54f0e387eb`。
 - 上述 dirty 状态是当前业务证据的一部分，不得被清理、覆盖或用旧任务状态替代。
 
+## 工程合同状态
+
+- 图书内容流合同
+  [`contracts/BOOK-CONTENT-FLOW-v2.md`](contracts/BOOK-CONTENT-FLOW-v2.md) 已通过独立工程审查，
+  由 [`contracts/BOOK-CONTENT-FLOW-v2-freeze-receipt.md`](contracts/BOOK-CONTENT-FLOW-v2-freeze-receipt.md)
+  绑定冻结身份并完成工程侧技术激活；唯一 current pointer 由
+  [`blueprints/PIPELINE-MAP.md`](blueprints/PIPELINE-MAP.md) 拥有。
+- 该状态只到 `implemented`／技术激活；内容生产 runtime 尚未 `integrated`，真实链路尚未
+  `verified`，产品 `accepted` 仍为 `unknown`。它不授权 Writer 或创建新 run，也不改变下文
+  停止点与唯一产品前进行动。
+
 ## 当前验证入口
 
 - Active deterministic tests：`python3 -B tests/entry.py`。这是当前可维护、可运行的确定性测试
@@ -58,7 +69,8 @@
 - 不把 T2.12、T2.25 或任何其他历史任务写成当前下一步。
 - 不创建下一次正式生产 run，不调用新的生产语义角色。
 - 不启动 Writer、Fidelity、装配、P3、最终 Judge、M2 或 T3。
-- 不新增长期 Prompt、角色、关卡、合同、schema、透镜登记册或自动化。
+- 除已技术激活的图书内容流合同 v2 外，不再新增或扩写长期 Prompt、角色、关卡、合同、
+  schema、透镜登记册或自动化，也不启动内容生产 runtime。
 - 不移动、删除、覆盖或重写历史任务、run、冻结产物及当前 dirty 业务证据。
 - 不从旧 ReaderLab 项目补取信息。
 

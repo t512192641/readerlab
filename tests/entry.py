@@ -25,6 +25,7 @@ class TestSuiteDefinition:
 ACTIVE = TestSuiteDefinition(
     name="active",
     files=(
+        "test_book_content_flow_contract.py",
         "test_run_promotion.py",
         "test_test_entry.py",
     ),
