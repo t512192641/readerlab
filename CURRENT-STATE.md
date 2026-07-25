@@ -47,8 +47,8 @@
 
 - Active deterministic tests：`python3 -B tests/entry.py`。这是当前可维护、可运行的确定性测试
   子集，不是产品 gate，也不证明全项目或任一完整产品能力已经取得资格。
-- Historical clean-seed replay：`python3 -B validate.py`。它复放早期 clean-seed 边界，当前预期
-  不作为 active gate；新增状态 owner、后续任务卡和历史 artifact 会使其报告历史差异。
+- 早期 clean-seed validator 已退役并从当前工作树删除；历史身份保存在本地 Git
+  `c13ea5a:validate.py`，不再提供当前回放命令，也不构成当前健康信号。
 
 ## 当前停止点
 

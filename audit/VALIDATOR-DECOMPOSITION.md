@@ -1,8 +1,8 @@
 # 历史验证器结构审计
 
 > 快照日期：2026-07-25
-> 对象：`archive/legacy-code/validate-clean-seed.py`
-> 结论：已按历史回放整体隔离；当前不拆分、不提取
+> 对象：已退役的旧 clean-seed validator
+> 结论：无当前调用方，已从当前工作树删除
 
 ## 当前判断
 
@@ -16,11 +16,12 @@ clean-seed、T2.4—T2.11 单次实验以及 T2.2 恢复架构的历史回放。
 
 ## 实施终局
 
-- 9,485 行旧实现已原字节迁移到 `archive/legacy-code/validate-clean-seed.py`，SHA-256 为
-  `6f7220c9e492c5e94291728c5242f3ce8818b0c0c1148d581700d68763d6b855`。
-- 根目录 `validate.py` 只保留 38 行兼容 adapter，并在执行前核对上述固定身份。
-- 迁移前后 `python3 -B validate.py --self-test-recovery` 均退出 0，stdout／stderr 的
-  SHA-256 完全一致。
+- 9,485 行旧实现没有当前调用方，完整身份已经由本地 Git 保存，因此不再为了历史回放占用
+  当前工作树。
+- 根目录兼容 adapter 与归档副本均已删除；需要取证时从 `c13ea5a:validate.py` 恢复，其
+  SHA-256 为 `6f7220c9e492c5e94291728c5242f3ce8818b0c0c1148d581700d68763d6b855`。
+- 删除前已经证明 adapter 迁移前后 self-test 身份一致；这份证据只证明可恢复性，不再作为
+  继续保留旧程序的理由。
 - 当前健康入口仍为 `python3 -B tests/entry.py`，没有从旧实现复制第二套通用逻辑。
 
 ## 结构分区

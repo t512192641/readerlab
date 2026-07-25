@@ -108,7 +108,9 @@
 - 事实：默认 `unittest discover` 运行 0 项并退出 5；显式 `-s tests` 后 35 项中 24 PASS、1 FAIL、10 ERROR，失败集中于历史 T2.26 身份和旧 Writer 字节假设。`validate.py` 也落后于当前任务集合。
 - 证据：`taskcards/T2.35.md:284-292`；复核命令 `python3 -B -m unittest discover -v`、`python3 -B -m unittest discover -s tests -v` 与 `python3 -B validate.py`，结果由当前综合审计报告固定。
 - 影响：团队会习惯忽略红灯，新回归难以识别。
-- 处理结果：新增 `tests/entry.py`，无参数运行 active 子集；T2.26 三组测试只能通过 `historical-t226` 显式回放。README 与当前状态 owner 将 `validate.py` 明确为早期 clean-seed 历史回放。
+- 处理结果：新增 `tests/entry.py`，无参数运行 active 子集；T2.26 三组测试只能通过
+  `historical-t226` 显式回放。旧 clean-seed validator 后续确认无当前调用方，已从工作树
+  删除并只由本地 Git 保留恢复身份。
 - 独立复核：`python3 -B tests/entry.py` 当前为 20/20 PASS；`python3 -B tests/entry.py historical-t226` 明确运行 27 项并保留当前 1 FAIL／10 ERROR；inventory 对漏分类、交叉分类和零测试 fail closed。
 - 关闭边界：active 入口只是当前可维护的确定性测试子集，不是完整项目、语义质量或产品资格证明。
 
@@ -156,10 +158,9 @@
   clean-seed、T2.4—T2.11 和 T2.2 recovery 历史逻辑组成。约 9,500 行单文件本身是明确工程
   债务；“历史”只降低生产紧急度。下一步先做依赖级处置设计，再把现行能力提取、历史回放
   隔离、过期逻辑列入可删除候选，不能保持现状，也不能机械分文件。
-- 实施进展：旧实现已按固定 SHA-256 原字节隔离到
-  `archive/legacy-code/validate-clean-seed.py`；根目录只保留 38 行兼容 adapter。迁移前后
-  recovery self-test 的退出码和输出身份完全一致，active tests 为 22/22 PASS。没有把历史
-  逻辑拆入或复制进当前 `tools/run.py`。
+- 实施终局：旧实现没有当前调用方，且可由本地 Git `c13ea5a:validate.py` 恢复，因此
+  9,485 行实现和根目录兼容 adapter 均已从当前工作树删除。删除前已证明迁移前后 recovery
+  self-test 身份一致；没有把历史逻辑拆入或复制进当前 `tools/run.py`。
 - 当前允许：依赖和重复逻辑审计。
 - 当前禁止：仅因文件长机械拆分，或建立第二套平行验证框架。
 - 复核条件：至少两个真实调用方跨同一 interface 获得复用，默认测试覆盖该 interface，旧重复逻辑被替换而非叠加。

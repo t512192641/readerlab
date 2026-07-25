@@ -177,7 +177,7 @@ legacy 只表示没有 `run.json` 现行结构，不表示损坏。T2.26 的确�
 | ignored payload | 暂时保留，备份责任 unknown | 尚未逐文件证明没有唯一语义证据 |
 | `.DS_Store` | 三个历史文件已删除；T2.35 暂缓 | 非项目内容；删除不影响 freeze，工具已受控忽略。当前 run 不由清理线程修改 |
 | T2.30 已清理的十个临时脚本 | 保持不存在 | 历史任务卡已登记用途，无需恢复 |
-| `validate.py` | 已退出当前工程入口 | 根目录只保留 38 行兼容 adapter；9,485 行旧实现以原字节和固定 SHA-256 隔离到 `archive/legacy-code/validate-clean-seed.py`。当前健康入口不依赖它，历史命令仍可回放 |
+| 旧 clean-seed validator | 已从当前工作树删除 | 无当前调用方；9,485 行旧实现和兼容 adapter 不再保留。需要取证时从本地 Git `c13ea5a:validate.py` 恢复 |
 
 ## 5. 文档资产清单
 
@@ -284,7 +284,7 @@ legacy 只表示没有 `run.json` 现行结构，不表示损坏。T2.26 的确�
 - 457 个 run 文件逐文件判断；
 - 268 个 ignored 文件的唯一证据、备份和删除判断；
 - 全仓非 Markdown、截图、临时载荷和配置的逐文件终局；
-- 历史 validator 的最终保留期限；当前入口隔离已经实施并验证；
+- 旧 clean-seed validator 已完成退役删除；恢复只依赖本地 Git；
 - 任何大规模物理删除。
 
 只有同时满足以下条件，才可移动或删除历史载荷：
