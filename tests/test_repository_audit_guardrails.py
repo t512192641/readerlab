@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import re
 import subprocess
 import unittest
@@ -8,9 +9,24 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSET_REGISTER = ROOT / "audit/ASSET-LIFECYCLE-REGISTER.md"
+LEGACY_VALIDATOR = ROOT / "archive/legacy-code/validate-clean-seed.py"
+LEGACY_VALIDATOR_SHA256 = (
+    "6f7220c9e492c5e94291728c5242f3ce8818b0c0c1148d581700d68763d6b855"
+)
 
 
 class RepositoryAuditGuardrailTests(unittest.TestCase):
+    def test_legacy_validator_is_archived_unchanged_behind_small_adapter(
+        self,
+    ) -> None:
+        adapter = (ROOT / "validate.py").read_text(encoding="utf-8")
+        payload = LEGACY_VALIDATOR.read_bytes()
+
+        self.assertLessEqual(len(adapter.splitlines()), 50)
+        self.assertIn("tests/entry.py", adapter)
+        self.assertIn("archive/legacy-code/validate-clean-seed.py", adapter)
+        self.assertEqual(hashlib.sha256(payload).hexdigest(), LEGACY_VALIDATOR_SHA256)
+
     def test_asset_register_exhaustively_lists_taskcards_and_runs(self) -> None:
         text = ASSET_REGISTER.read_text(encoding="utf-8")
 

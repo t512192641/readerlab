@@ -1,8 +1,8 @@
 # 历史验证器结构审计
 
 > 快照日期：2026-07-25
-> 对象：`validate.py`
-> 结论：结构不合规；先完成依赖级处置设计，再提取、隔离或删除
+> 对象：`archive/legacy-code/validate-clean-seed.py`
+> 结论：已按历史回放整体隔离；当前不拆分、不提取
 
 ## 当前判断
 
@@ -13,6 +13,15 @@ clean-seed、T2.4—T2.11 单次实验以及 T2.2 恢复架构的历史回放。
 
 同时，把它按行数切成多个文件也不会自动减少复杂度，反而可能改变旧命令、路径和历史身份。
 正确处置目标是减少当前工程负担，而不是美化全部历史代码。
+
+## 实施终局
+
+- 9,485 行旧实现已原字节迁移到 `archive/legacy-code/validate-clean-seed.py`，SHA-256 为
+  `6f7220c9e492c5e94291728c5242f3ce8818b0c0c1148d581700d68763d6b855`。
+- 根目录 `validate.py` 只保留 38 行兼容 adapter，并在执行前核对上述固定身份。
+- 迁移前后 `python3 -B validate.py --self-test-recovery` 均退出 0，stdout／stderr 的
+  SHA-256 完全一致。
+- 当前健康入口仍为 `python3 -B tests/entry.py`，没有从旧实现复制第二套通用逻辑。
 
 ## 结构分区
 
