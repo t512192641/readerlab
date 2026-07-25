@@ -125,20 +125,22 @@
 
 ### AUD-007 历史、当前、草案和本地载荷未清楚分层
 
-- 状态：`READY_FOR_REAUDIT`
+- 状态：`OPEN`
 - 阻塞级别：`BEFORE_QUALIFICATION`
-- 事实：65 张任务卡、42 个 run、456 个 run 文件主要并列保留；只有一个 run 进入 `archive/`。183 个 run 文件被 Git 跟踪、268 个被忽略，其余为宿主元数据或当前未跟踪控制证据；载荷的可移植性和保留责任未定义。
+- 事实：65 张任务卡、42 个 run、457 个 run 文件主要并列保留；只有一个 run 进入 `archive/`。183 个 run 文件被 Git 跟踪、268 个被忽略，其余为宿主元数据或当前未跟踪控制证据。第一层清单已分类 taskcard、run 容器和主要文档，但没有逐文件判断 run 内生成稿与本地载荷。
 - 证据：`find taskcards -maxdepth 1 -name '*.md'`；`find runs -mindepth 1 -maxdepth 1 -type d`；`find runs -type f`；`find archive -mindepth 1 -maxdepth 1 -type d`；`git ls-files runs`。
 - 影响：认知成本高，容易误读历史，保留和清理责任不明确。
 - 处理责任：执行现场先建立引用和保留清单，再提交逻辑归档与物理清理候选。
-- 处理结果：`audit/ASSET-LIFECYCLE-REGISTER.md` 已逐项覆盖 65 张任务卡和 42 个 run，
+- 阶段结果：`audit/ASSET-LIFECYCLE-REGISTER.md` 已逐项覆盖 65 张任务卡和 42 个 run，
   区分当前、历史 current profile、历史 legacy profile、未来未授权草案、模板、保留理由、
-  replay 能力与删除前置；根 README 已缩为当前导航，历史对象保留原路径。
+  replay 能力与删除前置；根 README 已缩为当前导航，历史对象保留原路径。这只到容器级，
+  不构成全仓文件级治理完成。
 - 自动复核：active tests 会把清单中的任务卡／run 集合与真实目录做全量集合比较，漏项或多项
   均失败。
-- 当前允许：只读分类和依赖分析。
+- 当前允许：按 `AUD-SCOPE-001` 对全仓文件做只读分类、引用、恢复性和依赖分析。
 - 当前禁止：批量移动、删除、重命名或破坏现有 hash／路径证据。
-- 复核条件：42 个 run 和历史任务卡具有明确 profile、生命周期、保留理由与复验入口；当前入口不默认暴露历史噪声，历史证据仍可追溯。
+- 复核条件：全仓每个项目文件取得明确终局或诚实的 `unknown`；457 个 run 文件和 268 个
+  ignored 文件有恢复性与唯一证据判断；当前入口不默认暴露历史噪声，历史证据仍可追溯。
 
 ### AUD-008 通用工程逻辑散落在任务卡与超长验证器
 
@@ -149,8 +151,9 @@
 - 影响：locality 差，修复易形成 Shotgun Surgery，一次性工作持续增长。
 - 处理责任：执行现场从真实重复点提出深化现有 module 的方案，不先全面重写。
 - 本轮分析：`audit/VALIDATOR-DECOMPOSITION.md` 已确认 `validate.py` 没有当前调用方，主要由
-  clean-seed、T2.4—T2.11 和 T2.2 recovery 历史逻辑组成；本轮不按行数拆分，避免为零当前
-  收益破坏历史回放坐标。
+  clean-seed、T2.4—T2.11 和 T2.2 recovery 历史逻辑组成。约 9,500 行单文件本身是明确工程
+  债务；“历史”只降低生产紧急度。下一步先做依赖级处置设计，再把现行能力提取、历史回放
+  隔离、过期逻辑列入可删除候选，不能保持现状，也不能机械分文件。
 - 当前允许：依赖和重复逻辑审计。
 - 当前禁止：仅因文件长机械拆分，或建立第二套平行验证框架。
 - 复核条件：至少两个真实调用方跨同一 interface 获得复用，默认测试覆盖该 interface，旧重复逻辑被替换而非叠加。
