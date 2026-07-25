@@ -29,11 +29,11 @@
 ## 二、唯一当前行动门
 
 - 总体状态：`RED`
-- 唯一产品前进行动：产品负责人审阅 `runs/T2.35-CH08-D3-EXPERT-P2-01/acceptance/acceptance-report.md`，决定 D3 Expert 是否值得进入 Writer；这不授权 Writer 或新 run。
-- 辅助只读权限：只读审计；不写入生产文件的方案设计；按下方证据展开 manifest 核对直接证据。
-- 当前禁止：创建下一次正式生产 run；调用新的生产语义角色；新增长期 Prompt、角色、关卡或合同；让最终 Judge 上岗；移动或删除历史对象。
-- 解除 `RED` 的剩余最低条件：产品负责人完成 T2.35 判断；明确下一获批实验；AUD-009 针对该实验达到独立复核允许的终局。第一次综合大审计、完整责任图、单一状态 owner、active／historical 健康入口、宿主元数据修复及图书内容流合同冲突已经完成独立复核，但不替代剩余产品判断与未见材料防过拟合条件。
-- 注意：该行动门不阻止产品负责人阅读和判断已经冻结的 T2.35 审阅包。
+- 当前产品判断：产品负责人已判定 T2.35 D3 Expert 值得进入 Writer，不返回 Discovery 或 Expert；现有 Expert 正文仍可在同一执行现场微调，这不等于 Reader 已接受。
+- 当前允许：T2.35 同范围微调；本清单约束下的非破坏性工程清理与审计；准备下一任务候选方案。
+- 当前禁止：在微调版本重新冻结、`CURRENT-STATE.md` 同步、下一任务卡获批和 AUD-009 运行前复核完成前，创建 Writer 正式 run；让最终 Judge 上岗；移动或删除历史证据与未跟踪业务载荷。
+- 解除 `RED` 的剩余最低条件：执行现场同步 T2.35 产品判词和停止点；微调版本形成新冻结身份；下一任务卡不增加为本章救场的长期规则并通过 AUD-009 复核。
+- 注意：本门不阻止 T2.35 同一内容对象的微调，也不阻止与业务现场隔离的可回退工程清理。
 - 优先级：本门高于 README、蓝图、旧路线报告和单条问题中的局部允许文字；外部路线文档不能放宽 `RED`。
 
 ### 下一证据展开 manifest
@@ -41,7 +41,7 @@
 | 顺序 | 目的 | 固定输入 | 复验方式 | 结果 owner |
 |---:|---|---|---|---|
 | 1 | 固定 T2.35 待审对象 | `taskcards/T2.35.md` SHA-256 `740717e8...0dbc6`；审阅包 SHA-256 `4c024857...d101f`；两份 freeze hash 见能力地图 `E02` | `shasum -a 256`；只读 freeze 复算 | `audit/PROJECT-SYSTEM-AUDIT-2026-07-25.md` |
-| 2 | 核对状态 owner 冲突 | `README.md:17-27`、`blueprints/PIPELINE-MAP.md:106-113`、T2.35 状态头 | 逐 owner／派生层比较 | AUD-001 |
+| 2 | 核对状态 owner 冲突 | `b39a284:README.md:17-27` 历史快照、当前 `README.md`、`CURRENT-STATE.md`、T2.35 状态头 | 逐 owner／派生层比较 | AUD-001 |
 | 3 | 核对长期合同冲突 | `PRODUCT-DECISIONS.md:55-79`、T1.3、T1.4、T1.6、T1.7 | 输入、判断对象、失败动作和生命周期比较 | AUD-003、AUD-012 |
 | 4 | 核对默认健康信号 | tests、`validate.py`、`tools/run.py`、四个 `.DS_Store` run | 台账 AUD-005／006 所列命令 | AUD-005、AUD-006 |
 | 5 | 核对规则累积与角色必要性 | T2.28—T2.35 指定行段 | 产品结果、调用、墙钟与删除测试 | AUD-009、AUD-010 |
@@ -53,14 +53,19 @@
 
 ### AUD-001 当前状态入口失真
 
-- 状态：`CLOSED`
+- 状态：`OPEN`
 - 阻塞级别：`BEFORE_NEXT_RUN`
 - 事实：README 自称唯一交接入口但停在 T2.12；派生路线和当前状态文档也落后于 T2.35。
-- 证据：`README.md:17-27`；`blueprints/PIPELINE-MAP.md:106-113`；`docs/book-pipeline-current-state-and-skill-roadmap.md:1000-1087`；`taskcards/T2.35.md:1-18`。
+- 证据：`b39a284:README.md:17-27`；`blueprints/PIPELINE-MAP.md:106-113`；`docs/book-pipeline-current-state-and-skill-roadmap.md:1000-1087`；`taskcards/T2.35.md:1-18`。
 - 影响：新执行者和审计者可能选择错误入口或错误下一步。
 - 处理结果：新增 `CURRENT-STATE.md` 作为当前任务、run、停止点、下一产品动作、禁止项和 unknown 的 owner；README、两份蓝图与专题路线只保留引用或明确的历史快照。
 - 独立复核：相对链接、T2.35 冻结身份和派生入口 diff 通过；owner 不把固定审计基线误写成动态 HEAD。
-- 关闭边界：关闭的是状态入口冲突，不代表 T2.35 获得产品接受，也不授权下一 run。
+- 复发证据：T2.35 产品判词文件已经存在并写明 `P2_PASS_WORTH_WRITING`，但
+  `CURRENT-STATE.md` 仍把产品判断和 Writer 授权写成 `unknown`。这证明“单一 owner 已建立”，
+  但业务 closeout 尚未稳定维护它。
+- 当前处理：执行现场同步产品判词、微调状态、重新冻结要求和下一任务授权边界；审计线程不代写
+  业务 owner，完成后独立复核。
+- 关闭边界：只有下一次业务状态变化也能及时同步，才能证明该防线不再依赖一次性清理。
 
 ### AUD-002 完整流程和当前实验被混淆
 
@@ -81,7 +86,7 @@
 - 证据：`contracts/T1.6-writer.md:14-55`；`PRODUCT-DECISIONS.md:55-59`。
 - 影响：继续使用旧合同可能错误压缩认知结构，或使执行者无法确定现行权限。
 - 处理结果：`contracts/BOOK-CONTENT-FLOW-v2.md` 以完整 Expert 初稿与语义锁作为 Writer 组织单位，允许按阅读体验合并或必要拆分为一个或多个 Reader 单元；旧 T1.6 字节与 M1 receipt 原样保留为历史身份。
-- 独立复核：三轮工程审查最终 `PASS`；新 freeze receipt 绑定 v2 身份，`blueprints/PIPELINE-MAP.md` 是唯一 current pointer；active 回归同时锁定新合同身份、旧 T1.3—T1.7 与 M1 receipt 哈希，17/17 PASS。
+- 独立复核：三轮工程审查最终 `PASS`；新 freeze receipt 绑定 v2 身份，`blueprints/PIPELINE-MAP.md` 是唯一 current pointer；active 回归同时锁定新合同身份、旧 T1.3—T1.7 与 M1 receipt 哈希，本轮 active 总计 20/20 PASS。
 - 关闭边界：关闭的是长期接口冲突。Writer runtime 仍未 `integrated`，真实 Reader 单元尚未 `verified`，产品能力保留仍须由后续获批真实运行证明；不得因此启动 Writer。
 
 ### AUD-004 最终 Judge 未取得资格
@@ -89,7 +94,7 @@
 - 状态：`OPEN`
 - 阻塞级别：`BEFORE_QUALIFICATION`
 - 事实：T1.8 只冻结长期验收语义；T2.2 资格结果为 `FAIL`，M2 不存在。
-- 证据：`contracts/T1.8-independent-acceptance.md:8-68`；`README.md:39-46,51-60`；`taskcards/T2.2.md`。
+- 证据：`contracts/T1.8-independent-acceptance.md:8-68`；`taskcards/T2.2.md`；`audit/PROJECT-SYSTEM-AUDIT-2026-07-25.md:151-164`。
 - 影响：当前没有可用的最终独立 Judge；P1/P2/P3 不能自动替代。
 - 处理责任：执行现场在具备冻结接受稿、对称输入和未见资格条件后另提方案。
 - 当前允许：继续受控正例研究和产品负责人判断。
@@ -104,7 +109,7 @@
 - 证据：`taskcards/T2.35.md:284-292`；复核命令 `python3 -B -m unittest discover -v`、`python3 -B -m unittest discover -s tests -v` 与 `python3 -B validate.py`，结果由当前综合审计报告固定。
 - 影响：团队会习惯忽略红灯，新回归难以识别。
 - 处理结果：新增 `tests/entry.py`，无参数运行 active 子集；T2.26 三组测试只能通过 `historical-t226` 显式回放。README 与当前状态 owner 将 `validate.py` 明确为早期 clean-seed 历史回放。
-- 独立复核：`python3 -B tests/entry.py` 当前为 17/17 PASS；`python3 -B tests/entry.py historical-t226` 明确运行 27 项并保留当前 1 FAIL／10 ERROR；inventory 对漏分类、交叉分类和零测试 fail closed。
+- 独立复核：`python3 -B tests/entry.py` 当前为 20/20 PASS；`python3 -B tests/entry.py historical-t226` 明确运行 27 项并保留当前 1 FAIL／10 ERROR；inventory 对漏分类、交叉分类和零测试 fail closed。
 - 关闭边界：active 入口只是当前可维护的确定性测试子集，不是完整项目、语义质量或产品资格证明。
 
 ### AUD-006 run 健康检查受宿主元数据污染
@@ -120,12 +125,17 @@
 
 ### AUD-007 历史、当前、草案和本地载荷未清楚分层
 
-- 状态：`OPEN`
+- 状态：`READY_FOR_REAUDIT`
 - 阻塞级别：`BEFORE_QUALIFICATION`
 - 事实：65 张任务卡、42 个 run、456 个 run 文件主要并列保留；只有一个 run 进入 `archive/`。183 个 run 文件被 Git 跟踪、268 个被忽略，其余为宿主元数据或当前未跟踪控制证据；载荷的可移植性和保留责任未定义。
 - 证据：`find taskcards -maxdepth 1 -name '*.md'`；`find runs -mindepth 1 -maxdepth 1 -type d`；`find runs -type f`；`find archive -mindepth 1 -maxdepth 1 -type d`；`git ls-files runs`。
 - 影响：认知成本高，容易误读历史，保留和清理责任不明确。
 - 处理责任：执行现场先建立引用和保留清单，再提交逻辑归档与物理清理候选。
+- 处理结果：`audit/ASSET-LIFECYCLE-REGISTER.md` 已逐项覆盖 65 张任务卡和 42 个 run，
+  区分当前、历史 current profile、历史 legacy profile、未来未授权草案、模板、保留理由、
+  replay 能力与删除前置；根 README 已缩为当前导航，历史对象保留原路径。
+- 自动复核：active tests 会把清单中的任务卡／run 集合与真实目录做全量集合比较，漏项或多项
+  均失败。
 - 当前允许：只读分类和依赖分析。
 - 当前禁止：批量移动、删除、重命名或破坏现有 hash／路径证据。
 - 复核条件：42 个 run 和历史任务卡具有明确 profile、生命周期、保留理由与复验入口；当前入口不默认暴露历史噪声，历史证据仍可追溯。
@@ -138,6 +148,9 @@
 - 证据：`wc -l validate.py tools/run.py taskcards/*.md`；`taskcards/T2.28.md`—`T2.35.md` 共 1,810 行；`taskcards/T2.31.md:83-92,152-173` 记录 T2.30 十个临时脚本。
 - 影响：locality 差，修复易形成 Shotgun Surgery，一次性工作持续增长。
 - 处理责任：执行现场从真实重复点提出深化现有 module 的方案，不先全面重写。
+- 本轮分析：`audit/VALIDATOR-DECOMPOSITION.md` 已确认 `validate.py` 没有当前调用方，主要由
+  clean-seed、T2.4—T2.11 和 T2.2 recovery 历史逻辑组成；本轮不按行数拆分，避免为零当前
+  收益破坏历史回放坐标。
 - 当前允许：依赖和重复逻辑审计。
 - 当前禁止：仅因文件长机械拆分，或建立第二套平行验证框架。
 - 复核条件：至少两个真实调用方跨同一 interface 获得复用，默认测试覆盖该 interface，旧重复逻辑被替换而非叠加。
@@ -150,8 +163,8 @@
 - 证据：`taskcards/T2.28.md:162-176`、`T2.29.md:16-18,86-106`、`T2.30.md:1-17,208-218`、`T2.31.md:175-179`、`T2.32.md:1-9,95-107`、`T2.33.md:195-208`、`T2.34.md:288-324`、`T2.35.md:10-18`。
 - 影响：可能为固定章节建立越来越窄的局部最优，并增加日常成本。
 - 处理责任：执行现场冻结下一次实验变量；审计总控在运行前检查新增规则必要性。
-- 当前允许：T2.35 产品审阅和失败责任定位。
-- 当前禁止：在 T2.35 判词前继续为 D3 新增长期 Prompt、硬门或固定格式。
+- 当前允许：T2.35 同一内容对象微调；基于已接受方向准备 Writer 候选任务卡并做运行前审计。
+- 当前禁止：为固定第八章继续新增长期 Prompt、硬门或固定格式；在微调版本重新冻结、状态同步和下一任务卡复核前启动 Writer 正式 run。
 - 复核条件：同一冻结路线在未见材料上运行；新增规则逐项绑定真实失败、收益和能力保留回归。
 
 ### AUD-010 角色和关卡尚未经过系统删除测试
@@ -161,7 +174,7 @@
 - 事实：v2 已从长期合同删除 P1／P2／P3 混义名称，并区分课程入口价值、内容锁定、独立 Fidelity 和 B2 装配；但这些功能责任的运行成本、可合并实现与删除后果尚未用真实目标路径验证。
 - 证据：`PRODUCT-DECISIONS.md:21-27`；`blueprints/PIPELINE-MAP.md:11-88`；`taskcards/T2.26.md:79-94,215-321,527-570`；`taskcards/T2.34.md:19-32`；`taskcards/T2.35.md:10-18`。
 - 影响：可能保留重复判断和多余调用，也可能错误删除真正需要独立性的责任。
-- 处理责任：首次大审计逐责任执行删除测试，形成保留、合并、研发期临时或待验证结论。
+- 处理责任：首次大审计已形成责任级删除测试；后续真实链路继续记录各责任的成本、独立否决价值与可合并证据。
 - 当前允许：角色地图和输入／输出／失败动作分析。
 - 当前禁止：按角色名称直接增删，或把所有研发人工门默认写入最终 Skill。
 - 复核条件：每项长期责任有唯一问题、必要权限、失败动作和成本依据。
