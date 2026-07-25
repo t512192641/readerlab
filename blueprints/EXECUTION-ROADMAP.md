@@ -1,6 +1,10 @@
 # ReaderLab 图书线重建执行路线图
 
 > 派生执行路线，不拥有产品决议，与 owner 文档冲突时停止并报告
+> 生命周期：`historical-conditional`
+> 当前执行授权：`none`
+> 当前任务、停止点与允许动作只见 [`docs/current-task.md`](../docs/current-task.md)；下文命令式文字
+> 只保留历史设计证据，不得直接恢复为当前任务或生产许可。
 
 ## 问题、现状与边界
 
@@ -10,13 +14,13 @@
 
 ## 当前产品时序校正
 
-当前任务、run、业务证据基线、停止点、唯一产品前进行动、禁止动作与 `unknown` 只引用
-[`CURRENT-STATE.md`](../CURRENT-STATE.md)。本路线不再编译或复制当前执行顺序。
+当前任务、run、业务证据基线、停止点、下一生产授权、禁止动作与 `unknown` 只引用
+[`docs/current-task.md`](../docs/current-task.md)。本路线不再编译或复制当前执行顺序。
 
 `PRODUCT-DECISIONS.md` 继续拥有产品事实，`blueprints/PIPELINE-MAP.md` 继续呈现两条长期
 产品线；一次性实验组织、阶段交接和停止条件只由获批任务卡拥有。下文的 T2.2 恢复控制面、
 M2、任务分解与后续阶段继续保留为历史或条件式设计，不构成当前授权；其中任何“下一状态”
-或阶段顺序都不能覆盖 `CURRENT-STATE.md` 的停止点。
+或阶段顺序都不能覆盖 `docs/current-task.md` 的停止点。
 
 图书内容流现行合同派生指向
 [`contracts/BOOK-CONTENT-FLOW-v2.md`](../contracts/BOOK-CONTENT-FLOW-v2.md)，其冻结身份见
@@ -54,7 +58,7 @@ M2、任务分解与后续阶段继续保留为历史或条件式设计，不构
 - A1 `A1_ARCHITECTURE_RELEASED` 已通过；C0 是只修改控制面的 `controller-only bootstrap seam`。C0 修复已完成实现与确定性回归，但 `A2_CONTROL_PLANE_INTEGRATED` 只能由后续总控和独立后置审查认定，当前仍为 A1。
 - C0 不注册恢复卡、不读取材料、不调用模型、不创建 M2 receipt、不执行 R01，也不进入阶段 3。当前恢复卡数量仍为 0，T2.2 资格仍为 `FAIL`，M2 仍未建立。
 - 此历史设计中的后继状态曾要求总控另行授权 21 张恢复卡从 0 一次性原子注册为 21；该描述
-  不构成当前下一步。现行停止点只见 `CURRENT-STATE.md`。
+  不构成当前下一步。现行停止点只见 `docs/current-task.md`。
 
 ### 恢复任务闭集与会话粒度
 

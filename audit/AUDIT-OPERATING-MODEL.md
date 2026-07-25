@@ -6,6 +6,9 @@
 > owner：工程审计体系
 > 用途：定义何时审、由谁审、读什么、交付什么，以及审计结论怎样约束下一步。
 
+长期入口的数量和名单只由 `audit/ENGINEERING-AUDITOR-CHARTER.md` 第十四节拥有；本机制只
+定义这些入口怎样运行，不再复制另一份入口清单。
+
 ## 一、目标与非目标
 
 本机制把工程审计做成一个小 interface：
@@ -189,16 +192,16 @@ GREEN / YELLOW / RED
 
 ### 5.1 全新上下文冷启动
 
-全新审计者必须先遵守项目 `AGENTS.md`，不存在由本机制私自建立的读取豁免。只为恢复项目目标和当前审计状态时，按顺序读取：
+全新审计者先完整遵守项目 `AGENTS.md` 的“先读什么”；该顺序已经包含
+`docs/current-task.md` 与 `docs/dev-state.md`，本机制不复制或改写。完成项目入口后，只为恢复
+当前审计状态，依次增加：
 
-1. `AGENTS.md`；
-2. `PRODUCT-DECISIONS.md`；
-3. `ENGINEERING-LESSONS.md`；
-4. `blueprints/PIPELINE-MAP.md`；
-5. `audit/CAPABILITY-MAP.md`；
-6. `audit/FINDINGS-REGISTER.md` 顶部的唯一当前行动门和相关问题。
+1. `audit/CAPABILITY-MAP.md`；
+2. `audit/FINDINGS-REGISTER.md` 的当前行动门引用和相关问题。
 
-只有要实际组织或执行正式审计时，再读取本运行机制和 `audit/ENGINEERING-AUDITOR-CHARTER.md`。最近报告、任务卡、run 和代码不是冷启动默认全文；它们按本轮证据坐标展开。
+只有要实际组织或执行正式审计时，再读取本运行机制和
+`audit/ENGINEERING-AUDITOR-CHARTER.md`。最近报告、任务卡、run 和代码不是冷启动默认全文；
+它们按本轮证据坐标展开。宪章不再维护第二份冷启动顺序。
 
 ### 5.2 单次审计证据包
 
@@ -302,6 +305,8 @@ RED 不授权审计总控直接修复。
 回答不清时，默认不进入长期流程。研发期临时关卡必须注明失效条件。
 
 ## 九、报告最小格式
+
+报告顺序只由本节拥有；宪章与单次报告不得另列一套竞争顺序。
 
 每份正式报告按顺序包含：
 

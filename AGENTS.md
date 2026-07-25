@@ -1,16 +1,32 @@
 # ReaderLab 新项目边界
 
+## MEM memory map
+
+- `docs/current-task.md`：唯一当前执行切片，拥有当前任务、run、停止点、允许／禁止动作与下一
+  生产授权。
+- `docs/dev-state.md`：唯一当前已验证工程事实、缺口和关键证据路径。
+- `docs/decisions.md`：持久工程决定；不复制产品 owner 或 ADR 正文。
+- `docs/agent-run-ledger.md`：运行、失败、弯路、成本与复验历史。
+- `docs/research-log.md`：可复用外部／工具／API 研究的短索引。
+- `CURRENT-STATE.md` 仅为历史链接的兼容入口，不拥有动态事实。
+
+新会话先读 `AGENTS.md`，再读 `docs/current-task.md` 与 `docs/dev-state.md`；只有问题需要时才
+展开 decisions、research-log 或 agent-run-ledger。一个事实只能进入一个 MEM owner，禁止把
+完整状态平行复制回兼容入口或其他派生文档。
+
 ## 先读什么
 
 每个新任务按以下顺序读取，读到足以完成当前任务即可：
 
 1. `AGENTS.md`
-2. `PRODUCT-DECISIONS.md`
-3. `ENGINEERING-LESSONS.md`
-4. 涉及生产流程、角色责任、晋级、实验治理或任务卡设计时，必须读 `blueprints/PIPELINE-MAP.md`
-5. `GOLD-STANDARDS.md` 只在当前任务逐文件授权时读取；生产任务永远跳过
-6. 只有涉及借鉴方法时，才读 `references/BOOK-AND-SKILLS-METHODS.md`
-7. 任务卡只在执行对应任务时读取；例如 `taskcards/T2.4.md` 不构成其他任务的默认上下文
+2. `docs/current-task.md`
+3. `docs/dev-state.md`
+4. `PRODUCT-DECISIONS.md`
+5. `ENGINEERING-LESSONS.md`
+6. 涉及生产流程、角色责任、晋级、实验治理或任务卡设计时，必须读 `blueprints/PIPELINE-MAP.md`
+7. `GOLD-STANDARDS.md` 只在当前任务逐文件授权时读取；生产任务永远跳过
+8. 只有涉及借鉴方法时，才读 `references/BOOK-AND-SKILLS-METHODS.md`
+9. 任务卡只在执行对应任务时读取；例如 `taskcards/T2.4.md` 不构成其他任务的默认上下文
 
 ## 唯一事实边界
 

@@ -33,6 +33,22 @@ Expert、Judge、Writer、核验和装配描述的是功能责任，不预先决
 不表示内容生产 runtime 已 `integrated` 或真实链路已 `verified`，也不构成产品负责人
 `accepted`；它不授权 Writer 或创建新 run。
 
+### 现行合同登记
+
+| 合同 | 生命周期 | 负责范围 | 不代表 |
+|---|---|---|---|
+| [`contracts/T1.1-material-intake.md`](../contracts/T1.1-material-intake.md) | `现行上游节点` | 材料准入、授权、范围与材料身份 | 内容流已经运行 |
+| [`contracts/T1.2-b1-source.md`](../contracts/T1.2-b1-source.md) | `现行上游节点` | B1 一手正文与冻结 scope | 自动解析方法已经确定 |
+| [`contracts/BOOK-CONTENT-FLOW-v2.md`](../contracts/BOOK-CONTENT-FLOW-v2.md) | `现行内容流` | B1 就绪后至保真通过的 Reader 单元与 B2 确定性装配 | runtime 已集成或产品已接受 |
+| [`contracts/T1.8-independent-acceptance.md`](../contracts/T1.8-independent-acceptance.md) | `现行下游验收语义` | 冻结 B2 对象的独立验收语义与产品判断边界 | Judge 已取得资格 |
+
+`contracts/T1.3-discovery.md`—`contracts/T1.7-b2-assembly.md` 与
+`contracts/M1-freeze-receipt.md` 的生命周期均为 `历史接口`。它们只保存 M1 身份和历史证据，
+不得与上表共同组成新的混合路线。
+
+`contracts/GLOSSARY.md` 是由 M1 receipt 绑定原字节的 M1 历史术语表，不再定义现行 Writer
+接口；当前相关词义直接以 v2 第 7—9 节为准。不得为修正文义而覆盖旧术语表或改写旧 receipt。
+
 ### 每个环节真正要交什么
 
 | 开发节点 | 当前接口来源 | 还没决定、不能擅自开发成定案 |
@@ -47,9 +63,10 @@ Expert、Judge、Writer、核验和装配描述的是功能责任，不预先决
 
 正式透镜不是一次生成后永久不变的名单。每个版本要保存使用结果，以及“合格、被质疑、失败和原因”；系统可以汇总数据并提出升降、调整或退役建议，但不能静默覆盖或删除。人工定期复盘后才改变状态。阈值、周期、执行者和界面尚未冻结。
 
-### 当前日常生产路线假设
+### 现行合同下的可替换实现假设
 
-下面只是为目标档模型降低单步认知负担、提高可诊断性而提出的当前实现假设，不是产品目标或已冻结合同：
+v2 已冻结功能责任、输入边界、终局和失败动作；下面只描述尚未冻结的实现组织，例如认知背景怎样
+生成、控制责任是否合并调用以及怎样降低模型单步负担。它不是新的合同，也不能覆盖上方现行登记：
 
 ```text
 完整章节
@@ -116,8 +133,8 @@ E1 完整中文净化正文（必交）
 
 ## 当前开发停在哪里
 
-- 当前任务、run、证据基线、停止点、唯一产品前进行动、禁止动作与 `unknown`：只引用
-  [`CURRENT-STATE.md`](../CURRENT-STATE.md)，本图不复制正文或另立推进顺序。
+- 当前任务、run、证据基线、停止点、下一生产授权、禁止动作与 `unknown`：只引用
+  [`docs/current-task.md`](../docs/current-task.md)，本图不复制正文或另立推进顺序。
 - 产品原则与模型分层：引用 `PRODUCT-DECISIONS.md` 的“透镜系统的原始产品目标”与
   “模型分层与日常生产目标”，本图不复制正文。
 - 历史实验事实与失败边界：由 `ENGINEERING-LESSONS.md` 及各任务卡拥有；历史阶段、样张和

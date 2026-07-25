@@ -14,6 +14,9 @@ CURRENT_CONTRACT = WORKSPACE / CURRENT_CONTRACT_PATH
 CURRENT_RECEIPT_PATH = "contracts/BOOK-CONTENT-FLOW-v2-freeze-receipt.md"
 CURRENT_RECEIPT = WORKSPACE / CURRENT_RECEIPT_PATH
 PIPELINE_MAP = WORKSPACE / "blueprints" / "PIPELINE-MAP.md"
+GLOSSARY = CONTRACTS / "GLOSSARY.md"
+ASSET_REGISTER = WORKSPACE / "audit" / "ASSET-LIFECYCLE-REGISTER.md"
+M1_RECEIPT = CONTRACTS / "M1-freeze-receipt.md"
 
 CURRENT_CONTRACT_SHA256 = (
     "daf2e546ec84715481746056abb7ed58110468ec64d424c440600139cca67e91"
@@ -128,6 +131,79 @@ class BookContentFlowContractTests(unittest.TestCase):
         self.assertEqual(pipeline_map.count("current-book-content-flow-contract"), 1)
         self.assertIn("../" + CURRENT_CONTRACT_PATH, targets)
         self.assertIn("../" + CURRENT_RECEIPT_PATH, targets)
+
+    def test_pipeline_contract_registry_covers_current_and_historical_scopes(
+        self,
+    ) -> None:
+        pipeline_map = PIPELINE_MAP.read_text(encoding="utf-8")
+        targets = _markdown_link_targets(pipeline_map)
+
+        current_contracts = {
+            "../contracts/T1.1-material-intake.md": "现行上游节点",
+            "../contracts/T1.2-b1-source.md": "现行上游节点",
+            "../contracts/BOOK-CONTENT-FLOW-v2.md": "现行内容流",
+            "../contracts/T1.8-independent-acceptance.md": "现行下游验收语义",
+        }
+        for target, status in current_contracts.items():
+            with self.subTest(target=target):
+                self.assertIn(target, targets)
+                matching_rows = [
+                    line
+                    for line in pipeline_map.splitlines()
+                    if f"]({target})" in line
+                    and f"| `{status}` |" in line
+                ]
+                self.assertEqual(
+                    len(matching_rows),
+                    1,
+                    f"expected one registry row for {target}",
+                )
+
+        self.assertIn(
+            "`contracts/T1.3-discovery.md`—`contracts/T1.7-b2-assembly.md`",
+            pipeline_map,
+        )
+        self.assertIn("`历史接口`", pipeline_map)
+
+    def test_legacy_glossary_keeps_frozen_identity_and_current_terms_use_v2(
+        self,
+    ) -> None:
+        glossary_hash = _sha256(GLOSSARY.read_bytes())
+        receipt = M1_RECEIPT.read_text(encoding="utf-8")
+        current_contract = CURRENT_CONTRACT.read_text(encoding="utf-8")
+        pipeline_map = PIPELINE_MAP.read_text(encoding="utf-8")
+
+        self.assertEqual(
+            glossary_hash,
+            "333b3eb4840cea16b7f5049fe7a8dbba09ddedb4ecb2b37479c1c13129737844",
+        )
+        self.assertIn(glossary_hash, receipt)
+        self.assertIn("Writer 的组织单位是获准的完整 Expert 初稿", current_contract)
+        self.assertIn("不是知识卡", current_contract)
+        self.assertIn("M1 历史术语表", pipeline_map)
+
+    def test_asset_lifecycle_keeps_current_node_contracts_out_of_history(
+        self,
+    ) -> None:
+        register = ASSET_REGISTER.read_text(encoding="utf-8")
+        current_section = register.split(
+            "### 现行节点合同与项目专用能力",
+            1,
+        )[1].split("### 支持性参考", 1)[0]
+        historical_section = register.split(
+            "### 历史合同、路线、专题文档与透镜资产",
+            1,
+        )[1].split("### 历史诊断", 1)[0]
+
+        for path in (
+            "contracts/T1.1-material-intake.md",
+            "contracts/T1.2-b1-source.md",
+            "contracts/T1.8-independent-acceptance.md",
+        ):
+            with self.subTest(path=path):
+                self.assertIn(path, current_section)
+                self.assertNotIn(path, historical_section)
+        self.assertIn("contracts/GLOSSARY.md", historical_section)
 
 
 if __name__ == "__main__":

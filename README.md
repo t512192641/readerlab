@@ -14,10 +14,12 @@ ReaderLab 的终极交付是两条独立、成熟、可复用的 Skill 能力：
 2. 产品目标与固定责任：[`PRODUCT-DECISIONS.md`](PRODUCT-DECISIONS.md)
 3. 已确认的工程教训：[`ENGINEERING-LESSONS.md`](ENGINEERING-LESSONS.md)
 4. 两条产品线的长期地图：[`blueprints/PIPELINE-MAP.md`](blueprints/PIPELINE-MAP.md)
-5. 当前任务、停止点与允许动作：[`CURRENT-STATE.md`](CURRENT-STATE.md)
+5. 当前任务、停止点与允许动作：[`docs/current-task.md`](docs/current-task.md)
+6. 当前已验证工程事实与缺口：[`docs/dev-state.md`](docs/dev-state.md)
 
-`CURRENT-STATE.md` 是唯一当前执行状态 owner。若它与真实任务卡、run、产品判词或 Git
-现场冲突，应停止派发下一阶段并先由执行现场同步状态。
+`docs/current-task.md` 是唯一当前执行切片 owner，`docs/dev-state.md` 是唯一当前已验证工程
+事实 owner。若它们与真实任务卡、run、产品判词或 Git 现场冲突，应停止派发下一阶段并先由
+执行现场同步；`CURRENT-STATE.md` 只保留为历史链接兼容入口。
 
 ## 工程与审计入口
 

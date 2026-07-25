@@ -4,18 +4,34 @@
 > 性质：审计投影，不拥有任务状态、产品判词或长期产品决议
 > 目的：让历史证据可追溯，但不再占据默认工作入口
 
+## 可重算数量投影
+
+- taskcard-count: `56`
+- run-container-count: `42`
+- current-run-container-count: `11`
+- archived-run-container-count: `31`
+- run-file-count: `453`
+- archived-run-file-count: `317`
+- tracked-run-file-count: `188`
+- ignored-run-file-count: `265`
+- untracked-visible-run-file-count: `0`
+
+以上数字由 active tests 对真实路径与 Git ignored inventory 重新计算；正文中的说明不得成为
+另一份手工计数 owner。
+
 ## 1. 结论
 
-当前共有 56 张任务卡和 42 个 run 容器。31 个较早 legacy run 的 317 个文件已完成
-迁移前后逐文件身份核对并物理隔离；11 个近期／当前 run 继续位于 `runs/`。其余历史对象
-尚未全部取得价值终局，因此当前仍不能声称“全仓文件已经处理”。
+当前任务卡、run 容器、run 文件与 Git 状态的数量只见上方可重算投影。较早 legacy run 已完成
+迁移前后逐文件身份核对并物理隔离；近期／当前 run 继续位于 `runs/`。其余历史对象尚未全部
+取得价值终局，因此当前仍不能声称“全仓文件已经处理”。
 
 当前采用物理隔离与保守保留并行：
 
 - 默认入口只指向当前 owner、现行合同和当前任务；
 - 较早 legacy run 移入 `archive/runs/`，默认任务禁止读取；
 - ignored payload 暂不删除，直到证明 tracked control evidence 足以恢复其必要事实；
-- 三个历史 run 中的 `.DS_Store` 已物理删除；T2.35 中的一个继续随当前业务现场保留。
+- 已知四个 run 中的 `.DS_Store` 均已物理删除；工具仍保留忽略和 warning 防线，防止 Finder
+  再次生成时污染冻结身份。
 
 按宪章 `AUD-SCOPE-001`，下一轮必须覆盖当前仓库内全部项目文件，包括各 run 中生成的 Expert、
 Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。受限内容可以只做元数据与
@@ -25,8 +41,9 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 
 ### 当前业务任务
 
-- `taskcards/T2.35.md`：当前业务任务；产品已判定 Expert 值得进入 Writer，但正文仍可微调，
-  后续必须由执行现场重新冻结；本审计不修改。
+- `taskcards/T2.35.md`：当前业务任务；已由业务证据 commit
+  `bcb052e4dcaeac53a273a36608a632b98a98d94b` 跟踪，判词、停止点与生产授权只见
+  `docs/current-task.md`。
 
 ### 已完成、失败、被替代或仅作历史证据
 
@@ -101,8 +118,9 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 
 ### 当前业务 run
 
-- `runs/T2.35-CH08-D3-EXPERT-P2-01`：当前、current profile、未跟踪业务现场；必须保留，
-  不得由审计清理、移动或重写。
+- `runs/T2.35-CH08-D3-EXPERT-P2-01`：当前、current profile；run manifest、两个 freeze、
+  P2 gate 与产品判词已跟踪，完整原文、Expert、知识卡、来源审核和审阅包继续 ignored
+  本地保留，不得由审计移动或重写。
 
 ### 历史 run：current profile，可由 `tools/run.py check` 复核结构
 
@@ -154,20 +172,21 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 - `archive/runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-06`
 - `archive/runs/T2.26-PROSPECTIVE-TRANSFER-AND-SHADOW-RATER-07`
 
-这 31 个 run 共 317 个文件。迁移前后逐文件 SHA-256 与数量完全一致，其中 138 个原 tracked
-文件继续由 Git 跟踪，179 个本地 payload 继续保持 ignored。legacy 只表示没有 `run.json`
-现行结构，不表示损坏；默认任务不得搜索或读取历史区。
+上方投影所列 archived run 及其文件已经完成迁移前后逐文件 SHA-256 与数量核对；原 tracked
+文件继续由 Git 跟踪，本地 payload 继续保持 ignored。legacy 只表示没有 `run.json` 现行结构，
+不表示损坏；默认任务不得搜索或读取历史区。
 
 ## 4. 保留和清理规则
 
 | 类别 | 当前处理 | 原因 |
 |---|---|---|
-| 当前 T2.35 任务卡与 run | 保留原位，审计只读 | 正在微调的业务成果 |
+| 当前 T2.35 任务卡与 run | 保留原位，审计只读 | 当前判词与停止点只见 `docs/current-task.md` |
 | 产品判词、freeze、receipt、hash、失败 blocker | 必须保留 | 它们是接受、拒绝和可复验边界 |
 | 已跟踪 control evidence | 必须保留 | 当前唯一可移植证据 |
+| 完整审阅包与语义 payload | 默认 ignored、本地保留 | 云端审核必须按任务单独授权；主仓库不靠通用文件名放行 |
 | 较早 legacy run | 已迁移到 `archive/runs/` | 仍可追溯，但通过物理路径与读取规则退出默认入口 |
 | ignored payload | 暂时保留，备份责任 unknown | 尚未逐文件证明没有唯一语义证据 |
-| `.DS_Store` | 三个历史文件已删除；T2.35 暂缓 | 非项目内容；删除不影响 freeze，工具已受控忽略。当前 run 不由清理线程修改 |
+| `.DS_Store` | 已知四个文件均已删除 | 非项目内容；工具继续受控忽略，未知宿主文件仍 hard fail |
 | T2.30 已清理的十个临时脚本 | 保持不存在 | 历史任务卡已登记用途，无需恢复 |
 | 旧 clean-seed validator | 已从当前工作树删除 | 无当前调用方；9,485 行旧实现和兼容 adapter 不再保留。需要取证时从本地 Git `c13ea5a:validate.py` 恢复 |
 
@@ -181,6 +200,11 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 - `AGENTS.md`
 - `PRODUCT-DECISIONS.md`
 - `ENGINEERING-LESSONS.md`
+- `docs/current-task.md`
+- `docs/dev-state.md`
+- `docs/decisions.md`
+- `docs/agent-run-ledger.md`
+- `docs/research-log.md`
 - `CURRENT-STATE.md`
 - `README.md`
 - `blueprints/PIPELINE-MAP.md`
@@ -192,41 +216,43 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 - `audit/INCIDENT-GUARDRAILS.md`
 - `audit/VALIDATOR-DECOMPOSITION.md`
 
-`CURRENT-STATE.md` 虽是当前 owner，但当前内容已落后于 T2.35 产品判词；在执行现场同步前，
-它属于“应修复的当前 owner”，不是可直接派发下游的可靠许可。
+`docs/current-task.md` 是唯一当前行动门 owner，`docs/dev-state.md` 是唯一当前已验证工程事实
+owner；`CURRENT-STATE.md` 只保留兼容入口。本清单不复制当前判词、停止点或生产授权。
 
-### 现行合同与项目专用能力
+### 现行节点合同与项目专用能力
 
+- `contracts/T1.1-material-intake.md`
+- `contracts/T1.2-b1-source.md`
 - `contracts/BOOK-CONTENT-FLOW-v2.md`
 - `contracts/BOOK-CONTENT-FLOW-v2-freeze-receipt.md`
+- `contracts/T1.8-independent-acceptance.md`
 - `.agents/skills/readerlab-functional-role-isolation/SKILL.md`
 
-合同 v2 是现行技术 interface，但尚未 runtime integrated；项目 Skill 只在适用任务明确调用
-时读取，不是当前业务入口。
+T1.1 与 T1.2 分别拥有材料准入和 B1 上游节点；v2 是 B1 后至 B2 的现行内容流；T1.8
+继续拥有下游独立验收语义，但不证明 Judge 已取得资格。这些合同均尚未组成已验证的完整
+runtime；项目 Skill 只在适用任务明确调用时读取，不是当前业务入口。
 
 ### 支持性参考，不拥有当前执行状态
 
-- `contracts/GLOSSARY.md`
 - `references/BOOK-AND-SKILLS-METHODS.md`
 
 ### 历史合同、路线、专题文档与透镜资产
 
 - `blueprints/EXECUTION-ROADMAP.md`
+- `contracts/GLOSSARY.md`
 - `contracts/M1-freeze-receipt.md`
-- `contracts/T1.1-material-intake.md`
-- `contracts/T1.2-b1-source.md`
 - `contracts/T1.3-discovery.md`
 - `contracts/T1.4-expert-and-knowledge-card.md`
 - `contracts/T1.5-independent-review.md`
 - `contracts/T1.6-writer.md`
 - `contracts/T1.7-b2-assembly.md`
-- `contracts/T1.8-independent-acceptance.md`
 - `docs/writer-style-guide.md`
 - `lenses/T1.9-seed-lenses.md`
 - `lenses/T2.3-seed-lenses-v2.md`
 
-旧合同已被 v2 current pointer 降为历史；旧的专题路线和 pipeline template 已删除并由
-`e782605` 保留恢复身份。风格和透镜文件仍不得覆盖当前 owner 或自动取得生产许可。
+旧 M1 术语表由 M1 receipt 绑定原字节，T1.3—T1.7 已被 v2 current pointer 降为历史；
+T1.1、T1.2 与 T1.8 仍分别承担现行上下游节点责任。旧的专题路线和 pipeline template
+已删除并由 `e782605` 保留恢复身份。风格和透镜文件仍不得覆盖当前 owner 或自动取得生产许可。
 
 ### 历史诊断、考试与审计快照
 
@@ -271,8 +297,8 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 
 尚未完成：
 
-- 457 个 run 文件逐文件判断；
-- 268 个 ignored 文件的唯一证据、备份和删除判断；
+- 上方投影所列全部 run 文件的逐文件价值判断；
+- 上方投影所列 ignored run 文件的唯一证据、备份和删除判断；
 - 全仓非 Markdown、截图、临时载荷和配置的逐文件终局；
 - 旧 clean-seed validator 已完成退役删除；恢复只依赖本地 Git；
 - 任何大规模物理删除。
