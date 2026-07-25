@@ -1,0 +1,52 @@
+{
+  "directories": [
+    "final",
+    "locked",
+    "raw"
+  ],
+  "files": [
+    {
+      "bytes": 17588,
+      "path": "final/four-way-comparison.md",
+      "sha256": "143faa9f91cd30348ea23418e2a4676e605f074950cf5e273e73d78d105ae2b5"
+    },
+    {
+      "bytes": 34512,
+      "path": "locked/chapter-scope.xhtml",
+      "sha256": "0f4af98ac9beb82cea8d4ad708191bf28aa7758645249e0640d6c1d9d5c4f88a"
+    },
+    {
+      "bytes": 15836,
+      "path": "raw/D1-sacralization-brief.md",
+      "sha256": "37592c316d4b08b7435ceda449b4e38b58a3417c2c892fa09ad5fdae4cedb0c8"
+    },
+    {
+      "bytes": 17556,
+      "path": "raw/D2-ritual-loyalty-brief.md",
+      "sha256": "e19ca9464203b35a96bd37ff3caa58e455e403d21c1f8803de65a24ac0174281"
+    },
+    {
+      "bytes": 17788,
+      "path": "raw/D3-sacred-values-brief.md",
+      "sha256": "a938c54434b6c9f8bd0fe8971147da077e4342ed91b51685151ebb9ad788956d"
+    },
+    {
+      "bytes": 18874,
+      "path": "raw/D4-collective-action-brief.md",
+      "sha256": "32b389eb22c1ac7f31b8dd0ac904a91a071c1c23b7abf017fd4eb265e7039335"
+    },
+    {
+      "bytes": 10250,
+      "path": "raw/source-audit.md",
+      "sha256": "9b86d2ddd19e9af1fd793a248063da57550152a1539c32ea506f414fec3e5ac8"
+    },
+    {
+      "bytes": 567,
+      "path": "run.json",
+      "sha256": "a625f7918ca7d05b64f29822d9472512c718156d38f06ad54ca2c98a465d53af"
+    }
+  ],
+  "run_schema": "readerlab-run/v2",
+  "schema": "readerlab-production-freeze/v1",
+  "scope": "production"
+}
