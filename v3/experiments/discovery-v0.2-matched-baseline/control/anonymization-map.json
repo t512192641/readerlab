@@ -1,0 +1,78 @@
+{
+  "schema": "readerlab-discovery-v0.2-anonymization/v1",
+  "random_seed": 20260729,
+  "order": [
+    "plain-04.md",
+    "plain-05.md",
+    "plain-01.md",
+    "professional-04.md",
+    "plain-03.md",
+    "plain-02.md",
+    "professional-01.md",
+    "professional-05.md",
+    "professional-03.md",
+    "professional-02.md"
+  ],
+  "entries": [
+    {
+      "anonymous_id": "ANON-01",
+      "group": "group-x",
+      "source": "plain-04.md",
+      "source_sha256": "8afc5988f720157f4ffc7b94ec4ec6f2c6a6226e1e28b6edd811cb8bf115ce46"
+    },
+    {
+      "anonymous_id": "ANON-02",
+      "group": "group-x",
+      "source": "plain-05.md",
+      "source_sha256": "ea68f8e032b4d8b408b26e50de3cf4c687366385cd75490e8c2c418a8c56e7f3"
+    },
+    {
+      "anonymous_id": "ANON-03",
+      "group": "group-x",
+      "source": "plain-01.md",
+      "source_sha256": "f31bfcc00c424aaddeaf3f9d7c1347b10cf71188b0d62fd00e69017f487c65d2"
+    },
+    {
+      "anonymous_id": "ANON-04",
+      "group": "group-x",
+      "source": "professional-04.md",
+      "source_sha256": "e40efb43d6705d3adb2c28af7c7ed4401ac7c9f5ed6934eae3766062eb702e1a"
+    },
+    {
+      "anonymous_id": "ANON-05",
+      "group": "group-x",
+      "source": "plain-03.md",
+      "source_sha256": "e5b1b290fa6e249e5e39fb82058e429732bd1e7b031d2e8580265c1ce98138a8"
+    },
+    {
+      "anonymous_id": "ANON-06",
+      "group": "group-y",
+      "source": "plain-02.md",
+      "source_sha256": "705093e5f2bd3bb1aed87d2f193121747b0fcd74259d3eed1107eb68dd203dad"
+    },
+    {
+      "anonymous_id": "ANON-07",
+      "group": "group-y",
+      "source": "professional-01.md",
+      "source_sha256": "0e4a9014d13e0191842fc729a7d155f2238fbc0833cb176e7b844445605fdddf"
+    },
+    {
+      "anonymous_id": "ANON-08",
+      "group": "group-y",
+      "source": "professional-05.md",
+      "source_sha256": "87111ae1f49329b75e95a8e907bf70c905542957181b3844794b6d6d6c64b3dd"
+    },
+    {
+      "anonymous_id": "ANON-09",
+      "group": "group-y",
+      "source": "professional-03.md",
+      "source_sha256": "4cdf2de2d36acb90d6b3a30411a7b9b2f3d32d43356419769eab56caf03359cb"
+    },
+    {
+      "anonymous_id": "ANON-10",
+      "group": "group-y",
+      "source": "professional-02.md",
+      "source_sha256": "76201b89e9376a6e7c510794933b220beb691936fb3ff371f7bef13b2398c745"
+    }
+  ]
+}
