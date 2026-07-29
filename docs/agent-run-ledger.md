@@ -216,6 +216,18 @@
 - Checks：六个 T2.36→T2.37 `cmp`、所有 stage freeze `shasum -c`、Reader v1 未覆盖、T2.36 路径无 diff、`git diff --cached --check`（排除必须逐字节保留、原文既有行尾空白的 `inputs/u01-frozen.md`）通过。`python3 -B tests/entry.py` 35/36 通过；唯一失败是审计基线在本轮开始前已有的未跟踪 Markdown 未列入资产登记的全树穷举项，未修改或纳入提交。
 - Stop / Acceptance：`STOPPED_AFTER_PRODUCT_PACK_WAITING_FOR_PRODUCT_REVIEW`；产品负责人判词 `unknown`，下一生产授权 `none`。完成后停止，不修改 ReaderLab 长期合同、Skill、生产路线或产品标准。
 
+### Run: 2026-07-29 - T2.39 ReaderLab Book Expert Teaching Skill v0.1
+
+- Task / Type / Tool：从 T2.38 已验证控制能力建立 `readerlab-book-expert-teaching` Skill v0.1.0 候选；确定性实现、Skill-local tests 与 T2.38 mechanical replay，不启动任何新语义实验。
+- Baseline / Branch：基线 `4f9c62529d3ef55ead9ccf6a5e33a3b402e663cb`；分支 `feature/readerlab-book-expert-teaching-skill-v0.1`。T2.36/T2.37/T2.38 冻结文件保持只读，未创建新的语义 run。
+- Contexts：语义 Agent contexts `none`；本轮由主执行上下文完成控制层实现与确定性测试。模型、reasoning、token、成本与墙钟均 `unavailable`；network `no`；retry `no`；Prompt modified `no`（没有语义 Prompt 调用）。
+- Exact read set：`AGENTS.md`、`docs/current-task.md`、`docs/dev-state.md`、`docs/agent-run-ledger.md`、`PRODUCT-DECISIONS.md`、`ENGINEERING-LESSONS.md`、`blueprints/PIPELINE-MAP.md`、`tools/run.py`、`tests/entry.py`、`tests/test_run_promotion.py`、`taskcards/T2.39.md`、T2.38 `run-manifest.md`／`run-ledger.md`／`control/*`／`raw/*`／`acceptance/*`、T2.36 固定输入、既有 functional-role-isolation Skill，以及 Skill Creator 的 `SKILL.md` 与 `references/openai_yaml.md`。未读取其他语义路线或产品判词。
+- Source / search：没有外部来源打开、没有搜索、没有语义模型调用；T2.38 fixture 只按已登记仓库路径注入冻结字节。
+- Created / changed：Skill 目录、T2.39 taskcard、阶段实现状态、Skill review map／brief、blueprint pointer、current/dev state、asset register 与本条 ledger；未修改产品决议、现行内容合同、历史判词或 T2.36/T2.37/T2.38 冻结产物。
+- Verification：`quick_validate.py` 通过；Skill-local `unittest` 13/13 通过（含 init、覆盖拒绝、漂移、输出完整性、Agent ID 隔离、非法状态、双门产品包、可读 Markdown、泄漏门、archive、fingerprint 与 T2.38 replay）；T2.38 replay 使用临时 run 注入既有 Expert／review 输出，`init → seal-expert → seal-review → build-product-pack → verify → archive` 全部通过，无新语义结果或产品判词。仓库 active tests 的资产穷举失败属于本任务开始前已存在的 118 个未登记 Markdown 影子文件；其余断言已通过，未纳入或改写这些文件。
+- Freeze / hash：每个 Skill run 以 `SKILL.md`、`VERSION`、`agents/openai.yaml`、contracts、templates、scripts 的 aggregate fingerprint 防漂移；T2.38 机械 replay 的临时 run 与 archive 随测试清理，不冒充正式 run。最终提交前再执行 `git diff --check`、敏感信息检查和状态／冻结核对。
+- Result / Stop：`implemented` 为 Skill v0.1.0 文件与入口存在；`integrated: not integrated`；`verified` 仅限上述确定性检查与机械 replay；`accepted: unknown`；停止在 Skill scaffold 与 replay，不运行两个迁移样本，不启动 Writer、ABC、Discovery 或完整 orchestrator。
+
 ### Run: 2026-07-29 - T2.38 U01 social-connection Expert teaching
 
 - Task / Type / Tool：固定 U01、固定 Iris Marion Young Social Connection Model 与 T2.36 冻结来源范围下的 Expert

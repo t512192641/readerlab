@@ -42,6 +42,13 @@ Expert、Judge、Writer、核验和装配描述的是功能责任，不预先决
 | [`contracts/BOOK-CONTENT-FLOW-v2.md`](../contracts/BOOK-CONTENT-FLOW-v2.md) | `现行内容流` | B1 就绪后至保真通过的 Reader 单元与 B2 确定性装配 | runtime 已集成或产品已接受 |
 | [`contracts/T1.8-independent-acceptance.md`](../contracts/T1.8-independent-acceptance.md) | `现行下游验收语义` | 冻结 B2 对象的独立验收语义与产品判断边界 | Judge 已取得资格 |
 
+### Expert Teaching Skill v0.1 候选指针（人工编排）
+
+- pointer：`.agents/skills/readerlab-book-expert-teaching/SKILL.md`
+- status：`candidate`；只支持人工启动的固定来源／固定框架 Expert Teaching 阶段，尚未进入生产入口。
+- scope：建立输入与 Prompt 冻结、隔离任务文件、Expert 与独立审核的阶段冻结、双门终局、产品审阅包、验证和归档。
+- boundary：不改变产品语义或现行合同，不实现 Discovery、Writer、ABC、Judge、知识库或完整编排器；本指针不构成生产授权。
+
 `contracts/T1.3-discovery.md`—`contracts/T1.7-b2-assembly.md` 与
 `contracts/M1-freeze-receipt.md` 的生命周期均为 `历史接口`。它们只保存 M1 身份和历史证据，
 不得与上表共同组成新的混合路线。

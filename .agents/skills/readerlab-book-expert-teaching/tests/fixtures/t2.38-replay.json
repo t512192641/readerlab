@@ -1,0 +1,24 @@
+{
+  "skill_version": "0.1.0",
+  "run": "runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01",
+  "source": {
+    "path": "runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01/inputs/u01-frozen.md",
+    "sha256": "1c7973468c9d2716aee142de2d985a8f64d26ee673ae4a83c7e9d74d55c8804c"
+  },
+  "source_map": {
+    "path": "runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01/raw/source-map.md",
+    "sha256": "f89b357700f05eb8ab9ee12602ddc81a736d28443fa10b4cb53fc0e825d33f0a"
+  },
+  "expert_draft": {
+    "path": "runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01/raw/expert-teaching-draft.md",
+    "sha256": "13d5cd6ae520fda515cc2a3a6c105ddd564d88d50d5232feea9ac399789053b2"
+  },
+  "expert_source_map": {
+    "path": "runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01/raw/expert-teaching-source-map.md",
+    "sha256": "1b518fc97a5bf0abe2d2c664ed049294ee7b42079c7401aa2e5ed3e4d71043f8"
+  },
+  "review": {
+    "path": "runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01/acceptance/expert-teaching-review.md",
+    "sha256": "9c9f7c64cce0bd17cbc9747775b00ca938bb4b5962b69821a1b4583eab87846f"
+  }
+}

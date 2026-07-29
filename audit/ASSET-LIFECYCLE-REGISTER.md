@@ -6,7 +6,7 @@
 
 ## 可重算数量投影
 
-- taskcard-count: `59`
+- taskcard-count: `60`
 - run-container-count: `45`
 - current-run-container-count: `14`
 - archived-run-container-count: `31`
@@ -41,6 +41,7 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 
 ### 当前诊断任务
 
+- `taskcards/T2.39.md`：把 T2.38 已验证的 Expert Teaching 控制能力实现为 `readerlab-book-expert-teaching` Skill v0.1 候选；仅做确定性 scaffold、Skill-local tests 与 T2.38 机械回放，不产生新的语义结果，尚未进入生产入口。
 - `taskcards/T2.38.md`：固定 U01、固定 Social Connection Model 与冻结来源范围下的 Expert teaching；双门 `SOURCE_FIDELITY_PASS + TEACHING_PASS`，产品包已生成，等待产品负责人审阅，未改变生产入口。
 - `taskcards/T2.37.md`：只修复 T2.36 Writer 归属表述并复核 Fidelity／Depth；双门通过，匿名产品包已生成，等待产品审阅，未改变生产入口。
 - `taskcards/T2.36.md`：固定 C 的 U01 内容链 seam；已在 `RETURN_WRITER + DEPTH_PASS`
@@ -224,6 +225,9 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 - `audit/ASSET-LIFECYCLE-REGISTER.md`
 - `audit/INCIDENT-GUARDRAILS.md`
 - `audit/VALIDATOR-DECOMPOSITION.md`
+- `docs/stage-implementation-status.md`
+- `docs/expert-teaching-skill-v0.1-review-map.md`
+- `docs/expert-teaching-skill-v0.1-review-brief.md`
 
 `docs/current-task.md` 是唯一当前行动门 owner，`docs/dev-state.md` 是唯一当前已验证工程事实
 owner；`CURRENT-STATE.md` 只保留兼容入口。本清单不复制当前判词、停止点或生产授权。
@@ -236,6 +240,15 @@ owner；`CURRENT-STATE.md` 只保留兼容入口。本清单不复制当前判�
 - `contracts/BOOK-CONTENT-FLOW-v2-freeze-receipt.md`
 - `contracts/T1.8-independent-acceptance.md`
 - `.agents/skills/readerlab-functional-role-isolation/SKILL.md`
+- `.agents/skills/readerlab-book-expert-teaching/SKILL.md`
+- `.agents/skills/readerlab-book-expert-teaching/contracts/input-contract.md`
+- `.agents/skills/readerlab-book-expert-teaching/contracts/expert-teaching-contract.md`
+- `.agents/skills/readerlab-book-expert-teaching/contracts/review-contract.md`
+- `.agents/skills/readerlab-book-expert-teaching/contracts/output-contract.md`
+- `.agents/skills/readerlab-book-expert-teaching/contracts/state-machine.md`
+- `.agents/skills/readerlab-book-expert-teaching/templates/expert-task.md`
+- `.agents/skills/readerlab-book-expert-teaching/templates/expert-review-task.md`
+- `.agents/skills/readerlab-book-expert-teaching/templates/product-review.md`
 
 T1.1 与 T1.2 分别拥有材料准入和 B1 上游节点；v2 是 B1 后至 B2 的现行内容流；T1.8
 继续拥有下游独立验收语义，但不证明 Judge 已取得资格。这些合同均尚未组成已验证的完整
