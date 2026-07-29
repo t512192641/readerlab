@@ -1,0 +1,75 @@
+{
+  "allowed_urls": [
+    "https://groups.csail.mit.edu/belief-dynamics/MURI07/Gingesetal2007.pdf",
+    "https://www.researchgate.net/publication/223318054_Chapter_6_Noninstrumental_Reasoning_over_Sacred_Values_An_Indonesian_Case_Study",
+    "https://ncmr.lps.library.cmu.edu/article/117/galley/120/view/",
+    "https://www.researchgate.net/publication/6123217_Sacred_Barriers_to_Conflict_Resolution",
+    "https://www.aeaweb.org/conference/2017/preliminary/paper/GBEn8SAT"
+  ],
+  "entries": [
+    {
+      "id": "A-S1",
+      "redirects": [],
+      "status": "allowed",
+      "url": "https://groups.csail.mit.edu/belief-dynamics/MURI07/Gingesetal2007.pdf"
+    },
+    {
+      "id": "A-S2",
+      "redirects": [],
+      "status": "allowed",
+      "url": "https://www.researchgate.net/publication/223318054_Chapter_6_Noninstrumental_Reasoning_over_Sacred_Values_An_Indonesian_Case_Study"
+    },
+    {
+      "id": "A-S3",
+      "redirects": [],
+      "status": "allowed",
+      "url": "https://ncmr.lps.library.cmu.edu/article/117/galley/120/view/"
+    },
+    {
+      "id": "A-S4",
+      "redirects": [],
+      "status": "allowed",
+      "url": "https://www.researchgate.net/publication/6123217_Sacred_Barriers_to_Conflict_Resolution"
+    },
+    {
+      "id": "A-S5",
+      "redirects": [],
+      "status": "allowed",
+      "url": "https://www.aeaweb.org/conference/2017/preliminary/paper/GBEn8SAT"
+    },
+    {
+      "id": "A-S6",
+      "redirects": [],
+      "status": "reference_only",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9236161/"
+    },
+    {
+      "id": "A-S7",
+      "redirects": [],
+      "status": "reference_only",
+      "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/0162-895X.00058"
+    },
+    {
+      "id": "A-S8",
+      "redirects": [],
+      "status": "reference_only",
+      "url": "https://pubs.aeaweb.org/doi/10.1257/aer.p20171110"
+    }
+  ],
+  "reviewable_urls": [
+    "https://groups.csail.mit.edu/belief-dynamics/MURI07/Gingesetal2007.pdf",
+    "https://www.researchgate.net/publication/223318054_Chapter_6_Noninstrumental_Reasoning_over_Sacred_Values_An_Indonesian_Case_Study",
+    "https://ncmr.lps.library.cmu.edu/article/117/galley/120/view/",
+    "https://www.researchgate.net/publication/6123217_Sacred_Barriers_to_Conflict_Resolution",
+    "https://www.aeaweb.org/conference/2017/preliminary/paper/GBEn8SAT",
+    "https://pubmed.ncbi.nlm.nih.gov/9236161/",
+    "https://onlinelibrary.wiley.com/doi/abs/10.1111/0162-895X.00058",
+    "https://pubs.aeaweb.org/doi/10.1257/aer.p20171110"
+  ],
+  "schema": "readerlab-book-expert-teaching/source-allowlist/v1",
+  "status_counts": {
+    "allowed": 5,
+    "blocked": 0,
+    "reference_only": 3
+  }
+}

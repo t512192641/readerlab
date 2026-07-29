@@ -1,0 +1,13 @@
+{
+  "schema": "readerlab-book-expert-teaching/source-access/v1",
+  "opened_urls": [
+    "https://groups.csail.mit.edu/belief-dynamics/MURI07/Gingesetal2007.pdf",
+    "https://www.researchgate.net/publication/223318054_Chapter_6_Noninstrumental_Reasoning_over_Sacred_Values_An_Indonesian_Case_Study",
+    "https://ncmr.lps.library.cmu.edu/article/117/galley/120/view/",
+    "https://www.researchgate.net/publication/6123217_Sacred_Barriers_to_Conflict_Resolution",
+    "https://www.aeaweb.org/conference/2017/preliminary/paper/GBEn8SAT"
+  ],
+  "cited_only_urls": [],
+  "provenance": "agent_declared",
+  "audit_scope": "agent-declared; not a browser or OS-level network audit"
+}

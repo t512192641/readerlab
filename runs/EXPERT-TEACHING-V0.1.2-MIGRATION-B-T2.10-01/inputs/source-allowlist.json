@@ -1,0 +1,10 @@
+{
+  "schema": "readerlab-book-expert-teaching/source-allowlist/v1",
+  "sources": [
+    {"id": "B-S1", "url": "https://books.google.com/books?id=WcC-AYOq6Q4C", "status": "allowed", "redirects": []},
+    {"id": "B-S2", "url": "https://openlibrary.org/books/OL5541935M/The_sacred_canopy", "status": "reference_only", "redirects": []},
+    {"id": "B-S3", "url": "https://archive.org/details/sacredcanopyelem0000berg_m2h4", "status": "reference_only", "redirects": []},
+    {"id": "B-S4", "url": "https://uplopen.com/en/chapters/e/10.1515/9783111254005-005", "status": "reference_only", "redirects": []},
+    {"id": "B-S5", "url": "https://academic.oup.com/jaar/article/85/4/1118/4769542", "status": "reference_only", "redirects": []}
+  ]
+}

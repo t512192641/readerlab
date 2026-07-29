@@ -1,0 +1,50 @@
+{
+  "allowed_urls": [
+    "https://books.google.com/books?id=WcC-AYOq6Q4C"
+  ],
+  "entries": [
+    {
+      "id": "B-S1",
+      "redirects": [],
+      "status": "allowed",
+      "url": "https://books.google.com/books?id=WcC-AYOq6Q4C"
+    },
+    {
+      "id": "B-S2",
+      "redirects": [],
+      "status": "reference_only",
+      "url": "https://openlibrary.org/books/OL5541935M/The_sacred_canopy"
+    },
+    {
+      "id": "B-S3",
+      "redirects": [],
+      "status": "reference_only",
+      "url": "https://archive.org/details/sacredcanopyelem0000berg_m2h4"
+    },
+    {
+      "id": "B-S4",
+      "redirects": [],
+      "status": "reference_only",
+      "url": "https://uplopen.com/en/chapters/e/10.1515/9783111254005-005"
+    },
+    {
+      "id": "B-S5",
+      "redirects": [],
+      "status": "reference_only",
+      "url": "https://academic.oup.com/jaar/article/85/4/1118/4769542"
+    }
+  ],
+  "reviewable_urls": [
+    "https://books.google.com/books?id=WcC-AYOq6Q4C",
+    "https://openlibrary.org/books/OL5541935M/The_sacred_canopy",
+    "https://archive.org/details/sacredcanopyelem0000berg_m2h4",
+    "https://uplopen.com/en/chapters/e/10.1515/9783111254005-005",
+    "https://academic.oup.com/jaar/article/85/4/1118/4769542"
+  ],
+  "schema": "readerlab-book-expert-teaching/source-allowlist/v1",
+  "status_counts": {
+    "allowed": 1,
+    "blocked": 0,
+    "reference_only": 4
+  }
+}

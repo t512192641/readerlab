@@ -1,0 +1,46 @@
+{
+  "policy": "every canonical allowlist URL must occur in source-map; explicitly registered redirects may be extra",
+  "registered_urls": [
+    {
+      "id": "B-S5",
+      "kind": "canonical",
+      "status": "reference_only",
+      "url": "https://academic.oup.com/jaar/article/85/4/1118/4769542"
+    },
+    {
+      "id": "B-S3",
+      "kind": "canonical",
+      "status": "reference_only",
+      "url": "https://archive.org/details/sacredcanopyelem0000berg_m2h4"
+    },
+    {
+      "id": "B-S1",
+      "kind": "canonical",
+      "status": "allowed",
+      "url": "https://books.google.com/books?id=WcC-AYOq6Q4C"
+    },
+    {
+      "id": "B-S2",
+      "kind": "canonical",
+      "status": "reference_only",
+      "url": "https://openlibrary.org/books/OL5541935M/The_sacred_canopy"
+    },
+    {
+      "id": "B-S4",
+      "kind": "canonical",
+      "status": "reference_only",
+      "url": "https://uplopen.com/en/chapters/e/10.1515/9783111254005-005"
+    }
+  ],
+  "schema": "readerlab-book-expert-teaching/source-boundary/v1",
+  "source_map_urls": [
+    "https://academic.oup.com/jaar/article/85/4/1118/4769542",
+    "https://archive.org/details/sacredcanopyelem0000berg_m2h4",
+    "https://books.google.com/books?id=WcC-AYOq6Q4C",
+    "https://openlibrary.org/books/OL5541935M/The_sacred_canopy",
+    "https://uplopen.com/en/chapters/e/10.1515/9783111254005-005"
+  ],
+  "unreferenced_primary_urls": [],
+  "unreferenced_redirects": [],
+  "unregistered_urls": []
+}

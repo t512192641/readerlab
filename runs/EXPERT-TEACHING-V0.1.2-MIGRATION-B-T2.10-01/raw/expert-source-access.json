@@ -1,0 +1,9 @@
+{
+  "schema": "readerlab-book-expert-teaching/source-access/v1",
+  "provenance": "agent_declared",
+  "audit_scope": "agent-declared; not a browser or OS-level network audit",
+  "opened_urls": [],
+  "cited_only_urls": [
+    "https://books.google.com/books?id=WcC-AYOq6Q4C"
+  ]
+}

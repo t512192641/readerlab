@@ -1,0 +1,251 @@
+{
+  "created_at": "2026-07-29T13:33:21+00:00",
+  "expert": {
+    "agent_id": "019fae1b-7e3b-7720-9627-58069239f492",
+    "draft": {
+      "bytes": 13331,
+      "path": "raw/expert-teaching-draft.md",
+      "sha256": "046cc80a79e1c86f41e66941d34005a1a1432aa93cd3152052523a5a808d5e29"
+    },
+    "metadata_provenance": "controller_declared",
+    "model": "gpt-5.6-sol",
+    "network": "allowlisted-only",
+    "prompt_modified": "no",
+    "reasoning": "high",
+    "retries": "no",
+    "source_access": {
+      "bytes": 278,
+      "path": "raw/expert-source-access.json",
+      "sha256": "bd846c0ef305f8032fdefd5c3d53cb7fd60ed7b1a4d7e850d3f02a6741ed13b8"
+    },
+    "source_access_audit_scope": "agent-declared; not a browser or OS-level network audit",
+    "source_access_provenance": "agent_declared",
+    "source_map": {
+      "bytes": 5726,
+      "path": "raw/expert-teaching-source-map.md",
+      "sha256": "9117e195badd77d568a8b048506fa2693956fb87f15742e9abdc059387a77f2c"
+    },
+    "status": "SEALED"
+  },
+  "inputs": {
+    "framework": {
+      "bytes": 522,
+      "copied_path": "inputs/framework.md",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/docs/expert-teaching-v0.1.2-migration-inputs/B/framework.md",
+      "sha256": "636f8e7ef2bdf297801e33aa06824a012c6656838a86cae6cc81b0a9ca73c6f2"
+    },
+    "source": {
+      "bytes": 13337,
+      "copied_path": "inputs/source.md",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/docs/expert-teaching-v0.1.2-migration-inputs/B/source.xhtml",
+      "sha256": "216f3a01176e10084ee7a011da7f85cd8bb6e6f1558546db6414f9a285b05dad"
+    },
+    "source_allowlist": {
+      "bytes": 736,
+      "copied_path": "inputs/source-allowlist.json",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/docs/expert-teaching-v0.1.2-migration-inputs/B/source-allowlist.json",
+      "sha256": "da495145b46b4e621355c4c6c6921b55bed148ad462fbb2a37db18c96cf95f8a"
+    },
+    "source_map": {
+      "bytes": 2176,
+      "copied_path": "inputs/source-map.md",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/docs/expert-teaching-v0.1.2-migration-inputs/B/source-map.md",
+      "sha256": "7b44e4ffd14e75c4fb82201b54365ae3cb9a9d4afc7d4a7befeedd815bdcc109"
+    }
+  },
+  "product": {
+    "package": {
+      "bytes": 26345,
+      "path": "acceptance/expert-product-review.md",
+      "sha256": "07c22ec94571aa6ba49b0aba003f9c7b161cd5bc6a3f9d2bc2cc1d2f7e384c2f"
+    },
+    "status": "SEALED"
+  },
+  "review": {
+    "agent_id": "019fae21-dc09-7323-a3d7-5d0d22ee8e65",
+    "fidelity": "SOURCE_FIDELITY_PASS",
+    "metadata_provenance": "controller_declared",
+    "model": "gpt-5.6-terra",
+    "network": "allowlisted-only",
+    "prompt_modified": "no",
+    "reasoning": "high",
+    "report": {
+      "bytes": 1866,
+      "path": "acceptance/expert-teaching-review.md",
+      "sha256": "89f3f92ab6ec2cb848094991aafab30fa009a7b4ffad9cd4d3b1b9e434c9645c"
+    },
+    "retries": "no",
+    "source_access": {
+      "bytes": 222,
+      "path": "acceptance/reviewer-source-access.json",
+      "sha256": "98a96bce8544f41425fbebae22e427a46cf67e44b91471e4bb5942a446f0b077"
+    },
+    "source_access_audit_scope": "agent-declared; not a browser or OS-level network audit",
+    "source_access_provenance": "agent_declared",
+    "status": "SEALED",
+    "teaching": "TEACHING_PASS"
+  },
+  "run": "/Users/tianqiang/GitHub/t512192641/readerlab/runs/EXPERT-TEACHING-V0.1.2-MIGRATION-B-T2.10-01",
+  "schema": "readerlab-book-expert-teaching/v0.1",
+  "skill_fingerprint": {
+    "aggregate_sha256": "da7b0083e4b245df0a81aae0d4124adfd3fc69e015b17819aef08a5cb4e7b818",
+    "files": [
+      {
+        "bytes": 6804,
+        "path": "SKILL.md",
+        "sha256": "055afc0df5f504d54a6005beab7c7bc4916f4262580d46ef71371911d1f2d1b3"
+      },
+      {
+        "bytes": 6,
+        "path": "VERSION",
+        "sha256": "297b50f08386d3521f8fdaf2f78eb8d9d0acdf452d2e61596905fba37208c792"
+      },
+      {
+        "bytes": 272,
+        "path": "agents/openai.yaml",
+        "sha256": "0f31c6d39bfb17b3ae25c3434da8b0b852e7c09a5bb55ed13e88049e16437e63"
+      },
+      {
+        "bytes": 1557,
+        "path": "contracts/expert-teaching-contract.md",
+        "sha256": "85a1c983fcbddce8d8ffdc27071d2bac61dbe430af503b65dba10c74069a11aa"
+      },
+      {
+        "bytes": 2454,
+        "path": "contracts/input-contract.md",
+        "sha256": "0538b375f16d939c4a3bd18e189efa34d1068e589edc732b48cb07f4301618bd"
+      },
+      {
+        "bytes": 1292,
+        "path": "contracts/output-contract.md",
+        "sha256": "d86d0b8bc1abce51ba0a0e0b1d96a6880ecb8f45cfe453fe4adb30d54251e057"
+      },
+      {
+        "bytes": 1698,
+        "path": "contracts/review-contract.md",
+        "sha256": "ad2cfb355e8985ca843f9453ced759109d246ac9bebf8ec0178fd4f6d3e8c56a"
+      },
+      {
+        "bytes": 1039,
+        "path": "contracts/state-machine.md",
+        "sha256": "1394f6fa0568170bb4f80a3ca1072339f5a5ae763e70abe0be845d6bdfa4e6e2"
+      },
+      {
+        "bytes": 1484,
+        "path": "templates/expert-review-task.md",
+        "sha256": "a50368cfc8b2eb484687eeabadd7d65a96ecfd487d90c161ca7c95f7b71c9ea2"
+      },
+      {
+        "bytes": 1918,
+        "path": "templates/expert-task.md",
+        "sha256": "c6c4c9fc6a89391ae54d7d70b9f30ed2058c31c244e8862fdfda0133d93ef090"
+      },
+      {
+        "bytes": 705,
+        "path": "templates/product-review.md",
+        "sha256": "a046a44338a5c3798e0ca7cc87ab839e7a5481d469ddaed42b3d6e539d34a48c"
+      },
+      {
+        "bytes": 29964,
+        "path": "scripts/run.py",
+        "sha256": "d73aa853bd3ef7eb8ce038a5088bda070315cf885242367385079a06a742dc4a"
+      },
+      {
+        "bytes": 31207,
+        "path": "scripts/lib/control.py",
+        "sha256": "c7e05f72876991c2320f0b3676c09619fd3a90a811ffd3333da45401b3d97a13"
+      }
+    ],
+    "version": "0.1.2"
+  },
+  "skill_version": "0.1.2",
+  "source_allowlist": {
+    "bytes": 736,
+    "path": "inputs/source-allowlist.json",
+    "schema": "readerlab-book-expert-teaching/source-allowlist/v1",
+    "sha256": "da495145b46b4e621355c4c6c6921b55bed148ad462fbb2a37db18c96cf95f8a"
+  },
+  "source_boundary": {
+    "bytes": 1465,
+    "path": "control/source-boundary.json",
+    "schema": "readerlab-book-expert-teaching/source-boundary/v1",
+    "sha256": "1b34232ebabf5f9ffe3eb63e51aed003ce427dd33d24f77c1757b921445952ca",
+    "summary": {
+      "policy": "every canonical allowlist URL must occur in source-map; explicitly registered redirects may be extra",
+      "registered_urls": [
+        {
+          "id": "B-S5",
+          "kind": "canonical",
+          "status": "reference_only",
+          "url": "https://academic.oup.com/jaar/article/85/4/1118/4769542"
+        },
+        {
+          "id": "B-S3",
+          "kind": "canonical",
+          "status": "reference_only",
+          "url": "https://archive.org/details/sacredcanopyelem0000berg_m2h4"
+        },
+        {
+          "id": "B-S1",
+          "kind": "canonical",
+          "status": "allowed",
+          "url": "https://books.google.com/books?id=WcC-AYOq6Q4C"
+        },
+        {
+          "id": "B-S2",
+          "kind": "canonical",
+          "status": "reference_only",
+          "url": "https://openlibrary.org/books/OL5541935M/The_sacred_canopy"
+        },
+        {
+          "id": "B-S4",
+          "kind": "canonical",
+          "status": "reference_only",
+          "url": "https://uplopen.com/en/chapters/e/10.1515/9783111254005-005"
+        }
+      ],
+      "schema": "readerlab-book-expert-teaching/source-boundary/v1",
+      "source_map_urls": [
+        "https://academic.oup.com/jaar/article/85/4/1118/4769542",
+        "https://archive.org/details/sacredcanopyelem0000berg_m2h4",
+        "https://books.google.com/books?id=WcC-AYOq6Q4C",
+        "https://openlibrary.org/books/OL5541935M/The_sacred_canopy",
+        "https://uplopen.com/en/chapters/e/10.1515/9783111254005-005"
+      ],
+      "unreferenced_primary_urls": [],
+      "unreferenced_redirects": [],
+      "unregistered_urls": []
+    }
+  },
+  "status": "PRODUCT_READY",
+  "transitions": [
+    {
+      "at": "2026-07-29T13:33:21+00:00",
+      "from": "NONE",
+      "to": "EXPERT_OPEN"
+    },
+    {
+      "agent_id": "019fae1b-7e3b-7720-9627-58069239f492",
+      "at": "2026-07-29T13:45:45+00:00",
+      "from": "EXPERT_OPEN",
+      "stage": "expert",
+      "to": "REVIEW_OPEN"
+    },
+    {
+      "at": "2026-07-29T13:49:11+00:00",
+      "fidelity": "SOURCE_FIDELITY_PASS",
+      "from": "REVIEW_OPEN",
+      "reviewer_id": "019fae21-dc09-7323-a3d7-5d0d22ee8e65",
+      "stage": "review",
+      "teaching": "TEACHING_PASS",
+      "to": "REVIEW_TERMINAL"
+    },
+    {
+      "at": "2026-07-29T13:49:19+00:00",
+      "from": "REVIEW_TERMINAL",
+      "stage": "product",
+      "to": "PRODUCT_READY"
+    }
+  ],
+  "updated_at": "2026-07-29T13:49:19+00:00"
+}

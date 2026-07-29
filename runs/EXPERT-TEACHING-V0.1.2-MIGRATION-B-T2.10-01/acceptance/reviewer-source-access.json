@@ -1,0 +1,7 @@
+{
+  "schema": "readerlab-book-expert-teaching/source-access/v1",
+  "opened_urls": [],
+  "cited_only_urls": [],
+  "provenance": "agent_declared",
+  "audit_scope": "agent-declared; not a browser or OS-level network audit"
+}

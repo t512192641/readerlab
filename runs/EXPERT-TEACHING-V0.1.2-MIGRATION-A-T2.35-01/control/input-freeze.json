@@ -1,0 +1,30 @@
+{
+  "inputs": {
+    "framework": {
+      "bytes": 404,
+      "copied_path": "inputs/framework.md",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/docs/expert-teaching-v0.1.2-migration-inputs/A/framework.md",
+      "sha256": "591681b04f19b3c7357945f244e68bf9c7e064cba87ac1dc196cd0eca51428a9"
+    },
+    "source": {
+      "bytes": 34512,
+      "copied_path": "inputs/source.md",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/docs/expert-teaching-v0.1.2-migration-inputs/A/source.xhtml",
+      "sha256": "0f4af98ac9beb82cea8d4ad708191bf28aa7758645249e0640d6c1d9d5c4f88a"
+    },
+    "source_allowlist": {
+      "bytes": 1226,
+      "copied_path": "inputs/source-allowlist.json",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/docs/expert-teaching-v0.1.2-migration-inputs/A/source-allowlist.json",
+      "sha256": "d028594f15f7515303038946764578179da00f37a3ca26506104ccf35b182048"
+    },
+    "source_map": {
+      "bytes": 2842,
+      "copied_path": "inputs/source-map.md",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/docs/expert-teaching-v0.1.2-migration-inputs/A/source-map.md",
+      "sha256": "cafbb2a549ffa5e2b08a5035189ba0e31c386ee0c64e60ca1e987285bc713c19"
+    }
+  },
+  "schema": "readerlab-book-expert-teaching/input-freeze/v1",
+  "skill_version": "0.1.2"
+}

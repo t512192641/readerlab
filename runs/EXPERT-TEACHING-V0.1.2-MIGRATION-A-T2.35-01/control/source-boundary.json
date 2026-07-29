@@ -1,0 +1,67 @@
+{
+  "policy": "every canonical allowlist URL must occur in source-map; explicitly registered redirects may be extra",
+  "registered_urls": [
+    {
+      "id": "A-S1",
+      "kind": "canonical",
+      "status": "allowed",
+      "url": "https://groups.csail.mit.edu/belief-dynamics/MURI07/Gingesetal2007.pdf"
+    },
+    {
+      "id": "A-S3",
+      "kind": "canonical",
+      "status": "allowed",
+      "url": "https://ncmr.lps.library.cmu.edu/article/117/galley/120/view/"
+    },
+    {
+      "id": "A-S7",
+      "kind": "canonical",
+      "status": "reference_only",
+      "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/0162-895X.00058"
+    },
+    {
+      "id": "A-S6",
+      "kind": "canonical",
+      "status": "reference_only",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9236161/"
+    },
+    {
+      "id": "A-S8",
+      "kind": "canonical",
+      "status": "reference_only",
+      "url": "https://pubs.aeaweb.org/doi/10.1257/aer.p20171110"
+    },
+    {
+      "id": "A-S5",
+      "kind": "canonical",
+      "status": "allowed",
+      "url": "https://www.aeaweb.org/conference/2017/preliminary/paper/GBEn8SAT"
+    },
+    {
+      "id": "A-S2",
+      "kind": "canonical",
+      "status": "allowed",
+      "url": "https://www.researchgate.net/publication/223318054_Chapter_6_Noninstrumental_Reasoning_over_Sacred_Values_An_Indonesian_Case_Study"
+    },
+    {
+      "id": "A-S4",
+      "kind": "canonical",
+      "status": "allowed",
+      "url": "https://www.researchgate.net/publication/6123217_Sacred_Barriers_to_Conflict_Resolution"
+    }
+  ],
+  "schema": "readerlab-book-expert-teaching/source-boundary/v1",
+  "source_map_urls": [
+    "https://groups.csail.mit.edu/belief-dynamics/MURI07/Gingesetal2007.pdf",
+    "https://ncmr.lps.library.cmu.edu/article/117/galley/120/view/",
+    "https://onlinelibrary.wiley.com/doi/abs/10.1111/0162-895X.00058",
+    "https://pubmed.ncbi.nlm.nih.gov/9236161/",
+    "https://pubs.aeaweb.org/doi/10.1257/aer.p20171110",
+    "https://www.aeaweb.org/conference/2017/preliminary/paper/GBEn8SAT",
+    "https://www.researchgate.net/publication/223318054_Chapter_6_Noninstrumental_Reasoning_over_Sacred_Values_An_Indonesian_Case_Study",
+    "https://www.researchgate.net/publication/6123217_Sacred_Barriers_to_Conflict_Resolution"
+  ],
+  "unreferenced_primary_urls": [],
+  "unreferenced_redirects": [],
+  "unregistered_urls": []
+}
