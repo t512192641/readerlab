@@ -215,3 +215,54 @@
 - Archive：`artifacts/T2.37-U01-SOCIAL-CONNECTION-WRITER-RETURN-01.tar.gz`，最终 SHA-256 `d30f248dd8ae5d89921ca9d19bf81284f740ee86d7017760e4b5751ce0f03a6e`，29 个条目；不把自引用 archive hash 写入 archive 内部。
 - Checks：六个 T2.36→T2.37 `cmp`、所有 stage freeze `shasum -c`、Reader v1 未覆盖、T2.36 路径无 diff、`git diff --cached --check`（排除必须逐字节保留、原文既有行尾空白的 `inputs/u01-frozen.md`）通过。`python3 -B tests/entry.py` 35/36 通过；唯一失败是审计基线在本轮开始前已有的未跟踪 Markdown 未列入资产登记的全树穷举项，未修改或纳入提交。
 - Stop / Acceptance：`STOPPED_AFTER_PRODUCT_PACK_WAITING_FOR_PRODUCT_REVIEW`；产品负责人判词 `unknown`，下一生产授权 `none`。完成后停止，不修改 ReaderLab 长期合同、Skill、生产路线或产品标准。
+
+### Run: 2026-07-29 - T2.38 U01 social-connection Expert teaching
+
+- Task / Type / Tool：固定 U01、固定 Iris Marion Young Social Connection Model 与 T2.36 冻结来源范围下的 Expert
+  teaching diagnostic sidecar / 两个全新功能隔离 Codex Agent + allowlist Web Fetch + SHA-256 freeze；不启动
+  Writer、Reader、ABC、Discovery 或产品装配。
+- Context source / Boundary：`taskcards/T2.38.md`、T2.36 U01 与 source map 的逐字副本；不修改长期合同、
+  Skill、生产入口、产品标准、T2.36/T2.37 或任何历史 run。Expert 不读 T2.36 Expert 正文、Reader、Writer、
+  content lock、判词或其他 Agent 对话；审核者不读旧 Expert、Reader、Writer、产品判词或隐藏推理。
+- Agent contexts：Expert teaching `/root/u01_expert_teaching`；独立来源／教学审核
+  `/root/u01_expert_teaching_review`；均 `fork_turns="none"`、各一次语义执行。模型、reasoning、token、成本与
+  精确 Agent 墙钟时间未暴露，记录为 `unavailable`；retry `no`；Prompt modified `no`。
+- Exact read sets：Expert 读取 `runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01/inputs/u01-frozen.md`、
+  `inputs/frozen-source-map.md`、`control/expert-teaching-task.md`，以及 source map allowlist 页面；审核者读取
+  同一 run 的上述 U01、source map、`raw/expert-teaching-draft.md`、`raw/expert-teaching-source-map.md`、
+  `control/expert-teaching-review-task.md`，以及同一 allowlist 页面。除此之外未读取其他本地路径或 Agent 对话。
+- Source pages opened (Expert)：Cambridge 2006、Paperzz 2006、MIT 2004 PDF、Oxford 2011、SEP、Springer Zheng
+  2018 均成功；Cambridge Gunnemyr 2020 初次成功但后续行定位 timeout（未重试）；OUP24 原 URL 成功并重定向至
+  登记允许的 `https://oup.silverchair-cdn.com/book-minimal/58181/chapter-minimal/480373479`；UGR PDF Internal
+  Error（未采用、未重试）。仅直接打开 allowlist URL，无开放式搜索、无新增来源。
+- Source pages opened (review)：Cambridge 2006、Paperzz 2006、MIT 2004 PDF、Oxford 2011、SEP、Springer Zheng
+  2018 成功；Gunnemyr、OUP24 原 URL、登记 OUP CDN 与 UGR 本次 Internal Error，未以失败页面扩展结论，未重试；
+  无开放式搜索、无新增来源。
+- Input SHA-256：U01 `1c7973468c9d2716aee142de2d985a8f64d26ee673ae4a83c7e9d74d55c8804c`（16368 bytes）；固定
+  source map `f89b357700f05eb8ab9ee12602ddc81a736d28443fa10b4cb53fc0e825d33f0a`（T2.36 原始副本一致）。
+- Prompt／control freeze：Expert task `8545d270156bfd3f783d479ee81a2b11efa99ad40e4da69eb383f9054402e9a5`；
+  review task `3135f342aaf30a5e706736f58dd970719d869822482e046826c0a20422b69049`；product task
+  `bcf8a03dcab59a922fcd63a6f6448556869fced9287ebc2a511b0f7e94256861`；input-freeze
+  `884f4fa4abd02c54171e21b8e49ed092933832dc900a1cf61441fd1a1cc529b3`。阶段 0、Prompt、阶段 1、阶段 2、阶段 3
+  的 `shasum -c` 全部通过。
+- Result / Evidence type：Expert teaching `raw/expert-teaching-draft.md` SHA-256
+  `13d5cd6ae520fda515cc2a3a6c105ddd564d88d50d5232feea9ac399789053b2`；来源归属表 SHA-256
+  `1b518fc97a5bf0abe2d2c664ed049294ee7b42079c7401aa2e5ed3e4d71043f8`；独立审核报告 SHA-256
+  `9c9f7c64cce0bd17cbc9747775b00ca938bb4b5962b69821a1b4583eab87846f`。终局为
+  `SOURCE_FIDELITY_PASS` + `TEACHING_PASS`。正文无 M1/M2/M3 标签，教学整理与 U01 推论在来源表和正文中
+  分开标注。
+- Product pack：双门通过后由控制层机械复制冻结 U01 与完整教学课生成
+  `runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01/acceptance/expert-product-review.md`，SHA-256
+  `fe194eea4666ffd55bf25a4a33c11f2062b28e7fdffe26de41a994e73b9dde33`；不含来源表、技术评分、Writer、旧稿、
+  路线或版本密钥；产品负责人判词仍为 `unknown`。
+- Archive：`artifacts/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01.tar.gz`，22 个条目，最终 SHA-256
+  `30ee088275a68a8fccd852fa8147b1906343aad0dab48c49d3aefb8537047a3e`；archive hash 不写入 archive 自身，
+  由本账本记录。
+- Checks：T2.36 U01 与 source map `cmp`、所有 freeze、首两行终局、无 M1/M2/M3、产品包内容限制、archive
+  条目／完整性均通过。`python3 -B tests/entry.py` 共 36 项，35 项通过；资产计数项已同步通过，唯一失败是
+  审计基线在本轮开始前已有的未跟踪 Markdown 未列入资产登记全树穷举
+  （`test_asset_register_exhaustively_lists_taskcards_and_runs`），未修改或纳入提交。
+  `git diff --check` 需在 staging 后复核；冻结 U01 的既有行尾空白若出现，按逐字节输入保留并单独说明。
+- Stop / Acceptance：`STOPPED_AFTER_EXPERT_TEACHING_REVIEW`；双门通过后停止在产品负责人审阅前，产品接受
+  `unknown`、下一生产授权 `none`。完成后不根据结果启动 Writer 或修改 ReaderLab 长期合同、Skill、生产路线或
+  产品标准。

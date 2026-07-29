@@ -6,6 +6,13 @@
 
 ## 已验证事实
 
+- T2.38 已完成独立 Expert teaching diagnostic sidecar：固定 U01 与 T2.36 source map 已逐字复制并
+  冻结输入 hash；`/root/u01_expert_teaching` 一次产出教学版专家课与归属表，
+  `/root/u01_expert_teaching_review` 在另一个全新上下文一次完成来源／教学审核。终局为
+  `SOURCE_FIDELITY_PASS` + `TEACHING_PASS`；控制层据双门结果机械生成
+  `runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01/acceptance/expert-product-review.md`，
+  产品负责人判词仍为 `unknown`。本轮未运行 Writer、Reader、ABC、Discovery 或产品装配，也未改变
+  生产 runtime、长期合同、Skill 或产品标准。完整证据见该 run 与其归档（closeout 时补录 archive hash）。
 - T2.37 已从 T2.36 逐字复制六个冻结输入并记录原始 SHA-256；return brief、Writer return 任务、
   Fidelity／Depth v2 任务和产品包条件均已冻结。两个新上下文分别完成 Writer v2 与独立复核，
   Fidelity／Depth 均通过；匿名产品对照包已生成，产品负责人审阅仍为 `unknown`。完整证据见

@@ -1,0 +1,19 @@
+{
+  "task": "T2.38",
+  "run": "T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01",
+  "source_run": "T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01",
+  "source_commit": "7200081254bf35a5cdec6db6ef5e7b2ce25899c4",
+  "audit_commit": "c8ef926216a99c45ae1341d1c74acde94fd92ae3",
+  "branch": "experiment/u01-social-connection-depth-seam",
+  "fixed_c": "艾丽斯·玛丽恩·杨（Iris Marion Young）的社会联结责任模型（Social Connection Model）",
+  "inputs": [
+    {"path": "inputs/u01-frozen.md", "source_path": "runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01/inputs/u01-frozen.md", "bytes": 16368, "sha256": "1c7973468c9d2716aee142de2d985a8f64d26ee673ae4a83c7e9d74d55c8804c"},
+    {"path": "inputs/frozen-source-map.md", "source_path": "runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01/raw/source-map.md", "bytes": 10529, "sha256": "f89b357700f05eb8ab9ee12602ddc81a736d28443fa10b4cb53fc0e825d33f0a"}
+  ],
+  "source_scope": "only URLs registered in T2.36 source-map; no search or new source",
+  "agent_count": 2,
+  "retries": 0,
+  "prompt_changes": "no",
+  "writer": "not_run",
+  "abc_discovery_product_assembly": "not_run"
+}

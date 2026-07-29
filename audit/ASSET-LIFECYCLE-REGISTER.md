@@ -6,14 +6,14 @@
 
 ## 可重算数量投影
 
-- taskcard-count: `58`
-- run-container-count: `44`
-- current-run-container-count: `13`
+- taskcard-count: `59`
+- run-container-count: `45`
+- current-run-container-count: `14`
 - archived-run-container-count: `31`
-- run-file-count: `496`
+- run-file-count: `515`
 - archived-run-file-count: `317`
-- tracked-run-file-count: `231`
-- ignored-run-file-count: `265`
+- tracked-run-file-count: `248`
+- ignored-run-file-count: `267`
 - untracked-visible-run-file-count: `0`
 
 以上数字由 active tests 对真实路径与 Git ignored inventory 重新计算；正文中的说明不得成为
@@ -41,6 +41,7 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 
 ### 当前诊断任务
 
+- `taskcards/T2.38.md`：固定 U01、固定 Social Connection Model 与冻结来源范围下的 Expert teaching；双门 `SOURCE_FIDELITY_PASS + TEACHING_PASS`，产品包已生成，等待产品负责人审阅，未改变生产入口。
 - `taskcards/T2.37.md`：只修复 T2.36 Writer 归属表述并复核 Fidelity／Depth；双门通过，匿名产品包已生成，等待产品审阅，未改变生产入口。
 - `taskcards/T2.36.md`：固定 C 的 U01 内容链 seam；已在 `RETURN_WRITER + DEPTH_PASS`
   终局停止。它是本地 diagnostic sidecar，不是生产 runtime、产品判词或下一生产授权。
@@ -119,6 +120,7 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 
 ### 当前诊断 run
 
+- `runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01`：Expert teaching 与独立来源／教学完整度审核均通过；产品包已按双门条件机械生成，产品负责人判词仍为 `unknown`。
 - `runs/T2.37-U01-SOCIAL-CONNECTION-WRITER-RETURN-01`：T2.36 Writer return；Writer v2 与
   Fidelity／Depth v2 均通过，匿名产品包已生成，等待产品审阅。
 - `runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01`：固定 C 的四角色隔离 seam；Phase 2
