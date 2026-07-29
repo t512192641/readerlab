@@ -1,6 +1,6 @@
 {
   "skill_version": "0.1.0",
-  "replay_skill_version": "0.1.1",
+  "replay_skill_version": "0.1.2",
   "run": "runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01",
   "source": {
     "path": "runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01/inputs/u01-frozen.md",
@@ -12,7 +12,7 @@
   },
   "source_allowlist": {
     "path": ".agents/skills/readerlab-book-expert-teaching/tests/fixtures/t2.38-source-allowlist.json",
-    "sha256": "5eca499c6e8c899e5d44e97d91eb78884c76169f0638fab0e747fc2f334817ab"
+    "sha256": "07d8b4591c6a639f4c0f618572abb3d149d7eae8892996f785f92791e971009f"
   },
   "expert_draft": {
     "path": "runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01/raw/expert-teaching-draft.md",
@@ -22,12 +22,21 @@
     "path": "runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01/raw/expert-teaching-source-map.md",
     "sha256": "1b518fc97a5bf0abe2d2c664ed049294ee7b42079c7401aa2e5ed3e4d71043f8"
   },
+  "expert_access": {
+    "path": ".agents/skills/readerlab-book-expert-teaching/tests/fixtures/t2.38-expert-source-access.json",
+    "sha256": "cd28d68275a5f5515cc3c464fde0179b2e8989153651be2cbcaec4c4b60c2656"
+  },
   "review": {
     "path": "runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01/acceptance/expert-teaching-review.md",
     "sha256": "9c9f7c64cce0bd17cbc9747775b00ca938bb4b5962b69821a1b4583eab87846f"
   },
+  "reviewer_access": {
+    "path": ".agents/skills/readerlab-book-expert-teaching/tests/fixtures/t2.38-reviewer-source-access.json",
+    "sha256": "7f32c37e0004869ccc461b5f82d209e12cca999ba0f09c055c3b2ca5eaec51c6"
+  },
   "expected_product": {
     "v0.1.0_sha256": "fe194eea4666ffd55bf25a4a33c11f2062b28e7fdffe26de41a994e73b9dde33",
-    "v0.1.1_sha256": "859b72105a9ad1858dde720fc1c4ed2af7810b29da09efaaf8fa2696e9c8df1e"
+    "v0.1.1_sha256": "859b72105a9ad1858dde720fc1c4ed2af7810b29da09efaaf8fa2696e9c8df1e",
+    "v0.1.2_sha256": "859b72105a9ad1858dde720fc1c4ed2af7810b29da09efaaf8fa2696e9c8df1e"
   }
 }

@@ -1,0 +1,12 @@
+{
+  "audit_scope": "agent-declared; not a browser or OS-level network audit",
+  "cited_only_urls": [
+    "https://revistaseug.ugr.es/index.php/acfs/article/download/1040/1235/0"
+  ],
+  "opened_urls": [
+    "https://www.cambridge.org/core/journals/social-philosophy-and-policy/article/abs/responsibility-and-global-justice-a-social-connection-model/9308EE478561C7CE31E1F5A8F26CBE04",
+    "https://academic.oup.com/book/4381"
+  ],
+  "provenance": "agent_declared",
+  "schema": "readerlab-book-expert-teaching/source-access/v1"
+}

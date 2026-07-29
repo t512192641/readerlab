@@ -1,0 +1,25 @@
+# Independent review contract
+
+The reviewer runs in a fresh context and reads only the frozen original, framework, source map, Expert course, Expert source map, Expert access receipt, and review task. The reviewer may cite an existing `reference_only` URL in an audit explanation but may open only `allowed` URLs and explicitly registered redirects. The reviewer must truthfully write `acceptance/reviewer-source-access.json`, with `provenance: agent_declared`; this is not browser or OS-level network auditing. The reviewer must not read old runs, Writer/Reader material, product verdicts, hidden reasoning, or route history.
+
+Review two dimensions independently:
+
+## Source fidelity
+
+Check distortion of the framework, later extensions presented as original, teaching organization presented as a formal method, application inference presented as literature fact, and missing boundaries. The terminal is exactly one of:
+
+- `SOURCE_FIDELITY_PASS`
+- `RETURN_EXPERT_SOURCE`
+- `SOURCE_BLOCKED`
+
+## Teaching completeness
+
+Judge whether a normal reader can restate the core problem/distinction, explain internal relations, understand the independent case, use the framework on another problem, and recognize major misuse boundaries. The terminal is exactly one of:
+
+- `TEACHING_PASS`
+- `TEACHING_PARTIAL`
+- `TEACHING_FAIL`
+
+The reviewer must put both terminal lines first and must not rewrite the course. Only the pair `SOURCE_FIDELITY_PASS + TEACHING_PASS` can proceed to a product package.
+
+Review output URLs and the access receipt are checked mechanically: a new URL or a `blocked` URL fails sealing; an existing `reference_only` URL is permitted only as a citation, never as an opening permission.

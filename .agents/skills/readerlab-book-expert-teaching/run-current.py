@@ -9,12 +9,12 @@ import sys
 from pathlib import Path
 
 
-SKILL_ROOT = Path(__file__).resolve().parents[1]
+SKILL_ROOT = Path(__file__).resolve().parent
 try:
     version = (SKILL_ROOT / "CURRENT_VERSION").read_text(encoding="utf-8").strip()
 except (OSError, UnicodeError) as error:
     raise SystemExit(f"CURRENT_VERSION is unavailable: {error}") from error
-if re.fullmatch(r"0\.1\.[0-9]+", version) is None:
+if re.fullmatch(r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)", version) is None:
     raise SystemExit(f"invalid CURRENT_VERSION: {version!r}")
 target = SKILL_ROOT / "versions" / version / "scripts" / "run.py"
 version_dir = target.parents[1]

@@ -1,21 +1,21 @@
-# Expert Teaching Skill v0.1.1 Review Map
+# Expert Teaching Skill v0.1.2 Review Map
 
 ## 入口
 
 当前版本：
 
 ```bash
-python3 .agents/skills/readerlab-book-expert-teaching/scripts/run-current.py <command> ...
+python3 .agents/skills/readerlab-book-expert-teaching/run-current.py <command> ...
 ```
 
 显式入口：
 
 ```bash
-python3 .agents/skills/readerlab-book-expert-teaching/versions/0.1.1/scripts/run.py <command> ...
+python3 .agents/skills/readerlab-book-expert-teaching/versions/0.1.2/scripts/run.py <command> ...
 python3 .agents/skills/readerlab-book-expert-teaching/scripts/run.py <command> ...  # 历史 0.1.0
 ```
 
-`CURRENT_VERSION` 当前为 `0.1.1`。历史 0.1.0 根入口不可变；run 的记录版本、入口版本和 fingerprint
+`CURRENT_VERSION` 当前为 `0.1.2`。历史 0.1.0 根入口不可变；0.1.1 也保留在独立目录；run 的记录版本、入口版本和 fingerprint
 必须一致，错误入口 fail closed。
 
 命令：`init`、`seal-expert`、`seal-review`、`build-product-pack`、`verify`、`archive`。
@@ -32,12 +32,12 @@ NONE → EXPERT_OPEN → REVIEW_OPEN → REVIEW_TERMINAL → PRODUCT_READY
 ## 输入与输出
 
 `init` 固定 `source.md`、`framework.md`、`source-map.md` 和结构化 `source-allowlist.json`，写入
-bytes／SHA-256、任务、read set、Prompt freeze 和 stage 0。任务只展示 `allowed` URL 及显式登记的
-redirect；`reference_only` 与 `blocked` 不进入网络 allowlist。人工 Expert 只写两份 `raw/` 文件；
-`seal-expert` 与 `seal-review` 均拒绝新增或 blocked URL（review 可引用输入中已有的 reference-only URL），
-再分别冻结 stage 1／2。双门通过后控制层把原文转成可读 Markdown，加完整教学课与通用中文问题，写产品包
-和 stage 3。`archive` 先 `verify`，再把 run 打包；测试同时核验 archive 条目集合和冻结文件 hash，archive
-hash 留在命令输出／外部账本而不写入自身。
+bytes／SHA-256、任务、read set、Prompt freeze、闭合 `control/source-boundary.json` 和 stage 0。任务只展示
+`allowed` URL 及显式登记的 redirect；`reference_only` 与 `blocked` 不进入网络 allowlist。人工 Expert 写教学课、
+来源表和 `raw/expert-source-access.json`；reviewer 写报告和 `acceptance/reviewer-source-access.json`。
+两份回执、正文 URL 和 source map URL 均机械检查，再分别冻结 stage 1／2。双门通过后控制层把原文转成可读
+Markdown，加完整教学课与通用中文问题，写产品包和 stage 3。`archive` 先 `verify`，再把 run 打包；测试同时
+核验 archive 条目集合和所有冻结文件（含两份回执）hash，archive hash 留在命令输出／外部账本而不写入自身。
 
 ## 自动化与人工边界
 
@@ -60,17 +60,19 @@ Expert draft、Expert source map、review、结构化 allowlist 和冻结产品�
 `init`、`seal-expert`、`seal-review`、`build-product-pack`、`verify`、`archive`；回放后核验新版本产品
 hash、旧冻结产品 hash、archive 成员集合和成员 hash。不启动模型、不打开新来源、不把临时 run 当新语义实验。
 
-## v0.1.1 review surface
+## v0.1.2 review surface
 
-- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.1/SKILL.md`
-- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.1/contracts/`
-- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.1/templates/`
-- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.1/scripts/`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/SKILL.md`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/contracts/`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/templates/`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/scripts/`
 - `.agents/skills/readerlab-book-expert-teaching/CURRENT_VERSION`
-- `.agents/skills/readerlab-book-expert-teaching/scripts/run-current.py`
+- `.agents/skills/readerlab-book-expert-teaching/run-current.py`
 - Skill-local tests and the T2.38 replay fixtures
 
-根目录 `SKILL.md`、contracts、templates、agents、scripts 和 `VERSION` 是历史 0.1.0 实现，保持不变，
+0.1.0 baseline aggregate fingerprint 为 `4730c7392c67bd927b9d3609854141f6b8fb6297631381834d1d43275690233f`；
+source access schema 为 `readerlab-book-expert-teaching/source-access/v1`，source boundary schema 为
+`readerlab-book-expert-teaching/source-boundary/v1`。根目录 `SKILL.md`、contracts、templates、agents、scripts 和 `VERSION` 是历史 0.1.0 实现，保持不变，
 只作为明确历史入口和复验坐标。
 
 ## 明确未实现

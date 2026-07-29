@@ -1,0 +1,4 @@
+interface:
+  display_name: "ReaderLab Book Expert Teaching"
+  short_description: "Freeze, teach, review, and archive a framework stage"
+  default_prompt: "Use $readerlab-book-expert-teaching to run the versioned 0.1.2 fixed-source, fixed-framework Expert Teaching stage."

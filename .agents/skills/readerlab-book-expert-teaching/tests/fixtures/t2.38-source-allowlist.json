@@ -56,12 +56,6 @@
       "url": "https://revistaseug.ugr.es/index.php/acfs/article/download/1040/1235/0",
       "status": "reference_only",
       "redirects": []
-    },
-    {
-      "id": "blocked-example",
-      "url": "https://blocked.example.invalid/source",
-      "status": "blocked",
-      "redirects": []
     }
   ]
 }

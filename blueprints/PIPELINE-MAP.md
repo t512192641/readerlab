@@ -42,14 +42,14 @@ Expert、Judge、Writer、核验和装配描述的是功能责任，不预先决
 | [`contracts/BOOK-CONTENT-FLOW-v2.md`](../contracts/BOOK-CONTENT-FLOW-v2.md) | `现行内容流` | B1 就绪后至保真通过的 Reader 单元与 B2 确定性装配 | runtime 已集成或产品已接受 |
 | [`contracts/T1.8-independent-acceptance.md`](../contracts/T1.8-independent-acceptance.md) | `现行下游验收语义` | 冻结 B2 对象的独立验收语义与产品判断边界 | Judge 已取得资格 |
 
-### Expert Teaching Skill v0.1.1 候选指针（人工编排）
+### Expert Teaching Skill v0.1.2 候选指针（人工编排）
 
-- pointer：`.agents/skills/readerlab-book-expert-teaching/scripts/run-current.py`
-- current-version：`.agents/skills/readerlab-book-expert-teaching/CURRENT_VERSION` → `0.1.1`
+- pointer：`.agents/skills/readerlab-book-expert-teaching/run-current.py`
+- current-version：`.agents/skills/readerlab-book-expert-teaching/CURRENT_VERSION` → `0.1.2`
 - historical-entry：`.agents/skills/readerlab-book-expert-teaching/scripts/run.py`（不可变 `0.1.0`）
 - status：`candidate`；只支持人工启动的固定来源／固定框架 Expert Teaching 阶段，尚未进入生产入口。
-- scope：建立四项输入（含结构化来源 allowlist）与 Prompt 冻结、隔离任务文件、Expert 与独立审核的阶段冻结、
-  双门终局、产品审阅包、版本复验、验证和归档。
+- scope：建立四项输入（含结构化来源 allowlist）、source-map／allowlist 闭合摘要、两份 source-access 回执与
+  Prompt 冻结、隔离任务文件、Expert 与独立审核的阶段冻结、双门终局、产品审阅包、版本复验、验证和归档。
 - boundary：不改变产品语义或现行合同，不实现 Discovery、Writer、ABC、Judge、知识库或完整编排器；本指针不构成生产授权。
 
 `contracts/T1.3-discovery.md`—`contracts/T1.7-b2-assembly.md` 与

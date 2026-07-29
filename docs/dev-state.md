@@ -6,6 +6,13 @@
 
 ## 已验证事实
 
+- T2.41 在基线 `24512d27987a03add95fb81663418eed700bd6a6` 上发布 Skill `0.1.2` 候选：current dispatcher
+  已移至 `.agents/skills/readerlab-book-expert-teaching/run-current.py`，根 0.1.0 fingerprint 不再扫描它；
+  0.1.0 基线 aggregate fingerprint 为 `4730c7392c67bd927b9d3609854141f6b8fb6297631381834d1d43275690233f`。
+  0.1.2 增加 `source-access/v1` 回执、`source-boundary/v1` 闭合摘要、正文 URL 检查和显式 T2.38 access
+  fixtures；未运行迁移样本、语义 Agent、Writer、Discovery、ABC 或完整编排器。当前仍为人工编排、
+  `not_integrated`，产品接受为 `unknown`；0.1.0／0.1.1／0.1.2 结果不得混算。证据见
+  `docs/expert-teaching-skill-v0.1.2-change-receipt.md` 与 T2.41 ledger。
 - T2.40 从基线 `66eeaa1d8a068df3e73848717ee20b0c87b105918` 在
   `feature/readerlab-book-expert-teaching-skill-v0.1` 上发布 `readerlab-book-expert-teaching` Skill
   `0.1.1` 候选。根目录 0.1.0 实现保持不可变；current dispatcher 明确指向独立

@@ -6,14 +6,14 @@
 
 ## 可重算数量投影
 
-- taskcard-count: `61`
+- taskcard-count: `62`
 - run-container-count: `45`
 - current-run-container-count: `14`
 - archived-run-container-count: `31`
-- run-file-count: `515`
+- run-file-count: `516`
 - archived-run-file-count: `317`
 - tracked-run-file-count: `248`
-- ignored-run-file-count: `267`
+- ignored-run-file-count: `268`
 - untracked-visible-run-file-count: `0`
 
 以上数字由 active tests 对真实路径与 Git ignored inventory 重新计算；正文中的说明不得成为
@@ -41,6 +41,9 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 
 ### 当前诊断任务
 
+- `taskcards/T2.41.md`：在不运行迁移样本或语义 Agent 的前提下，发布 Expert Teaching Skill v0.1.2，修复
+  0.1.0 fingerprint／current dispatcher、source-access 回执、source-map／allowlist 闭合、正文 URL 门和
+  T2.38 mechanical replay；结果只作工程证据，`not_integrated`。
 - `taskcards/T2.40.md`：根据外部 Code Review 修正 Expert Teaching Skill 的版本共存、来源 allowlist、中文表达、内容泄露门、T2.38 replay 与运行元数据；不运行迁移样本或语义 Agent，0.1.0／0.1.1 结果不得混算。
 - `taskcards/T2.39.md`：把 T2.38 已验证的 Expert Teaching 控制能力实现为 `readerlab-book-expert-teaching` Skill v0.1 候选；仅做确定性 scaffold、Skill-local tests 与 T2.38 机械回放，不产生新的语义结果，尚未进入生产入口。
 - `taskcards/T2.38.md`：固定 U01、固定 Social Connection Model 与冻结来源范围下的 Expert teaching；双门 `SOURCE_FIDELITY_PASS + TEACHING_PASS`，产品包已生成，等待产品负责人审阅，未改变生产入口。
@@ -230,6 +233,7 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 - `docs/expert-teaching-skill-v0.1-review-map.md`
 - `docs/expert-teaching-skill-v0.1-review-brief.md`
 - `docs/expert-teaching-skill-v0.1-change-receipt.md`
+- `docs/expert-teaching-skill-v0.1.2-change-receipt.md`
 
 `docs/current-task.md` 是唯一当前行动门 owner，`docs/dev-state.md` 是唯一当前已验证工程事实
 owner；`CURRENT-STATE.md` 只保留兼容入口。本清单不复制当前判词、停止点或生产授权。
@@ -260,6 +264,19 @@ owner；`CURRENT-STATE.md` 只保留兼容入口。本清单不复制当前判�
 - `.agents/skills/readerlab-book-expert-teaching/versions/0.1.1/contracts/state-machine.md`
 - `.agents/skills/readerlab-book-expert-teaching/versions/0.1.1/templates/expert-task.md`
 - `.agents/skills/readerlab-book-expert-teaching/versions/0.1.1/templates/expert-review-task.md`
+- `.agents/skills/readerlab-book-expert-teaching/run-current.py`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/SKILL.md`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/contracts/expert-teaching-contract.md`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/contracts/input-contract.md`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/contracts/output-contract.md`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/contracts/review-contract.md`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/contracts/state-machine.md`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/templates/expert-task.md`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/templates/expert-review-task.md`
+- `.agents/skills/readerlab-book-expert-teaching/versions/0.1.2/templates/product-review.md`
+- `.agents/skills/readerlab-book-expert-teaching/tests/fixtures/t2.38-expert-source-access.json`
+- `.agents/skills/readerlab-book-expert-teaching/tests/fixtures/t2.38-reviewer-source-access.json`
 - `.agents/skills/readerlab-book-expert-teaching/versions/0.1.1/templates/product-review.md`
 
 T1.1 与 T1.2 分别拥有材料准入和 B1 上游节点；v2 是 B1 后至 B2 的现行内容流；T1.8

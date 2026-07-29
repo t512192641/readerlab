@@ -316,3 +316,40 @@
   Writer、Discovery、ABC 或 orchestrator。
 - Stop / Acceptance：完成指定提交和推送后停止；`implemented` 为 0.1.1 版本化实现，`verified` 仅指确定性
   checks 与 mechanical replay，`integrated: not_integrated`，`accepted: unknown`，下一生产授权 `none`。
+
+### Run: 2026-07-29 - T2.41 Expert Teaching Skill v0.1.2 migration-boundary hardening
+
+- Task / Type / Tool：0.1.0 fingerprint／current dispatcher、source-access 回执、source-map／allowlist 闭合、
+  正文 URL 检查和 T2.38 replay hardening / diagnostic engineering / 本主执行上下文 + 本地确定性工具。
+- Baseline / Branch：`24512d27987a03add95fb81663418eed700bd6a6`；
+  `feature/readerlab-book-expert-teaching-skill-v0.1`；发布独立 `versions/0.1.2/`，未修改 0.1.0 根文件。
+- Contexts：semantic Agent `none`；本轮没有启动模型。模型、reasoning、token、成本、精确墙钟和外部
+  execution receipt `unavailable`；Skill semantic calls `none`；external semantic contexts
+  `controller_declared`；network `no`；retry `no`；Prompt modified `no`。
+- Exact read set：`AGENTS.md`、`docs/current-task.md`、`docs/dev-state.md`、`docs/agent-run-ledger.md`、
+  `PRODUCT-DECISIONS.md`、`ENGINEERING-LESSONS.md`、`blueprints/PIPELINE-MAP.md`、
+  `audit/ASSET-LIFECYCLE-REGISTER.md`、`tools/run.py`、`tests/entry.py`、
+  `tests/test_repository_audit_guardrails.py`、`taskcards/T2.40.md`、0.1.0 根 Skill、0.1.1 独立 Skill、
+  v0.1.2 working tree、T2.38 fixture 登记的 source／source map／Expert／review／产品包和
+  `/Users/tianqiang/.codex/skills/.system/skill-creator/SKILL.md`。未读取新外部来源或其他路线结果。
+- Source / search：无外部页面打开、无搜索、无网络、无 redirect 自动扩展、无语义调用；T2.38 replay 只按
+  fixture 登记路径注入冻结字节，并使用显式 Expert／reviewer access fixtures。
+- Created / changed：T2.41 taskcard、0.1.2 版本目录、根目录 current dispatcher、access／allowlist fixtures、
+  Skill-local tests、0.1.2 change receipt、阶段状态、review map／brief、blueprint pointer、current／dev state、
+  asset register 和本条 ledger；未修改 `PRODUCT-DECISIONS.md`、`contracts/BOOK-CONTENT-FLOW-v2.md`、
+  T2.36—T2.40 冻结产物或历史产品判词。
+- Frozen identities：0.1.0 baseline aggregate fingerprint
+  `4730c7392c67bd927b9d3609854141f6b8fb6297631381834d1d43275690233f`；T2.36 source
+  `1c7973468c9d2716aee142de2d985a8f64d26ee673ae4a83c7e9d74d55c8804c`；source map
+  `f89b357700f05eb8ab9ee12602ddc81a736d28443fa10b4cb53fc0e825d33f0a`；allowlist
+  `07d8b4591c6a639f4c0f618572abb3d149d7eae8892996f785f92791e971009f`；Expert access
+  `cd28d68275a5f5515cc3c464fde0179b2e8989153651be2cbcaec4c4b60c2656`；reviewer access
+  `7f32c37e0004869ccc461b5f82d209e12cca999ba0f09c055c3b2ca5eaec51c6`；0.1.2 replay product
+  `859b72105a9ad1858dde720fc1c4ed2af7810b29da09efaaf8fa2696e9c8df1e`。
+- Verification：Skill-local deterministic tests `36/36` 通过；T2.38 mechanical replay（含 access receipt、
+  source boundary、产品 hash、archive 条目和两份回执 hash）通过；quick validation 通过；repository active
+  tests `35/36` 通过，唯一失败是本轮开始前已存在且未纳入资产登记的 Markdown 影子文件穷举项；本轮未修改
+  或纳入这些文件。`git diff --check` 和敏感信息检查通过。不得运行迁移样本，不启动 Writer、Discovery、ABC
+  或 orchestrator。
+- Stop / Acceptance：提交并推送后停止；`implemented` 为 0.1.2 版本化实现，`verified` 仅限确定性 checks
+  与 mechanical replay，`integrated: not_integrated`，`accepted: unknown`，下一生产授权 `none`。

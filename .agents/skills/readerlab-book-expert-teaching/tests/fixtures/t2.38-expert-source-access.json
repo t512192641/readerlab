@@ -1,0 +1,19 @@
+{
+  "audit_scope": "agent-declared; not a browser or OS-level network audit",
+  "cited_only_urls": [
+    "https://revistaseug.ugr.es/index.php/acfs/article/download/1040/1235/0"
+  ],
+  "opened_urls": [
+    "https://www.cambridge.org/core/journals/social-philosophy-and-policy/article/abs/responsibility-and-global-justice-a-social-connection-model/9308EE478561C7CE31E1F5A8F26CBE04",
+    "https://paperzz.com/doc/7682828/responsibility-and-global-justice--a-social",
+    "https://web.mit.edu/sgrp/2007/no1/YoungRGLJ.pdf",
+    "https://academic.oup.com/book/4381",
+    "https://plato.stanford.edu/entries/justice-global/index.html",
+    "https://link.springer.com/article/10.1007/s10677-018-9892-8",
+    "https://www.cambridge.org/core/journals/hypatia/article/why-the-social-connection-model-fails-participation-is-neither-necessary-nor-sufficient-for-political-responsibility/99265732F023B1E7BDD1493DE80C2FA8",
+    "https://academic.oup.com/book/58181/chapter/480373479",
+    "https://oup.silverchair-cdn.com/book-minimal/58181/chapter-minimal/480373479"
+  ],
+  "provenance": "agent_declared",
+  "schema": "readerlab-book-expert-teaching/source-access/v1"
+}
