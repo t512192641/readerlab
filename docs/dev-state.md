@@ -6,6 +6,10 @@
 
 ## 已验证事实
 
+- T2.37 已从 T2.36 逐字复制六个冻结输入并记录原始 SHA-256；return brief、Writer return 任务、
+  Fidelity／Depth v2 任务和产品包条件均已冻结。两个新上下文分别完成 Writer v2 与独立复核，
+  Fidelity／Depth 均通过；匿名产品对照包已生成，产品负责人审阅仍为 `unknown`。完整证据见
+  `runs/T2.37-U01-SOCIAL-CONNECTION-WRITER-RETURN-01/`，不改变生产 runtime 的 `not integrated` 状态。
 - T2.36 已完成固定 C 的单一 U01 diagnostic seam：Phase 1 Expert 课、Phase 2 内容锁、独立 Writer 与独立 Fidelity／Depth 审核均有冻结文件和 hash；终局为 `LOCK_FOR_WRITER`、`RETURN_WRITER`、`DEPTH_PASS`。由于 Fidelity 未通过，未修改 Reader、未读取旧稿、未生成产品审阅包或版本密钥。完整证据见 `runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01/` 与 `artifacts/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01.tar.gz`；它不改变生产 runtime 的 `not integrated` 状态。
 - T2.35 正式生产状态仍停在 `P2_PASS_WORTH_WRITING`；任务卡、run、冻结证据和生产授权均未
   改变，完整语义 payload 继续本地 ignored。

@@ -201,3 +201,17 @@
 - Repeat-error check：未发现与既有语义／产品失败相同的已确认机制；两项均为本地路径／归档机械恢复，未升级全局候选。
 - Reusable lesson / rule candidate：无；功能性 Agent 隔离、失败重派与 artifact freeze 的适用边界已由当前项目规则拥有，不新增平行规则。
 - Follow-up：停止。若产品负责人希望修订 Reader，必须在新任务中重新冻结 Writer 输入、版本和验收边界；不得覆盖本 run 的冻结文件。
+
+### Run: 2026-07-29 - T2.37 U01 social-connection Writer return
+
+- Task / Type / Tool：T2.36 `RETURN_WRITER` 的两处归属修正、来源说明、独立 Fidelity／Depth v2 与条件性产品匿名包 / diagnostic / 两个全新功能隔离 Codex Agent + SHA-256 freeze。
+- Context source / Boundary：产品负责人明确只修复 Writer 保真问题；分支先按要求推送到 `origin`，随后从 T2.36 逐字复制六个冻结输入。不得重开 Expert、内容审核或来源研究，不得读取旧稿直到双门通过；不修改长期合同、Skill、产品标准或生产入口。
+- Files read / changed：`taskcards/T2.37.md`、当前／开发状态、资产生命周期投影、本 run 六个输入副本、return brief、两份阶段任务、Reader v2、Fidelity／Depth v2、条件性产品包、run manifest／ledger 与本地 archive。旧直接路线 `audit/current-runtime-snapshot/u01-u03/direct-output/U01.md` 只在双门通过后由控制层机械读取；Reader v1 未进入产品包。T2.36 六个源文件未修改。
+- Agent contexts：Writer return `/root/u01_writer_return`；Fidelity／Depth v2 `/root/u01_fidelity_depth_v2`。模型、reasoning、token、成本均 `unavailable`；两个 Agent 均 `fork_turns="none"`，精确 read set 见各自阶段任务；两阶段均 `network: no`、`retry: no`、`Prompt modified: no`。
+- 时间记录：run 启动 `2026-07-29T05:20:53-0400`；Writer 输出文件落盘 `2026-07-29T05:23:09-0400`；Fidelity／Depth v2 报告落盘 `2026-07-29T05:25:46-0400`；产品包／归档机械步骤结束 `2026-07-29T05:30:51-0400`。两个 Agent 的精确开始时间不可取得，记 `unavailable`，不倒推墙钟。
+- Input SHA-256：U01 `1c7973468c9d2716aee142de2d985a8f64d26ee673ae4a83c7e9d74d55c8804c`；Expert `86540f040d9002ffd5e6bff581a5455c24fdc197e2bfaec712a3d8944df8b65b`；source map `f89b357700f05eb8ab9ee12602ddc81a736d28443fa10b4cb53fc0e825d33f0a`；content lock `2f0c8ec0b4e06c5957010dec5a68aa8dcd957cdb7344c6acf3553430a969ed47`；Reader v1 `49fe703f2e578a477390d621d6d82f566a4d1342baa70ab761f1aac0cee1e71a`；T2.36 Fidelity／Depth `d801a153a2f948d43ed508c4f2dc27919cc189ddf59a724abada04ccbcdeecfc`。
+- Prompt／control freeze：return brief `00a1629d58a8793e5ef9d6809dc28e230bdd8b92fcaaf1477e12411ade865b66`；Writer task `5d661471002bd8e82ace65681c6ea3159f3ce76bc97e776ef06ce982e1e9b3cc`；Fidelity／Depth task `17a99eaa72754ac0b8567af204d3e19e13295c5bf3c5aaeaa2fcff20ea1e2156`；product task `702aa3163586d9569cc075182341fbd334bbe9ffb4915f94283cf52bbdad8218`。六个输入与阶段冻结记录分别在 `control/freeze-stage-0.sha256` 至 `freeze-stage-3.sha256`。
+- Result / Evidence type：Writer v2 只改两处教学／案例归属并添加指定来源说明，SHA-256 `a329df15d0162ea16479a56554970aba6a29d03ea993bdc9c959834682102a02`；Fidelity／Depth v2 报告 SHA-256 `8751f9719cddf0972248f5d98c18a2c73c0ab0da26f41a211abe958414522862`，终局 `FIDELITY_PASS` + `DEPTH_PASS`。产品匿名包最终冻结 SHA-256 `0a462fe1c17f049ba3a486c7828ebe9e30fc71416b71933567d075ae3f88bc05`（仅做 EOF 与行尾空白规范化，不改变可见内容）；版本密钥 SHA-256 `acb0ac703f9ea78fd73bd94069423815e9f10680efc4e23c731b7701ac8fb748`，产品审阅前不得打开。
+- Archive：`artifacts/T2.37-U01-SOCIAL-CONNECTION-WRITER-RETURN-01.tar.gz`，最终 SHA-256 `d30f248dd8ae5d89921ca9d19bf81284f740ee86d7017760e4b5751ce0f03a6e`，29 个条目；不把自引用 archive hash 写入 archive 内部。
+- Checks：六个 T2.36→T2.37 `cmp`、所有 stage freeze `shasum -c`、Reader v1 未覆盖、T2.36 路径无 diff、`git diff --cached --check`（排除必须逐字节保留、原文既有行尾空白的 `inputs/u01-frozen.md`）通过。`python3 -B tests/entry.py` 35/36 通过；唯一失败是审计基线在本轮开始前已有的未跟踪 Markdown 未列入资产登记的全树穷举项，未修改或纳入提交。
+- Stop / Acceptance：`STOPPED_AFTER_PRODUCT_PACK_WAITING_FOR_PRODUCT_REVIEW`；产品负责人判词 `unknown`，下一生产授权 `none`。完成后停止，不修改 ReaderLab 长期合同、Skill、生产路线或产品标准。

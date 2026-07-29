@@ -6,13 +6,13 @@
 
 ## 可重算数量投影
 
-- taskcard-count: `57`
-- run-container-count: `43`
-- current-run-container-count: `12`
+- taskcard-count: `58`
+- run-container-count: `44`
+- current-run-container-count: `13`
 - archived-run-container-count: `31`
-- run-file-count: `474`
+- run-file-count: `496`
 - archived-run-file-count: `317`
-- tracked-run-file-count: `209`
+- tracked-run-file-count: `231`
 - ignored-run-file-count: `265`
 - untracked-visible-run-file-count: `0`
 
@@ -41,6 +41,7 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 
 ### 当前诊断任务
 
+- `taskcards/T2.37.md`：只修复 T2.36 Writer 归属表述并复核 Fidelity／Depth；双门通过，匿名产品包已生成，等待产品审阅，未改变生产入口。
 - `taskcards/T2.36.md`：固定 C 的 U01 内容链 seam；已在 `RETURN_WRITER + DEPTH_PASS`
   终局停止。它是本地 diagnostic sidecar，不是生产 runtime、产品判词或下一生产授权。
 
@@ -118,6 +119,8 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 
 ### 当前诊断 run
 
+- `runs/T2.37-U01-SOCIAL-CONNECTION-WRITER-RETURN-01`：T2.36 Writer return；Writer v2 与
+  Fidelity／Depth v2 均通过，匿名产品包已生成，等待产品审阅。
 - `runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01`：固定 C 的四角色隔离 seam；Phase 2
   为 `LOCK_FOR_WRITER`，Phase 4 为 `RETURN_WRITER + DEPTH_PASS`，因此没有产品对照包或版本密钥。
   完整本地 payload 与归档按任务卡保留；不构成生产接入或产品接受。
