@@ -1,0 +1,11 @@
+0f4af98ac9beb82cea8d4ad708191bf28aa7758645249e0640d6c1d9d5c4f88a  inputs/source.md  # 34512 bytes
+8c837c476a98239782a0aba919c926cc2ee724d98bcfe631e67efff6f8db64b6  inputs/framework.md  # 462 bytes
+990a729d510e98a64db671981bac90cc16390b7ed3e44b413ffb6b432af43b35  inputs/source-map.md  # 1220 bytes
+508cc96e31a89d35a395d3c8ef49f51f580a24e80c942018e553f9f2858393c3  inputs/source-allowlist.json  # 513 bytes
+8794980d8d81ed0915a82e0a08935c094b1c6e746bb98e5b4bcc41a5fd8a9221  control/source-allowlist.json  # 1218 bytes
+0c5c6c384109cbc618b481ae7a7b95f5613edc216ddc350658dd5d07f13c5fd8  control/source-boundary.json  # 1098 bytes
+536159ae20e8eb83127e29c08908e74bfa00fe818dbbe7a846e3ff5c5469217e  control/expert-task.md  # 2579 bytes
+f86276c6bad263306014db5c610be6aaf253b28278b8bbd05b7e52f16c0feabb  control/review-task.md  # 2124 bytes
+c8a463d168ce177bf5657a0375fc5041852eac845378f466a46b029a78f9e05d  control/product-review-task.md  # 303 bytes
+e8bf93036dc64c9c66d9b6433eda0f03976908b3682e2c2d25f7d2ec83ecaebd  control/expert-read-set.json  # 881 bytes
+d31dd22d783ff4727b2bd79b1803f9b65c4de46aed10b9bc471307d8d126eb3e  control/review-read-set.json  # 961 bytes

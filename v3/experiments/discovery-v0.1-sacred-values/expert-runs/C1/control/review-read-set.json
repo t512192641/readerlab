@@ -1,0 +1,29 @@
+{
+  "allowed_source_urls": [
+    "https://pubmed.ncbi.nlm.nih.gov/12860191/",
+    "https://pubmed.ncbi.nlm.nih.gov/17460042/"
+  ],
+  "exact_local_files": [
+    "inputs/source.md",
+    "inputs/framework.md",
+    "inputs/source-map.md",
+    "raw/expert-teaching-draft.md",
+    "raw/expert-teaching-source-map.md",
+    "control/review-task.md"
+  ],
+  "forbidden": [
+    "old runs",
+    "other agents or hidden reasoning",
+    "Writer/Reader/ABC/Discovery outputs",
+    "product verdicts and route history"
+  ],
+  "network": "allowed URLs and explicitly registered redirects only; no open-ended search",
+  "registered_redirect_count": 0,
+  "role": "Independent review",
+  "schema": "readerlab-book-expert-teaching/read-set/v1.1",
+  "source_status_counts": {
+    "allowed": 2,
+    "blocked": 0,
+    "reference_only": 0
+  }
+}

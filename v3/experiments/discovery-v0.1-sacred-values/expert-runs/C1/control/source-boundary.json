@@ -1,0 +1,25 @@
+{
+  "policy": "every canonical allowlist URL must occur in source-map; explicitly registered redirects may be extra",
+  "registered_urls": [
+    {
+      "id": "C1-S1",
+      "kind": "canonical",
+      "status": "allowed",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12860191/"
+    },
+    {
+      "id": "C1-S2",
+      "kind": "canonical",
+      "status": "allowed",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17460042/"
+    }
+  ],
+  "schema": "readerlab-book-expert-teaching/source-boundary/v1",
+  "source_map_urls": [
+    "https://pubmed.ncbi.nlm.nih.gov/12860191/",
+    "https://pubmed.ncbi.nlm.nih.gov/17460042/"
+  ],
+  "unreferenced_primary_urls": [],
+  "unreferenced_redirects": [],
+  "unregistered_urls": []
+}

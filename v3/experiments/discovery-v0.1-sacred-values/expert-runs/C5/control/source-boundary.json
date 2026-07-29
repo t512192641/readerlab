@@ -1,0 +1,32 @@
+{
+  "policy": "every canonical allowlist URL must occur in source-map; explicitly registered redirects may be extra",
+  "registered_urls": [
+    {
+      "id": "C5-S2",
+      "kind": "canonical",
+      "status": "allowed",
+      "url": "https://www.aeaweb.org/articles?id=10.1257/aer.15000001&page=116"
+    },
+    {
+      "id": "C5-S1",
+      "kind": "canonical",
+      "status": "allowed",
+      "url": "https://www.aeaweb.org/articles?id=10.1257/jel.20191546"
+    },
+    {
+      "id": "C5-S3",
+      "kind": "canonical",
+      "status": "allowed",
+      "url": "https://www.cambridge.org/core/journals/international-organization/article/abs/national-institutions-and-global-public-goods-are-democracies-more-cooperative-in-climate-change-policy/3B04986C13488B291DF27F312DC23665"
+    }
+  ],
+  "schema": "readerlab-book-expert-teaching/source-boundary/v1",
+  "source_map_urls": [
+    "https://www.aeaweb.org/articles?id=10.1257/aer.15000001&page=116",
+    "https://www.aeaweb.org/articles?id=10.1257/jel.20191546",
+    "https://www.cambridge.org/core/journals/international-organization/article/abs/national-institutions-and-global-public-goods-are-democracies-more-cooperative-in-climate-change-policy/3B04986C13488B291DF27F312DC23665"
+  ],
+  "unreferenced_primary_urls": [],
+  "unreferenced_redirects": [],
+  "unregistered_urls": []
+}

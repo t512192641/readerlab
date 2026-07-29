@@ -1,0 +1,7 @@
+{
+  "schema": "readerlab-book-expert-teaching/source-allowlist/v1",
+  "sources": [
+    {"id": "C1-S1", "url": "https://pubmed.ncbi.nlm.nih.gov/12860191/", "status": "allowed", "redirects": []},
+    {"id": "C1-S2", "url": "https://pubmed.ncbi.nlm.nih.gov/17460042/", "status": "allowed", "redirects": []}
+  ]
+}

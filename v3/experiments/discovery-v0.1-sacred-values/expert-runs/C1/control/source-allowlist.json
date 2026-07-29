@@ -1,0 +1,30 @@
+{
+  "allowed_urls": [
+    "https://pubmed.ncbi.nlm.nih.gov/12860191/",
+    "https://pubmed.ncbi.nlm.nih.gov/17460042/"
+  ],
+  "entries": [
+    {
+      "id": "C1-S1",
+      "redirects": [],
+      "status": "allowed",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12860191/"
+    },
+    {
+      "id": "C1-S2",
+      "redirects": [],
+      "status": "allowed",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17460042/"
+    }
+  ],
+  "reviewable_urls": [
+    "https://pubmed.ncbi.nlm.nih.gov/12860191/",
+    "https://pubmed.ncbi.nlm.nih.gov/17460042/"
+  ],
+  "schema": "readerlab-book-expert-teaching/source-allowlist/v1",
+  "status_counts": {
+    "allowed": 2,
+    "blocked": 0,
+    "reference_only": 0
+  }
+}

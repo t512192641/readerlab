@@ -1,0 +1,219 @@
+{
+  "created_at": "2026-07-29T17:08:47+00:00",
+  "expert": {
+    "agent_id": "019faed9-ed7f-73a1-b08c-e7e50d4bd324",
+    "draft": {
+      "bytes": 8516,
+      "path": "raw/expert-teaching-draft.md",
+      "sha256": "763d9df99a53f6b39063684877a7d3a354137c82587ecbd5232659706177b789"
+    },
+    "metadata_provenance": "controller_declared",
+    "model": "gpt-5.6-sol",
+    "network": "allowlisted-only",
+    "prompt_modified": "no",
+    "reasoning": "high",
+    "retries": "no",
+    "source_access": {
+      "bytes": 322,
+      "path": "raw/expert-source-access.json",
+      "sha256": "38765ef84a506bdad2d8bbddd0e46f4d6f1e8fcc6dd996198d839878b287ef74"
+    },
+    "source_access_audit_scope": "agent-declared; not a browser or OS-level network audit",
+    "source_access_provenance": "agent_declared",
+    "source_map": {
+      "bytes": 3897,
+      "path": "raw/expert-teaching-source-map.md",
+      "sha256": "c9008a50743a49c8b20746d701d54dd1387512059f4b6f0ff60d51fca9bd4fa1"
+    },
+    "status": "SEALED"
+  },
+  "inputs": {
+    "framework": {
+      "bytes": 405,
+      "copied_path": "inputs/framework.md",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/v3/experiments/discovery-v0.1-sacred-values/expert/C1/framework.md",
+      "sha256": "a95dc80dde7f7e6a4943fa26bf5f9ff063da5e77bb0877a13bcbec20e84132b7"
+    },
+    "source": {
+      "bytes": 34512,
+      "copied_path": "inputs/source.md",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/docs/expert-teaching-v0.1.2-migration-inputs/A/source.xhtml",
+      "sha256": "0f4af98ac9beb82cea8d4ad708191bf28aa7758645249e0640d6c1d9d5c4f88a"
+    },
+    "source_allowlist": {
+      "bytes": 310,
+      "copied_path": "inputs/source-allowlist.json",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/v3/experiments/discovery-v0.1-sacred-values/expert/C1/source-allowlist.json",
+      "sha256": "a28f845f8a0e46143c22c926d7b5955fefc50819c9d1b3868661b0d437bd7048"
+    },
+    "source_map": {
+      "bytes": 976,
+      "copied_path": "inputs/source-map.md",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/v3/experiments/discovery-v0.1-sacred-values/expert/C1/source-map.md",
+      "sha256": "6f15c3330372fc900c5f5dba960866d57fc1444df8bbba7b5053066d50065892"
+    }
+  },
+  "product": {
+    "status": "NOT_CREATED"
+  },
+  "review": {
+    "agent_id": "019faedf-5fae-7cd2-80fa-75e3befe7e27",
+    "fidelity": "SOURCE_BLOCKED",
+    "metadata_provenance": "controller_declared",
+    "model": "gpt-5.6-terra",
+    "network": "allowlisted-only",
+    "prompt_modified": "no",
+    "reasoning": "high",
+    "report": {
+      "bytes": 1899,
+      "path": "acceptance/expert-teaching-review.md",
+      "sha256": "dd12d8e8f078320d1e6794a0bb5e34820b2b907f7ae18b0aa612c7f16f7f1db9"
+    },
+    "retries": "no",
+    "source_access": {
+      "bytes": 322,
+      "path": "acceptance/reviewer-source-access.json",
+      "sha256": "b8063b9f36e7d8ba8d38551244aac483c673bf348d319be6c014756acbded902"
+    },
+    "source_access_audit_scope": "agent-declared; not a browser or OS-level network audit",
+    "source_access_provenance": "agent_declared",
+    "status": "SEALED",
+    "teaching": "TEACHING_PASS"
+  },
+  "run": "/Users/tianqiang/GitHub/t512192641/readerlab/v3/experiments/discovery-v0.1-sacred-values/expert-runs/C1",
+  "schema": "readerlab-book-expert-teaching/v0.1",
+  "skill_fingerprint": {
+    "aggregate_sha256": "da7b0083e4b245df0a81aae0d4124adfd3fc69e015b17819aef08a5cb4e7b818",
+    "files": [
+      {
+        "bytes": 6804,
+        "path": "SKILL.md",
+        "sha256": "055afc0df5f504d54a6005beab7c7bc4916f4262580d46ef71371911d1f2d1b3"
+      },
+      {
+        "bytes": 6,
+        "path": "VERSION",
+        "sha256": "297b50f08386d3521f8fdaf2f78eb8d9d0acdf452d2e61596905fba37208c792"
+      },
+      {
+        "bytes": 272,
+        "path": "agents/openai.yaml",
+        "sha256": "0f31c6d39bfb17b3ae25c3434da8b0b852e7c09a5bb55ed13e88049e16437e63"
+      },
+      {
+        "bytes": 1557,
+        "path": "contracts/expert-teaching-contract.md",
+        "sha256": "85a1c983fcbddce8d8ffdc27071d2bac61dbe430af503b65dba10c74069a11aa"
+      },
+      {
+        "bytes": 2454,
+        "path": "contracts/input-contract.md",
+        "sha256": "0538b375f16d939c4a3bd18e189efa34d1068e589edc732b48cb07f4301618bd"
+      },
+      {
+        "bytes": 1292,
+        "path": "contracts/output-contract.md",
+        "sha256": "d86d0b8bc1abce51ba0a0e0b1d96a6880ecb8f45cfe453fe4adb30d54251e057"
+      },
+      {
+        "bytes": 1698,
+        "path": "contracts/review-contract.md",
+        "sha256": "ad2cfb355e8985ca843f9453ced759109d246ac9bebf8ec0178fd4f6d3e8c56a"
+      },
+      {
+        "bytes": 1039,
+        "path": "contracts/state-machine.md",
+        "sha256": "1394f6fa0568170bb4f80a3ca1072339f5a5ae763e70abe0be845d6bdfa4e6e2"
+      },
+      {
+        "bytes": 1484,
+        "path": "templates/expert-review-task.md",
+        "sha256": "a50368cfc8b2eb484687eeabadd7d65a96ecfd487d90c161ca7c95f7b71c9ea2"
+      },
+      {
+        "bytes": 1918,
+        "path": "templates/expert-task.md",
+        "sha256": "c6c4c9fc6a89391ae54d7d70b9f30ed2058c31c244e8862fdfda0133d93ef090"
+      },
+      {
+        "bytes": 705,
+        "path": "templates/product-review.md",
+        "sha256": "a046a44338a5c3798e0ca7cc87ab839e7a5481d469ddaed42b3d6e539d34a48c"
+      },
+      {
+        "bytes": 29964,
+        "path": "scripts/run.py",
+        "sha256": "d73aa853bd3ef7eb8ce038a5088bda070315cf885242367385079a06a742dc4a"
+      },
+      {
+        "bytes": 31207,
+        "path": "scripts/lib/control.py",
+        "sha256": "c7e05f72876991c2320f0b3676c09619fd3a90a811ffd3333da45401b3d97a13"
+      }
+    ],
+    "version": "0.1.2"
+  },
+  "skill_version": "0.1.2",
+  "source_allowlist": {
+    "bytes": 310,
+    "path": "inputs/source-allowlist.json",
+    "schema": "readerlab-book-expert-teaching/source-allowlist/v1",
+    "sha256": "a28f845f8a0e46143c22c926d7b5955fefc50819c9d1b3868661b0d437bd7048"
+  },
+  "source_boundary": {
+    "bytes": 720,
+    "path": "control/source-boundary.json",
+    "schema": "readerlab-book-expert-teaching/source-boundary/v1",
+    "sha256": "120cadad58b4fbcc6490670335021e2cdc5e44818f6d5b5cda430df100bad089",
+    "summary": {
+      "policy": "every canonical allowlist URL must occur in source-map; explicitly registered redirects may be extra",
+      "registered_urls": [
+        {
+          "id": "C1-S1",
+          "kind": "canonical",
+          "status": "allowed",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/12860191/"
+        },
+        {
+          "id": "C1-S2",
+          "kind": "canonical",
+          "status": "allowed",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/17460042/"
+        }
+      ],
+      "schema": "readerlab-book-expert-teaching/source-boundary/v1",
+      "source_map_urls": [
+        "https://pubmed.ncbi.nlm.nih.gov/12860191/",
+        "https://pubmed.ncbi.nlm.nih.gov/17460042/"
+      ],
+      "unreferenced_primary_urls": [],
+      "unreferenced_redirects": [],
+      "unregistered_urls": []
+    }
+  },
+  "status": "REVIEW_TERMINAL",
+  "transitions": [
+    {
+      "at": "2026-07-29T17:08:47+00:00",
+      "from": "NONE",
+      "to": "EXPERT_OPEN"
+    },
+    {
+      "agent_id": "019faed9-ed7f-73a1-b08c-e7e50d4bd324",
+      "at": "2026-07-29T17:14:47+00:00",
+      "from": "EXPERT_OPEN",
+      "stage": "expert",
+      "to": "REVIEW_OPEN"
+    },
+    {
+      "at": "2026-07-29T17:18:08+00:00",
+      "fidelity": "SOURCE_BLOCKED",
+      "from": "REVIEW_OPEN",
+      "reviewer_id": "019faedf-5fae-7cd2-80fa-75e3befe7e27",
+      "stage": "review",
+      "teaching": "TEACHING_PASS",
+      "to": "REVIEW_TERMINAL"
+    }
+  ],
+  "updated_at": "2026-07-29T17:18:08+00:00"
+}

@@ -1,0 +1,28 @@
+{
+  "allowed_source_urls": [
+    "https://www.harvard.com/book/9780674276604",
+    "https://researchportalplus.anu.edu.au/en/publications/albert-o-hirschman-exit-voice-and-loyalty-responses-to-decline-in/",
+    "https://doi.org/10.1093/oxfordhb/9780199646135.013.30"
+  ],
+  "exact_local_files": [
+    "inputs/source.md",
+    "inputs/framework.md",
+    "inputs/source-map.md",
+    "control/expert-task.md"
+  ],
+  "forbidden": [
+    "old runs",
+    "other agents or hidden reasoning",
+    "Writer/Reader/ABC/Discovery outputs",
+    "product verdicts and route history"
+  ],
+  "network": "allowed URLs and explicitly registered redirects only; no open-ended search",
+  "registered_redirect_count": 0,
+  "role": "Expert teaching",
+  "schema": "readerlab-book-expert-teaching/read-set/v1.1",
+  "source_status_counts": {
+    "allowed": 3,
+    "blocked": 0,
+    "reference_only": 0
+  }
+}

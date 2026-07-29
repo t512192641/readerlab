@@ -1,0 +1,8 @@
+{
+  "schema": "readerlab-book-expert-teaching/source-allowlist/v1",
+  "sources": [
+    {"id": "C8-S1", "url": "https://www.harvard.com/book/9780674276604", "status": "allowed", "redirects": []},
+    {"id": "C8-S2", "url": "https://researchportalplus.anu.edu.au/en/publications/albert-o-hirschman-exit-voice-and-loyalty-responses-to-decline-in/", "status": "allowed", "redirects": []},
+    {"id": "C8-S3", "url": "https://doi.org/10.1093/oxfordhb/9780199646135.013.30", "status": "allowed", "redirects": []}
+  ]
+}

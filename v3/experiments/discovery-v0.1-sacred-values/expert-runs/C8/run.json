@@ -1,0 +1,237 @@
+{
+  "created_at": "2026-07-29T17:08:47+00:00",
+  "expert": {
+    "agent_id": "019faed9-eccc-76b3-b687-239cf6757471",
+    "draft": {
+      "bytes": 8826,
+      "path": "raw/expert-teaching-draft.md",
+      "sha256": "917ae365ee729558c7c7083ca5b3ac898cc2bee5b2d6b4cae991d11c5c2f2365"
+    },
+    "metadata_provenance": "controller_declared",
+    "model": "gpt-5.6-sol",
+    "network": "allowlisted-only",
+    "prompt_modified": "no",
+    "reasoning": "high",
+    "retries": "no",
+    "source_access": {
+      "bytes": 465,
+      "path": "raw/expert-source-access.json",
+      "sha256": "beff1c4cb013633b7bd389a1e892c7d2f0cb244c488c594f435d71f1b20e55eb"
+    },
+    "source_access_audit_scope": "agent-declared; not a browser or OS-level network audit",
+    "source_access_provenance": "agent_declared",
+    "source_map": {
+      "bytes": 3931,
+      "path": "raw/expert-teaching-source-map.md",
+      "sha256": "15cc0d41e08b57635192a88296145b57e45d11ab35e4a154a63ddffa378dc941"
+    },
+    "status": "SEALED"
+  },
+  "inputs": {
+    "framework": {
+      "bytes": 462,
+      "copied_path": "inputs/framework.md",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/v3/experiments/discovery-v0.1-sacred-values/expert/C8/framework.md",
+      "sha256": "8c837c476a98239782a0aba919c926cc2ee724d98bcfe631e67efff6f8db64b6"
+    },
+    "source": {
+      "bytes": 34512,
+      "copied_path": "inputs/source.md",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/docs/expert-teaching-v0.1.2-migration-inputs/A/source.xhtml",
+      "sha256": "0f4af98ac9beb82cea8d4ad708191bf28aa7758645249e0640d6c1d9d5c4f88a"
+    },
+    "source_allowlist": {
+      "bytes": 513,
+      "copied_path": "inputs/source-allowlist.json",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/v3/experiments/discovery-v0.1-sacred-values/expert/C8/source-allowlist.json",
+      "sha256": "508cc96e31a89d35a395d3c8ef49f51f580a24e80c942018e553f9f2858393c3"
+    },
+    "source_map": {
+      "bytes": 1220,
+      "copied_path": "inputs/source-map.md",
+      "original_path": "/Users/tianqiang/GitHub/t512192641/readerlab/v3/experiments/discovery-v0.1-sacred-values/expert/C8/source-map.md",
+      "sha256": "990a729d510e98a64db671981bac90cc16390b7ed3e44b413ffb6b432af43b35"
+    }
+  },
+  "product": {
+    "package": {
+      "bytes": 38412,
+      "path": "acceptance/expert-product-review.md",
+      "sha256": "3cc6f7d10a65f6dd05915c1d74f1743640e1cab0658a6cdd9210c51d710de6ca"
+    },
+    "status": "SEALED"
+  },
+  "review": {
+    "agent_id": "019faedf-5e62-7590-8e29-bd611be07ffb",
+    "fidelity": "SOURCE_FIDELITY_PASS",
+    "metadata_provenance": "controller_declared",
+    "model": "gpt-5.6-terra",
+    "network": "allowlisted-only",
+    "prompt_modified": "no",
+    "reasoning": "high",
+    "report": {
+      "bytes": 2190,
+      "path": "acceptance/expert-teaching-review.md",
+      "sha256": "6707d29af7af02a990c11eaa706e5466191f38cdec072c01f0479f5ad8240d07"
+    },
+    "retries": "no",
+    "source_access": {
+      "bytes": 463,
+      "path": "acceptance/reviewer-source-access.json",
+      "sha256": "38c702e86b85d751198453feab1e480b230ee597805ca9e1cc8b2ccbc6a9eac6"
+    },
+    "source_access_audit_scope": "agent-declared; not a browser or OS-level network audit",
+    "source_access_provenance": "agent_declared",
+    "status": "SEALED",
+    "teaching": "TEACHING_PASS"
+  },
+  "run": "/Users/tianqiang/GitHub/t512192641/readerlab/v3/experiments/discovery-v0.1-sacred-values/expert-runs/C8",
+  "schema": "readerlab-book-expert-teaching/v0.1",
+  "skill_fingerprint": {
+    "aggregate_sha256": "da7b0083e4b245df0a81aae0d4124adfd3fc69e015b17819aef08a5cb4e7b818",
+    "files": [
+      {
+        "bytes": 6804,
+        "path": "SKILL.md",
+        "sha256": "055afc0df5f504d54a6005beab7c7bc4916f4262580d46ef71371911d1f2d1b3"
+      },
+      {
+        "bytes": 6,
+        "path": "VERSION",
+        "sha256": "297b50f08386d3521f8fdaf2f78eb8d9d0acdf452d2e61596905fba37208c792"
+      },
+      {
+        "bytes": 272,
+        "path": "agents/openai.yaml",
+        "sha256": "0f31c6d39bfb17b3ae25c3434da8b0b852e7c09a5bb55ed13e88049e16437e63"
+      },
+      {
+        "bytes": 1557,
+        "path": "contracts/expert-teaching-contract.md",
+        "sha256": "85a1c983fcbddce8d8ffdc27071d2bac61dbe430af503b65dba10c74069a11aa"
+      },
+      {
+        "bytes": 2454,
+        "path": "contracts/input-contract.md",
+        "sha256": "0538b375f16d939c4a3bd18e189efa34d1068e589edc732b48cb07f4301618bd"
+      },
+      {
+        "bytes": 1292,
+        "path": "contracts/output-contract.md",
+        "sha256": "d86d0b8bc1abce51ba0a0e0b1d96a6880ecb8f45cfe453fe4adb30d54251e057"
+      },
+      {
+        "bytes": 1698,
+        "path": "contracts/review-contract.md",
+        "sha256": "ad2cfb355e8985ca843f9453ced759109d246ac9bebf8ec0178fd4f6d3e8c56a"
+      },
+      {
+        "bytes": 1039,
+        "path": "contracts/state-machine.md",
+        "sha256": "1394f6fa0568170bb4f80a3ca1072339f5a5ae763e70abe0be845d6bdfa4e6e2"
+      },
+      {
+        "bytes": 1484,
+        "path": "templates/expert-review-task.md",
+        "sha256": "a50368cfc8b2eb484687eeabadd7d65a96ecfd487d90c161ca7c95f7b71c9ea2"
+      },
+      {
+        "bytes": 1918,
+        "path": "templates/expert-task.md",
+        "sha256": "c6c4c9fc6a89391ae54d7d70b9f30ed2058c31c244e8862fdfda0133d93ef090"
+      },
+      {
+        "bytes": 705,
+        "path": "templates/product-review.md",
+        "sha256": "a046a44338a5c3798e0ca7cc87ab839e7a5481d469ddaed42b3d6e539d34a48c"
+      },
+      {
+        "bytes": 29964,
+        "path": "scripts/run.py",
+        "sha256": "d73aa853bd3ef7eb8ce038a5088bda070315cf885242367385079a06a742dc4a"
+      },
+      {
+        "bytes": 31207,
+        "path": "scripts/lib/control.py",
+        "sha256": "c7e05f72876991c2320f0b3676c09619fd3a90a811ffd3333da45401b3d97a13"
+      }
+    ],
+    "version": "0.1.2"
+  },
+  "skill_version": "0.1.2",
+  "source_allowlist": {
+    "bytes": 513,
+    "path": "inputs/source-allowlist.json",
+    "schema": "readerlab-book-expert-teaching/source-allowlist/v1",
+    "sha256": "508cc96e31a89d35a395d3c8ef49f51f580a24e80c942018e553f9f2858393c3"
+  },
+  "source_boundary": {
+    "bytes": 1098,
+    "path": "control/source-boundary.json",
+    "schema": "readerlab-book-expert-teaching/source-boundary/v1",
+    "sha256": "0c5c6c384109cbc618b481ae7a7b95f5613edc216ddc350658dd5d07f13c5fd8",
+    "summary": {
+      "policy": "every canonical allowlist URL must occur in source-map; explicitly registered redirects may be extra",
+      "registered_urls": [
+        {
+          "id": "C8-S3",
+          "kind": "canonical",
+          "status": "allowed",
+          "url": "https://doi.org/10.1093/oxfordhb/9780199646135.013.30"
+        },
+        {
+          "id": "C8-S2",
+          "kind": "canonical",
+          "status": "allowed",
+          "url": "https://researchportalplus.anu.edu.au/en/publications/albert-o-hirschman-exit-voice-and-loyalty-responses-to-decline-in/"
+        },
+        {
+          "id": "C8-S1",
+          "kind": "canonical",
+          "status": "allowed",
+          "url": "https://www.harvard.com/book/9780674276604"
+        }
+      ],
+      "schema": "readerlab-book-expert-teaching/source-boundary/v1",
+      "source_map_urls": [
+        "https://doi.org/10.1093/oxfordhb/9780199646135.013.30",
+        "https://researchportalplus.anu.edu.au/en/publications/albert-o-hirschman-exit-voice-and-loyalty-responses-to-decline-in/",
+        "https://www.harvard.com/book/9780674276604"
+      ],
+      "unreferenced_primary_urls": [],
+      "unreferenced_redirects": [],
+      "unregistered_urls": []
+    }
+  },
+  "status": "PRODUCT_READY",
+  "transitions": [
+    {
+      "at": "2026-07-29T17:08:47+00:00",
+      "from": "NONE",
+      "to": "EXPERT_OPEN"
+    },
+    {
+      "agent_id": "019faed9-eccc-76b3-b687-239cf6757471",
+      "at": "2026-07-29T17:14:18+00:00",
+      "from": "EXPERT_OPEN",
+      "stage": "expert",
+      "to": "REVIEW_OPEN"
+    },
+    {
+      "at": "2026-07-29T17:18:08+00:00",
+      "fidelity": "SOURCE_FIDELITY_PASS",
+      "from": "REVIEW_OPEN",
+      "reviewer_id": "019faedf-5e62-7590-8e29-bd611be07ffb",
+      "stage": "review",
+      "teaching": "TEACHING_PASS",
+      "to": "REVIEW_TERMINAL"
+    },
+    {
+      "at": "2026-07-29T17:18:15+00:00",
+      "from": "REVIEW_TERMINAL",
+      "stage": "product",
+      "to": "PRODUCT_READY"
+    }
+  ],
+  "updated_at": "2026-07-29T17:18:15+00:00"
+}

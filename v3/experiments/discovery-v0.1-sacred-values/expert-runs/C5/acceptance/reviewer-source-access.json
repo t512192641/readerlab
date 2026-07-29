@@ -1,0 +1,7 @@
+{
+  "schema": "readerlab-book-expert-teaching/source-access/v1",
+  "opened_urls": ["https://www.aeaweb.org/articles?id=10.1257/jel.20191546","https://www.aeaweb.org/articles?id=10.1257/aer.15000001&page=116","https://www.cambridge.org/core/journals/international-organization/article/abs/national-institutions-and-global-public-goods-are-democracies-more-cooperative-in-climate-change-policy/3B04986C13488B291DF27F312DC23665"],
+  "cited_only_urls": [],
+  "provenance": "agent_declared",
+  "audit_scope": "agent-declared; not a browser or OS-level network audit"
+}

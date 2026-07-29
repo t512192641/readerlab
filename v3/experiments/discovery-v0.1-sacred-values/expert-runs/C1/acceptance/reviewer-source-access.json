@@ -1,0 +1,10 @@
+{
+  "schema": "readerlab-book-expert-teaching/source-access/v1",
+  "opened_urls": [
+    "https://pubmed.ncbi.nlm.nih.gov/12860191/",
+    "https://pubmed.ncbi.nlm.nih.gov/17460042/"
+  ],
+  "cited_only_urls": [],
+  "provenance": "agent_declared",
+  "audit_scope": "agent-declared; not a browser or OS-level network audit"
+}
