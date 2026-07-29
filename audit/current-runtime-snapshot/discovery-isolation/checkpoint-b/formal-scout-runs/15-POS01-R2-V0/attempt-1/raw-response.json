@@ -1,0 +1,50 @@
+{
+  "schema_version": "seed-batch.v0.1",
+  "run_id": "POS01-R2-V0",
+  "seeds": [
+    {
+      "seed_id": "S1",
+      "source_anchor_quote_en": "\"the practice of liners using this track when in the vicinity of ice at night had been in clear weather to keep the course, to maintain the speed and to trust to a sharp lookout\"",
+      "external_lens_identity": "Normalization of deviance (Diane Vaughan, organizational sociology of safety)",
+      "mechanism_claim_zh": "这里不是单次误判，而是长期无事故把高风险做法逐步合法化；“一直没出事”本身成了继续高速穿冰区的证据。",
+      "reread_delta_zh": "重读后，Smith 的决定不再只是个人判断失误，而像是被行业成功经验反复训练出来的“正常做法”。",
+      "source_leads": [
+        "Diane Vaughan, The Challenger Launch Decision (1996)",
+        "Diane Vaughan on 'normalization of deviance' in safety organizations"
+      ]
+    },
+    {
+      "seed_id": "S2",
+      "source_anchor_quote_en": "\"This message clearly indicated the presence of ice in the immediate vicinity of the Titanic ... Unfortunately, it does not appear to have been delivered to the master or to any of the officers.\"",
+      "external_lens_identity": "STAMP / unsafe control action from missing feedback channel (Nancy Leveson)",
+      "mechanism_claim_zh": "关键问题不只是电报员忙，而是安全控制结构里没有强制机制把航行警报从 Marconi room 可靠送达 bridge；致命信息在控制链中失效了。",
+      "reread_delta_zh": "重读后，未送达的 ice message 不再只是个人疏忽，而是“安全约束没有被系统设计成必达”的结构性失效。",
+      "source_leads": [
+        "Nancy Leveson, Engineering a Safer World (2011)",
+        "STAMP: Systems-Theoretic Accident Model and Processes"
+      ]
+    },
+    {
+      "seed_id": "S3",
+      "source_anchor_quote_en": "\"Mr. Lightoller ... made a rough calculation in his head ... Mr. Moody reported 'about 11 o'clock.' ... He did not point out the difference to him\"",
+      "external_lens_identity": "Distributed situation awareness (Endsley; Stanton et al.)",
+      "mechanism_claim_zh": "船桥上的冰区判断分散在多人脑中，但没有被整合成一致、共享、可行动的时间线；各人都“知道一些”，系统却没有真正“知道”。",
+      "reread_delta_zh": "重读后，这段不再只是证词细节混乱，而显示出桥楼团队缺少统一态势图，导致风险临界时间没有被共同确认。",
+      "source_leads": [
+        "Mica R. Endsley, situation awareness research",
+        "Neville Stanton et al., distributed situation awareness in sociotechnical systems"
+      ]
+    },
+    {
+      "seed_id": "S4",
+      "source_anchor_quote_en": "\"Its root is probably to be bound in competition and in the desire of the public for quick passages rather than in the judgment of navigators.\"",
+      "external_lens_identity": "Rasmussen's migration toward the boundary of acceptable performance",
+      "mechanism_claim_zh": "速度、准点和市场竞争会把日常操作持续推向更冒险但仍被认为可接受的边界；风险不是一次跳过去，而是被绩效压力慢慢挤过去。",
+      "reread_delta_zh": "重读后，这句不只是道德批评，而像在描述一种经典机制：商业压力把整条航线实践推到安全边界附近。",
+      "source_leads": [
+        "Jens Rasmussen, 'Risk Management in a Dynamic Society' (1997)",
+        "Sidney Dekker, Drift Into Failure (2011)"
+      ]
+    }
+  ]
+}

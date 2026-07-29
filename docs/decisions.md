@@ -47,4 +47,25 @@
 - 证据与现行实现：`taskcards/TEMPLATE.md` 的工具政策、`taskcards/T2.34.md` 第 13—14 节的
   历史控制失败与政策校正记录。
 
+## D-ENG-002 · 原始证据优先与总控执行熔断
+
+- 状态：`active`
+- 日期：2026-07-26
+- 决定：独立 Writer／Discovery 线使用独立小组长、队列和执行优先级；每轮只以一页运行卡中
+  不超过三个 blocker 阻止原始调用。授权后 30 分钟仍无一对可保存、可解析的真实 smoke
+  evidence 时，停止新增前置工程并执行最小 pair，或提交可复现 blocker。
+- 责任边界：可以预先冻结假设、产品判据与解盲规则；Normalizer、模型 Judge、Clusterer、
+  Verifier、成本系统、schema 套件或 promotion gate 的实现完成度不得成为 Scout 原始证据的
+  默认启动条件。总控只在启动、smoke、完成包三个检查点管理小组长和独立验收，不直接承担组内
+  语义创作或实现微调。
+- 原因：2026-07-26 Discovery treatment-isolation 运行在约一小时前置扩建后仍无正式 Scout；
+  产品负责人收缩到三项 blocker 后，18 次真实调用约 20 分 38 秒完成。独立审计确认原始证据可
+  进入内容审阅，并确认“共享队列相互干扰、前置实现膨胀、总控角色下沉”的主诊断；包内不能证明
+  Writer 单向阻塞 Discovery，后续只能按并发日志认定实际方向。
+- 证据：`/Users/tianqiang/Downloads/ReaderLab_Discovery_Execution_Controller_Independent_Audit_20260726.md`；
+  原始 sidecar 报告位于
+  `/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-b/evidence/`。
+- 后果：未列 blocker 只能记 limitation／backlog；冻结后修改 Prompt、schema、harness 或语义
+  内容必须新版本并形成 change receipt，受影响结果不得与旧版本静默混算。
+
 本索引不复制其他 owner 的正文；只有新的持久工程决定才在此追加编号。

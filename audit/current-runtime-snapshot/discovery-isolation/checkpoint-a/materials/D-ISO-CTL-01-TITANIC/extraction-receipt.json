@@ -1,0 +1,15 @@
+{
+  "material_id": "D-ISO-CTL-01-TITANIC",
+  "source_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/materials/D-ISO-CTL-01-TITANIC/original/pg39415.txt",
+  "destination_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/materials/D-ISO-CTL-01-TITANIC/source.txt",
+  "original_sha256": "68755a061177dcca91cc0fa5d7f89790d7562c88706178bf0138dd117ef917ca",
+  "original_bytes": 330679,
+  "start_boundary_utf8": "GENERAL.\r\n\r\nThere were four elliptical-shaped funnels;",
+  "end_boundary_utf8_exclusive": "CREW AND PASSENGERS.\r\n",
+  "start_offset": 91505,
+  "end_offset_exclusive": 92372,
+  "extracted_sha256": "1d9403ee2eb4e3b075e42f61604d990f227b31c13b0e65848746782f11eadaad",
+  "extracted_bytes": 867,
+  "line_endings_preserved": "CRLF",
+  "encoding": "UTF-8"
+}

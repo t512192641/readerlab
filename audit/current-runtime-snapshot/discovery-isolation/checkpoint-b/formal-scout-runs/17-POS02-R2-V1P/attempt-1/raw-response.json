@@ -1,0 +1,98 @@
+{
+  "trigger_map": {
+    "schema_version": "trigger-map.v0.1",
+    "triggers": [
+      {
+        "trigger_id": "T1",
+        "source_anchor_quote_en": "the most numerous party, or, in other words, the most powerful faction must be expected to prevail",
+        "unexplained_relation_zh": "人数上的多数为什么会稳定转化为立法中的支配力，文中断言了结果，但缺少把人数变成制度性胜势的中间机制。",
+        "possible_missing_variable_zh": "组织动员成本、议程控制、利益内化与成本外部化机制"
+      },
+      {
+        "trigger_id": "T2",
+        "source_anchor_quote_en": "the public voice, pronounced by the representatives of the people, will be more consonant to the public good",
+        "unexplained_relation_zh": "代议为什么会比直接表达更接近公共利益，文中提出了净化效果，但缺少说明代表如何筛掉偏私、以及何时会反转。",
+        "possible_missing_variable_zh": "候选人筛选、信息汇聚、选举激励与代理失真"
+      },
+      {
+        "trigger_id": "T3",
+        "source_anchor_quote_en": "the larger the society... the more easily will they concert and execute their plans of oppression. Extend the sphere, and you take in a greater variety of parties and interests",
+        "unexplained_relation_zh": "规模扩大为何会降低多数联合压迫的概率，文中给了方向，但缺少把“更大疆域”转成“更难合谋”的机制变量。",
+        "possible_missing_variable_zh": "协调成本、共同知识门槛、跨地域沟通摩擦、偏好多样性"
+      },
+      {
+        "trigger_id": "T4",
+        "source_anchor_quote_en": "the variety of sects dispersed over the entire face of it must secure the national councils against any danger from that source",
+        "unexplained_relation_zh": "宗派越多为何越安全，文中把多样性与安全直接连起来，但缺少说明不同分裂线如何彼此抵消。",
+        "possible_missing_variable_zh": "交错分裂线、联盟不稳定性、身份切割方式"
+      },
+      {
+        "trigger_id": "T5",
+        "source_anchor_quote_en": "A rage for paper money, for an abolition of debts, for an equal division of property... will be less apt to pervade the whole body of the Union than a particular member of it",
+        "unexplained_relation_zh": "局部激进政策偏好为何难以扩散到更大共同体，文中指出范围效应，但缺少扩散失败的条件。",
+        "possible_missing_variable_zh": "区域利益异质性、政策扩散门槛、网络传播与阻断"
+      }
+    ]
+  },
+  "seed_batch": {
+    "schema_version": "seed-batch.v0.1",
+    "run_id": "POS02-R2-V1P",
+    "seeds": [
+      {
+        "seed_id": "S1",
+        "source_anchor_quote_en": "the most numerous party, or, in other words, the most powerful faction must be expected to prevail",
+        "external_lens_identity": "Public choice theory on legislators as interested actors in distributive politics",
+        "mechanism_claim_zh": "这个透镜补上了一个未明说的机制：当立法者同时也是受益方时，政策不再像中立裁判，而更像有权一方把收益内部化、把成本外部化的分配博弈；多数之所以会“ prevail”，不只是票数多，而是制度允许其把自利偏好写成法律。",
+        "reread_delta_zh": "重读后，这段不再只是道德化地批评派系，而更像在提出一个制度性诊断：麦迪逊把立法机关预设为会被利益驱动的场域，因此问题不是找更高尚的人，而是限制可被多数劫持的决策结构。",
+        "source_leads": [
+          "James M. Buchanan and Gordon Tullock, The Calculus of Consent (1962)",
+          "Dennis C. Mueller, Public Choice III (Cambridge University Press, 2003)"
+        ]
+      },
+      {
+        "seed_id": "S2",
+        "source_anchor_quote_en": "the public voice, pronounced by the representatives of the people, will be more consonant to the public good",
+        "external_lens_identity": "Trustee representation and filtration in representative government",
+        "mechanism_claim_zh": "这个透镜补上的不是“代议制”这个名称，而是过滤机制：代表制被设想为把原始偏好先经过候选人筛选、声誉竞争与审议转换，再输出为较少受即时激情支配的判断；同时它也解释了麦迪逊为何紧接着承认这一机制可能被 corruption 或 intrigue 反转。",
+        "reread_delta_zh": "重读后，这里不只是笼统赞成代表制，而是在主张一种特定的代理模型：代表不是机械传声筒，而是被设计来吸收、改写、净化公众意见的过滤器，因此后文关于选区规模和候选人质量的讨论变成同一机制的条件分析。",
+        "source_leads": [
+          "Edmund Burke, Speech to the Electors of Bristol (1774)",
+          "Hanna Fenichel Pitkin, The Concept of Representation (1967)"
+        ]
+      },
+      {
+        "seed_id": "S3",
+        "source_anchor_quote_en": "Extend the sphere, and you take in a greater variety of parties and interests; you make it less probable that a majority of the whole will have a common motive",
+        "external_lens_identity": "Collective action theory for large-group coordination failure",
+        "mechanism_claim_zh": "这个透镜补上了“大共和国为何更安全”的操作机制：群体越大，发现彼此、确认共同利益、监督背叛、同步行动的成本越高，所以共同压迫意图即使存在，也更难转化为可执行联盟。文中的“discover their own strength”与“act in unison”正对应这种协调门槛。",
+        "reread_delta_zh": "重读后，扩大疆域不再只是几何意义上的变大，而是把派系的政治能力拆成信息、组织与执行三个环节；麦迪逊的论证因此更像一套关于多数派协调失败的机制论，而不只是经验判断。",
+        "source_leads": [
+          "Mancur Olson, The Logic of Collective Action (1965)",
+          "Russell Hardin, Collective Action (Johns Hopkins University Press, 1982)"
+        ]
+      },
+      {
+        "seed_id": "S4",
+        "source_anchor_quote_en": "the variety of sects dispersed over the entire face of it must secure the national councils against any danger from that source",
+        "external_lens_identity": "Cross-cutting cleavages in political sociology",
+        "mechanism_claim_zh": "这个透镜补上的机制是：当社会分裂线彼此交错，而不是沿单一轴线重合时，任何单一身份都更难稳定扩张成全国性多数；宗教分歧会被地域、经济、职业等其他分歧切开，于是派系动员被稀释。",
+        "reread_delta_zh": "重读后，“variety of sects”不只是数量更多，而是分裂结构不同。麦迪逊真正依赖的不是简单多元，而是多条分裂线互相穿插，阻止一条身份边界吞并整个政治体。",
+        "source_leads": [
+          "Seymour Martin Lipset, Political Man (1960)",
+          "Seymour Martin Lipset and Stein Rokkan, Party Systems and Voter Alignments (1967)"
+        ]
+      },
+      {
+        "seed_id": "S5",
+        "source_anchor_quote_en": "A rage for paper money, for an abolition of debts, for an equal division of property... will be less apt to pervade the whole body of the Union than a particular member of it",
+        "external_lens_identity": "Policy diffusion thresholds under regional heterogeneity",
+        "mechanism_claim_zh": "这个透镜补上了局部激进偏好为何难以全国化的条件：政策诉求需要跨地区复制时，会遇到利益结构不一致、模仿门槛更高、传播链条更长的问题；因此同一种经济怨气在县或州内可成多数，在更大共同体却会被异质利益截断。",
+        "reread_delta_zh": "重读后，这句话不只是说“大国比较稳”，而是在暗示一种扩散阈值机制：某些主张之所以危险，不在其存在，而在其能否穿过地域异质性并形成跨区共振；联邦规模本身就在抬高这个阈值。",
+        "source_leads": [
+          "Jack L. Walker, 'The Diffusion of Innovations among the American States' (American Political Science Review, 1969)",
+          "Frances Stokes Berry and William D. Berry, 'State Lottery Adoptions as Policy Innovations' (American Political Science Review, 1990)"
+        ]
+      }
+    ]
+  }
+}

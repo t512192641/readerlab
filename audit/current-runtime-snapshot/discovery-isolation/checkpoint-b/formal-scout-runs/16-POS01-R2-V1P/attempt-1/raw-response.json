@@ -1,0 +1,87 @@
+{
+  "trigger_map": {
+    "schema_version": "trigger-map.v0.1",
+    "triggers": [
+      {
+        "trigger_id": "T1",
+        "source_anchor_quote_en": "the practice of liners using this track when in the vicinity of ice at night had been in clear weather to keep the course, to maintain the speed and to trust to a sharp lookout",
+        "unexplained_relation_zh": "长期无事故的既有做法，为什么会反而支持继续高速穿越高风险区？",
+        "possible_missing_variable_zh": "过去成功如何被当成安全证据"
+      },
+      {
+        "trigger_id": "T2",
+        "source_anchor_quote_en": "The Marconi operator was very busy from 8 o'clock onward transmitting messages via Cape Race for passengers on board the Titanic",
+        "unexplained_relation_zh": "已经收到的冰警报，为什么会在船上组织流程里变成“未送达桥楼”？",
+        "possible_missing_variable_zh": "通信队列的优先级规则与商业/航行任务冲突"
+      },
+      {
+        "trigger_id": "T3",
+        "source_anchor_quote_en": "we should be able to see it at a good distance, and as far as we could see, we should be able to see it",
+        "unexplained_relation_zh": "军官对夜间目视发现冰山的信心，为什么会与实际可见距离严重错位？",
+        "possible_missing_variable_zh": "低照度视觉与对比度条件"
+      },
+      {
+        "trigger_id": "T4",
+        "source_anchor_quote_en": "avoiding as much as possible the areas where fog and ice are prevalent at certain seasons, without thereby unduly lengthening the passage across the Atlantic",
+        "unexplained_relation_zh": "航线为何会稳定落在“已知有冰山可能，但还能接受”的位置，而不是更保守地南移？",
+        "possible_missing_variable_zh": "系统如何把效率目标持续推向安全边界"
+      },
+      {
+        "trigger_id": "T5",
+        "source_anchor_quote_en": "if it had reached the bridge would perhaps have affected the navigation of the vessel",
+        "unexplained_relation_zh": "同样是冰情信息，哪些会进入驾驶决策、哪些会滞留在中间环节？",
+        "possible_missing_variable_zh": "组织中的信息分拣与升级机制"
+      }
+    ]
+  },
+  "seed_batch": {
+    "schema_version": "seed-batch.v0.1",
+    "run_id": "POS01-R2-V1P",
+    "seeds": [
+      {
+        "seed_id": "S1",
+        "source_anchor_quote_en": "the practice of liners using this track when in the vicinity of ice at night had been in clear weather to keep the course, to maintain the speed and to trust to a sharp lookout",
+        "external_lens_identity": "Normalization of deviance (Diane Vaughan)",
+        "mechanism_claim_zh": "这个透镜解释的不是“他们冒险了”这一重命名，而是：当一种高风险做法反复没有出事时，组织会把“未出事”误读成“做法安全”，于是原本应被视为例外的冒险，逐步变成默认常规。",
+        "reread_delta_zh": "重读后，这段不再只是船长个人判断失误，而更像是被长期成功记录训练出来的制度性错觉：经验在这里不是纠偏器，而是放大器。",
+        "source_leads": [
+          "Diane Vaughan, The Challenger Launch Decision (1996)",
+          "Diane Vaughan, 'The Dark Side of Organizations: Mistake, Misconduct, and Disaster' (Annual Review of Sociology, 1999)"
+        ]
+      },
+      {
+        "seed_id": "S2",
+        "source_anchor_quote_en": "The Marconi operator was very busy from 8 o'clock onward transmitting messages via Cape Race for passengers on board the Titanic",
+        "external_lens_identity": "Priority queueing / non-preemptive service discipline in safety-critical communications",
+        "mechanism_claim_zh": "这里缺的机制是：当安全警报与营收型通信共用单一信道，且没有强制抢占优先级时，系统在高负荷时会把“已接收”变成“延后处理”，而延后在时效型风险里等于失效。",
+        "reread_delta_zh": "重读后，Mesaba 和 Amerika 信息的丢失不只是某个报务员粗心，而是一个队列设计问题：桥楼是否知情，取决于通信系统有没有把航行安全设成不可被乘客报文挤掉的高优先级。",
+        "source_leads": [
+          "Leonard Kleinrock, Queueing Systems, Volume II: Computer Applications (1976), sections on priority queues",
+          "Donald Gross et al., Fundamentals of Queueing Theory, chapters on preemptive vs. nonpreemptive priority discipline"
+        ]
+      },
+      {
+        "seed_id": "S3",
+        "source_anchor_quote_en": "we should be able to see it at a good distance, and as far as we could see, we should be able to see it",
+        "external_lens_identity": "Scotopic vision and low-luminance contrast sensitivity",
+        "mechanism_claim_zh": "这个透镜补上的是人眼机制：在无月、低对比、平静海面条件下，夜视主要依赖杆状细胞，颜色线索和边缘细节都会显著退化，所以“蓝面”“白轮廓”“反光”这些白天直觉并不能可靠地转化成夜间远距离探测能力。",
+        "reread_delta_zh": "重读后，Lightoller 对 1.5 到 2 英里可见距离的把握，不再像经验自信，而更像把不适用的视觉直觉投射到了极端低照度环境。",
+        "source_leads": [
+          "Selig Hecht, Simon Shlaer, Maurice H. Pirenne, 'Energy, Quanta, and Vision' (Journal of General Physiology, 1942)",
+          "H. Richard Blackwell, 'Contrast Thresholds of the Human Eye' (Journal of the Optical Society of America, 1946)"
+        ]
+      },
+      {
+        "seed_id": "S4",
+        "source_anchor_quote_en": "avoiding as much as possible the areas where fog and ice are prevalent at certain seasons, without thereby unduly lengthening the passage across the Atlantic",
+        "external_lens_identity": "Jens Rasmussen's dynamic safety model / migration toward the boundary",
+        "mechanism_claim_zh": "它解释的是系统层面的推进机制：多方在日常优化里同时追求速度、成本、准点与安全时，实际操作会持续向“仍未出事的最省边界”迁移，直到一次事故把真实边界重新画出来。",
+        "reread_delta_zh": "重读后，航线选择、5:50 的转向、以及“南移 240 英里只多 10 小时”不再是孤立细节，而像同一套边界迁移过程的不同切面：风险并非突然出现，而是长期被压缩进可接受运行区。",
+        "source_leads": [
+          "Jens Rasmussen, 'Risk Management in a Dynamic Society: A Modelling Problem' (Safety Science, 1997)",
+          "Nancy Leveson, Engineering a Safer World (2011), discussion of migration toward higher risk under pressure"
+        ]
+      }
+    ]
+  }
+}

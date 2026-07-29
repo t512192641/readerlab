@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "readerlab.discovery-isolation.trigger-map.v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "triggers"],
+  "properties": {
+    "schema_version": {"const": "trigger-map.v0.1"},
+    "triggers": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["trigger_id", "source_anchor_quote_en", "unexplained_relation_zh"],
+        "properties": {
+          "trigger_id": {"type": "string", "pattern": "^T[1-6]$"},
+          "source_anchor_quote_en": {"type": "string", "minLength": 1, "maxLength": 500},
+          "unexplained_relation_zh": {"type": "string", "minLength": 1, "maxLength": 240},
+          "possible_missing_variable_zh": {"type": "string", "maxLength": 160}
+        }
+      }
+    }
+  }
+}

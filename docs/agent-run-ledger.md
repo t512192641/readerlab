@@ -88,3 +88,102 @@
   关系。
 - Follow-up：产品负责人手动把最终 handoff 交给干净总控；总控只运行仓库外 Discovery Lab 与
   Writer Lab，完成后停止并等待产品盲审或新授权。
+
+### Run: 2026-07-26 - discovery-treatment-isolation-and-controller-correction
+
+- Task / Type / Tool：Writer 收敛、Discovery treatment-isolation、独立审计与总控纠偏 /
+  diagnostic + cleanup / 真实模型运行 + GPT Pro 独立审计 + mem-clean + handoff
+- Context source / Boundary：产品负责人批准两条仓库外 sidecar 验证线；随后明确把 Discovery
+  第一目标收缩为 18 次真实 Scout，只允许输入不一致、输出合同不一致或结果无法保存阻塞。
+  不改变生产任务、生产合同或 promotion；Writer 线在产品 `PASS` 后停止。
+- Files read / changed：本轮正式维护 `AGENTS.md`、`docs/current-task.md`、
+  `docs/dev-state.md`、`docs/decisions.md` 与本账本；语义产物、运行证据、独立审核包和最终
+  handoff 均在仓库外。
+- Commands / checks：三份冻结材料 × V0／V1′ × 三次重复共 18 次真实 Scout；18/18
+  parse/save、9/9 paired input／`seed_batch` 合同核对；GPT Pro 两阶段独立审计；阶段收尾
+  执行 active tests、当前 run check、`git diff --check` 与 MEM owner 去重检查。
+- Artifacts / reports：
+  `/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-b/`、
+  `/Users/tianqiang/Downloads/ReaderLab_Discovery_Execution_Controller_Independent_Audit_20260726.md`、
+  `/private/tmp/ReaderLab_Discovery_Execution_Controller_Audit_20260726.zip`、
+  `/private/tmp/readerlab-new-route-20260726/writer-assembly/review/P3-product-review-candidate.md`。
+- Result / Evidence type：Writer 修订稿获产品 `PASS`，完整章节 Assembly／Fidelity 技术通过但
+  P3 产品体验待验；Discovery 原始证据获 `RAW_EVIDENCE_USABLE_FOR_CONTENT_REVIEW`，可进入
+  匿名人工比较，但 V0／V1′ 胜负仍为 `unknown`。总控纠偏固化为 `D-ENG-002` 与自动加载规则。
+- Canonical status：`diagnostic-only`
+- Failures / detours：两条独立工作线共用执行队列，总控下沉到组内实现，并在真实证据前追加
+  多余协议、schema、harness 与 gate；产品负责人介入收缩 blocker 前，约一小时仍未启动正式
+  Scout。收缩后 18 次调用约 20 分 38 秒完成。审核包只支持“共享队列相互干扰”，不能证明
+  Writer 单向阻塞 Discovery。
+- Repeat-error check：与全局错题 `M002`“验收／前置工程吞掉产品闭环”同类，构成复发候选；
+  是否把 `M002` 从复发 x1 更新为 x2，须产品负责人另行批准，本轮未写全局文件。
+- Incident classification：`actual-loss` / `significant`；实际损失为约一小时没有可审阅的真实
+  Scout 证据、产品负责人被迫中途纠偏；潜在损失为继续扩建下游系统并污染两条线的优先级。
+  Failure signature：冻结实验已经具备最小输入和输出合同，但总控把未授权风险转成新启动门，
+  且没有证据启动时限。
+- Confirmed / unconfirmed：确认 18 次正式调用在收缩后完成、独立审计认可原始证据可用于人工
+  内容审阅、共享队列／前置膨胀／角色下沉成立；未确认全部前置工作的精确耗时因果，也未确认
+  Writer 对 Discovery 的单向阻塞关系。
+- Fix verification：项目自动加载规则新增独立队列、一页运行卡、最多三个 blocker、30 分钟
+  evidence-start fuse 与总控三检查点；`D-ENG-002` 保存决定与证据边界。下一干净会话必须只
+  生成 9 个匿名 A/B 产品审阅 block，交包即停止。
+- Reusable lesson / rule candidate：项目内已升级为强规则；跨项目候选是更新全局 `M002` 的复发
+  次数和来源，不新建重复条目。
+- Follow-up：按最终 handoff 启动干净总控，只组织一个 Discovery 小组长机械制作盲审包；产品
+  负责人完成 71 个 seed 与 9 个 pair 的内容判断前，不启动核验、解盲、Writer 或下一实验。
+
+### Run: 2026-07-26 - discovery-blind-review-rejection-and-root-cause
+
+- Task / Type / Tool：18 次冻结 Scout 的匿名内容审阅包、两版中文 smoke、产品失败复盘与上游
+  目标回溯 / diagnostic / Discovery 小组长机械装配 + 总控独立核验 + 产品负责人 smoke 审阅
+- Context source / Boundary：本会话直接任务只允许把既有 18 次原始结果机械整理成 9 组匿名
+  A/B，不重跑模型、不改 Prompt、不启动 Writer。产品负责人先后要求中文、正常阅读界面和材料
+  语境；两版 smoke 仍失败后，授权只读回查产品 owner、现行蓝图、实验协议、冻结 Prompt/schema
+  与 71 个 raw seed。未读取 Gold、examples、archive 或旧 ReaderLab。
+- Files read / changed：仓库外生成机械匿名包与两版中文 smoke；本次收口维护
+  `PRODUCT-DECISIONS.md`、`docs/current-task.md`、`docs/dev-state.md` 与本账本。没有修改冻结
+  原始证据、实验 Prompt/schema、生产 taskcard、run 或 Writer 正文。
+- Commands / checks：9/9 pair 材料与 repeat 对齐；71/71 seed；284 项原始语义字段字节一致；
+  anchor 为 1 个 exact substring、52 个 normalized contiguous、18 个 ordered-spans（共 102 个
+  exact source spans）；54 个 raw/request/receipt hash、21 个冻结文件 hash、9/9 随机映射和
+  匿名泄漏检查通过。随后对全部 71 个 seed 按材料与主题族做只读语义审计。
+- Artifacts / reports：
+  `/private/tmp/readerlab-discovery-blind-review-20260726/final/`、
+  `/private/tmp/readerlab-discovery-blind-review-zh-20260726/candidate-smoke/`、
+  `/private/tmp/readerlab-discovery-blind-review-zh-20260726/candidate-smoke-v0.2/`。
+- Result / Evidence type：机械匿名包达到 `verified`，但两版中文 smoke 均未获产品
+  `accepted`；产品负责人确认产物只是把简单材料接到更深、更专业、更晦涩的知识，没有交付一套
+  解析和理解世界的可迁移框架。完整 71 项盲审停止，V0／V1′ 胜负未回答。
+- Canonical status：`diagnostic-only`
+- Failures / detours：第一版直接展示孤立工程原句和 seed 字段，第二版补材料定性、上下文与中文
+  解释，但都把“展示不清”误当主要问题；真正失败在上游共同合同。产品原始目标是让具有不同稳定
+  认知背景的专家自由阅读完整材料并自然提出成熟外部框架，实验却把它编译为“找到局部关系缺少的
+  解释变量并输出短机制 seed”。通用 Scout、短字段 schema、技术 Judge 与压缩式产品包共同
+  放大了这一缩窄；V1′ trigger map 不是独立根因。
+- Repeat-error check：与 `ENGINEERING-LESSONS.md` 已记录的“模型准确执行错误编译目标、通用无
+  背景生产者收敛到局部分析”同类，再次在 Discovery 控制实验中复现；本轮不新增平行工程教训
+  owner。
+- Incident class: actual-loss
+- Loss severity: significant
+- Loss dimensions: progress / user-attention / artifact
+- Actual loss：18 次调用和 71 个 seed 虽保留诊断价值，但不能用于原计划的产品 A/B；产品负责人
+  连续阅读两版不合格 smoke 后才暴露共同目标错误。
+- Potential impact：若继续逐卡、解盲或优化展示，会把产品注意力消耗在错误题目上，并可能错误
+  宣布某种触发方式胜出。
+- Failure signature：机械证据、匿名性和格式全部通过，但真实读者仍无法说清“这是一套什么知识、
+  为什么值得借它重读原文”；对照材料两变体 6/6 非零并收敛到相同的局部技术主题。
+- Evidence pointers：本 run 的三个仓库外目录；冻结
+  `treatment-isolation-v0.1.md`、`scout-v0.md`、`scout-v1-prime.md` 与共同
+  `seed-batch.schema.json`；`PRODUCT-DECISIONS.md` 的“核心交付对象”“透镜系统原始目标”和
+  “完整阅读单元”。
+- Confirmed facts：共同 Prompt 要求外部解释机制，V1′ 只增加缺失变量 trigger；共同 schema
+  没有稳定专家背景、框架内核、边界或完整课字段；静态对照 6/6 运行共 23 个 seed；两变体主题
+  收敛；产品负责人明确拒绝当前 smoke。
+- Unconfirmed hypotheses：正确角色和 Prompt 能否稳定召回成熟外部框架、哪一种触发方法更好、
+  目标档模型是否具备所需能力，均为 `unknown`。
+- Fix and verification：本轮只完成根因定位，没有修复或新模型运行。产品负责人把 Discovery
+  范围收回“可迁移外部认知框架”，暂不另开仿生学趣闻等具体新知入口；未来如修复，必须以新版本
+  和 change receipt 运行一个最小正例加负向控制，并先交自然可读产物。
+- Cross-project candidate: no
+- Follow-up：以后单独讨论原始问题——怎样触发具有稳定认知背景的专家，从完整原文自然召回
+  可迁移外部认知框架；没有新方案与明确授权前，不改 Prompt、不重跑、不启动下游。

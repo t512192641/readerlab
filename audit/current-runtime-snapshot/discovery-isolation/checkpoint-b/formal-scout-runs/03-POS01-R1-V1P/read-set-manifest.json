@@ -1,0 +1,25 @@
+{
+  "schema_version": "scout-read-set.v0.1",
+  "run_id": "POS01-R1-V1P",
+  "filesystem_workdir": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-b/formal-scout-runs/03-POS01-R1-V1P/workdir-attempt-1",
+  "filesystem_workdir_files": [],
+  "request_components": [
+    {
+      "kind": "exact_user_prompt",
+      "path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-b/formal-scout-runs/03-POS01-R1-V1P/prompt.txt",
+      "sha256": "6f8673e5706ba22667fe5ea3fddb42a4f1c59982a312659197de29fc76a94b30"
+    },
+    {
+      "kind": "output_schema",
+      "path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-b/formal-scout-runs/03-POS01-R1-V1P/output-schema.json",
+      "sha256": "5528cbf9b66b6726251595b8cd8a755d150807f97cffdb3dedcffc664052c69a"
+    }
+  ],
+  "explicitly_excluded": [
+    "checkpoint-a/inputs/audit",
+    "checkpoint-a/inputs/prior-sidecar",
+    "checkpoint-a/materials/MATERIALS.md",
+    "all sibling materials",
+    "all earlier or sibling run outputs"
+  ]
+}

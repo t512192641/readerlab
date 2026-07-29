@@ -1,0 +1,50 @@
+{
+  "schema_version": "seed-batch.v0.1",
+  "run_id": "POS02-R2-V0",
+  "seeds": [
+    {
+      "seed_id": "S1",
+      "source_anchor_quote_en": "the smaller the number of individuals composing a majority, and the smaller the compass within which they are placed, the more easily will they concert and execute their plans of oppression",
+      "external_lens_identity": "collective-action and coordination-costs theory (Mancur Olson-style large-group logic)",
+      "mechanism_claim_zh": "这里不只是“大国更稳”，而是群体规模上升会抬高多数派协调、监控与共同行动的成本，使压迫性联盟更难形成并持续。",
+      "reread_delta_zh": "重读后可见，Madison 论证的关键不是人数越多越好，而是多数作恶需要“发现彼此、彼此信任、统一行动”三步；联合体扩大后，这条链条更容易断。",
+      "source_leads": [
+        "Mancur Olson, The Logic of Collective Action (1965)",
+        "James Madison, Federalist No. 10 在“大范围共和国”段落与现代集体行动理论对读"
+      ]
+    },
+    {
+      "seed_id": "S2",
+      "source_anchor_quote_en": "No man is allowed to be a judge in his own cause... a body of men are unfit to be both judges and parties at the same time",
+      "external_lens_identity": "public choice theory of self-interested lawmaking",
+      "mechanism_claim_zh": "这段可用公共选择理论重读：立法者并非天然代表公共利益，而常是把立法场域变成利益冲突的裁决场，形成制度化的自利偏置。",
+      "reread_delta_zh": "重读后，这不再只是道德警告，而像一条制度诊断：当“当事人兼裁判”进入立法程序，多数派剥削少数派就不是偶发失德，而是可预期的激励结果。",
+      "source_leads": [
+        "James M. Buchanan and Gordon Tullock, The Calculus of Consent (1962)",
+        "Dennis C. Mueller, Public Choice III (2003)"
+      ]
+    },
+    {
+      "seed_id": "S3",
+      "source_anchor_quote_en": "A religious sect may degenerate into a political faction in a part of the Confederacy; but the variety of sects dispersed over the entire face of it must secure the national councils against any danger from that source",
+      "external_lens_identity": "cross-cutting cleavages theory in comparative politics",
+      "mechanism_claim_zh": "机制不是“宗教多样性本身值得赞美”，而是社会裂缝若彼此交叉而不完全重合，就会削弱单一身份轴线把多数人锁定成同一政治阵营的能力。",
+      "reread_delta_zh": "重读后会看到，Madison 说的“variety of sects”其实是在谈裂缝结构：分散且交叉的差异能阻止地方性激情升级为全国性多数压迫。",
+      "source_leads": [
+        "Seymour Martin Lipset, Political Man (1960), chapters on cross-cutting cleavages",
+        "Arend Lijphart, The Politics of Accommodation (1968)"
+      ]
+    },
+    {
+      "seed_id": "S4",
+      "source_anchor_quote_en": "The most common and durable source of factions has been the various and unequal distribution of property",
+      "external_lens_identity": "distributional-conflict political economy",
+      "mechanism_claim_zh": "这句可用分配冲突模型重读：派系并非主要来自观念误会，而是来自资产分布不均所生成的稳定利益分歧，政治冲突因此具有结构性和持久性。",
+      "reread_delta_zh": "重读后，原文从“人性容易争斗”转成更具体的政治经济判断：财产结构先塑造利益阵营，再推动意见、激情与立法斗争。",
+      "source_leads": [
+        "Meltzer and Richard, 'A Rational Theory of the Size of Government' (1981)",
+        "Douglass C. North, Structure and Change in Economic History (1981) 关于分配冲突与制度"
+      ]
+    }
+  ]
+}

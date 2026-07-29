@@ -1,0 +1,28 @@
+{
+  "schema_version": "formal-scout-attempt-receipt.v0.1",
+  "run_id": "POS02-R1-V0",
+  "attempt": 1,
+  "started_at_utc": "2026-07-26T13:22:09.905327+00:00",
+  "ended_at_utc": "2026-07-26T13:24:08.126675+00:00",
+  "exit_code": 0,
+  "status": "MODEL_CONTRACT_FAILURE",
+  "error": "RuntimeError: seed anchor not an exact source substring: S1",
+  "failure_class": null,
+  "failure_marker": null,
+  "retry_allowed": false,
+  "semantic_request_sha256": "dd7b1caed83baf15521b9fc98724aead7494c44790646e7a5d0b35805c4daffb",
+  "prompt_sha256": "c3a510ab6d10795d2f76212e2e3afc2f07ebf9baa720642751b59300bf7c8fc5",
+  "transcript_sha256": "dd93d81f7fc7e88a5184fe49a4655b9a57616b5fb4e6fe464852e4bf673e8efd",
+  "stderr_sha256": "1783fc1658446da59b2206f924406a646400568c0e71904ec82d343466a163df",
+  "malformed_jsonl_lines": [],
+  "agent_message_observed": true,
+  "provider_usage": {
+    "input_tokens": 158134,
+    "cached_input_tokens": 72960,
+    "output_tokens": 4218,
+    "reasoning_output_tokens": 2450
+  },
+  "resolved_backend_snapshot": "unknown",
+  "exact_system_prompt": "unknown",
+  "provider_billed_cost": "unknown"
+}

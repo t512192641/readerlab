@@ -1,0 +1,99 @@
+{
+  "schema_version": "formal-scout-run-plan.v0.1",
+  "checkpoint_a_protocol_sha256": "52ef7835ce7b9ccebab19da61449c54ede70d91ebbad4681262401fddae1e94a",
+  "random_seed": "a39e0c7d91b6425f",
+  "model": "gpt-5.4",
+  "reasoning_effort": "medium",
+  "cli_version": "codex-cli 0.142.5",
+  "session_flags": [
+    "features.plugins=false",
+    "features.apps=false",
+    "skills.include_instructions=false"
+  ],
+  "retry_policy": {
+    "max_attempts": 2,
+    "retry_only_when": "no_agent_message_and_no_usage_and_error_matches_frozen_retryable_transport_allowlist",
+    "retryable_transport_allowlist": [
+      "connection reset",
+      "connection closed before",
+      "timed out",
+      "timeout",
+      "temporarily unavailable",
+      "service unavailable",
+      "internal server error",
+      "websocket transport",
+      "dns resolution",
+      "could not resolve host",
+      "tls handshake",
+      "transport error"
+    ],
+    "nonretryable_precedence": [
+      "invalid_request_error",
+      "requires a newer version",
+      "unknown model",
+      "failed to initialize",
+      "operation not permitted",
+      "readonly database",
+      "authentication",
+      "unauthorized",
+      "forbidden",
+      "schema",
+      "rate limit"
+    ],
+    "never_retry": [
+      "invalid_json",
+      "schema_failure",
+      "contract_failure",
+      "content_refusal",
+      "partial_output",
+      "any_attempt_with_usage"
+    ],
+    "pair_rule": "if_retry_exhausted_mark_entire_pair_INCOMPLETE_and_count_neither_side"
+  },
+  "frozen_inputs": {
+    "D-ISO-POS-01-TITANIC": {
+      "source_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/materials/D-ISO-POS-01-TITANIC/source.txt",
+      "source_sha256": "ce8a25860f9fddc56cb235fb8637c0175a767af9f5ec877e5e905f312fd0f9b0"
+    },
+    "D-ISO-POS-02-FED10": {
+      "source_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/materials/D-ISO-POS-02-FED10/source.txt",
+      "source_sha256": "bac96df8b5c83dafb479af7da223a1dfbc6cd22089d91f6093ba1e1852126a64"
+    },
+    "D-ISO-CTL-01-TITANIC": {
+      "source_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/materials/D-ISO-CTL-01-TITANIC/source.txt",
+      "source_sha256": "1d9403ee2eb4e3b075e42f61604d990f227b31c13b0e65848746782f11eadaad"
+    }
+  },
+  "variants": {
+    "V0": {
+      "prompt_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/protocol/prompts/scout-v0.md",
+      "prompt_sha256": "78fcc2f4a420bf460ec97c16f7d2e3c0614d641e1727fd9db7aef2039250b70f",
+      "response_schema_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-b/protocol/schemas/scout-v0-response.schema.json"
+    },
+    "V1P": {
+      "prompt_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/protocol/prompts/scout-v1-prime.md",
+      "prompt_sha256": "585ec24f4060d524fc99889623f6fdfcb418c62c67e26e56ec29e488011aeca0",
+      "response_schema_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-b/protocol/schemas/scout-v1-prime-response.schema.json"
+    }
+  },
+  "runs": [
+    {"sequence": 1, "block": 1, "pair_id": "CTL01-R1", "run_id": "CTL01-R1-V1P", "material_id": "D-ISO-CTL-01-TITANIC", "repeat": 1, "variant": "V1P"},
+    {"sequence": 2, "block": 1, "pair_id": "CTL01-R1", "run_id": "CTL01-R1-V0", "material_id": "D-ISO-CTL-01-TITANIC", "repeat": 1, "variant": "V0"},
+    {"sequence": 3, "block": 2, "pair_id": "POS01-R1", "run_id": "POS01-R1-V1P", "material_id": "D-ISO-POS-01-TITANIC", "repeat": 1, "variant": "V1P"},
+    {"sequence": 4, "block": 2, "pair_id": "POS01-R1", "run_id": "POS01-R1-V0", "material_id": "D-ISO-POS-01-TITANIC", "repeat": 1, "variant": "V0"},
+    {"sequence": 5, "block": 3, "pair_id": "POS02-R1", "run_id": "POS02-R1-V0", "material_id": "D-ISO-POS-02-FED10", "repeat": 1, "variant": "V0"},
+    {"sequence": 6, "block": 3, "pair_id": "POS02-R1", "run_id": "POS02-R1-V1P", "material_id": "D-ISO-POS-02-FED10", "repeat": 1, "variant": "V1P"},
+    {"sequence": 7, "block": 4, "pair_id": "POS01-R3", "run_id": "POS01-R3-V0", "material_id": "D-ISO-POS-01-TITANIC", "repeat": 3, "variant": "V0"},
+    {"sequence": 8, "block": 4, "pair_id": "POS01-R3", "run_id": "POS01-R3-V1P", "material_id": "D-ISO-POS-01-TITANIC", "repeat": 3, "variant": "V1P"},
+    {"sequence": 9, "block": 5, "pair_id": "CTL01-R3", "run_id": "CTL01-R3-V0", "material_id": "D-ISO-CTL-01-TITANIC", "repeat": 3, "variant": "V0"},
+    {"sequence": 10, "block": 5, "pair_id": "CTL01-R3", "run_id": "CTL01-R3-V1P", "material_id": "D-ISO-CTL-01-TITANIC", "repeat": 3, "variant": "V1P"},
+    {"sequence": 11, "block": 6, "pair_id": "POS02-R3", "run_id": "POS02-R3-V0", "material_id": "D-ISO-POS-02-FED10", "repeat": 3, "variant": "V0"},
+    {"sequence": 12, "block": 6, "pair_id": "POS02-R3", "run_id": "POS02-R3-V1P", "material_id": "D-ISO-POS-02-FED10", "repeat": 3, "variant": "V1P"},
+    {"sequence": 13, "block": 7, "pair_id": "CTL01-R2", "run_id": "CTL01-R2-V1P", "material_id": "D-ISO-CTL-01-TITANIC", "repeat": 2, "variant": "V1P"},
+    {"sequence": 14, "block": 7, "pair_id": "CTL01-R2", "run_id": "CTL01-R2-V0", "material_id": "D-ISO-CTL-01-TITANIC", "repeat": 2, "variant": "V0"},
+    {"sequence": 15, "block": 8, "pair_id": "POS01-R2", "run_id": "POS01-R2-V0", "material_id": "D-ISO-POS-01-TITANIC", "repeat": 2, "variant": "V0"},
+    {"sequence": 16, "block": 8, "pair_id": "POS01-R2", "run_id": "POS01-R2-V1P", "material_id": "D-ISO-POS-01-TITANIC", "repeat": 2, "variant": "V1P"},
+    {"sequence": 17, "block": 9, "pair_id": "POS02-R2", "run_id": "POS02-R2-V1P", "material_id": "D-ISO-POS-02-FED10", "repeat": 2, "variant": "V1P"},
+    {"sequence": 18, "block": 9, "pair_id": "POS02-R2", "run_id": "POS02-R2-V0", "material_id": "D-ISO-POS-02-FED10", "repeat": 2, "variant": "V0"}
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "trigger_map": {
+    "schema_version": "trigger-map.v0.1",
+    "triggers": [
+      {
+        "trigger_id": "T1",
+        "source_anchor_quote_en": "the after one was placed over the turbine hatch and was used as a ventilator",
+        "unexplained_relation_zh": "第四个 funnel 明说主要是通风而非排烟，但文本没有解释：为什么要把一个看似“烟囱”的大型构件配置给通风功能。",
+        "possible_missing_variable_zh": "当时客轮对 funnel 数量的审美/信誉信号，与机舱通风需求如何被合并到同一外形部件里"
+      },
+      {
+        "trigger_id": "T2",
+        "source_anchor_quote_en": "All overhead discharge from the circulating pumps, ballast pumps, bilge pumps, etc., were below the deep load line, but above the light line.",
+        "unexplained_relation_zh": "排出口被精确放在 deep load line 与 light line 之间，文本没有解释这种位置关系在不同吃水状态下解决了什么工程问题。",
+        "possible_missing_variable_zh": "载重变化下的舷侧开口安全、回流/虹吸风险、以及 freeboard/load line 规则"
+      },
+      {
+        "trigger_id": "T3",
+        "source_anchor_quote_en": "The boilers were supported in built steel cradles, and were stayed to the ship's side and to each other athwart ships by strong steel stays.",
+        "unexplained_relation_zh": "锅炉既要被牢固约束，又用了 cradle、横向 stays、前后 chocks 的组合，但文本没解释各方向约束分别在对抗什么载荷。",
+        "possible_missing_variable_zh": "热膨胀、横摇/撞击惯性、以及锅炉座安装中“允许伸缩但防止位移”的设计逻辑"
+      },
+      {
+        "trigger_id": "T4",
+        "source_anchor_quote_en": "Silent blow-offs from the main steam pipes were connected direct to both condensers.",
+        "unexplained_relation_zh": "主蒸汽管的 blow-off 为什么要“silent”，又为什么直接接到 condensers，文本没有给出其背后的回路功能。",
+        "possible_missing_variable_zh": "闭式放汽/消声、蒸汽冷凝回收、以及避免甲板上直接高压放汽的运行机制"
+      }
+    ]
+  },
+  "seed_batch": {
+    "schema_version": "seed-batch.v0.1",
+    "run_id": "CTL01-R1-V1P",
+    "seeds": [
+      {
+        "seed_id": "S1",
+        "source_anchor_quote_en": "the after one was placed over the turbine hatch and was used as a ventilator",
+        "external_lens_identity": "Edwardian transatlantic liner的“four-funnel prestige heuristic”与通风-外形复用机制",
+        "mechanism_claim_zh": "这里的关键不是“第四烟囱是假的”这类换名，而是早期远洋客轮把乘客对 funnel 数量的速度/安全直觉，与机舱和附属空间的通风需求，合并进同一个高可见度构件里；于是第四个 funnel 同时承担社会信号与空气组织功能。",
+        "reread_delta_zh": "重读后，这句不再只是一个孤立构造说明；它变成了“视觉信誉机制”和“通风工程”被叠加到同一部件上的证据，因此第四个 funnel 的存在理由从单纯技术冗余转为市场认知与机舱布置的联合作用。",
+        "source_leads": [
+          "Harland & Wolff / National Museums Northern Ireland 的 Olympic-class 结构与总布置图",
+          "Mark Chirnside, The Olympic-Class Ships",
+          "Illustrated London News 对 Olympic/Titanic 第四 funnel 通风用途的图解资料"
+        ]
+      },
+      {
+        "seed_id": "S2",
+        "source_anchor_quote_en": "were below the deep load line, but above the light line",
+        "external_lens_identity": "naval architecture中的 load-line / side-shell opening 安全机制",
+        "mechanism_claim_zh": "这类开口位置不是随意描述，而是在利用不同载重状态的吃水变化：轻载时排口露出水面便于自由排放，重载时则必须依靠阀件和布置满足舷侧开口的完整稳性/防进水要求。核心机制是“随吃水变化管理开口相对水面的风险”。",
+        "reread_delta_zh": "重读后，这句从静态坐标信息变成了一个跨工况设计判断：作者是在交代这些泵系排口如何兼顾排放功能与舷侧开口安全，而不是单纯报告它们在船壳上的高度。",
+        "source_leads": [
+          "U.S. Coast Guard Load Line guidance",
+          "International Convention on Load Lines (ICLL) / freeboard 条文与技术手册",
+          "SNAME 或同类 naval architecture 教材中关于 side discharges 与 shell openings 的章节"
+        ]
+      },
+      {
+        "seed_id": "S3",
+        "source_anchor_quote_en": "were stayed to the ship's side and to each other athwart ships by strong steel stays. Built steel chocks were also fitted to prevent movement fore and aft.",
+        "external_lens_identity": "marine boiler seating中的“允许热膨胀、限制惯性位移”安装机制",
+        "mechanism_claim_zh": "这里的支承不是单纯“固定得更牢”，而是分方向管理不同载荷：横向 stays 抵抗横摇与侧向惯性，前后 chocks 抵抗纵向冲击/碰撞位移，而 boiler foundation 还必须给受热膨胀留出条件。也就是说，锅炉座设计是在“可伸缩”和“不可乱跑”之间做约束分解。",
+        "reread_delta_zh": "重读后，cradles、stays、chocks 不再是三个并列零件名，而是一套按载荷方向拆分功能的安装逻辑；这让原文的结构细节 suddenly 变得可计算、可验证。",
+        "source_leads": [
+          "46 CFR 52.01-130 Installation（boiler foundations, expansion, chocks）",
+          "maritime.org 的 shipyard / engineering training material 中 boiler chocks 与 foundations 词条",
+          "传统 marine engineering 教材中 boiler seating / bracing 章节"
+        ]
+      },
+      {
+        "seed_id": "S4",
+        "source_anchor_quote_en": "Silent blow-offs from the main steam pipes were connected direct to both condensers.",
+        "external_lens_identity": "marine steam plant中的 condenser steam-dump / closed blow-off arrangement",
+        "mechanism_claim_zh": "“silent”指向的不是修辞，而是把本可直接向大气喷放的高压蒸汽，导入 condenser 做闭式冷凝与消声；这样既减小噪声和甲板危险，也可维持蒸汽回路的受控卸压。连接到 both condensers 说明它被纳入双路冷凝能力，而非临时排空。",
+        "reread_delta_zh": "重读后，这句从一个附件连接说明，变成了整套蒸汽系统运转哲学的线索：该船并不把 blow-off 当作简单放空，而是当作需要被冷凝器吸收和管理的系统事件。",
+        "source_leads": [
+          "DNV / class rules 中 condenser overpressure 与 steam dump arrangements",
+          "merchant marine engineering training texts on condensers and auxiliary exhaust systems",
+          "早期 marine engineering manuals 中关于 steam drains/blow-offs led to condensers 的章节"
+        ]
+      }
+    ]
+  }
+}

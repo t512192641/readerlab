@@ -1,0 +1,51 @@
+{
+  "schema_version": "seed-batch.v0.1",
+  "run_id": "POS02-R1-V0",
+  "seeds": [
+    {
+      "seed_id": "S1",
+      "source_anchor_quote_en": "Extend the sphere, and you take in a greater variety of parties and interests",
+      "external_lens_identity": "Cross-cutting cleavages theory (Georg Simmel; Robert Goodin's 1975 synthesis)",
+      "mechanism_claim_zh": "这里的机制不只是“大国人更多”，而是把宗教、财产、行业、债务等分歧做成交叉裂缝，降低单一多数阵营稳定结块的概率。",
+      "reread_delta_zh": "重读后，这句从地理扩张口号变成了结构性解释：联邦的安全性来自裂缝彼此交叉，而不只是来自规模本身。",
+      "source_leads": [
+        "Robert E. Goodin, 'Cross-Cutting Cleavages and Social Conflict,' British Journal of Political Science 5(4), 1975. https://www.cambridge.org/core/journals/british-journal-of-political-science/article/abs/crosscutting-cleavages-and-socialconf",
+        "Georg Simmel, Conflict and the Web of Group-Affiliations, 1955. Referenced in Goodin 1975."
+      ]
+    },
+    {
+      "seed_id": "S2",
+      "source_anchor_quote_en": "the most numerous party, or, in other words, the most powerful faction must be expected to prevail",
+      "external_lens_identity": "Public choice and rent-seeking (James Buchanan & Gordon Tullock; Anne Krueger)",
+      "mechanism_claim_zh": "麦迪逊这里写的不是抽象“偏私”，而是可预测的分配性寻租：立法者同时是利益相关方时，债务、关税、税负会变成制度化的转移争夺。",
+      "reread_delta_zh": "重读后，债权人与债务人、制造业与土地利益的段落，不再只是道德警告，而像是在描述立法场域为何天然会滑向寻租竞争。",
+      "source_leads": [
+        "James M. Buchanan and Gordon Tullock, The Calculus of Consent, 1962. https://oll.libertyfund.org/titles/buchanan-the-calculus-of-consent-logical-foundations-of-constitutional-democracy",
+        "David R. Henderson, 'Rent Seeking,' Econlib encyclopedia entry, with leads to Tullock 1967 and Krueger 1974. https://www.econlib.org/library/Enc/RentSeeking.html?to_print=true"
+      ]
+    },
+    {
+      "seed_id": "S3",
+      "source_anchor_quote_en": "refine and enlarge the public views, by passing them through the medium of a chosen body of citizens",
+      "external_lens_identity": "Political selection theory",
+      "mechanism_claim_zh": "代表制在这里可用“筛选机制”来读：它不只是替人民发声，而是在更大候选池中提高挑出高能力、低地方偏狭代理人的概率。",
+      "reread_delta_zh": "重读后，这段不只是对代表的德性期待，而是在提出一个选择模型：扩大选民与候选池，能改变当选者类型。",
+      "source_leads": [
+        "Ernesto Dal Bo and Frederico Finan, 'Progress and Perspectives in the Study of Political Selection,' NBER Working Paper 24783, 2018. https://www.nber.org/papers/w24783",
+        "Andrew Beath, Fotini Christia, Georgy Egorov, Ruben Enikolopov, 'Electoral Rules and Political Selection,' Review of Economic Studies 83(3), 2016; NBER version: https://www.nber.org/papers/w20082"
+      ]
+    },
+    {
+      "seed_id": "S4",
+      "source_anchor_quote_en": "communication is always checked by distrust in proportion to the number whose concurrence is necessary",
+      "external_lens_identity": "Collective action and common-knowledge coordination",
+      "mechanism_claim_zh": "这句给出的其实是协调成本机制：多数人即便共享压迫动机，也未必能形成共同知识与可靠协同；人数越大，串联越脆弱。",
+      "reread_delta_zh": "重读后，联邦并非只靠“意见更多”来抑制多数暴政，而是靠让潜在压迫联盟更难互认、互信、同步行动。",
+      "source_leads": [
+        "Mancur Olson, The Logic of Collective Action, 1965; overview: https://www.econlib.org/library/enc/bios/olson.html",
+        "Michael Chwe, Rational Ritual: Culture, Coordination, and Common Knowledge, 2001; cited in Mai Hassan, 'Coordinated Dis-Coordination,' American Political Science Review 118(1), 2024. https://www.cambridge.org/core/journals/american-pical-sc",
+        "Mai Hassan, 'Coordinated Dis-Coordination,' APSR 118(1), 2024. https://www.cambridge.org/core/journals/american-political-science-review/article/coordinated-discoordination/EF8E26F5F523B7D75988C5C1455AB1EE"
+      ]
+    }
+  ]
+}

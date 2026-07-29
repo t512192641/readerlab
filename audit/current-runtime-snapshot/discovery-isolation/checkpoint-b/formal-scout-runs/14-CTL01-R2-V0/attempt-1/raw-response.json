@@ -1,0 +1,54 @@
+{
+  "schema_version": "seed-batch.v0.1",
+  "run_id": "CTL01-R2-V0",
+  "seeds": [
+    {
+      "seed_id": "S1",
+      "source_anchor_quote_en": "\"the after one was placed over the turbine hatch and was used as a ventilator\"",
+      "external_lens_identity": "Costly signaling / conspicuous consumption in transport design (Veblen; maritime liner prestige signaling)",
+      "mechanism_claim_zh": "第四个“烟囱”并非主要排烟构件，而是把功能外形借给品牌与信誉信号：用高成本、远距离可见的轮廓向乘客传达“更大、更快、更可靠”。这不是装饰换名，而是市场信号机制在工程外形中的嵌入。",
+      "reread_delta_zh": "重读后，这句不再只是结构说明；它暴露出船体可见外形与真实功能并不一一对应，说明部分设计是在服务乘客认知和竞争地位，而不只是热工需要。",
+      "source_leads": [
+        "Thorstein Veblen, The Theory of the Leisure Class (conspicuous consumption / status signaling)",
+        "Mark Chirnside, works on Olympic-class liners and the fourth funnel's ventilating role",
+        "Maritime history references on dummy funnels in transatlantic liner competition"
+      ]
+    },
+    {
+      "seed_id": "S2",
+      "source_anchor_quote_en": "\"The uptakes ... were united immediately above the water-tight bulkhead which separated the boiler rooms.\"",
+      "external_lens_identity": "Common-mode failure via barrier penetration; tight coupling in accident theory (Perrow)",
+      "mechanism_claim_zh": "这里的关键不是“有水密舱壁”，而是本应隔离的锅炉舱在舱壁上方被烟道重新耦合。安全屏障被服务系统穿透后，隔离从“绝对分段”变成“条件分段”，引入共因失效路径。",
+      "reread_delta_zh": "重读后，水密舱壁不再能被直观理解为完整隔断；原文其实在暗示，功能系统为了效率跨越了分隔边界，削弱了读者对“舱室彼此独立”的默认想象。",
+      "source_leads": [
+        "Charles Perrow, Normal Accidents (tight coupling / complex interactions)",
+        "Naval architecture discussions of watertight bulkhead penetrations and trunking",
+        "Technical histories of large steamships' uptake arrangements across boiler-room divisions"
+      ]
+    },
+    {
+      "seed_id": "S3",
+      "source_anchor_quote_en": "\"All overhead discharge from the circulating pumps, ballast pumps, bilge pumps, etc., were below the deep load line, but above the light line.\"",
+      "external_lens_identity": "State-dependent safety margin in naval architecture (load line / freeboard / downflooding risk)",
+      "mechanism_claim_zh": "这些排出口的安全性取决于船舶吃水状态：同一开口在轻载时高于水面、在深载时低于水面。机制不是静态“安全/不安全”，而是由载荷条件切换的风险边界。",
+      "reread_delta_zh": "重读后，这句变成一条“条件安全”信息：设备布置并非独立成立，而是绑定在载重线制度与浮态假设上，提醒读者不要把结构位置当作固定意义。",
+      "source_leads": [
+        "Samuel Plimsoll and the historical load line regime",
+        "Standard naval architecture texts on freeboard and downflooding",
+        "SOLAS / merchant ship load line discussions of openings relative to load conditions"
+      ]
+    },
+    {
+      "seed_id": "S4",
+      "source_anchor_quote_en": "\"Silent blow-offs from the main steam pipes were connected direct to both condensers.\"",
+      "external_lens_identity": "Closed-cycle steam economy in Rankine-system practice; nuisance-abatement by condenser routing",
+      "mechanism_claim_zh": "“silent blow-off”直连冷凝器，说明放汽不是简单排空，而是被并入冷凝回收与降噪路径。它把乘客舒适、蒸汽损失控制、机舱热力循环连成一个隐藏的系统机制。",
+      "reread_delta_zh": "重读后，这句不只是附件清单；它显示蒸汽船上的许多“舒适性”或“安静”效果并非独立特性，而是通过热力系统集成实现的副产物。",
+      "source_leads": [
+        "Marine engineering textbooks on condensers and auxiliary steam exhaust arrangements",
+        "Rankine-cycle practice references on routing relief/blow-off steam to condensers",
+        "Early 20th-century steamship engineering manuals discussing silent blow-off systems"
+      ]
+    }
+  ]
+}

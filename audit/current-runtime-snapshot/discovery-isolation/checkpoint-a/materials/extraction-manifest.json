@@ -1,0 +1,44 @@
+{
+  "D-ISO-POS-01-TITANIC": {
+    "source_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/materials/D-ISO-POS-01-TITANIC/original/pg39415.txt",
+    "destination_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/materials/D-ISO-POS-01-TITANIC/source.txt",
+    "original_sha256": "68755a061177dcca91cc0fa5d7f89790d7562c88706178bf0138dd117ef917ca",
+    "original_bytes": 330679,
+    "start_boundary_utf8": "II. ACCOUNT OF THE SHIP'S JOURNEY ACROSS THE ATLANTIC, THE MESSAGES SHE\r\nRECEIVED, AND THE DISASTER.\r\n",
+    "end_boundary_utf8_exclusive": "III.--DESCRIPTION OF THE DAMAGE TO THE SHIP AND OF ITS GRADUAL AND FINAL\r\nEFFECT, WITH OBSERVATIONS THEREON.\r\n",
+    "start_offset": 94748,
+    "end_offset_exclusive": 127802,
+    "extracted_sha256": "ce8a25860f9fddc56cb235fb8637c0175a767af9f5ec877e5e905f312fd0f9b0",
+    "extracted_bytes": 33054,
+    "line_endings_preserved": "CRLF",
+    "encoding": "UTF-8"
+  },
+  "D-ISO-POS-02-FED10": {
+    "source_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/materials/D-ISO-POS-02-FED10/original/pg18.txt",
+    "destination_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/materials/D-ISO-POS-02-FED10/source.txt",
+    "original_sha256": "a6c9d1135a04d10955fe11d210b7f642e1c2341d4f2c8369b9a832cc97839d94",
+    "original_bytes": 1213410,
+    "start_boundary_utf8": "THE FEDERALIST.\r\nNo. X.\r\n",
+    "end_boundary_utf8_exclusive": "THE FEDERALIST.\r\nNo. XI.\r\n",
+    "start_offset": 110326,
+    "end_offset_exclusive": 128761,
+    "extracted_sha256": "bac96df8b5c83dafb479af7da223a1dfbc6cd22089d91f6093ba1e1852126a64",
+    "extracted_bytes": 18435,
+    "line_endings_preserved": "CRLF",
+    "encoding": "UTF-8"
+  },
+  "D-ISO-CTL-01-TITANIC": {
+    "source_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/materials/D-ISO-CTL-01-TITANIC/original/pg39415.txt",
+    "destination_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/materials/D-ISO-CTL-01-TITANIC/source.txt",
+    "original_sha256": "68755a061177dcca91cc0fa5d7f89790d7562c88706178bf0138dd117ef917ca",
+    "original_bytes": 330679,
+    "start_boundary_utf8": "GENERAL.\r\n\r\nThere were four elliptical-shaped funnels;",
+    "end_boundary_utf8_exclusive": "CREW AND PASSENGERS.\r\n",
+    "start_offset": 91505,
+    "end_offset_exclusive": 92372,
+    "extracted_sha256": "1d9403ee2eb4e3b075e42f61604d990f227b31c13b0e65848746782f11eadaad",
+    "extracted_bytes": 867,
+    "line_endings_preserved": "CRLF",
+    "encoding": "UTF-8"
+  }
+}

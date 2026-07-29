@@ -1,0 +1,640 @@
+# Discovery Scout V1'（自由 trigger map，冻结候选）
+
+你将收到一个完整阅读单元。目标不是摘要、改写、找主题或复述作者观点，而是寻找能让普通读者重新理解文中关键关系的、可核验的外部知识透镜。
+
+在提出 seed 前，先独立建立一张自由的 `trigger_map`：只记录原文中“某个关系已经出现，但解释它所需的变量仍缺失”的位置。不要套用固定异常类型、预设学科清单或答案菜单；材料若没有这种位置，trigger 可以为 0。trigger_map 只帮助本次 Scout 搜索，后续 Normalizer 和 Judge 看不到它。
+
+然后只保留满足以下最低条件的候选：
+
+- 透镜给原文增加一个原文没有直接命名的解释机制，而不只是换名；
+- 能指出原文中的确切英文锚点，并说明重读后发生了什么改变；
+- 外部身份具体到可检索、可证伪的概念、模型、研究路线或历史机制；
+- 有至少一个可核验来源线索。
+
+不要为了凑数输出。材料若只有静态描述或没有可靠的外部增量，可以返回 0 个 seed。最多 6 个。不得使用本次材料以外的本地文件、历史结果、审计材料、金标、样张或其他 run。
+
+输出一个 JSON 对象，且只含两个顶层字段：
+
+- `trigger_map`：符合 `trigger-map.schema.json`；
+- `seed_batch`：与 V0 完全相同，符合 `seed-batch.schema.json`。
+
+trigger_map 不得改变 seed_batch 的字段、每字段长度或 seed 上限。各字段必须简洁，不写完整文章，不预测 Judge 标准。
+
+运行 ID：`POS01-R2-V1P`
+
+阅读单元如下：
+
+<READING_UNIT>
+II. ACCOUNT OF THE SHIP'S JOURNEY ACROSS THE ATLANTIC, THE MESSAGES SHE
+RECEIVED, AND THE DISASTER.
+
+
+THE SAILING ORDER.
+
+The masters of vessels belonging to the White Star Line are not given
+any special "sailing orders" before the commencement of any particular
+voyage. It is understood, however, that the "tracks" or "lane routes"
+proper to the particular time of the year, and agreed upon by the great
+steamship companies, are to be generally adhered to. Should any master
+see fit during this passage to deviate from his route he has to report
+on and explain this deviation at the end of his voyage. When such
+deviation has been in the interests of safety, and not merely to shorten
+his passage, his action has always been approved of by the company.
+
+A book of general ship's rules and uniform regulations is also issued by
+the company as a guide; there are in this book no special instructions
+in regard to ice, but there is a general instruction that the safety of
+the lives of the passengers and ship are to be the first consideration.
+
+Besides the book of ship's rules, every master when first appointed to
+command a ship is addressed by special letter from the company, of which
+the following passage is an extract:
+
+     You are to dismiss all idea of competitive passages with other
+     vessels and to concentrate your attention upon a cautious, prudent,
+     and ever-watchful system of navigation, which shall lose time or
+     suffer any other temporary inconvenience rather than incur the
+     slightest risk which can be avoided.
+
+Mr. Sanderson, one of the directors, in his evidence says with reference
+to the above letter:
+
+     We never fail to tell them in handing them these letters that we do
+     not wish them to take it as a mere matter of form; that we wish
+     them to read these letters, and to write an acknowledgment to us
+     that they have read them, and that they will be influenced by what
+     we have said in those letters.
+
+
+THE ROUTE FOLLOWED.
+
+The _Titanic_ left Southampton on Wednesday, April 10, and after calling
+at Cherbourg, proceeded to Queenstown, from which port she sailed on the
+afternoon of Thursday, April 11, following what was at that time the
+accepted outward-bound route for mail steamers from the Fastnet Light,
+off the southwest coast of Ireland, to the Nantucket Shoal light vessel,
+off the coast of the United States. It is desirable here to explain that
+it has been, since 1899, the practice, by common agreement between the
+great North Atlantic steamship companies, to follow lane routes, to be
+used by their ships at the different seasons of the year. Speaking
+generally, it may be said that the selection of these routes has
+hitherto been based on the importance of avoiding as much as possible
+the areas where fog and ice are prevalent at certain seasons, without
+thereby unduly lengthening the passage across the Atlantic, and also
+with the view of keeping the tracks of "outward" and "homeward" bound
+mail steamers well clear of one another. A further advantage is that, in
+case of a breakdown, vessels are likely to receive timely assistance
+from other vessels following the same route. The decisions arrived at by
+the steamship companies referred to above have, from time to time, been
+communicated to the Hydrographic Office, and the routes have there been
+marked on the North Atlantic route charts printed and published by the
+Admiralty; and they have also been embodied in the sailing directions.
+
+Before the _Titanic_ disaster the accepted mail steamers outward track
+between January 15 and August 14 followed the arc of a great circle
+between the Fastnet Light and a point in latitude 42° N. and 47° W.
+(sometimes termed the "turning point"), and from thence by Rhumb Line so
+as to pass just south of the Nantucket Shoal light vessel, and from this
+point on to New York. This track, usually called the outward southern
+track, was that followed by the _Titanic_ on her journey.
+
+An examination of the North Atlantic route chart shows that this track
+passes about 25 miles south (that is outside) of the edge of the area
+marked "field ice between March and July," but from 100 to 300 miles to
+the northward (that is inside) of the dotted line on the chart marked,
+"Icebergs have been seen within this line in April, May, and June."
+
+That is to say, assuming the areas indicated to be based on the
+experience of many years, this track might be taken as passing clear of
+field ice under the usual conditions of that time of year, but well
+inside the area in which icebergs might be seen.
+
+It is instructive here to remark that had the "turning point" been in
+longitude 45° W. and latitude 38° N., that is some 240 miles to the
+south-eastward, the total distance of the passage would only have been
+increased by about 220 miles, or some 10 hours' steaming for a 22-knot
+ship. This is the route which was provisionally decided on by the great
+trans-Atlantic companies subsequent to the _Titanic_ disaster.
+
+It must not be supposed that the lane routes referred to had never been
+changed before. Owing to the presence of ice in 1903, 1904, and 1905
+from about early in April to mid-June or early in July, westward-bound
+vessels crossed the meridian of 47° W. in latitude 41° N., that is 60
+miles further south than the then accepted track.
+
+The publications known as "Sailing Directions," compiled by the
+hydrographic office at the Admiralty, indicate the caution which it is
+necessary to use in regions where ice is likely to be found.
+
+The following is an extract from one of these books, named "United
+States Pilot (East Coast)," Part I (second edition, 1909, p. 34),
+referring to the ocean passages of the large trans-Atlantic mail and
+passenger steamers:
+
+     To these vessels one of the chief dangers in crossing the Atlantic
+     lies in the probability of encountering masses of ice, both in the
+     form of bergs and of extensive fields of solid compact ice,
+     released at the breaking up of winter in the Arctic regions, and
+     drifted down by the Labrador current across their direct route. Ice
+     is more likely to be encountered in this route between April and
+     August, both months inclusive, than at other times, although
+     icebergs have been seen at all seasons northward of the parallel of
+     43° N., but not often so far south after August.
+
+     These icebergs are sometimes over 200 feet in height and of
+     considerable extent. They have been seen as far south as latitude
+     39° N., to obtain which position they must have crossed the Gulf
+     Stream impelled by the cold Arctic current underrunning the warm
+     waters of the Gulf Stream. That this should happen is not to be
+     wondered at when it is considered that the specific gravity of
+     fresh-water ice, of which these bergs are composed, is about
+     seven-eighths that of sea water; so that, however vast the berg may
+     appear to the eye of the observer, he can in reality see one-eighth
+     of its bulk, the remaining seven-eighths being submerged and
+     subject to the deep-water currents of the ocean. The track of an
+     iceberg is indeed directed mainly by current, so small a portion of
+     its surface being exposed to the action of the winds that its
+     course is but slightly retarded or deflected by moderate breezes.
+     On the Great Bank of Newfoundland bergs are often observed to be
+     moving south or southeast; those that drift westward of Cape Race
+     usually pass between Green and St. Pierre Banks.
+
+     The route chart of the North Atlantic, No. 2058, shows the limits
+     within which both field ice and icebergs may be met with, and where
+     it should be carefully looked out for at all times, but especially
+     during the spring and summer seasons. From this chart it would
+     appear that whilst the southern and eastern limits of field ice are
+     about latitude 42° N., and longitude 45° W., icebergs may be met
+     with much farther from Newfoundland; in April, May, and June they
+     have been seen as far South as latitude 39° N. and as far east as
+     longitude 38° 30´ W."
+
+And again, on page 35:
+
+     It is, in fact, impossible to give, within the outer limits named,
+     any distinct idea of where ice may be expected, and no rule can be
+     laid down to insure safe navigation, as its position and the
+     quantity met with differs so greatly in different seasons.
+     Everything must depend upon the vigilance, caution, and skill with
+     which a vessel is navigated when crossing the dangerous ice-bearing
+     regions of the Atlantic Ocean.
+
+Similar warnings as to ice are also given in the "Nova Scotia (Southeast
+Coast) and Bay of Fundy Pilot" (sixth edition, 1911), which is also
+published by the hydrographic office.
+
+Both the above quoted books were supplied to the master of the _Titanic_
+(together with other necessary charts and books) before that ship left
+Southampton.
+
+The above extracts show that it is quite incorrect to assume that
+icebergs had never been encountered or field ice observed so far south,
+at the particular time of year when the _Titanic_ disaster occurred; but
+it is true to say that the field ice was certainly at that time farther
+south than it has been seen for many years.
+
+It may be useful here to give some definitions of the various forms of
+ice to be met with in these latitudes, although there is frequently some
+confusion in their use.
+
+An iceberg may be defined as a detached portion of a polar glacier
+carried out to sea. The ice of an iceberg formed from a glacier is of
+quite fresh water. Only about an eighth of its mass floats above the
+surface of sea water.
+
+A "growler" is a colloquial term applied to icebergs of small mass,
+which therefore only show a small portion above the surface. It is not
+infrequently a berg which has turned over, and is therefore showing what
+has been termed "black ice" or, more correctly, dark-blue ice.
+
+Pack ice is the floating ice which covers wide areas of the polar seas,
+broken into large pieces, which are driven ("packed") together by wind
+and current, so as to form a practically continuous sheet. Such ice is
+generally frozen from sea water, and not derived from glaciers.
+
+Field ice is a term usually applied to frozen sea water floating in much
+looser form than pack ice.
+
+An icefloe is the term generally applied to the same ice (i.e., field
+ice) in a smaller quantity.
+
+A floe berg is a stratified mass of floe ice (i.e., sea-water ice).
+
+
+ICE MESSAGES RECEIVED.
+
+The _Titanic_ followed the outward southern track until Sunday, April
+14, in the usual way. At 11.40 p. m. on that day she struck an iceberg
+and at 2.20 a. m. on the next day she foundered.
+
+At 9 a. m. (_Titanic_ time) on that day a wireless message from the
+steamship _Caronia_ was received by Capt. Smith. It was as follows:
+
+       *       *       *       *       *
+
+CAPTAIN, _Titanic_:
+
+West-bound steamers report bergs, growlers, and field ice in 42° N.,
+from 49° to 51° W., April 12. Compliments.
+
+BARR.
+
+       *       *       *       *       *
+
+It will be noticed that this message referred to bergs, growlers, and
+field ice sighted on April 12--at least 48 hours before the time of the
+collision. At the time this message was received the _Titanic's_
+position was about latitude 43° 35´ N. and longitude 43° 50´ W. Capt.
+Smith acknowledged the receipt of this message.
+
+At 1.42 p. m., a wireless message from the steamship _Baltic_ was
+received by Capt. Smith. It was as follows:
+
+       *       *       *       *       *
+
+CAPT. SMITH, _Titanic_:
+
+Have had moderate, variable winds and clear, fine weather since leaving.
+Greek steamer _Athenai_ reports passing icebergs and large quantities of
+field ice to-day in latitude 41° 51´ N., longitude 49° 52´ W. Last night
+we spoke German oiltank steamer _Deutschland_, Stettin to Philadelphia,
+not under control, short of coal, latitude 40° 42´ N., longitude 55° 11´
+W. Wishes to be reported to New York and other steamers. Wish you and
+_Titanic_ all success.
+
+COMMANDER.
+
+       *       *       *       *       *
+
+At the time this message was received the _Titanic_ position was about
+42° 35´ N., 45° 50´ W. Capt. Smith acknowledged the receipt of this
+message also.
+
+Mr. Ismay, the managing director of the White Star Line, was on board
+the _Titanic_, and it appears that the master handed the _Baltic's_
+message to Mr. Ismay almost immediately after it was received. This no
+doubt was in order that Mr. Ismay might know that ice was to be
+expected. Mr. Ismay states that he understood from the message that they
+would get up to the ice "that night." Mr. Ismay showed this message to
+two ladies, and it is therefore probable that many persons on board
+became aware of its contents. This message ought in my opinion to have
+been put on the board in the chart room as soon as it was received. It
+remained, however, in Mr. Ismay's possession until 7.15 p. m., when the
+master asked Mr. Ismay to return it. It was then that it was first
+posted in the chart room.
+
+This was considerably before the time at which the vessel reached the
+position recorded in the message. Nevertheless, I think it was irregular
+for the master to part with the document, and improper for Mr. Ismay to
+retain it, but the incident had, in my opinion, no connection with or
+influence upon the manner in which the vessel was navigated by the
+master.
+
+It appears that about 1.45 p. m. (_Titanic_ time) on the 14th a message
+was sent from the German steamer _Amerika_ to the Hydrographic Office in
+Washington, which was in the following terms:
+
+     _Amerika_ passed two large icebergs in 41° 27´ N., 50° 8´ W., on
+     April 14.
+
+This was a position south of the point of the _Titanic's_ disaster. The
+message does not mention at what hour the bergs had been observed. It
+was a private message for the hydrographer at Washington, but it passed
+to the _Titanic_ because she was nearest to Cape Race, to which station
+it had to be sent in order to reach Washington. Being a message
+affecting navigation, it should in the ordinary course have been taken
+to the bridge. So far as can be ascertained, it was never heard of by
+anyone on board the _Titanic_ outside the Marconi room. There were two
+Marconi operators in the Marconi room, namely, Phillips, who perished,
+and Bride, who survived and gave evidence. Bride did not receive the
+_Amerika_ message nor did Phillips mention it to him, though the two had
+much conversation together after it had been received. I am of opinion
+that when this message reached the Marconi room it was put aside by
+Phillips to wait until the _Titanic_ would be within call of Cape Race
+(at about 8 or 8.30 p. m.), and that it was never handed to any officer
+of the _Titanic_.
+
+At 5.50 p. m. the _Titanic's_ course (which had been S. 62° W.) was
+changed to bring her on a westerly course for New York. In ordinary
+circumstances this change in her course should have been made about half
+an hour earlier, but she seems on this occasion to have continued for
+about 10 miles longer on her southwesterly course before turning, with
+the result that she found herself, after altering course at 5.50 p. m.,
+about 4 or 5 miles south of the customary route on a course S. 86° W.
+true. Her course, as thus set, would bring her at the time of the
+collision to a point about 2 miles to the southward of the customary
+route and 4 miles south and considerably to the westward of the
+indicated position of the _Baltic's_ ice. Her position at the time of
+the collision would also be well to the southward of the indicated
+position of the ice mentioned in the _Caronia_ message. This change of
+course was so insignificant that in my opinion it can not have been made
+in consequence of information as to ice.
+
+In this state of things, at 7.30 p.m. a fourth message was received, and
+is said by the Marconi operator Bride to have been delivered to the
+bridge. This message was from the steamship _Californian_ to the
+steamship _Antillian_, but was picked up by the _Titanic_. It was as
+follows:
+
+       *       *       *       *       *
+
+To CAPTAIN, _Antillian_:
+
+Six-thirty p. m., apparent ship's time; latitude 42° 3´ N., longitude
+49° 9´ W. Three large bergs 5 miles to southward of us. Regards.
+
+LORD.
+
+       *       *       *       *       *
+
+Bride does not remember to what officer he delivered this message.
+
+By the time the _Titanic_ reached the position of the collision (11.40
+p. m.) she had gone about 50 miles to the westward of the indicated
+position of the ice mentioned in this fourth message. Thus it would
+appear that before the collision she had gone clear of the indicated
+positions of ice contained in the messages from the _Baltic_ and
+_Californian_. As to the ice advised by the _Caronia_ message, so far as
+it consisted of small bergs and field ice, it had before the time of the
+collision possibly drifted with the Gulf Stream to the eastward; and so
+far as it consisted of large bergs (which would be deep enough in the
+water to reach the Labrador current) it had probably gone to the
+southward. It was urged by Sir Robert Finlay, who appeared for the
+owners, that this is strong evidence that the _Titanic_ had been
+carefully and successfully navigated so as to avoid the ice of which she
+had received warning. Mr. Ismay, however, stated that he understood from
+the _Baltic_ message that "we would get up to the ice that night."
+
+There was a fifth message received in the Marconi room of the _Titanic_
+at 9.40 p. m. This was from a steamer called the _Mesaba_. It was in the
+following terms:
+
+     _From "Mesaba" to "Titanic" and all east-bound ships_:
+
+     Ice report in latitude 42° N. to 41° 25´ N., longitude 49° to
+     longitude 50° 30´ W. Saw much heavy pack ice and great number large
+     icebergs. Also field ice. Weather good, clear.
+
+This message clearly indicated the presence of ice in the immediate
+vicinity of the _Titanic_, and if it had reached the bridge would
+perhaps have affected the navigation of the vessel. Unfortunately, it
+does not appear to have been delivered to the master or to any of the
+officers. The Marconi operator was very busy from 8 o'clock onward
+transmitting messages via Cape Race for passengers on board the
+_Titanic_, and the probability is that he failed to grasp the
+significance and importance of the message, and put it aside until he
+should be less busy. It was never acknowledged by Capt. Smith, and I am
+satisfied that it was not received by him. But, assuming Sir Robert
+Finlay's contentions to be well founded that the Titanic had been
+navigated so as to avoid the _Baltic_ and the _Californian_ ice, and
+that the _Caronia_ ice had drifted to the eastward and to the southward,
+still there can be no doubt, if the evidence of Mr. Lightoller, the
+second officer, is to be believed, that both he and the master knew that
+the danger of meeting ice still existed. Mr. Lightoller says that the
+master showed him the _Caronia_ message about 12.45 p. m. on April 14,
+when he was on the bridge. He was about to go off watch, and he says he
+made a rough calculation in his head which satisfied him that the
+_Titanic_ would not reach the position mentioned in the message until he
+came on watch again at 6 p. m. At 6 p. m. Mr. Lightoller came on the
+bridge again to take over the ship from Mr. Wilde, the chief officer
+(dead). He does not remember being told anything about the _Baltic_
+message, which had been received at 1.42 p. m. Mr. Lightoller then
+requested Mr. Moody, the sixth officer (dead), to let him know "at what
+time we should reach the vicinity of ice," and says that he thinks Mr.
+Moody reported "about 11 o'clock." Mr. Lightoller says that 11 o'clock
+did not agree with a mental calculation he himself had made and which
+showed 9.30 as the time. This mental calculation he at first said he had
+made before Mr. Moody gave him 11 o'clock as the time, but later on he
+corrected this, and said his mental calculation was made between 7 and 8
+o'clock, and after Mr. Moody had mentioned 11. He did not point out the
+difference to him, and thought that perhaps Mr. Moody had made his
+calculations on the basis of some "other" message. Mr. Lightoller
+excuses himself for not pointing out the difference by saying that Mr.
+Moody was busy at the time, probably with stellar observations. It is,
+however, an odd circumstance that Mr. Lightoller, who believed that the
+vicinity of ice would be reached before his watch ended at 10 p.m.,
+should not have mentioned the fact to Mr. Moody, and it is also odd that
+if he thought that Mr. Moody was working on the basis of some "other"
+message, he did not ask what the other message was or where it came
+from. The point, however, of Mr. Lightoller's evidence is that they both
+thought that the vicinity of ice would be reached before midnight. When
+he was examined as to whether he did not fear that on entering the
+indicated ice region he might run foul of a growler (a low-lying berg)
+he answers: "No, I judged I should see it with "sufficient distinctness"
+and at a distance of a "mile and a half, more probably 2 miles." He then
+adds:
+
+     In the event of meeting ice there are many things we look for. In
+     the first place, a slight breeze. Of course, the stronger the
+     breeze the more visible will the ice be, or, rather, the breakers
+     on the ice.
+
+He is then asked whether there was any breeze on this night, and he
+answers:
+
+     When I left the deck at 10 o'clock there was a slight breeze. Oh,
+     pardon me, no; I take that back. No, it was calm, perfectly calm--
+
+And almost immediately afterwards he describes the sea as "absolutely
+flat." It appeared, according to this witness, that about 9 o'clock the
+master came on the bridge and that Mr. Lightoller had a conversation
+with him which lasted half an hour. This conversation, so far as it is
+material, is described by Mr. Lightoller in the following words:
+
+     We commenced to speak about the weather. He said, "there is not
+     much wind." I said, "No, it is a flat calm," as a matter of fact.
+     He repeated it, he said, "A flat calm." I said, "Quite flat; there
+     is no wind." I said something about it was rather a pity the breeze
+     had not kept up whilst we were going through the ice region. Of
+     course, my reason was obvious: he knew I meant the water ripples
+     breaking on the base of the berg * * * We then discussed the
+     indications of ice. I remember saying, "In any case, there will be
+     a certain amount of reflected light from the bergs." He said, "Oh,
+     yes, there will be a certain amount of reflected light." I said or
+     he said--blue was said between us--that even though the blue side
+     of the berg was towards us, probably the outline, the white
+     outline, would give us sufficient warning, that we should be able
+     to see it at a good distance, and as far as we could see, we should
+     be able to see it. Of course, it was just with regard to that
+     possibility of the blue side being toward us, and that if it did
+     happen to be turned with the purely blue side toward us, there
+     would still be the white outline.
+
+Further on Mr. Lightoller says that he told the master nothing about his
+own calculation as to coming up with the ice at 9.30 or about Mr.
+Moody's calculation as to coming up with it at 11.
+
+The conversation with the master ended with the master saying, "If it
+becomes at all doubtful let me know at once; I will be just inside."
+This remark Mr. Lightoller says undoubtedly referred to ice.
+
+At 9.30 the master went to his room, and the first thing that Mr.
+Lightoller did afterwards was to send a message to the crow's nest "to
+keep a sharp lookout for ice, particularly small ice and growlers,"
+until daylight. There seems to be no doubt that this message was in fact
+sent, and that it was passed on to the next lookouts when they came on
+watch. Hitchins, the quartermaster, says he heard Mr. Lightoller give
+the message to Mr. Moody, and both the men in the crow's nest at the
+time (Jewell and Symons) speak to having received it. From 9.30 to 10
+o'clock, when his watch ended, Mr. Lightoller remained on the bridge
+"looking out for ice." He also said that the night order book for the
+14th had a footnote about keeping a sharp lookout for ice, and that this
+note was "initialed by every officer." At 10 o'clock Mr. Lightoller
+handed over the watch to Mr. Murdoch, the first officer (dead), telling
+him that "we might be up around the ice any time now." That Mr. Murdoch
+knew of the danger of meeting ice appears from the evidence of Hemming,
+a lamp trimmer, who says that about 7.15 p. m. Mr. Murdoch told him to
+go forward and see the forescuttle hatch closed--
+
+     as we are in the vicinity of ice and there is a glow coming from
+     that, and I want everything dark before the bridge.
+
+The foregoing evidence establishes quite clearly that Capt. Smith, the
+master; Mr. Murdoch, the first officer; Mr. Lightoller, the second
+officer; and Mr. Moody, the sixth officer, all knew on the Sunday
+evening that the vessel was entering a region where ice might be
+expected; and this being so, it seems to me to be of little importance
+to consider whether the master had by design or otherwise succeeded in
+avoiding the particular ice indicated in the three messages received by
+him.
+
+
+SPEED OF THE SHIP.
+
+The entire passage had been made at high speed, though not at the ship's
+maximum, and this speed was never reduced until the collision was
+unavoidable. At 10 p. m. the ship was registering 45 knots every two
+hours by the Cherub log.
+
+The quartermaster on watch aft when the _Titanic_ struck states that the
+log, reset at noon, then registered 260 knots, and the fourth officer,
+when working up the position from 7.30 p. m. to the time of the
+collision, states he estimated the _Titanic's_ speed as 22 knots, and
+this is also borne out by evidence that the engines were running
+continuously at 75 revolutions.
+
+
+THE WEATHER CONDITIONS.
+
+From 6 p. m. onward to the time of the collision the weather was
+perfectly clear and fine. There was no moon, the stars were out, and
+there was not a cloud in the sky. There was, however, a drop in
+temperature of 10° in slightly less than two hours, and by about 7.30 p.
+m. the temperature was 33° F., and it eventually fell to 32° F. That
+this was not necessarily an indication of ice is borne out by the
+sailing directions. The Nova Scotia (S. E. Coast) and Bay of Fundy Pilot
+(sixth edition, 1911, p. 16) says:
+
+     No reliance can be placed on any warning being conveyed to a
+     mariner by a fall of temperature, either of the air or sea, on
+     approaching ice. Some decrease in temperature has occasionally been
+     recorded, but more often none has been observed.
+
+Sir Ernest Shackleton was, however, of opinion that--
+
+     if there was no wind and the temperature fell abnormally for the
+     time of the year, I would consider that I was approaching an area
+     which might have ice in it.
+
+
+ACTION THAT SHOULD HAVE BEEN TAKEN.
+
+The question is what ought the master to have done. I am advised that
+with the knowledge of the proximity of ice which the master had, two
+courses were open to him: The one was to stand well to the southward
+instead of turning up to a westerly course; the other was to reduce
+speed materially as night approached. He did neither. The alteration of
+the course at 5.50 p. m. was so insignificant that it can not be
+attributed to any intention to avoid ice. This deviation brought the
+vessel back to within about 2 miles of the customary route before 11.30
+p. m. And there was certainly no reduction of speed. Why, then, did the
+master persevere in his course and maintain his speed? The answer is to
+be found in the evidence. It was shown that for many years past, indeed,
+for a quarter of a century or more, the practice of liners using this
+track when in the vicinity of ice at night had been in clear weather to
+keep the course, to maintain the speed and to trust to a sharp lookout
+to enable them to avoid the danger. This practice, it was said, had been
+justified by experience, no casualties having resulted from it. I accept
+the evidence as to the practice and as to the immunity from casualties
+which is said to have accompanied it. But the event has proved the
+practice to be bad. Its root is probably to be bound in competition and
+in the desire of the public for quick passages rather than in the
+judgment of navigators. But unfortunately experience appeared to justify
+it. In these circumstances I am not able to blame Capt. Smith. He had
+not the experience which his own misfortune has afforded to those whom
+he has left behind, and he was doing only that which other skilled men
+would have done in the same position. It was suggested at the bar that
+he was yielding to influences which ought not to have affected him; that
+the presence of Mr. Ismay on board and the knowledge which he perhaps
+had of a conversation between Mr. Ismay and the chief engineer at
+Queenstown about the speed of the ship and the consumption of coal
+probably induced him to neglect precautions which he would otherwise
+have taken. But I do not believe this. The evidence shows that he was
+not trying to make any record passage or indeed any exceptionally quick
+passage. He was not trying to please anybody, but was exercising his own
+discretion in the way he thought best. He made a mistake, a very
+grievous mistake, but one in which, in face of the practice and of past
+experience, negligence can not be said to have had any part; and in the
+absence of negligence it is, in my opinion, impossible to fix Capt.
+Smith with blame. It is, however, to be hoped that the last has been
+heard of the practice and that for the future it will be abandoned for
+what we now know to be more prudent and wiser measures. What was a
+mistake in the case of the _Titanic_ would without doubt be negligence
+in any similar case in the future.
+
+
+THE COLLISION.
+
+Mr. Lightoller turned over the ship to Mr. Murdoch, the first officer,
+at 10 o'clock, telling him that the ship was within the region where ice
+had been reported. He also told him of the message he had sent to the
+crow's nest, and of his conversation with the master, and of the
+latter's orders.
+
+The ship appears to have run on, on the same course, until, at a little
+before 11.40, one of the lookouts in the crow's nest struck three blows
+on the gong, which was the accepted warning for something ahead,
+following this immediately afterward by a telephone message to the
+bridge "Iceberg right ahead." Almost simultaneously with the three-gong
+signal Mr. Murdoch, the officer of the watch, gave the order
+"Hard-a-starboard," and immediately telegraphed down to the engine room
+"Stop. Full speed astern." The helm was already "hard over," and the
+ship's head had fallen off about two points to port, when she collided
+with an iceberg well forward on her starboard side.
+
+Mr. Murdoch at the same time pulled the lever over which closed the
+water-tight doors in the engine and boiler rooms.
+
+The master "rushed out" onto the bridge and asked Mr. Murdoch what the
+ship had struck.
+
+Mr. Murdoch replied:
+
+     An iceberg, sir. I hard-a-starboarded and reversed the engines, and
+     I was going to hard-a-port round it, but she was too close. I could
+     not do any more. I have closed the water-tight doors.
+
+From the evidence given it appears that the _Titanic_ had turned about
+two points to port before the collision occurred. From various
+experiments subsequently made with the steamship _Olympic_, a sister
+ship to the _Titanic_, it was found that traveling at the same rate as
+the _Titanic_, about 37 seconds would be required for the ship to change
+her course to this extent after the helm had been put hard-a-starboard.
+In this time the ship would travel about 466 yards, and allowing for the
+few seconds that would be necessary for the order to be given, it may be
+assumed that 500 yards was about the distance at which the iceberg was
+sighted either from the bridge or crow's nest.
+
+That it was quite possible on this night, even with a sharp lookout at
+the stemhead, crow's nest, and on the bridge, not to see an iceberg at
+this distance is shown by the evidence of Capt. Rostron, of the
+_Carpathia_.
+
+The injuries to the ship, which are described in the next section, were
+of such a kind that she foundered in 2 hours and 40 minutes.
+
+
+
+
+
+</READING_UNIT>

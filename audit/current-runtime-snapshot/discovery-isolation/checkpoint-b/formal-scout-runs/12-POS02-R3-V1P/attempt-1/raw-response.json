@@ -1,0 +1,81 @@
+{
+  "trigger_map": {
+    "schema_version": "trigger-map.v0.1",
+    "triggers": [
+      {
+        "trigger_id": "T1",
+        "source_anchor_quote_en": "The diversity in the faculties of men, from which the rights of property originate... ensues a division of the society into different interests and parties.",
+        "unexplained_relation_zh": "文中把“能力差异→财产差异→党派分化”连成一条链，但没有解释为什么财产差异会系统性地转成稳定的政治阵营，而不只是零散分歧。",
+        "possible_missing_variable_zh": "可被动员的分配冲突机制；围绕税负、债务、再分配形成的持久 cleavage"
+      },
+      {
+        "trigger_id": "T2",
+        "source_anchor_quote_en": "the most numerous party... must be expected to prevail",
+        "unexplained_relation_zh": "文中说多数派在涉及自身利益的立法中会压倒少数派，但没有解释多数人为何能在制度内稳定地把私人利益组织成公共决策。",
+        "possible_missing_variable_zh": "集体行动门槛、搭便车成本、共同知识与联盟维持成本"
+      },
+      {
+        "trigger_id": "T3",
+        "source_anchor_quote_en": "the public voice, pronounced by the representatives of the people, will be more consonant to the public good... In the next place, as each representative will be chosen by a greater number of citizens... it will be more difficult for unworthy candidates to practice with success",
+        "unexplained_relation_zh": "文中声称“大共和国更容易选出合格代表”，但没有说明人数扩大为何会提升而非稀释选拔质量。",
+        "possible_missing_variable_zh": "信号聚合、候选人筛选池、局部操纵成本与选民独立判断"
+      },
+      {
+        "trigger_id": "T4",
+        "source_anchor_quote_en": "Extend the sphere, and you take in a greater variety of parties and interests; you make it less probable that a majority of the whole will have a common motive... or if such a common motive exists, it will be more difficult for all who feel it to discover their own strength, and to act in unison",
+        "unexplained_relation_zh": "文中把“扩大疆域”与“多数压迫更难发生”直接相连，但缺少中间机制：为什么地理与规模会同时降低形成共同动机和协同行动的概率。",
+        "possible_missing_variable_zh": "偏好多样性、信息摩擦、协调成本、跨地域网络稀疏性"
+      }
+    ]
+  },
+  "seed_batch": {
+    "schema_version": "seed-batch.v0.1",
+    "run_id": "POS02-R3-V1P",
+    "seeds": [
+      {
+        "seed_id": "S1",
+        "source_anchor_quote_en": "The diversity in the faculties of men, from which the rights of property originate... ensues a division of the society into different interests and parties.",
+        "external_lens_identity": "Meltzer-Richard model of redistribution under inequality",
+        "mechanism_claim_zh": "这个模型把麦迪逊未明说的机制补全了：当财产分布不均时，中位选民与高财产者的利益会在税收与转移支付上系统分叉，财产差异因此不是偶然分歧，而会转成可预期的政治阵营与再分配冲突。",
+        "reread_delta_zh": "重读后，这段不再只是“人性导致党争”的一般论，而更像一条分配政治的机制链：财产结构本身会持续生产派别，而政府正是这些分配冲突的竞技场。",
+        "source_leads": [
+          "Allan H. Meltzer and Scott F. Richard, 'A Rational Theory of the Size of Government' (Journal of Political Economy, 1981)",
+          "Torsten Persson and Guido Tabellini, Political Economics: Explaining Economic Policy (MIT Press, 2000)"
+        ]
+      },
+      {
+        "seed_id": "S2",
+        "source_anchor_quote_en": "the most numerous party, or, in other words, the most powerful faction must be expected to prevail",
+        "external_lens_identity": "Mancur Olson's Logic of Collective Action",
+        "mechanism_claim_zh": "Olson提供了文中缺的约束变量：多数人并不会天然有效行动，只有在组织成本、选择性激励、沟通与监督条件允许时，“人数优势”才能转化为政治优势。这样就能解释为什么多数派压迫有时发生、有时并不发生。",
+        "reread_delta_zh": "重读后，“多数必胜”不应理解为自动定律，而应理解为一个有条件命题：关键不只是谁人多，还在于大群体能否跨越搭便车与协调门槛。",
+        "source_leads": [
+          "Mancur Olson, The Logic of Collective Action (Harvard University Press, 1965)",
+          "Russell Hardin, Collective Action (Johns Hopkins University Press, 1982)"
+        ]
+      },
+      {
+        "seed_id": "S3",
+        "source_anchor_quote_en": "the public voice, pronounced by the representatives of the people, will be more consonant to the public good... as each representative will be chosen by a greater number of citizens... it will be more difficult for unworthy candidates to practice with success",
+        "external_lens_identity": "Condorcet Jury Theorem and later information-aggregation literature",
+        "mechanism_claim_zh": "这一研究路线给出一个可检验机制：如果选民判断带有独立信息且平均好于随机，扩大选民规模会提高正确筛选候选人的概率；同时，局部贿赂与熟人操纵在大选区里更难左右结果。",
+        "reread_delta_zh": "重读后，麦迪逊这里不只是道德赞美“贤者代表”，而是在暗示一种信息聚合装置：大范围选举可能把分散判断压缩成更可靠的代表选择。",
+        "source_leads": [
+          "Marquis de Condorcet, Essai sur l'application de l'analyse a la probabilite des decisions rendues a la pluralite des voix (1785)",
+          "Bernard Grofman, Guillermo Owen, and Scott Feld, 'Thirteen Theorems in Search of the Truth' (Theory and Decision, 1983)"
+        ]
+      },
+      {
+        "seed_id": "S4",
+        "source_anchor_quote_en": "Extend the sphere, and you take in a greater variety of parties and interests... it will be more difficult for all who feel it to discover their own strength, and to act in unison with each other.",
+        "external_lens_identity": "Coordination and common-knowledge problems in large groups (Thomas Schelling; Michael Chwe)",
+        "mechanism_claim_zh": "这个透镜补上了“为何大共和国更安全”的微观机制：压迫性多数不仅要人数够，还要知道彼此存在、预期彼此会行动，并形成共同焦点。规模扩大、地域分散与利益异质会削弱共同知识与聚焦，令恶性联合更难成形。",
+        "reread_delta_zh": "重读后，“扩大版图”不再只是数量变大，而是创造了一种破坏共同知识与协同聚焦的结构条件，所以多数即使共享情绪，也未必能形成可执行的压迫联盟。",
+        "source_leads": [
+          "Thomas C. Schelling, The Strategy of Conflict (Harvard University Press, 1960)",
+          "Michael Suk-Young Chwe, Rational Ritual: Culture, Coordination, and Common Knowledge (Princeton University Press, 2001)"
+        ]
+      }
+    ]
+  }
+}

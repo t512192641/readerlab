@@ -1,0 +1,81 @@
+{
+  "trigger_map": {
+    "schema_version": "trigger-map.v0.1",
+    "triggers": [
+      {
+        "trigger_id": "T1",
+        "source_anchor_quote_en": "The smaller the society, the fewer probably will be the distinct parties and interests composing it; the fewer the distinct parties and interests, the more frequently will a majority be found of the same party",
+        "unexplained_relation_zh": "文中断言：社会规模变大、利益类型变多后，多数派更难稳定形成；但中间缺少“哪些分化结构会让多数联盟难以持续”的解释变量。",
+        "possible_missing_variable_zh": "cross-cutting cleavages／利益分化是否彼此重叠"
+      },
+      {
+        "trigger_id": "T2",
+        "source_anchor_quote_en": "the smaller the number of individuals composing a majority, and the smaller the compass within which they are placed, the more easily will they concert and execute their plans of oppression",
+        "unexplained_relation_zh": "文中把地理与人数规模直接连到压迫计划更易实施，但没有展开“为什么大群体更难合谋”的组织机制。",
+        "possible_missing_variable_zh": "coordination costs／监督成本／搭便车问题"
+      },
+      {
+        "trigger_id": "T3",
+        "source_anchor_quote_en": "what are many of the most important acts of legislation, but so many judicial determinations ... the parties are, and must be, themselves the judges",
+        "unexplained_relation_zh": "文中指出立法者往往同时是利益当事人，但没有命名这种制度位置为何会系统性地产生偏向性政策。",
+        "possible_missing_variable_zh": "public choice／rent-seeking／利益集团政治"
+      },
+      {
+        "trigger_id": "T4",
+        "source_anchor_quote_en": "refine and enlarge the public views, by passing them through the medium of a chosen body of citizens",
+        "unexplained_relation_zh": "文中说代表制能“提炼并扩大”公共观点，但缺少解释：代表为何有时能改善判断、何时又会反转为背叛委托人。",
+        "possible_missing_variable_zh": "trustee vs delegate representation／selection effects／agency loss"
+      }
+    ]
+  },
+  "seed_batch": {
+    "schema_version": "seed-batch.v0.1",
+    "run_id": "POS02-R1-V1P",
+    "seeds": [
+      {
+        "seed_id": "S1",
+        "source_anchor_quote_en": "the smaller the number of individuals composing a majority, and the smaller the compass within which they are placed, the more easily will they concert and execute their plans of oppression. Extend the sphere, and you take in a greater variety of parties and interests",
+        "external_lens_identity": "Mancur Olson's collective action theory",
+        "mechanism_claim_zh": "这里可用“集体行动成本”重读：多数人并非只要有共同利益就会自动联合；人数变大、地域拉开后，联络、监督、惩罚背离者的成本上升，压迫性联盟更难稳定组织起来。",
+        "reread_delta_zh": "重读后会发现，Madison 不是只在说“大国更包容”，还在隐含利用大规模社会的组织摩擦来削弱多数派的行动能力。",
+        "source_leads": [
+          "Mancur Olson, The Logic of Collective Action (1965)",
+          "Russell Hardin, Collective Action (1982)"
+        ]
+      },
+      {
+        "seed_id": "S2",
+        "source_anchor_quote_en": "Extend the sphere, and you take in a greater variety of parties and interests; you make it less probable that a majority of the whole will have a common motive to invade the rights of other citizens",
+        "external_lens_identity": "cross-cutting cleavages in political sociology",
+        "mechanism_claim_zh": "可用“交错性社会分裂”解释：如果宗教、地区、职业、财产等分界线彼此不重合，同一批人就不容易在所有议题上结成持久多数，因而压迫性联盟更难固化。",
+        "reread_delta_zh": "这样重读后，文中的“variety of parties and interests”不只是数量增加，而是分裂线彼此交叉，从结构上打散单一多数。",
+        "source_leads": [
+          "Seymour Martin Lipset, Political Man (1960)",
+          "Georg Simmel, Conflict and group affiliations (English trans. 1955)"
+        ]
+      },
+      {
+        "seed_id": "S3",
+        "source_anchor_quote_en": "what are many of the most important acts of legislation, but so many judicial determinations ... the parties are, and must be, themselves the judges",
+        "external_lens_identity": "public choice theory of self-interested legislation",
+        "mechanism_claim_zh": "这段可借“公共选择”来重读：立法并不天然代表抽象公益，立法者与其支持群体会把政策过程当作分配利益的场域，因此制度风险不只是道德失败，而是激励结构使然。",
+        "reread_delta_zh": "重读后，Madison 对 faction 的担忧会从一般性的“党争”收紧为一个制度命题：当裁决者同时是利害相关方，偏向性立法几乎是可预期结果。",
+        "source_leads": [
+          "James M. Buchanan and Gordon Tullock, The Calculus of Consent (1962)",
+          "Dennis C. Mueller, Public Choice III (2003)"
+        ]
+      },
+      {
+        "seed_id": "S4",
+        "source_anchor_quote_en": "refine and enlarge the public views, by passing them through the medium of a chosen body of citizens",
+        "external_lens_identity": "trustee model of representation",
+        "mechanism_claim_zh": "可用“受托代表”透镜解释：代表制被寄望于让被选者暂时脱离即时激情与地方偏见，以较长时段、较大范围的判断来处理中介过的公共利益。",
+        "reread_delta_zh": "这样重读后，这句话不再只是赞美精英，而是在提出一种具体代表机制：代表制的价值来自判断被中介，而风险则来自代理失灵与筛选失败。",
+        "source_leads": [
+          "Edmund Burke, Speech to the Electors of Bristol (1774)",
+          "Hanna Fenichel Pitkin, The Concept of Representation (1967)"
+        ]
+      }
+    ]
+  }
+}

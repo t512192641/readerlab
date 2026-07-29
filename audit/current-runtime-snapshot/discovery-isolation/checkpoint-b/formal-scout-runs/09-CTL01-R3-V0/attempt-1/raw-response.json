@@ -1,0 +1,54 @@
+{
+  "schema_version": "seed-batch.v0.1",
+  "run_id": "CTL01-R3-V0",
+  "seeds": [
+    {
+      "seed_id": "S1",
+      "source_anchor_quote_en": "The uptakes by which the waste gases were conveyed to the funnels were united immediately above the water-tight bulkhead which separated the boiler rooms.",
+      "external_lens_identity": "common-cause coupling across subdivided compartments",
+      "mechanism_claim_zh": "这里的机制不是单纯“烟道汇总”，而是把原本靠水密隔舱分开的锅炉舱，在隔舱上方用共用 uptake 重新耦合；一处火、烟、热或结构失效可借共用通道跨舱传播，形成共同原因失效。",
+      "reread_delta_zh": "重读后，这句从中性布置说明变成了“分舱独立性被上方总管部分抵消”的证据：隔舱并不自动等于功能隔离。",
+      "source_leads": [
+        "IMO Damage Stability: guidance on preventing progressive flooding through openings",
+        "HANDBOOK OF DAMAGE CONTROL - Part 7 (maritime.org): watertight compartments should not be interconnected below a practical level",
+        "search: ship common uptake watertight bulkhead compartmentation"
+      ]
+    },
+    {
+      "seed_id": "S2",
+      "source_anchor_quote_en": "All overhead discharge from the circulating pumps, ballast pumps, bilge pumps, etc., were below the deep load line, but above the light line.",
+      "external_lens_identity": "variable-submergence overboard discharge / nonreturn-valve logic",
+      "mechanism_claim_zh": "这句话编码的是一个随吃水变化而切换风险状态的壳体开口：轻载时可能露出，深载时会没入水下，因此问题不只是“排到哪里”，而是深载工况下的回灌、倒流和破管进水风险。",
+      "reread_delta_zh": "重读后，它不再是普通位置描述，而是一个静水压力边界条件说明：同一 discharge 在不同载态下会从排出口变成潜在进水口。",
+      "source_leads": [
+        "46 CFR 56.50-95 Overboard discharges and shell connections",
+        "46 CFR 171.119 inlet or discharge pipe must prevent water entering if pipe fails",
+        "search: overboard discharge below load line nonreturn valve ship"
+      ]
+    },
+    {
+      "seed_id": "S3",
+      "source_anchor_quote_en": "The boilers were supported in built steel cradles, and were stayed to the ship's side and to each other athwart ships by strong steel stays. Built steel chocks were also fitted to prevent movement fore and aft.",
+      "external_lens_identity": "dynamic restraint of heavy machinery under collision/roll with thermal-expansion allowance",
+      "mechanism_claim_zh": "这里的关键机制是“惯性载荷管理”而不是普通支撑：锅炉是大质量体，横摇、纵摇和碰撞时会产生横向与纵向冲击载荷，所以需要 stays 与 chocks 分别约束不同方向，同时基础又必须允许受热膨胀。",
+      "reread_delta_zh": "重读后，这句显示的不是冗余加固，而是把锅炉当成会在海况和碰撞中‘试图位移’的动态物体来设计约束路径。",
+      "source_leads": [
+        "46 CFR 52.01-130 Installation: foundations, expansion provision, chocks for movement in collision",
+        "search: boiler chocks prevent movement event of collision marine boiler installation",
+        "SHIPYARD OUTSIDE MACHINIST (maritime.org): Boiler Chocks definition"
+      ]
+    },
+    {
+      "seed_id": "S4",
+      "source_anchor_quote_en": "Silent blow-offs from the main steam pipes were connected direct to both condensers.",
+      "external_lens_identity": "steam-dump-to-condenser bypass for transient pressure control",
+      "mechanism_claim_zh": "“silent blow-off”不是换个名字的放汽，而是把多余主蒸汽旁通到冷凝器，用冷凝器的真空与冷却能力吸收暂时过剩蒸汽，减少安全阀外放、噪声和给水损失；代价是把瞬态冲击转嫁给冷凝系统。",
+      "reread_delta_zh": "重读后，这句不只是安静排汽，而是在说明该船把锅炉压力突升问题转化为冷凝器负荷管理问题。",
+      "source_leads": [
+        "search: silent blow-off direct to condenser steamship",
+        "Engineering Branch Training (maritime.org): auxiliary exhaust to condenser / atmosphere valve",
+        "search: Samuel Halpern Titanic propulsion plant silent blow-off"
+      ]
+    }
+  ]
+}

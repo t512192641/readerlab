@@ -1,0 +1,65 @@
+{
+  "schema_version": "capability-leakage-test-result.v0.1",
+  "pass": false,
+  "checks": [
+    {
+      "name": "v1_unique_markers_absent_from_downstream_prompts",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "cohort_markers_absent_from_downstream_prompts",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "judge_rubric_absent_from_scout_prompts",
+      "pass": true,
+      "evidence": []
+    },
+    {
+      "name": "real_run_and_cohort_stripped_before_normalizer",
+      "pass": true,
+      "evidence": "ae3fe08d6b59bf46b98979896bc49b779563144a5341ba358c91fd48b634dfb0"
+    },
+    {
+      "name": "forbidden_runtime_keys_absent",
+      "pass": true,
+      "evidence": {
+        "normalizer": [],
+        "judge": [],
+        "clusterer": [],
+        "verifier": []
+      }
+    },
+    {
+      "name": "forbidden_values_absent_from_rendered_downstream_requests",
+      "pass": true,
+      "evidence": {
+        "judge": [],
+        "clusterer": [],
+        "verifier": []
+      }
+    },
+    {
+      "name": "product_pack_contains_only_public_fields",
+      "pass": true,
+      "evidence": [
+        "blind_id",
+        "cards",
+        "display_card_zh",
+        "owner_response",
+        "pack_blind_id",
+        "schema_version"
+      ]
+    },
+    {
+      "name": "sealed_treatment_artifact_not_read_by_downstream_controller",
+      "pass": false,
+      "evidence": {
+        "controller_trigger_path_occurrences": 0,
+        "harness_trigger_path_occurrences": 2
+      }
+    }
+  ]
+}

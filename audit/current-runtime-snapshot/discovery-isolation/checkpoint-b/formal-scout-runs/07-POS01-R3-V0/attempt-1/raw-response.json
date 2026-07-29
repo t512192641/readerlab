@@ -1,0 +1,50 @@
+{
+  "schema_version": "seed-batch.v0.1",
+  "run_id": "POS01-R3-V0",
+  "seeds": [
+    {
+      "seed_id": "S1",
+      "source_anchor_quote_en": "the practice of liners using this track when in the vicinity of ice at night had been in clear weather to keep the course, to maintain the speed and to trust to a sharp lookout",
+      "external_lens_identity": "Diane Vaughan's normalization of deviance",
+      "mechanism_claim_zh": "这里可用“越轨常态化”解释：长期未出事会把原本应视为例外风险的做法，慢慢重算成“正常且可接受”的操作。",
+      "reread_delta_zh": "重读后，这段不再只是船长个人误判，而是行业把危险夜航惯例制度化；“经验证明可行”本身成了致灾机制。",
+      "source_leads": [
+        "Diane Vaughan, The Challenger Launch Decision: Risky Technology, Culture, and Deviance at NASA, University of Chicago Press (chapter headings include 'The Normalization of Deviance'): https://www.bibliovault.org/BV.book.epl?ISBN=97802268517",
+        "Google Books listing for Vaughan book with 'normalization of deviance' in contents: https://books.google.com/books/about/The_Challenger_Launch_Decision.html?id=erYjCwAAQBAJ"
+      ]
+    },
+    {
+      "seed_id": "S2",
+      "source_anchor_quote_en": "it was never heard of by anyone on board the Titanic outside the Marconi room",
+      "external_lens_identity": "Diane Vaughan's structural secrecy",
+      "mechanism_claim_zh": "这里可用“结构性隐匿”解释：信息不是被故意藏起，而是因岗位边界、流程切口和通信链路分隔，导致关键风险情报自然失落在组织内部。",
+      "reread_delta_zh": "重读后，Amerika 与 Mesaba 报文的失效不只是某个操作员疏忽，而是桥楼与无线电室之间缺少强制升级通道，风险信息在结构里被吞没。",
+      "source_leads": [
+        "Diane Vaughan, The Challenger Launch Decision, contents include chapter 'Structural Secrecy': https://www.bibliovault.org/BV.book.epl?ISBN=9780226851785",
+        "Secondary definitional lead quoting Vaughan's term 'structural secrecy': https://dokumen.pub/oppression-and-resistance-structure-agency-transformation-9781787431683-1787431681-9781787431676-1787431673-9781787431898-1787431894.html"
+      ]
+    },
+    {
+      "seed_id": "S3",
+      "source_anchor_quote_en": "the probability is that he failed to grasp the significance and importance of the message, and put it aside until he should be less busy",
+      "external_lens_identity": "Prospective memory under workload / concurrent task management (NASA Ames human factors line)",
+      "mechanism_claim_zh": "这里可用“高负荷下的前瞻记忆失效”解释：人先把一项动作延期，随后因并发任务拥塞而忘记在正确时机恢复执行。",
+      "reread_delta_zh": "重读后，Mesaba 报文未送桥楼不是单纯‘没重视’，而更像典型的 deferred-intention failure：先暂存，后遗忘，且繁忙通信环境放大了这种失效。",
+      "source_leads": [
+        "NASA Human Systems Integration Division, 'Attention Management and Prospective Memory': https://www.nasa.gov/human-systems-integration-division/attention-management-and-prospective-memory/",
+        "Van Benthem et al., 'Prospective memory failures in aviation: effects of cue salience, workload, and individual differences', DOI 10.3357/AMHP.3428.2015: https://www.safetylit.org/citations/index.php?citationIds%5B%5D=citjournalarticle_4826"
+      ]
+    },
+    {
+      "seed_id": "S4",
+      "source_anchor_quote_en": "He made a mistake, a very grievous mistake, but one in which, in face of the practice and of past experience, negligence can not be said to have had any part",
+      "external_lens_identity": "Charles Perrow's Normal Accident Theory",
+      "mechanism_claim_zh": "这里可用“正常事故理论”解释：在复杂且紧耦合的系统里，灾难不必依赖恶意或明显失职，而会由多处看似可接受的小偏差相互作用后涌现。",
+      "reread_delta_zh": "重读后，文本里反复出现的‘无单一过错者’、多条消息链、航路制度、夜间瞭望与操船时延，不再是零散背景，而是复杂系统事故的耦合条件。",
+      "source_leads": [
+        "Charles Perrow, Normal Accidents: Living with High Risk Technologies, Princeton University Press: https://www.degruyterbrill.com/document/doi/10.1515/9781400828494/html?lang=en",
+        "Open Library bibliographic record for Normal Accidents: https://openlibrary.org/works/OL4468929W/Normal_Accidents"
+      ]
+    }
+  ]
+}

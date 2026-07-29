@@ -1,0 +1,66 @@
+{
+  "schema": "readerlab-writer-assembly-input-freeze/v1",
+  "created_at": "2026-07-26T12:21:13Z",
+  "start_head": "90c94450e5d4550da78d775111d364167542f5cd",
+  "repository_mode": "read-only",
+  "files": [
+    {
+      "path": "inputs/BOOK-CONTENT-FLOW-v2.md",
+      "sha256": "daf2e546ec84715481746056abb7ed58110468ec64d424c440600139cca67e91"
+    },
+    {
+      "path": "inputs/T2.35.md",
+      "sha256": "b29efb4386ccae4c4720d8a061d4a1bb808359f78f9dc4b4ec4cb35192753eda"
+    },
+    {
+      "path": "inputs/run.json",
+      "sha256": "a625f7918ca7d05b64f29822d9472512c718156d38f06ad54ca2c98a465d53af"
+    },
+    {
+      "path": "inputs/production-freeze.json",
+      "sha256": "0bde93d07d98e9c7d66fb29a2e2c6c463314b2aa4f723a945e5f4c65af40d385"
+    },
+    {
+      "path": "inputs/chapter-scope.xhtml",
+      "sha256": "0f4af98ac9beb82cea8d4ad708191bf28aa7758645249e0640d6c1d9d5c4f88a"
+    },
+    {
+      "path": "inputs/chapter-readable.md",
+      "sha256": "c936cde2923eb1ea1beb199414026cefd70ada16467aa8f73aece8b9bfa6242b"
+    },
+    {
+      "path": "inputs/D3-expert.md",
+      "sha256": "22e8226fc131c74bb522e3f6a292b0e799dd3bac77116318455f24dd67f6b8c6"
+    },
+    {
+      "path": "inputs/locked-knowledge-cards.md",
+      "sha256": "cb7544ac6d5f80cf67adf1cb0dbab56ee7cb8df5b9efbc8cc31b5a351fac2655"
+    },
+    {
+      "path": "inputs/review-outcomes.md",
+      "sha256": "547f49a4ff341af45163f921d5806e2645b0aac1074cb3aec91c436aff837dff"
+    },
+    {
+      "path": "inputs/D3-p2-gate.md",
+      "sha256": "9ba2f3a6498890d1b88823810b5c39713084866c7d7daffa4679efe6d8b12e3d"
+    },
+    {
+      "path": "inputs/writer-v2-accepted.md",
+      "sha256": "6207fbe799221edc1c7d7c25d090f12e6eb70dc2def5ef56d342860705c95325"
+    }
+  ],
+  "product_state": {
+    "writer_v2": "ACCEPTED",
+    "writer_iteration": "STOPPED",
+    "assembly_candidate": "AUTHORIZED",
+    "p3_verdict": "NOT_AUTHORIZED"
+  },
+  "forbidden_inputs": [
+    "GOLD-STANDARDS.md",
+    "examples/",
+    "archive/",
+    "old ReaderLab projects",
+    "judge predictions",
+    "other runs"
+  ]
+}

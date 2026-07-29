@@ -1,0 +1,39 @@
+{
+  "schema": "readerlab-assembly-boundary-check/v1",
+  "verdict": "PASS",
+  "checks": [
+    {
+      "id": "B1",
+      "status": "PASS",
+      "evidence": "chapter-readable.md 为 28871 bytes，SHA-256=c936cde2923eb1ea1beb199414026cefd70ada16467aa8f73aece8b9bfa6242b；删除唯一完整插入块及其装配边界空行后逐字恢复同一 B1，因此原文段落与顺序未变。"
+    },
+    {
+      "id": "ANCHOR",
+      "status": "PASS",
+      "evidence": "从 Expert 明示的“实际触发本课的完整段落（逐字）”独立提取 767-byte 锚点，SHA-256=ad957092bde87bb9eb54ad5fe54ac4939229631024d1e4c0c37afe338d059b77；该锚点在 B1 中恰出现 1 次，start marker 紧接完整锚点后的段落分隔。"
+    },
+    {
+      "id": "READER",
+      "status": "PASS",
+      "evidence": "start/end marker 各恰出现 1 次；去除 marker 后的两个起始换行，二者之间正文与 reader-unit-assembly-v1.md 的 6618 bytes 完全相同，SHA-256=6cd3f52224ed9cc0320e025b692b1a4cdff31061a7c547d443ade8e84db2d7a1，未拆分、合并或改写。"
+    },
+    {
+      "id": "BOUNDARY",
+      "status": "PASS",
+      "evidence": "候选仅使用协议指定的 candidate-only HTML markers；候选中无 tandem-comments 兼容性声明、旧 callout、promotion 或 P3 PASS 声明，receipt 同时记录 candidate_only=true、tandem_comments_compatibility_claimed=false、production_promotion=false、p3_product_verdict=NOT_CLAIMED。"
+    },
+    {
+      "id": "LINEAGE",
+      "status": "PASS",
+      "evidence": "协议、lineage、receipt 与两份候选的 Reader id 均为 T235-D3-READER-V2-A1；lineage 中 Expert、anchor、Reader 与 chapter hashes 分别匹配独立计算值，chapter SHA-256=3042da11c7a360c72391a643493daf51d962f2911459b3038566b970a8469151。"
+    }
+  ],
+  "exact_b1_recovery": true,
+  "exact_reader_recovery": true,
+  "anchor_unique": true,
+  "boundary_violation": false,
+  "blocking_findings": [],
+  "notes": [
+    "技术 PASS 不构成 P3 产品判词"
+  ]
+}

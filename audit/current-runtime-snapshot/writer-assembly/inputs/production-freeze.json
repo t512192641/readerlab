@@ -1,0 +1,52 @@
+{
+  "directories": [
+    "final",
+    "locked",
+    "raw"
+  ],
+  "files": [
+    {
+      "bytes": 999,
+      "path": "locked/D3-p2-gate.md",
+      "sha256": "9ba2f3a6498890d1b88823810b5c39713084866c7d7daffa4679efe6d8b12e3d"
+    },
+    {
+      "bytes": 28871,
+      "path": "locked/chapter-readable.md",
+      "sha256": "c936cde2923eb1ea1beb199414026cefd70ada16467aa8f73aece8b9bfa6242b"
+    },
+    {
+      "bytes": 34512,
+      "path": "locked/chapter-scope.xhtml",
+      "sha256": "0f4af98ac9beb82cea8d4ad708191bf28aa7758645249e0640d6c1d9d5c4f88a"
+    },
+    {
+      "bytes": 10123,
+      "path": "locked/knowledge-cards.md",
+      "sha256": "cb7544ac6d5f80cf67adf1cb0dbab56ee7cb8df5b9efbc8cc31b5a351fac2655"
+    },
+    {
+      "bytes": 27640,
+      "path": "raw/D3-expert.md",
+      "sha256": "22e8226fc131c74bb522e3f6a292b0e799dd3bac77116318455f24dd67f6b8c6"
+    },
+    {
+      "bytes": 10123,
+      "path": "raw/knowledge-cards.md",
+      "sha256": "cb7544ac6d5f80cf67adf1cb0dbab56ee7cb8df5b9efbc8cc31b5a351fac2655"
+    },
+    {
+      "bytes": 17969,
+      "path": "raw/review-outcomes.md",
+      "sha256": "547f49a4ff341af45163f921d5806e2645b0aac1074cb3aec91c436aff837dff"
+    },
+    {
+      "bytes": 567,
+      "path": "run.json",
+      "sha256": "a625f7918ca7d05b64f29822d9472512c718156d38f06ad54ca2c98a465d53af"
+    }
+  ],
+  "run_schema": "readerlab-run/v2",
+  "schema": "readerlab-production-freeze/v1",
+  "scope": "production"
+}

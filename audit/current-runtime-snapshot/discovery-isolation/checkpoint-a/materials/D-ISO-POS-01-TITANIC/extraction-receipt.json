@@ -1,0 +1,15 @@
+{
+  "material_id": "D-ISO-POS-01-TITANIC",
+  "source_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/materials/D-ISO-POS-01-TITANIC/original/pg39415.txt",
+  "destination_path": "/private/tmp/readerlab-new-route-20260726/discovery-isolation/checkpoint-a/materials/D-ISO-POS-01-TITANIC/source.txt",
+  "original_sha256": "68755a061177dcca91cc0fa5d7f89790d7562c88706178bf0138dd117ef917ca",
+  "original_bytes": 330679,
+  "start_boundary_utf8": "II. ACCOUNT OF THE SHIP'S JOURNEY ACROSS THE ATLANTIC, THE MESSAGES SHE\r\nRECEIVED, AND THE DISASTER.\r\n",
+  "end_boundary_utf8_exclusive": "III.--DESCRIPTION OF THE DAMAGE TO THE SHIP AND OF ITS GRADUAL AND FINAL\r\nEFFECT, WITH OBSERVATIONS THEREON.\r\n",
+  "start_offset": 94748,
+  "end_offset_exclusive": 127802,
+  "extracted_sha256": "ce8a25860f9fddc56cb235fb8637c0175a767af9f5ec877e5e905f312fd0f9b0",
+  "extracted_bytes": 33054,
+  "line_endings_preserved": "CRLF",
+  "encoding": "UTF-8"
+}

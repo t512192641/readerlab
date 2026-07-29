@@ -1,0 +1,49 @@
+{
+  "schema": "readerlab-writer-assembly-mechanical-receipt/v1",
+  "reader_id": "T235-D3-READER-V2-A1",
+  "start_head": "90c94450e5d4550da78d775111d364167542f5cd",
+  "source": {
+    "b1_sha256": "c936cde2923eb1ea1beb199414026cefd70ada16467aa8f73aece8b9bfa6242b",
+    "b1_bytes": 28871,
+    "expert_sha256": "22e8226fc131c74bb522e3f6a292b0e799dd3bac77116318455f24dd67f6b8c6",
+    "writer_v2_sha256": "6207fbe799221edc1c7d7c25d090f12e6eb70dc2def5ef56d342860705c95325"
+  },
+  "anchor": {
+    "owner": "inputs/D3-expert.md#实际触发本课的完整段落（逐字）",
+    "sha256": "ad957092bde87bb9eb54ad5fe54ac4939229631024d1e4c0c37afe338d059b77",
+    "bytes": 767,
+    "b1_occurrences": 1,
+    "insertion_offset_utf8_bytes": 13706,
+    "relation": "insert_after_exact_paragraph"
+  },
+  "patches": [
+    {
+      "id": "DEFINE_TABOO_TRADEOFF",
+      "old_occurrences": 1,
+      "new_occurrences": 1
+    },
+    {
+      "id": "NARROW_SYMBOLIC_METRICS",
+      "old_occurrences": 1,
+      "new_occurrences": 1
+    }
+  ],
+  "output": {
+    "reader_sha256": "6cd3f52224ed9cc0320e025b692b1a4cdff31061a7c547d443ade8e84db2d7a1",
+    "reader_bytes": 6618,
+    "chapter_sha256": "3042da11c7a360c72391a643493daf51d962f2911459b3038566b970a8469151",
+    "chapter_bytes": 35645,
+    "recovered_b1_sha256": "c936cde2923eb1ea1beb199414026cefd70ada16467aa8f73aece8b9bfa6242b",
+    "recovered_reader_sha256": "6cd3f52224ed9cc0320e025b692b1a4cdff31061a7c547d443ade8e84db2d7a1",
+    "exact_b1_recovery": true,
+    "exact_reader_recovery": true,
+    "start_marker": "<!-- readerlab-candidate-only:reader-unit-start id=\"T235-D3-READER-V2-A1\" -->",
+    "end_marker": "<!-- readerlab-candidate-only:reader-unit-end id=\"T235-D3-READER-V2-A1\" -->"
+  },
+  "boundary": {
+    "candidate_only": true,
+    "tandem_comments_compatibility_claimed": false,
+    "production_promotion": false,
+    "p3_product_verdict": "NOT_CLAIMED"
+  }
+}

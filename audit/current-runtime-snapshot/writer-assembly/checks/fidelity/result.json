@@ -1,0 +1,37 @@
+{
+  "schema": "readerlab-reader-fidelity-check/v1",
+  "verdict": "保真通过",
+  "checks": [
+    {
+      "id": "F1",
+      "status": "PASS",
+      "evidence": "独立逐字 diff 仅有两处改动，分别为获准的禁忌交换定义补入与象征性承认指标收窄；与协议及随附 diff 一致。"
+    },
+    {
+      "id": "F2",
+      "status": "PASS",
+      "evidence": "新增定义只说明以金钱、便利等世俗利益交换被视为身份义务的对象，忠实保持 K01 的世俗度量边界与 K02 的禁忌交换结构，未新增机制或扩大适用范围。"
+    },
+    {
+      "id": "F3",
+      "status": "PASS",
+      "evidence": "象征性承认被精确收窄为“部分愤怒和暴力反对指标”；后文仍保留未提高和平、成功实施信心的空结果，并明确不能替代土地、安全、资源、权利和执行安排。"
+    },
+    {
+      "id": "F4",
+      "status": "PASS",
+      "evidence": "K01—K05 的强偏好/不可交易区分、持有者类型×方案类型方向交互、B/M/S 识别逻辑、直接证据与 Expert 综合区分、近端指标限制及现实误用边界均完整保留。"
+    },
+    {
+      "id": "F5",
+      "status": "PASS",
+      "evidence": "Reader id 仍为 T235-D3-READER-V2-A1，锚点 owner 仍指向 Expert 的逐字触发段；Writer、Reader、Expert、锁定卡、审核结果与 P2 gate 的实算 SHA-256 均与 lineage 一致，仅两处授权内容进入候选。"
+    }
+  ],
+  "unauthorized_change": false,
+  "semantic_damage": [],
+  "blocking_findings": [],
+  "notes": [
+    "技术终局不构成 P3 产品判词"
+  ]
+}

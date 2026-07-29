@@ -1,0 +1,67 @@
+{
+  "trigger_map": {
+    "schema_version": "trigger-map.v0.1",
+    "triggers": [
+      {
+        "trigger_id": "T1",
+        "source_anchor_quote_en": "The uptakes by which the waste gases were conveyed to the funnels were united immediately above the water-tight bulkhead which separated the boiler rooms.",
+        "unexplained_relation_zh": "文字一面强调锅炉间被水密舱壁分隔，另一面又让烟道在其上方合流；这里出现了“分隔”与“合流”并存的关系，但缺少为什么这不等于完全独立的解释。",
+        "possible_missing_variable_zh": "水密分舱的有效性取决于穿透与 trunk 的处理；舱壁能隔水，不必然隔绝所有功能性连通。"
+      },
+      {
+        "trigger_id": "T2",
+        "source_anchor_quote_en": "All overhead discharge from the circulating pumps, ballast pumps, bilge pumps, etc., were below the deep load line, but above the light line.",
+        "unexplained_relation_zh": "同一批排出口被同时描述为低于深载线、又高于轻载线，说明其相对水面的状态会随吃水变化，但文中没解释这种布置为何重要。",
+        "possible_missing_variable_zh": "排口在重载时可能没入水下、轻载时露出水面，这直接关系到倒灌风险与止回/关断设计。"
+      },
+      {
+        "trigger_id": "T3",
+        "source_anchor_quote_en": "Silent blow-offs from the main steam pipes were connected direct to both condensers.",
+        "unexplained_relation_zh": "主蒸汽管为什么要直接接一条“静音放汽”到冷凝器，文中给了连接关系，却没给运行机制。",
+        "possible_missing_variable_zh": "这是蒸汽 dump/bleed 机制：在机组待命或负荷突降时消纳多余蒸汽、抑制安全阀起跳与噪声。"
+      }
+    ]
+  },
+  "seed_batch": {
+    "schema_version": "seed-batch.v0.1",
+    "run_id": "CTL01-R2-V1P",
+    "seeds": [
+      {
+        "seed_id": "S1",
+        "source_anchor_quote_en": "The uptakes by which the waste gases were conveyed to the funnels were united immediately above the water-tight bulkhead which separated the boiler rooms.",
+        "external_lens_identity": "watertight subdivision penetration/trunk principle in naval architecture",
+        "mechanism_claim_zh": "外部透镜不是把“水密舱壁”换个名字，而是补上一个机制：分舱安全取决于舱壁本体之外，还取决于穿透件和 trunk 是否把原本分开的舱重新功能性连通。这里烟道在舱壁上方合流，说明“锅炉间分隔”主要是限水，而不是所有系统都彼此独立。",
+        "reread_delta_zh": "重读后，这句不再只是管路布置细节，而变成一个提醒：船的隔离设计是分层的，水密边界上方仍可能存在共享通道。",
+        "source_leads": [
+          "46 CFR 171.111 Penetrations and openings in watertight bulkheads",
+          "46 CFR 171.113 Trunks",
+          "Principles of Naval Architecture, sections on subdivision and watertight integrity"
+        ]
+      },
+      {
+        "seed_id": "S2",
+        "source_anchor_quote_en": "All overhead discharge from the circulating pumps, ballast pumps, bilge pumps, etc., were below the deep load line, but above the light line.",
+        "external_lens_identity": "load-line-dependent overboard discharge and backflooding control",
+        "mechanism_claim_zh": "关键机制是排口并非固定地“在水上”或“在水下”，而会随载重改变状态。位于深载线下、轻载线上，意味着满载时这些排口可被海水淹没，轻载时又会露出，因此设计重点不是单纯排水，而是防倒灌、防虹吸与壳体阀件布置。",
+        "reread_delta_zh": "重读后，这句从静态位置描述变成了动态工况说明：它在告诉读者该船的排放系统要同时适应两种不同水线条件。",
+        "source_leads": [
+          "46 CFR 56.50-95 Overboard discharges and shell connections",
+          "46 CFR 45.155 Inlets and discharge piping: Valves",
+          "NOAA Ocean Service: What is a Plimsoll line?"
+        ]
+      },
+      {
+        "seed_id": "S3",
+        "source_anchor_quote_en": "Silent blow-offs from the main steam pipes were connected direct to both condensers.",
+        "external_lens_identity": "steam-dump or bleed-line pressure-control mechanism in marine steam plants",
+        "mechanism_claim_zh": "这里缺的变量是负荷骤降后的蒸汽去向。静音放汽线把主蒸汽直接导入冷凝器，相当于给锅炉-主汽系统一个受控泄放通道，用来在待机、减车或蒸汽过剩时吸收压力上升，减少安全阀突然起跳和甲板上可闻的大量放汽。",
+        "reread_delta_zh": "重读后，这句不再只是“有一根管子接到冷凝器”，而是在描述一套运行控制策略：通过冷凝器消纳过剩蒸汽，而不是只靠安全阀硬放。",
+        "source_leads": [
+          "Samuel Halpern, Titanic's Prime Mover",
+          "Encyclopedia Titanica discussions citing the ship's silent blow-off as a bleed line to the condensers",
+          "Marine steam-plant texts discussing steam dump/bleed lines and condenser pressure relief"
+        ]
+      }
+    ]
+  }
+}

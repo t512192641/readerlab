@@ -1,0 +1,42 @@
+{
+  "schema_version": "seed-batch.v0.1",
+  "run_id": "CTL01-R1-V0",
+  "seeds": [
+    {
+      "seed_id": "S1",
+      "source_anchor_quote_en": "The uptakes by which the waste gases were conveyed to the funnels were united immediately above the water-tight bulkhead which separated the boiler rooms.",
+      "external_lens_identity": "common-cause failure / shared-path vulnerability",
+      "mechanism_claim_zh": "锅炉房在舱壁处被分隔，但烟道在其上方重新合并，说明“隔离”被共享通道部分抵消；独立舱室会因上部共用途径而重新耦合。",
+      "reread_delta_zh": "重读后，这句不再只是管路布置，而是在提示水密分舱与集中排烟之间存在结构性张力：分隔不是绝对的。",
+      "source_leads": [
+        "NASA NTRS, Common Cause Failures and Ultra Reliability: https://ntrs.nasa.gov/citations/20160005837",
+        "Titanicology, Titanic’s Propulsion Plant (details of united uptakes and funnel divisions): https://www.titanicology.com/Titanica/TitanicsPrimeMover.htm",
+        "NHHC, Pearl Harbor salvage note on ventilation trunks spreading flooding: https://www.history.navy.mil/research/library/online-reading-room/title-list-alphabetically/p/pearl-harbor-why-how.html"
+      ]
+    },
+    {
+      "seed_id": "S2",
+      "source_anchor_quote_en": "All overhead discharge from the circulating pumps, ballast pumps, bilge pumps, etc., were below the deep load line, but above the light line.",
+      "external_lens_identity": "load-line conditional submergence / anti-backflow discharge design",
+      "mechanism_claim_zh": "同一组排出口会随吃水变化在“露出水面”和“没入水下”之间切换，因此它们不是静态开孔，而是依赖载重工况的回灌风险点，需要靠止回与关闭机构治理。",
+      "reread_delta_zh": "重读后，这句从位置说明变成了运行包线说明：风险取决于船的装载状态，而不是只取决于孔开在哪里。",
+      "source_leads": [
+        "International Convention on Load Lines, Regulation 22 - Scuppers, inlets and discharges: https://www.imorules.com/GUID-32EF05C2-DEF7-4308-884C-71B7F59FFA6F.html",
+        "GOV.UK technical annex, inlets and discharges below bulkhead deck: https://www.gov.uk/government/publications/msn-1699m-amendment-3-the-merchant-shipping-passenger-ship-construction-ships-of-classes-iii-to-via-regulations-1998/technical-ann",
+        "IGC Code summary on shipside discharges below freeboard deck: https://www.imorules.com/GUID-144FAB78-F5C9-4293-854F-F154CB876B82.html"
+      ]
+    },
+    {
+      "seed_id": "S3",
+      "source_anchor_quote_en": "the after one was placed over the turbine hatch and was used as a ventilator. The galley funnels were led up this funnel.",
+      "external_lens_identity": "dummy funnel as signaling-plus-ventilation hybrid",
+      "mechanism_claim_zh": "这不是单纯“假烟囱”，而是把市场可见的四烟囱外形信号与内部通风集管合并在一个构件里：外部在传达体量/地位，内部在承担真实通风。",
+      "reread_delta_zh": "重读后，末端烟囱不再像冗余装饰，而更像把审美竞争、品牌信号和设备通风叠加到同一外形上的混合部件。",
+      "source_leads": [
+        "RMS Titanic Inc., Titanic Facts, fourth funnel balanced profile plus ventilation: https://rmstitanicinc.com/titanic-facts/",
+        "Titanic Connections, The Funnels (ventilation functions of fourth funnel): https://www.titanicconnections.com/titanic-tours-the-funnels/",
+        "WHOI press material noting non-operational whistles on #3 and #4 funnels for aesthetic purposes: https://www.whoi.edu/press-room/news-release/whoi-team-uses-advanced-imaging-data-to-bring-a-new-view-of-titanic-to-the-world/"
+      ]
+    }
+  ]
+}

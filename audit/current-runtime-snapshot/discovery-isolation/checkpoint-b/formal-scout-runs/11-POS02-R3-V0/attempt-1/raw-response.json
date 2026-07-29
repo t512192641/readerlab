@@ -1,0 +1,50 @@
+{
+  "schema_version": "seed-batch.v0.1",
+  "run_id": "POS02-R3-V0",
+  "seeds": [
+    {
+      "seed_id": "S1",
+      "source_anchor_quote_en": "the majority, having such coexistent passion or interest, must be rendered, by their number and local situation, unable to concert and carry into effect schemes of oppression",
+      "external_lens_identity": "large-N collective action / coordination costs (Mancur Olson; Thomas Schelling)",
+      "mechanism_claim_zh": "这里的“大共和国优势”不只是人数稀释，而是把压迫性多数变成一个更难协调的联盟：组织、通信、互信与同时行动的成本一起上升。",
+      "reread_delta_zh": "重读后可见，Madison 不是单靠“美德”压制派系，而是在设计一个让多数即便有共同冲动也更难完成合谋的协调环境。",
+      "source_leads": [
+        "Mancur Olson, The Logic of Collective Action (1965)",
+        "Thomas C. Schelling, The Strategy of Conflict (1960)"
+      ]
+    },
+    {
+      "seed_id": "S2",
+      "source_anchor_quote_en": "Men of factious tempers, of local prejudices, or of sinister designs, may, by intrigue, by corruption, or by other means, first obtain the suffrages, and then betray the interests, of the people.",
+      "external_lens_identity": "principal-agent problem in political representation",
+      "mechanism_claim_zh": "代表制并非自动净化民意；它把治理变成委托关系，新增了代理人背离委托人利益的风险。Madison 随后强调“大范围选区”与“更大候选池”，可读作在降低逆向选择与代理失控。",
+      "reread_delta_zh": "重读后，“representation”不再只是规范赞歌，而是一种带有内生失灵的制度，需要靠规模和筛选机制来约束代理风险。",
+      "source_leads": [
+        "Stephen A. Ross, 'The Economic Theory of Agency' (1973)",
+        "John Ferejohn, 'Incumbent Performance and Electoral Control' (1986)"
+      ]
+    },
+    {
+      "seed_id": "S3",
+      "source_anchor_quote_en": "A religious sect may degenerate into a political faction in a part of the Confederacy; but the variety of sects dispersed over the entire face of it must secure the national councils against any danger from that source.",
+      "external_lens_identity": "cross-cutting cleavages in pluralist political sociology",
+      "mechanism_claim_zh": "安全性来自身份断层线彼此交叉，而非单一分裂轴主导全国。宗教、经济与地方利益若不完全重合，就更难凝结成稳定的全国性压迫多数。",
+      "reread_delta_zh": "重读后，“variety of parties and interests”不是数量堆积，而是交叉分化结构本身在拆解多数联盟。",
+      "source_leads": [
+        "Seymour Martin Lipset, Political Man (1960)",
+        "Seymour Martin Lipset and Stein Rokkan, 'Cleavage Structures, Party Systems, and Voter Alignments' (1967)"
+      ]
+    },
+    {
+      "seed_id": "S4",
+      "source_anchor_quote_en": "what are many of the most important acts of legislation, but so many judicial determinations... ? And what are the different classes of legislators but advocates and parties to the causes which they determine?",
+      "external_lens_identity": "public choice theory of self-interested lawmaking (Buchanan and Tullock)",
+      "mechanism_claim_zh": "Madison 在这里把立法看成利益相关方自己裁判分配问题，接近后来公共选择的核心洞见：制度参与者不会自动以“公共利益”身份行动，而会把规则制定变成分配博弈。",
+      "reread_delta_zh": "重读后，这段不只是道德批评，而是在提出一种制度诊断：多数立法本身会系统性地产生偏向与再分配冲动。",
+      "source_leads": [
+        "James M. Buchanan and Gordon Tullock, The Calculus of Consent (1962)",
+        "Dennis C. Mueller, Public Choice III (2003)"
+      ]
+    }
+  ]
+}
