@@ -6,13 +6,14 @@
 
 ## 已验证事实
 
-- T2.39 已从 T2.38 commit `4f9c62529d3ef55ead9ccf6a5e33a3b402e663cb` 建立
-  `feature/readerlab-book-expert-teaching-skill-v0.1`，并创建 `readerlab-book-expert-teaching` Skill
-  `0.1.0` 候选。Skill 入口是 `.../scripts/run.py` 的 `init`、`seal-expert`、`seal-review`、
-  `build-product-pack`、`verify`、`archive`；只管理 Expert Teaching 阶段，不调用真实语义模型或下游
-  Writer/Reader/ABC/Discovery。Skill-local tests 通过，T2.38 机械回放通过；当前仍为 `not integrated`、
-  产品接受为 `unknown`。完整控制与审查材料见 `docs/stage-implementation-status.md`、
-  `docs/expert-teaching-skill-v0.1-review-map.md` 与 `docs/expert-teaching-skill-v0.1-review-brief.md`。
+- T2.40 从基线 `66eeaa1d8a068df3e73848717ee20b0c87b105918` 在
+  `feature/readerlab-book-expert-teaching-skill-v0.1` 上发布 `readerlab-book-expert-teaching` Skill
+  `0.1.1` 候选。根目录 0.1.0 实现保持不可变；current dispatcher 明确指向独立
+  `versions/0.1.1/`。新版本增加结构化来源 allowlist、稳定中文表达规则、内部泄露门、精确 T2.38 replay
+  hash 核验和 `controller_declared` 运行元数据；不调用真实语义模型或下游 Writer/Reader/ABC/Discovery。
+  当前仍为 `not_integrated`，产品接受为 `unknown`；0.1.0 尚未运行迁移样本，两个版本结果不得混算。完整
+  控制与审查材料见 `docs/stage-implementation-status.md`、`docs/expert-teaching-skill-v0.1-review-map.md`、
+  `docs/expert-teaching-skill-v0.1-review-brief.md` 和 change receipt。
 - T2.38 已完成独立 Expert teaching diagnostic sidecar：固定 U01 与 T2.36 source map 已逐字复制并
   冻结输入 hash；`/root/u01_expert_teaching` 一次产出教学版专家课与归属表，
   `/root/u01_expert_teaching_review` 在另一个全新上下文一次完成来源／教学审核。终局为

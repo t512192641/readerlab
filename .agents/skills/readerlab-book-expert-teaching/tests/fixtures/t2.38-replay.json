@@ -1,5 +1,6 @@
 {
   "skill_version": "0.1.0",
+  "replay_skill_version": "0.1.1",
   "run": "runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01",
   "source": {
     "path": "runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01/inputs/u01-frozen.md",
@@ -8,6 +9,10 @@
   "source_map": {
     "path": "runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01/raw/source-map.md",
     "sha256": "f89b357700f05eb8ab9ee12602ddc81a736d28443fa10b4cb53fc0e825d33f0a"
+  },
+  "source_allowlist": {
+    "path": ".agents/skills/readerlab-book-expert-teaching/tests/fixtures/t2.38-source-allowlist.json",
+    "sha256": "5eca499c6e8c899e5d44e97d91eb78884c76169f0638fab0e747fc2f334817ab"
   },
   "expert_draft": {
     "path": "runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01/raw/expert-teaching-draft.md",
@@ -20,5 +25,9 @@
   "review": {
     "path": "runs/T2.38-U01-SOCIAL-CONNECTION-EXPERT-TEACHING-01/acceptance/expert-teaching-review.md",
     "sha256": "9c9f7c64cce0bd17cbc9747775b00ca938bb4b5962b69821a1b4583eab87846f"
+  },
+  "expected_product": {
+    "v0.1.0_sha256": "fe194eea4666ffd55bf25a4a33c11f2062b28e7fdffe26de41a994e73b9dde33",
+    "v0.1.1_sha256": "859b72105a9ad1858dde720fc1c4ed2af7810b29da09efaaf8fa2696e9c8df1e"
   }
 }

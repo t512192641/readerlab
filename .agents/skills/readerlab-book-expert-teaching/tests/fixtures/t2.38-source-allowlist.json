@@ -1,0 +1,67 @@
+{
+  "schema": "readerlab-book-expert-teaching/source-allowlist/v1",
+  "sources": [
+    {
+      "id": "Y06a",
+      "url": "https://www.cambridge.org/core/journals/social-philosophy-and-policy/article/abs/responsibility-and-global-justice-a-social-connection-model/9308EE478561C7CE31E1F5A8F26CBE04",
+      "status": "allowed",
+      "redirects": []
+    },
+    {
+      "id": "Y06b",
+      "url": "https://paperzz.com/doc/7682828/responsibility-and-global-justice--a-social",
+      "status": "allowed",
+      "redirects": []
+    },
+    {
+      "id": "Y04",
+      "url": "https://web.mit.edu/sgrp/2007/no1/YoungRGLJ.pdf",
+      "status": "allowed",
+      "redirects": []
+    },
+    {
+      "id": "Y11",
+      "url": "https://academic.oup.com/book/4381",
+      "status": "allowed",
+      "redirects": []
+    },
+    {
+      "id": "SEP",
+      "url": "https://plato.stanford.edu/entries/justice-global/index.html",
+      "status": "allowed",
+      "redirects": []
+    },
+    {
+      "id": "Z18",
+      "url": "https://link.springer.com/article/10.1007/s10677-018-9892-8",
+      "status": "allowed",
+      "redirects": []
+    },
+    {
+      "id": "G20",
+      "url": "https://www.cambridge.org/core/journals/hypatia/article/why-the-social-connection-model-fails-participation-is-neither-necessary-nor-sufficient-for-political-responsibility/99265732F023B1E7BDD1493DE80C2FA8",
+      "status": "allowed",
+      "redirects": []
+    },
+    {
+      "id": "OUP24",
+      "url": "https://academic.oup.com/book/58181/chapter/480373479",
+      "status": "allowed",
+      "redirects": [
+        "https://oup.silverchair-cdn.com/book-minimal/58181/chapter-minimal/480373479"
+      ]
+    },
+    {
+      "id": "UGR",
+      "url": "https://revistaseug.ugr.es/index.php/acfs/article/download/1040/1235/0",
+      "status": "reference_only",
+      "redirects": []
+    },
+    {
+      "id": "blocked-example",
+      "url": "https://blocked.example.invalid/source",
+      "status": "blocked",
+      "redirects": []
+    }
+  ]
+}
