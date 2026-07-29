@@ -1,18 +1,18 @@
 # ReaderLab 资产生命周期与保留清单
 
-> 快照日期：2026-07-25
+> 快照日期：2026-07-29
 > 性质：审计投影，不拥有任务状态、产品判词或长期产品决议
 > 目的：让历史证据可追溯，但不再占据默认工作入口
 
 ## 可重算数量投影
 
-- taskcard-count: `56`
-- run-container-count: `42`
-- current-run-container-count: `11`
+- taskcard-count: `57`
+- run-container-count: `43`
+- current-run-container-count: `12`
 - archived-run-container-count: `31`
-- run-file-count: `453`
+- run-file-count: `474`
 - archived-run-file-count: `317`
-- tracked-run-file-count: `188`
+- tracked-run-file-count: `209`
 - ignored-run-file-count: `265`
 - untracked-visible-run-file-count: `0`
 
@@ -39,11 +39,10 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 
 ## 2. 任务卡清单
 
-### 当前业务任务
+### 当前诊断任务
 
-- `taskcards/T2.35.md`：当前业务任务；已由业务证据 commit
-  `bcb052e4dcaeac53a273a36608a632b98a98d94b` 跟踪，判词、停止点与生产授权只见
-  `docs/current-task.md`。
+- `taskcards/T2.36.md`：固定 C 的 U01 内容链 seam；已在 `RETURN_WRITER + DEPTH_PASS`
+  终局停止。它是本地 diagnostic sidecar，不是生产 runtime、产品判词或下一生产授权。
 
 ### 已完成、失败、被替代或仅作历史证据
 
@@ -101,6 +100,7 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 - `taskcards/T2.32.md`
 - `taskcards/T2.33.md`
 - `taskcards/T2.34.md`
+- `taskcards/T2.35.md`
 
 说明：仓库没有 T2.25 任务卡；T2.25 run 存在不等于任务卡存在。以上对象保留原路径，
 因为历史文档、判词和验证器使用这些坐标；不得把它们当作当前执行入口。
@@ -116,13 +116,17 @@ Writer、Reader／陪读 Markdown、审核报告、截图和 ignored payload。�
 
 ## 3. run 清单
 
-### 当前业务 run
+### 当前诊断 run
 
-- `runs/T2.35-CH08-D3-EXPERT-P2-01`：当前、current profile；run manifest、两个 freeze、
-  P2 gate 与产品判词已跟踪，完整原文、Expert、知识卡、来源审核和审阅包继续 ignored
-  本地保留，不得由审计移动或重写。
+- `runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01`：固定 C 的四角色隔离 seam；Phase 2
+  为 `LOCK_FOR_WRITER`，Phase 4 为 `RETURN_WRITER + DEPTH_PASS`，因此没有产品对照包或版本密钥。
+  完整本地 payload 与归档按任务卡保留；不构成生产接入或产品接受。
 
 ### 历史 run：current profile，可由 `tools/run.py check` 复核结构
+
+- `runs/T2.35-CH08-D3-EXPERT-P2-01`：current profile；run manifest、两个 freeze、
+  P2 gate 与产品判词已跟踪，完整原文、Expert、知识卡、来源审核和审阅包继续 ignored
+  本地保留，不得由审计移动或重写。
 
 - `runs/T2.27-NARROW-CHAPTER-TO-P2-01`
 - `runs/T2.27-NARROW-CHAPTER-TO-P2-02`

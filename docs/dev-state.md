@@ -1,11 +1,12 @@
 # ReaderLab 当前开发状态
 
 > owner：当前已验证工程事实、缺口与关键证据路径
-> 更新日期：2026-07-26
+> 更新日期：2026-07-29
 > 当前行动门只见 [`docs/current-task.md`](current-task.md)；本文件不拥有生产授权。
 
 ## 已验证事实
 
+- T2.36 已完成固定 C 的单一 U01 diagnostic seam：Phase 1 Expert 课、Phase 2 内容锁、独立 Writer 与独立 Fidelity／Depth 审核均有冻结文件和 hash；终局为 `LOCK_FOR_WRITER`、`RETURN_WRITER`、`DEPTH_PASS`。由于 Fidelity 未通过，未修改 Reader、未读取旧稿、未生成产品审阅包或版本密钥。完整证据见 `runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01/` 与 `artifacts/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01.tar.gz`；它不改变生产 runtime 的 `not integrated` 状态。
 - T2.35 正式生产状态仍停在 `P2_PASS_WORTH_WRITING`；任务卡、run、冻结证据和生产授权均未
   改变，完整语义 payload 继续本地 ignored。
 - Writer 修订稿已获产品负责人 `PASS`。仓库外完整章节候选已完成 Assembly Boundary 与独立
@@ -43,6 +44,7 @@
 
 ## 当前缺口
 
+- T2.36 的 Reader 尚未通过 Fidelity，且产品包未生成；是否、如何另开一个独立 Writer 修订任务仍需产品负责人重新授权，当前为 `unknown`。
 - “怎样更好地触发具有稳定认知背景的专家，从完整原文自然召回成熟外部框架”仍为 `unknown`；
   当前实验没有回答这个问题。
 - 修订后的 Discovery 角色、触发方式、Prompt、候选接口和最小验证设计均未形成，也未获实施或

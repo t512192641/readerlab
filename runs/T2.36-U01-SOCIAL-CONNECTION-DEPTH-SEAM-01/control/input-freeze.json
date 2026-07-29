@@ -1,0 +1,12 @@
+{
+  "schema": "readerlab-u01-depth-seam-input-freeze/v1",
+  "recorded_at": "2026-07-29T04:26:56-0400",
+  "baseline_commit": "c8ef926216a99c45ae1341d1c74acde94fd92ae3",
+  "source_path_at_baseline": "audit/current-runtime-snapshot/u01-u03/pilot-inputs/U01.md",
+  "run_input_path": "runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01/inputs/u01-frozen.md",
+  "bytes": 16368,
+  "sha256": "1c7973468c9d2716aee142de2d985a8f64d26ee673ae4a83c7e9d74d55c8804c",
+  "fixed_c": "Iris Marion Young, Social Connection Model",
+  "old_draft_path": "audit/current-runtime-snapshot/u01-u03/direct-output/U01.md",
+  "old_draft_access": "controller-only after FIDELITY_PASS + DEPTH_PASS, for anonymous product comparison only"
+}

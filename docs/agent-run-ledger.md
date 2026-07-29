@@ -187,3 +187,17 @@
 - Cross-project candidate: no
 - Follow-up：以后单独讨论原始问题——怎样触发具有稳定认知背景的专家，从完整原文自然召回
   可迁移外部认知框架；没有新方案与明确授权前，不改 Prompt、不重跑、不启动下游。
+
+### Run: 2026-07-29 - T2.36 U01 social-connection depth seam
+
+- Task / Type / Tool：固定 C 的 Expert → 内容锁 → Writer → Fidelity／Depth 独立链 / diagnostic / 四个功能隔离 Codex Agent + Web Search/Web Fetch（仅 Expert）+ SHA-256 freeze。
+- Context source / Boundary：产品负责人明确冻结 U01 与 Iris Marion Young 的 Social Connection Model，并禁止新路线、ABC、候选搜索、B、M1/M2/M3、长期合同与生产入口改动。四个语义角色按白名单文件交接；旧稿只在双门通过后才可由控制层读取，实际从未读取。
+- Files read / changed：新任务卡 `taskcards/T2.36.md`、当前状态／开发状态／本账本、审计资产投影，以及 `runs/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01/` 全部实际 evidence；完整本地包为 `artifacts/T2.36-U01-SOCIAL-CONNECTION-DEPTH-SEAM-01.tar.gz`。
+- Commands / checks：U01 输入 hash／字节数、5 份 Prompt hash、Stage 0—4 hash 全部 `shasum -c` 通过；Phase 2/4 终局标记、UTF-8、包内条目和 `git diff --check` 复核。初次 active tests 因新任务卡／run 未登记到资产投影和 current-state control 字段而失败，机械同步后重跑。
+- Artifacts / reports：`raw/expert-course.md`、`raw/source-map.md`、`locked/content-review.md`、`locked/content-lock.md`、`final/reader-v1.md`、`acceptance/fidelity-depth-review.md`、run manifest／ledger 与本地压缩包。
+- Result / Evidence type：Phase 2 `LOCK_FOR_WRITER`；Fidelity `RETURN_WRITER`；Depth `DEPTH_PASS`。按任务卡立即停止，未生成产品审阅包／版本密钥；产品接受为 `unknown`。
+- Canonical status：`diagnostic-only`
+- Failures / detours：初始 Expert 上下文 `/root/u01_expert` 因外部 worktree 写入策略未能落盘，未产生任何 raw artifact；同一未改 Prompt、未改输入由新的 `/root/u01_expert_recovery` 技术重派完成。归档首次因目标目录缺失失败，创建空目录后成功；两次均记录在 run ledger，未作为结果质量补跑。
+- Repeat-error check：未发现与既有语义／产品失败相同的已确认机制；两项均为本地路径／归档机械恢复，未升级全局候选。
+- Reusable lesson / rule candidate：无；功能性 Agent 隔离、失败重派与 artifact freeze 的适用边界已由当前项目规则拥有，不新增平行规则。
+- Follow-up：停止。若产品负责人希望修订 Reader，必须在新任务中重新冻结 Writer 输入、版本和验收边界；不得覆盖本 run 的冻结文件。
