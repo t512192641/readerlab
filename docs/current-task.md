@@ -34,7 +34,7 @@ current dispatcher、source-access 回执和 source-map／allowlist 闭合摘要
 
 ## 停止点
 
-- 已完成 Skill v0.1.2 边界 hardening、quick／Skill-local／replay／diff／敏感信息检查；repository active tests
+- 已完成 Skill v0.1.2 边界 hardening、发布基线 0.1.0 历史入口版本隔离测试、quick／Skill-local／replay／diff／敏感信息检查；repository active tests
   35/36 通过，唯一失败为本轮开始前已存在且未登记的 Markdown 影子文件穷举项。提交与推送后停止。
 - 按本卡停止，不运行迁移样本；`integrated`: `not_integrated`；`accepted`: `unknown`；下一生产授权保持
   `none`。

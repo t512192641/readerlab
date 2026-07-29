@@ -11,7 +11,9 @@
 1. 将 current dispatcher 移到 Skill 根目录 `run-current.py`，删除 `scripts/run-current.py`，因此历史
    0.1.0 fingerprint 只覆盖原有根实现；用显式三段数字版本格式，并要求目标目录与 `VERSION` 精确一致。
 2. 发布独立 `versions/0.1.2/` 实现，冻结 0.1.0 发布基线 aggregate fingerprint
-   `4730c7392c67bd927b9d3609854141f6b8fb6297631381834d1d43275690233f`，增加旧入口漂移与错版本拒绝测试。
+   `4730c7392c67bd927b9d3609854141f6b8fb6297631381834d1d43275690233f`，增加旧入口漂移与错版本拒绝测试；
+   旧 run 测试从发布基线 commit `66eeaa1d8a068df3e73848717e20b0c87b105918` 临时物化 0.1.0 入口后创建，
+   不把升级后工作树新建的 run 冒充为升级前历史 run。
 3. 增加 `readerlab-book-expert-teaching/source-access/v1`，由 Expert 和 reviewer 分别写入访问回执；
    `opened_urls` 只允许 `allowed`，`cited_only_urls` 允许 `allowed`／`reference_only`，数组互斥，
    `blocked`／未登记 URL 机械失败。回执明确 `provenance: agent_declared`，不是浏览器或 OS 级网络审计。

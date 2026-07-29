@@ -351,5 +351,7 @@
   tests `35/36` 通过，唯一失败是本轮开始前已存在且未纳入资产登记的 Markdown 影子文件穷举项；本轮未修改
   或纳入这些文件。`git diff --check` 和敏感信息检查通过。不得运行迁移样本，不启动 Writer、Discovery、ABC
   或 orchestrator。
+- Version-isolation evidence：错版本拒绝测试的 `0.1.0` run 由 `git archive` 从发布基线
+  `66eeaa1d8a068df3e73848717e20b0c87b105918` 临时物化的旧入口创建；不是由升级后工作树的当前旧入口创建。
 - Stop / Acceptance：提交并推送后停止；`implemented` 为 0.1.2 版本化实现，`verified` 仅限确定性 checks
   与 mechanical replay，`integrated: not_integrated`，`accepted: unknown`，下一生产授权 `none`。

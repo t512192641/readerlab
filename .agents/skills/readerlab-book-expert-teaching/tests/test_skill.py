@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import hashlib
+import io
 import importlib.util
 import os
 import shutil
@@ -17,12 +18,12 @@ SKILL_DIR = Path(__file__).resolve().parents[1]
 ROOT = SKILL_DIR.parents[2]
 RUN_SCRIPT = SKILL_DIR / "versions/0.1.2/scripts/run.py"
 CURRENT_SCRIPT = SKILL_DIR / "run-current.py"
-LEGACY_SCRIPT = SKILL_DIR / "scripts/run.py"
 FIXTURE = SKILL_DIR / "tests/fixtures/t2.38-replay.json"
 ALLOWLIST_FIXTURE = SKILL_DIR / "tests/fixtures/t2.38-source-allowlist.json"
 EXPERT_ACCESS_FIXTURE = SKILL_DIR / "tests/fixtures/t2.38-expert-source-access.json"
 REVIEWER_ACCESS_FIXTURE = SKILL_DIR / "tests/fixtures/t2.38-reviewer-source-access.json"
 BASELINE_010_FINGERPRINT = "4730c7392c67bd927b9d3609854141f6b8fb6297631381834d1d43275690233f"
+BASELINE_010_COMMIT = "66eeaa1d8a068df3e73848717e20b0c87b105918"
 SOURCE_ACCESS_SCHEMA = "readerlab-book-expert-teaching/source-access/v1"
 SOURCE_ACCESS_AUDIT_SCOPE = "agent-declared; not a browser or OS-level network audit"
 
@@ -642,16 +643,33 @@ class ExpertTeachingSkillTests(unittest.TestCase):
 
     def test_old_version_run_survives_current_upgrade_but_wrong_version_fails(self) -> None:
         source, framework, source_map, run = self.make_legacy_inputs()
+        baseline_root = self.root / "baseline-release"
+        archive = subprocess.run(
+            [
+                "git",
+                "archive",
+                BASELINE_010_COMMIT,
+                ".agents/skills/readerlab-book-expert-teaching",
+                "tools/run.py",
+            ],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+        )
+        with tarfile.open(fileobj=io.BytesIO(archive.stdout), mode="r:") as handle:
+            handle.extractall(baseline_root, filter="data")
+        baseline_script = baseline_root / ".agents/skills/readerlab-book-expert-teaching/scripts/run.py"
+        self.assertTrue(baseline_script.is_file())
         result = invoke(
             "init", "--source", source, "--framework", framework, "--source-map", source_map,
-            "--run", run, "--skill-version", "0.1.0", script=LEGACY_SCRIPT,
+            "--run", run, "--skill-version", "0.1.0", script=baseline_script,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.write_expert(run)
-        self.assertEqual(self.seal_expert(run, script=LEGACY_SCRIPT).returncode, 0)
+        self.assertEqual(self.seal_expert(run, script=baseline_script).returncode, 0)
         self.write_review(run)
-        self.assertEqual(self.seal_review(run, script=LEGACY_SCRIPT).returncode, 0)
-        self.assertEqual(invoke("verify", "--run", run, script=LEGACY_SCRIPT).returncode, 0)
+        self.assertEqual(self.seal_review(run, script=baseline_script).returncode, 0)
+        self.assertEqual(invoke("verify", "--run", run, script=baseline_script).returncode, 0)
         wrong = invoke("verify", "--run", run, script=RUN_SCRIPT)
         self.assertNotEqual(wrong.returncode, 0)
         self.assertIn("Skill version", wrong.stderr)
