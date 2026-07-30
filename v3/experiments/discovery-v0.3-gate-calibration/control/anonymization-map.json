@@ -1,0 +1,36 @@
+{
+  "schema": "readerlab-discovery-v0.3-product-card-anonymization/v1",
+  "mapping_method": "fixed random permutation generated for this run",
+  "entries": [
+    {
+      "card": "A",
+      "candidate_id": "K9",
+      "source": "v0.2 raw/professional-03.md"
+    },
+    {
+      "card": "B",
+      "candidate_id": "C1",
+      "source": "v0.1 03-raw-seeds.md and C1 frozen teaching materials"
+    },
+    {
+      "card": "C",
+      "candidate_id": "K5",
+      "source": "v0.2 raw/professional-04.md"
+    },
+    {
+      "card": "D",
+      "candidate_id": "C5",
+      "source": "v0.1 03-raw-seeds.md and C5 frozen product/teaching materials"
+    },
+    {
+      "card": "E",
+      "candidate_id": "K10",
+      "source": "v0.2 raw/professional-02.md"
+    },
+    {
+      "card": "F",
+      "candidate_id": "C8",
+      "source": "v0.1 03-raw-seeds.md and C8 frozen product/teaching materials"
+    }
+  ]
+}
