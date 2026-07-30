@@ -1,0 +1,34 @@
+{
+  "schema": "readerlab-v0.5-assembled-expert-freeze/v1",
+  "status": "frozen",
+  "frozen_at": "2026-07-30T06:47:00Z",
+  "source_verification": {
+    "path": "03-expert-packs/source-verification.md",
+    "verdict": "VERIFIED",
+    "verified_assets": 18,
+    "rejected_assets": 0
+  },
+  "packs": {
+    "E1": {
+      "tradition": "history-sociology-long-run-mechanisms",
+      "full": {"path": "E1-history-sociology-full.md", "assets": 6, "sha256": "799eddb2203f3d8c487b522433694ffde2a2a66b963ec868713e663c7f1991c6"},
+      "thin": {"path": "E1-history-sociology-thin.md", "assets": 0, "sha256": "20212b76469c1306fc57dd426df60d8be378879dcf36150832262bccf5816568"}
+    },
+    "E2": {
+      "tradition": "ecology-evolution-complex-adaptive-systems",
+      "full": {"path": "E2-ecology-complexity-full.md", "assets": 6, "sha256": "c5319ff3606c71e6b216eb21c2e703fe66b4f81cec9c26de7c201646768f4b1a"},
+      "thin": {"path": "E2-ecology-complexity-thin.md", "assets": 0, "sha256": "bc9b1a384594b986686f059899b920784bb3ed5cf8e4e0f2ba2e8059d66bfca0"}
+    },
+    "E3": {
+      "tradition": "books-intellectual-history-knowledge-genealogies",
+      "full": {"path": "E3-books-intellectual-history-full.md", "assets": 6, "sha256": "b06907abd2ccc25eda625f7004e598ffe0a83cae516a216efe53f97a8de282b9"},
+      "thin": {"path": "E3-books-intellectual-history-thin.md", "assets": 0, "sha256": "7880c348d18c06b6c4bf41d6f4b79b4ccec77cfe05b2dfb4daf4570125e71cc3"}
+    }
+  },
+  "freeze_rules": [
+    "Only assets marked VERIFIED in source-verification.md may be used by assembled readers.",
+    "Full asset names, sources, mechanisms, cases, activation conditions and detailed boundaries are frozen.",
+    "Thin cards intentionally expose only tradition-level guidance and contain no concrete asset identity.",
+    "Any later asset defect is recorded as an audit rejection; frozen full files are not rewritten to fit the source."
+  ]
+}

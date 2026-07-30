@@ -1,0 +1,16 @@
+{
+  "schema": "readerlab-v0.5-anonymization-map/v1",
+  "status": "sealed",
+  "sealed_at": "2026-07-30T06:44:00Z",
+  "blind_input": "control/blind-candidates.md",
+  "mapping": {
+    "A01": {"raw_candidate_id": "E3-06", "raw_file": "05-raw-activations/E3-assembled.md", "reading_group": "E3-assembled", "identity": "IDENTITY_PASS"},
+    "A02": {"raw_candidate_id": "E3-thin-01", "raw_file": "05-raw-activations/E3-thin.md", "reading_group": "E3-thin", "identity": "IDENTITY_PASS"},
+    "A03": {"raw_candidate_id": "E1-thin-01", "raw_file": "05-raw-activations/E1-thin.md", "reading_group": "E1-thin", "identity": "IDENTITY_PASS"}
+  },
+  "blind_rules": [
+    "Blind reviewers receive only A01-A03 content and must not receive this file.",
+    "No original candidate ID, reading group, expert tradition, raw reader conclusion, or internal recommendation is included in blind-candidates.md.",
+    "The duplicate Hobsbawm asset remains as two anonymous records so collision and duplicate-generation behavior can be audited rather than silently deduplicated."
+  ]
+}
